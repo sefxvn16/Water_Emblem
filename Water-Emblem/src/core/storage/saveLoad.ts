@@ -1,5 +1,6 @@
 import Dexie, { type Table } from 'dexie';
 import talysMapJson from '../../../data/maps/chapter_01_talys.json';
+import galderMapJson from '../../../data/maps/chapter_02_galder.json';
 import testMapJson from '../../../data/maps/test_map_01.json';
 import type { ChapterOutcome } from '../chapter/types';
 import type { ItemDefinition } from '../combat/types';
@@ -8,6 +9,7 @@ import type { GamePhase } from '../turn/turnManager';
 
 const mapsById: Record<string, { width: number; height: number }> = {
   chapter_01_talys: talysMapJson,
+  chapter_02_galder: galderMapJson,
   test_map_01: testMapJson,
 };
 

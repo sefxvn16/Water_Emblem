@@ -36,6 +36,36 @@
       "supporterId": "ogma",
       "supportedId": "caeda",
       "bonus": { "hit": 10, "avoid": 5, "crit": 5, "dodge": 0 }
+    },
+    {
+      "supporterId": "caeda",
+      "supportedId": "ogma",
+      "bonus": { "hit": 10, "avoid": 5, "crit": 5, "dodge": 0 }
+    },
+    {
+      "supporterId": "ogma",
+      "supportedId": "barst",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+    },
+    {
+      "supporterId": "barst",
+      "supportedId": "ogma",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+    },
+    {
+      "supporterId": "bord",
+      "supportedId": "barst",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+    },
+    {
+      "supporterId": "cord",
+      "supportedId": "barst",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+    },
+    {
+      "supporterId": "caeda",
+      "supportedId": "castor",
+      "bonus": { "hit": 10, "avoid": 10, "crit": 0, "dodge": 0 }
     }
   ]
 }

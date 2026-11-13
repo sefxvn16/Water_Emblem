@@ -3,6 +3,8 @@ import chapterJson from '../../data/chapters/test_chapter_01.json';
 import mapJson from '../../data/maps/test_map_01.json';
 import talysChapterJson from '../../data/chapters/chapter_01_talys.json';
 import talysMapJson from '../../data/maps/chapter_01_talys.json';
+import galderChapterJson from '../../data/chapters/chapter_02_galder.json';
+import galderMapJson from '../../data/maps/chapter_02_galder.json';
 import itemsJson from '../../data/items.json';
 import charactersJson from '../../data/characters.json';
 import classesJson from '../../data/classes.json';
@@ -27,6 +29,25 @@ describe('chapter data', () => {
     expect(marth?.unit.position).toEqual({ x: 25, y: 9 });
     const gazzak = talysChapter.units.find((u) => u.unit.id === 'gazzak');
     expect(gazzak?.unit.position).toEqual({ x: 3, y: 9 });
+  });
+
+  it('loads canonical Chapter 2 Galder 30x13 map, Ogma mercenary group and Gomer boss', () => {
+    const galderChapter = loadChapterData(
+      galderChapterJson,
+      galderMapJson as MapData,
+      itemsJson.items as ItemDefinition[]
+    );
+    expect(galderChapter.id).toBe('chapter_02');
+    expect(galderChapter.mapId).toBe('chapter_02_galder');
+    expect(galderChapter.units.length).toBeGreaterThanOrEqual(15);
+    const ogma = galderChapter.units.find((u) => u.unit.id === 'ogma');
+    expect(ogma?.unit.position).toEqual({ x: 14, y: 2 });
+    expect(ogma?.weapon.id).toBe('steel_sword');
+    expect(ogma?.unit.moveType).toBe('foot');
+    const gomer = galderChapter.units.find((u) => u.unit.id === 'gomer');
+    expect(gomer?.unit.position).toEqual({ x: 1, y: 1 });
+    expect(gomer?.weapon.id).toBe('steel_axe');
+    expect(galderChapter.objective.bossUnitId).toBe('gomer');
   });
 
   it('loads referenced units, weapons and objective', () => {

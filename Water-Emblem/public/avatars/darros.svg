@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#0f172a"/>
+  <!-- Blue Bandana -->
+  <path d="M 30 42 C 24 18 42 12 60 12 C 78 12 96 18 90 42 Z" fill="#2563eb"/>
+  <circle cx="88" cy="40" r="5" fill="#3b82f6"/>
+  <!-- Face Rugged but Kind -->
+  <path d="M 40 42 Q 40 78 60 84 Q 80 78 80 42 Z" fill="#fcd34d"/>
+  <!-- Stubble -->
+  <path d="M 44 65 C 48 80 72 80 76 65" stroke="#78350f" stroke-width="2" stroke-dasharray="2,2" fill="none"/>
+  <!-- Eyes Honest -->
+  <ellipse cx="51" cy="50" rx="3.5" ry="4" fill="#0f172a"/>
+  <ellipse cx="69" cy="50" rx="3.5" ry="4" fill="#0f172a"/>
+  <!-- Clothes -->
+  <path d="M 28 115 L 36 82 L 84 82 L 92 115 Z" fill="#475569"/>
+  <path d="M 46 82 L 60 115 L 74 82 Z" fill="#fcd34d"/>
+</svg>

@@ -85,6 +85,11 @@ describe('Hệ thống Chiến đấu & Tính toán Sát thương (Battle Engine
     };
     expect(isWeaponEffective(ironBow, flierUnit)).toBe(true);
     expect(isWeaponEffective(ironBow, footUnit)).toBe(false);
+
+    // Búa (Hammer) khắc đơn vị thiết vệ (Armor)
+    const hammer = getItem('hammer');
+    expect(isWeaponEffective(hammer, armorUnit)).toBe(true);
+    expect(isWeaponEffective(hammer, footUnit)).toBe(false);
   });
 
   it('tốc độ tấn công (AS) và điều kiện đánh hai lần (Double Attack)', () => {

@@ -2,6 +2,8 @@ import testChapterJson from '../../../data/chapters/test_chapter_01.json';
 import testMapJson from '../../../data/maps/test_map_01.json';
 import talysChapterJson from '../../../data/chapters/chapter_01_talys.json';
 import talysMapJson from '../../../data/maps/chapter_01_talys.json';
+import galderChapterJson from '../../../data/chapters/chapter_02_galder.json';
+import galderMapJson from '../../../data/maps/chapter_02_galder.json';
 import itemsJson from '../../../data/items.json';
 import charactersJson from '../../../data/characters.json';
 import classesJson from '../../../data/classes.json';
@@ -224,6 +226,12 @@ export const chapter01Data = loadChapterData(
   itemsJson.items as ItemDefinition[],
 );
 
+export const chapter02Data = loadChapterData(
+  galderChapterJson,
+  galderMapJson as MapData,
+  itemsJson.items as ItemDefinition[],
+);
+
 export const testChapter01Data = loadChapterData(
   testChapterJson,
   testMapJson as MapData,
@@ -232,6 +240,7 @@ export const testChapter01Data = loadChapterData(
 
 export const chapters: Record<string, ChapterData> = {
   chapter_01: chapter01Data,
+  chapter_02: chapter02Data,
   test_chapter_01: testChapter01Data,
 };
 

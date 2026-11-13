@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#1e1b4b"/>
+  <!-- Ogma Brown Spiky Hair -->
+  <path d="M 32 46 C 26 18 42 12 60 12 C 78 12 94 18 88 46 C 96 36 84 20 60 16 C 36 20 24 36 32 46 Z" fill="#78350f"/>
+  <!-- Mercenary Leather Armor -->
+  <path d="M 28 115 L 36 82 L 84 82 L 92 115 Z" fill="#451a03"/>
+  <rect x="52" y="82" width="16" height="33" fill="#b45309"/>
+  <!-- Face Rugged -->
+  <path d="M 38 42 Q 38 78 60 84 Q 82 78 82 42 Z" fill="#fcd34d"/>
+  <!-- Hair bangs -->
+  <path d="M 34 32 L 48 42 L 56 30 L 66 44 L 76 32 L 86 42 L 84 26 Z" fill="#92400e"/>
+  <!-- Eyes Determined -->
+  <ellipse cx="50" cy="52" rx="3.5" ry="3.5" fill="#1e293b"/>
+  <ellipse cx="70" cy="52" rx="3.5" ry="3.5" fill="#1e293b"/>
+  <!-- Eyebrows fierce -->
+  <line x1="44" y1="46" x2="54" y2="49" stroke="#451a03" stroke-width="2.5"/>
+  <line x1="76" y1="46" x2="66" y2="49" stroke="#451a03" stroke-width="2.5"/>
+  <!-- Scar -->
+  <line x1="46" y1="56" x2="52" y2="68" stroke="#dc2626" stroke-width="1.5"/>
+  <path d="M 54 72 Q 60 75 66 72" stroke="#78350f" stroke-width="2" fill="none"/>
+</svg>

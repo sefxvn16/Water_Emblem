@@ -100,6 +100,26 @@
       "baseMov": 7,
       "baseStats": { "hp": 16, "str": 4, "mag": 0, "dex": 4, "spd": 9, "lck": 3, "def": 3, "res": 0 },
       "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+    },
+    {
+      "id": "mercenary",
+      "name": "Mercenary",
+      "nameVi": "Kiếm Sĩ / Lính Đánh Thuê",
+      "usableWeapons": ["sword"],
+      "moveType": "foot",
+      "baseMov": 5,
+      "baseStats": { "hp": 20, "str": 6, "mag": 0, "dex": 8, "spd": 10, "lck": 2, "def": 6, "res": 0 },
+      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+    },
+    {
+      "id": "fighter",
+      "name": "Fighter",
+      "nameVi": "Chiến Binh Rìu",
+      "usableWeapons": ["axe"],
+      "moveType": "foot",
+      "baseMov": 5,
+      "baseStats": { "hp": 22, "str": 7, "mag": 0, "dex": 4, "spd": 7, "lck": 2, "def": 5, "res": 0 },
+      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
     }
   ]
 }

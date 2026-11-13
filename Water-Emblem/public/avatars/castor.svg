@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#14532d"/>
+  <!-- Hunter Cap Green -->
+  <path d="M 32 40 C 26 15 44 8 60 8 C 76 8 94 15 88 40 Z" fill="#166534"/>
+  <polygon points="60,6 64,18 56,18" fill="#ca8a04"/>
+  <!-- Face Timid -->
+  <path d="M 40 40 Q 40 78 60 84 Q 80 78 80 40 Z" fill="#fde68a"/>
+  <!-- Hair bangs -->
+  <path d="M 38 38 L 48 46 L 56 36 L 66 46 L 76 38 L 82 42 Z" fill="#713f12"/>
+  <!-- Eyes -->
+  <circle cx="50" cy="52" r="3.5" fill="#1c1917"/>
+  <circle cx="70" cy="52" r="3.5" fill="#1c1917"/>
+  <path d="M 53 72 Q 60 69 67 72" stroke="#713f12" stroke-width="2" fill="none"/>
+  <!-- Clothes -->
+  <path d="M 28 115 L 36 82 L 84 82 L 92 115 Z" fill="#15803d"/>
+</svg>

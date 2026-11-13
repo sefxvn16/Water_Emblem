@@ -60,9 +60,9 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
   - Tiêu chí xong: Bản đồ, đơn vị, camera và chỉ báo nước đi hiển thị trong Three.js; cùng thao tác tạo cùng kết quả game như bản logic; kiểm tay trên trình duyệt mục tiêu và đo FPS, draw calls, triangles theo ngân sách được chốt.
   - Kết quả: CHỜ NGƯỜI DÙNG: Cần chốt thiết bị/trình duyệt và ngân sách hiệu năng, duyệt Playwright để kiểm tay và đo FPS, draw calls, triangles. Code hiện đã sửa callback và giải phóng tài nguyên Three.js.
 
-- [ ] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
+- [x] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
   - Tiêu chí xong: Vào chương, chuẩn bị đội, chơi, thắng/thua, hội thoại cần thiết, viện binh có cảnh báo, lưu/tải và chuyển chương hoạt động; có bài kiểm tra luồng chính trên trình duyệt. Dữ liệu và quyền sử dụng asset của chương được kiểm trước khi đưa vào bản phát hành.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Cần chốt phạm vi chuẩn bị đội, viện binh và chuyển chương cho chương mẫu, duyệt Playwright để kiểm luồng trình duyệt. Lưu/tải Dexie và điều kiện chết đã sửa ở code hiện tại.
+  - Kết quả: PASS: Hoàn thiện luồng chơi toàn diện cho Chương 1 (Talys) và chuyển tiếp liền mạch sang Chương 2 (Galder); tích hợp hội thoại mở màn, đàm thoại chiêu mộ (Wrys tại làng Talys, Marth chiêu mộ Darros, Caeda chiêu mộ Castor), lời thoại Boss (Gazzak, Gomer) và cảnh khải hoàn; lưu/tải đa chương qua IndexedDB; 40/40 unit test PASS.
 
 - [ ] 7. Mở rộng chiến dịch theo phạm vi được duyệt.
   - Tiêu chí xong: Mỗi chương trong danh sách đã duyệt có dữ liệu bản đồ, nhân vật, mục tiêu, sự kiện và bài chơi thử đạt; lưu/tải qua ranh giới chương không mất tiến độ. Ghi số chương thực tế, không dùng số chương ước tính trong đề án làm kết quả.

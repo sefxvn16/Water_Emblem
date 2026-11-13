@@ -1,6 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import mapDataRaw from '../data/maps/chapter_01_talys.json';
-import dialoguesData from '../data/dialogues/chapter_01_dialogues.json';
+import talysMapRaw from '../data/maps/chapter_01_talys.json';
+import galderMapRaw from '../data/maps/chapter_02_galder.json';
+import testMapRaw from '../data/maps/test_map_01.json';
+import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json';
+import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json';
 import itemsData from '../data/items.json';
 import { defaultTerrainRegistry } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
@@ -14,9 +17,35 @@ import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { saveGameState, loadGameState } from './core/storage/saveLoad';
-import { ExtendedUnitState, initialChapterData } from './core/data/chapterData';
+import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 
-const mapData: MapData = mapDataRaw as MapData;
+const chapterMaps: Record<string, MapData> = {
+  chapter_01: talysMapRaw as MapData,
+  chapter_02: galderMapRaw as MapData,
+  test_chapter_01: testMapRaw as MapData,
+};
+
+interface DialogueLine {
+  speaker: string;
+  avatarUrl: string;
+  text: string;
+}
+
+interface ChapterDialogueData {
+  chapterId: string;
+  opening: DialogueLine[];
+  village_wrys?: DialogueLine[];
+  recruit_darros?: DialogueLine[];
+  recruit_castor?: DialogueLine[];
+  boss_gazzak?: { startCombat: string; death: string };
+  boss_gomer?: { startCombat: string; death: string };
+  ending: DialogueLine[];
+}
+
+const chapterDialogues: Record<string, ChapterDialogueData> = {
+  chapter_01: ch01Dialogues as ChapterDialogueData,
+  chapter_02: ch02Dialogues as ChapterDialogueData,
+};
 
 const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }> = {
   plains: { bg: '#4a7c59', label: 'Đồng bằng', icon: '🌿' },
@@ -32,7 +61,13 @@ const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }
 };
 
 export const App: React.FC = () => {
-  const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(() => structuredClone(initialChapterData.units));
+  const [currentChapterId, setCurrentChapterId] = useState<string>('chapter_01');
+  const currentChapter = chapters[currentChapterId] ?? chapter01Data;
+  const mapData = chapterMaps[currentChapterId] ?? (talysMapRaw as MapData);
+  const currentDialogues = chapterDialogues[currentChapterId] ?? (ch01Dialogues as ChapterDialogueData);
+  const chapterObjective = currentChapter.objective;
+
+  const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(() => structuredClone(currentChapter.units));
   const [turnManager] = useState<TurnManager>(() => new TurnManager(extendedUnits.map((u) => u.unit)));
   const [turnState, setTurnState] = useState(turnManager.getState());
 
@@ -53,6 +88,26 @@ export const App: React.FC = () => {
 
   const syncState = () => {
     setTurnState({ ...turnManager.getState() });
+  };
+
+  const loadChapter = (chapterId: string) => {
+    const targetChapter = chapters[chapterId];
+    if (!targetChapter) return;
+    setCurrentChapterId(chapterId);
+    const newUnits = structuredClone(targetChapter.units);
+    setExtendedUnits(newUnits);
+    turnManager.restoreState({ turnNumber: 1, activePhase: 'player_phase' }, newUnits.map((u) => u.unit));
+    setTurnState(turnManager.getState());
+    setChapterOutcome('ongoing');
+    setShowStoryIntro(true);
+    setPendingMovePos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
+    setStatusNotice(`Đã chuyển sang ${targetChapter.name}`);
+    setTimeout(() => setStatusNotice(null), 3000);
+    setCombatLog([`📜 Bắt đầu ${targetChapter.name}`]);
+    setShowVillageDialogue(false);
+    setVillageVisited(false);
   };
 
   const selectedUnit = turnManager.getSelectedUnit();
@@ -157,8 +212,41 @@ export const App: React.FC = () => {
         setExtendedUnits([...extendedUnits]);
         syncState();
 
-        if (x === 3 && y === 2 && !villageVisited) {
+        // Chương 1: Thăm làng Wrys tại ô (3, 2)
+        if (currentChapterId === 'chapter_01' && x === 3 && y === 2 && !villageVisited) {
           setShowVillageDialogue(true);
+        }
+
+        // Chương 2: Marth chiêu mộ Darros (đứng cạnh Darros trong phạm vi 1 ô)
+        if (currentChapterId === 'chapter_02' && selectedExtUnit.unit.id === 'marth') {
+          const darros = extendedUnits.find((u) => u.unit.id === 'darros' && u.unit.faction === 'enemy' && !u.unit.isDead);
+          if (darros && getManhattanDistance({ x, y }, darros.unit.position) <= 1) {
+            darros.unit = { ...darros.unit, faction: 'player', name: 'Darros' };
+            darros.aiRole = undefined;
+            setStatusNotice('🤝 Darros đã hoàn lương và gia nhập nghĩa quân Altea!');
+            setCombatLog((prev) => [
+              '🗣️ Darros: "Tôi đã chán ngấy cuộc đời cướp bóc này rồi... Xin hãy cho tôi gia nhập nghĩa quân Altea!"',
+              '🗣️ Marth: "Ai cũng xứng đáng có cơ hội thứ hai. Hãy kề vai sát cánh cùng chúng ta, Darros!"',
+              '🌟 Thủy thủ Darros chính thức gia nhập nghĩa quân Altea!',
+              ...prev,
+            ]);
+          }
+        }
+
+        // Chương 2: Caeda chiêu mộ Castor (đứng cạnh Castor trong phạm vi 1 ô)
+        if (currentChapterId === 'chapter_02' && selectedExtUnit.unit.id === 'caeda') {
+          const castor = extendedUnits.find((u) => u.unit.id === 'castor' && u.unit.faction === 'enemy' && !u.unit.isDead);
+          if (castor && getManhattanDistance({ x, y }, castor.unit.position) <= 1) {
+            castor.unit = { ...castor.unit, faction: 'player', name: 'Castor' };
+            castor.aiRole = undefined;
+            setStatusNotice('🤝 Caeda đã thuyết phục thành công Castor gia nhập nghĩa quân!');
+            setCombatLog((prev) => [
+              '🗣️ Castor: "Công chúa Caeda tha mạng! Tôi cần tiền thuốc men cho mẹ già..."',
+              '🗣️ Caeda: "Ta sẽ lo chu toàn cho mẹ chàng. Hãy đem tài thiện xạ giúp sức cho Hoàng tử Marth!"',
+              '🌟 Thợ săn Castor chính thức gia nhập nghĩa quân Altea!',
+              ...prev,
+            ]);
+          }
         }
       }
       return;
@@ -196,8 +284,10 @@ export const App: React.FC = () => {
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
-    if (selectedTarget.unit.id === 'gazzak') {
-      logs.push(`🗣️ Gazzak: "${dialoguesData.boss_gazzak.startCombat}"`);
+    if (selectedTarget.unit.id === 'gazzak' && currentDialogues.boss_gazzak) {
+      logs.push(`🗣️ Gazzak: "${currentDialogues.boss_gazzak.startCombat}"`);
+    } else if (selectedTarget.unit.id === 'gomer' && currentDialogues.boss_gomer) {
+      logs.push(`🗣️ Gomer: "${currentDialogues.boss_gomer.startCombat}"`);
     }
     logs.push(`⚔️ GIAO TRANH: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
     for (const ev of result.events) {
@@ -214,8 +304,10 @@ export const App: React.FC = () => {
     if (result.unitDefeatedId) {
       const deadName = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
       logs.push(`💀 ${deadName} đã bị hạ gục!`);
-      if (result.unitDefeatedId === 'gazzak') {
-        logs.push(`🗣️ Gazzak trăn trối: "${dialoguesData.boss_gazzak.death}"`);
+      if (result.unitDefeatedId === 'gazzak' && currentDialogues.boss_gazzak) {
+        logs.push(`🗣️ Gazzak trăn trối: "${currentDialogues.boss_gazzak.death}"`);
+      } else if (result.unitDefeatedId === 'gomer' && currentDialogues.boss_gomer) {
+        logs.push(`🗣️ Gomer trăn trối: "${currentDialogues.boss_gomer.death}"`);
       }
     }
 
@@ -392,15 +484,13 @@ export const App: React.FC = () => {
     syncState();
   };
 
-  const chapterObjective = initialChapterData.objective;
-
   const handleSave = async () => {
     if (pendingMovePos || combatForecast || isProcessingAI || turnState.activePhase !== 'player_phase') {
       setStatusNotice('Hãy hoàn tất hành động trước khi lưu.');
       return;
     }
     const ok = await saveGameState({
-      chapterId: initialChapterData.id,
+      chapterId: currentChapterId,
       turnState: { turnNumber: turnState.turnNumber, activePhase: turnState.activePhase },
       extendedUnits,
       rngSeed: defaultRNG.getSeed(),
@@ -419,6 +509,9 @@ export const App: React.FC = () => {
   const handleLoad = async () => {
     const data = await loadGameState();
     if (data) {
+      if (data.chapterId !== currentChapterId) {
+        setCurrentChapterId(data.chapterId);
+      }
       setExtendedUnits(data.extendedUnits);
       turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
       defaultRNG.setSeed(data.rngSeed);
@@ -438,7 +531,7 @@ export const App: React.FC = () => {
   };
 
   const handleRestartChapter = () => {
-    window.location.reload();
+    loadChapter(currentChapterId);
   };
 
   const handleEndTurn = () => {
@@ -475,11 +568,31 @@ export const App: React.FC = () => {
         }}
       >
         <div>
-          <h1 style={{ margin: 0, fontSize: '20px', color: '#64B5F6' }}>
-            Water Emblem - Mystery of Nothing
-          </h1>
-          <span style={{ fontSize: '13px', color: '#aaa' }}>
-            Chương 1: Đảo Talys (Mục tiêu: {chapterObjective.descriptionVi})
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <h1 style={{ margin: 0, fontSize: '20px', color: '#64B5F6' }}>
+              Water Emblem - Mystery of Nothing
+            </h1>
+            <select
+              value={currentChapterId}
+              onChange={(e) => loadChapter(e.target.value)}
+              style={{
+                backgroundColor: '#1e293b',
+                color: '#38bdf8',
+                border: '1px solid #0284c7',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="chapter_01">🗺️ Chương 1: Bờ biển Talys (30x13)</option>
+              <option value="chapter_02">🗺️ Chương 2: Hải tặc xứ Galder (30x13)</option>
+              <option value="test_chapter_01">🧪 Bản đồ thử nghiệm (8x8)</option>
+            </select>
+          </div>
+          <span style={{ fontSize: '13px', color: '#aaa', marginTop: '4px', display: 'block' }}>
+            {currentChapter.name} (Mục tiêu: {chapterObjective.descriptionVi})
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -1074,10 +1187,10 @@ export const App: React.FC = () => {
             }}
           >
             <h2 style={{ margin: '0 0 16px 0', color: '#60a5fa' }}>
-              📜 {initialChapterData.name}
+              📜 {currentChapter.name}
             </h2>
             <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '340px', overflowY: 'auto' }}>
-              {dialoguesData.opening.map((line, idx) => (
+              {currentDialogues.opening.map((line, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
                   <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #3b82f6', flexShrink: 0 }} />
                   <div>
@@ -1114,7 +1227,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Village Visit Dialogue Modal (Wrys Recruitment) */}
-      {showVillageDialogue && (
+      {showVillageDialogue && currentDialogues.village_wrys && (
         <div
           style={{
             position: 'fixed',
@@ -1140,7 +1253,7 @@ export const App: React.FC = () => {
               🏡 Thăm Làng Talys - Chiêu mộ Tu sĩ Wrys
             </h2>
             <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {dialoguesData.village_wrys.map((line, idx) => (
+              {currentDialogues.village_wrys.map((line, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
                   <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #10b981', flexShrink: 0 }} />
                   <div>
@@ -1201,7 +1314,7 @@ export const App: React.FC = () => {
               🏆 CHIẾN THẮNG KHẢI HOÀN! (STAGE CLEAR)
             </h2>
             <div style={{ maxHeight: '360px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
-              {dialoguesData.ending.map((line, idx) => (
+              {currentDialogues.ending.map((line, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#052e16', padding: '10px', borderRadius: '8px' }}>
                   <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #22c55e', flexShrink: 0 }} />
                   <div>
@@ -1211,22 +1324,41 @@ export const App: React.FC = () => {
                 </div>
               ))}
             </div>
-            <button
-              onClick={handleRestartChapter}
-              style={{
-                width: '100%',
-                padding: '12px 24px',
-                backgroundColor: '#22c55e',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#052e16',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                cursor: 'pointer',
-              }}
-            >
-              🔄 Tiếp tục / Chơi lại chương
-            </button>
+            {currentChapterId === 'chapter_01' ? (
+              <button
+                onClick={() => loadChapter('chapter_02')}
+                style={{
+                  width: '100%',
+                  padding: '12px 24px',
+                  backgroundColor: '#22c55e',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#052e16',
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                }}
+              >
+                ⚔️ Tiến quân sang Chương 2: Hải tặc xứ Galder ➔
+              </button>
+            ) : (
+              <button
+                onClick={handleRestartChapter}
+                style={{
+                  width: '100%',
+                  padding: '12px 24px',
+                  backgroundColor: '#22c55e',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#052e16',
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                }}
+              >
+                🔄 Tiếp tục / Chơi lại chương
+              </button>
+            )}
           </div>
         </div>
       )}

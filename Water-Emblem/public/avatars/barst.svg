@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#14532d"/>
+  <!-- Headband White -->
+  <path d="M 32 38 L 88 38 L 86 46 L 34 46 Z" fill="#f8fafc"/>
+  <!-- Barst Reddish Brown Hair -->
+  <path d="M 30 42 C 24 16 44 8 60 8 C 76 8 96 16 90 42 Z" fill="#991b1b"/>
+  <!-- Clothes / Vest -->
+  <path d="M 28 115 L 36 82 L 84 82 L 92 115 Z" fill="#1e293b"/>
+  <path d="M 46 82 L 60 115 L 74 82 Z" fill="#fcd34d"/>
+  <!-- Face -->
+  <path d="M 40 44 Q 40 78 60 84 Q 80 78 80 44 Z" fill="#fde68a"/>
+  <!-- Eyes Confident -->
+  <ellipse cx="50" cy="54" rx="4" ry="4" fill="#1e1b4b"/>
+  <ellipse cx="70" cy="54" rx="4" ry="4" fill="#1e1b4b"/>
+  <path d="M 54 71 Q 60 76 66 71" stroke="#991b1b" stroke-width="2.5" fill="none"/>
+</svg>
