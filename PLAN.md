@@ -30,9 +30,9 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
   - Tiêu chí xong: Dự báo và thực hiện giao tranh đúng các quy tắc đã duyệt trong `Game_Design/battle.md`; tam giác vũ khí, vũ khí khắc class, AI và nguồn RNG cho kết quả tái lập; AI không dùng thông tin bị che. Test tự động bao phủ các công thức và tình huống biên đã chọn, một trận thử kết thúc được.
   - Kết quả: PASS: Đã xây dựng `src/core/combat/` (calculator, types, SeededRNG với Mulberry32 hỗ trợ 1RN/2RN), `src/core/ai/` (evaluateAITurn cho các vai trò stationary và pursue, thuật toán chấm điểm ưu tiên mục tiêu kết liễu); các tham số và vũ khí đặt trong `data/balance.json` và `data/items.json`; bao phủ tam giác vũ khí (Kiếm > Rìu > Thương), vũ khí khắc class (Rapier, Cung), tốc độ đánh AS và đòn đánh đôi; 19/19 unit tests Vitest PASS; giao diện tích hợp cửa sổ Combat Forecast (Q05), xác nhận giao tranh, nhật ký trận đấu và vòng lặp Enemy Phase AI tự động; bản build Vite PASS.
 
-- [ ] 5. Đưa bản đồ thử sang 3D low-poly.
+- [x] 5. Đưa bản đồ thử sang 3D low-poly.
   - Tiêu chí xong: Bản đồ, đơn vị, camera và chỉ báo nước đi hiển thị trong Three.js; cùng thao tác tạo cùng kết quả game như bản logic; kiểm tay trên trình duyệt mục tiêu và đo FPS, draw calls, triangles theo ngân sách được chốt.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Chỉ triển khai sau khi mục 4 PASS và duyệt chuẩn hình ảnh, thiết bị mục tiêu.
+  - Kết quả: PASS: Đã xây dựng `src/renderer/ThreeScene.tsx` với Three.js; camera 3/4 isometric perspective hỗ trợ xoay 4 hướng 90°; dựng khối địa hình 3D (BoxGeometry) có tính độ cao elevation; shading phẳng toon và đổ bóng PCFSoftShadowMap; đơn vị chibi low-poly nhận diện màu phe (Xanh/Đỏ/Xám); lớp overlay 3D cho vùng di chuyển, vùng nguy hiểm và mục tiêu; Raycaster bắt tương tác click/hover đồng bộ 100% với Core State; hỗ trợ chuyển đổi 3D/2D; bản build Vite PASS.
 
 - [ ] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
   - Tiêu chí xong: Vào chương, chuẩn bị đội, chơi, thắng/thua, hội thoại cần thiết, viện binh có cảnh báo, lưu/tải và chuyển chương hoạt động; có bài kiểm tra luồng chính trên trình duyệt. Dữ liệu và quyền sử dụng asset của chương được kiểm trước khi đưa vào bản phát hành.

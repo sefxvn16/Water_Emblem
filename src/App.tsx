@@ -9,12 +9,13 @@ import { ItemDefinition, UnitCombatStats, CombatForecast } from './core/combat/t
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn, AIRole } from './core/ai/decision';
+import { ThreeScene } from './renderer/ThreeScene';
 
 const mapData: MapData = mapDataRaw as MapData;
 const itemsList = itemsData.items as ItemDefinition[];
 const getItem = (id: string): ItemDefinition => itemsList.find((i) => i.id === id) || itemsList[0]!;
 
-interface ExtendedUnitState {
+export interface ExtendedUnitState {
   unit: GridUnit;
   stats: UnitCombatStats;
   weapon: ItemDefinition;
@@ -97,6 +98,7 @@ export const App: React.FC = () => {
   const [turnState, setTurnState] = useState(turnManager.getState());
 
   // Giao tranh & Hành động
+  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [originalPos, setOriginalPos] = useState<Position | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
@@ -160,6 +162,10 @@ export const App: React.FC = () => {
       return dist >= selectedExtUnit.weapon.minRange && dist <= selectedExtUnit.weapon.maxRange;
     });
   }, [selectedExtUnit, pendingMovePos, extendedUnits]);
+
+  const attackTargetKeys = useMemo(() => {
+    return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
+  }, [attackableTargets]);
 
   // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
@@ -405,6 +411,40 @@ export const App: React.FC = () => {
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* View mode toggle */}
+          <div style={{ display: 'flex', backgroundColor: '#1e1e1e', borderRadius: '6px', padding: '2px', border: '1px solid #444' }}>
+            <button
+              onClick={() => setViewMode('3d')}
+              style={{
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: viewMode === '3d' ? '#1976D2' : 'transparent',
+                color: '#fff',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              🎮 3D View
+            </button>
+            <button
+              onClick={() => setViewMode('2d')}
+              style={{
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: '4px',
+                backgroundColor: viewMode === '2d' ? '#1976D2' : 'transparent',
+                color: '#fff',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+            >
+              🗺️ 2D Grid
+            </button>
+          </div>
+
           <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
             Turn: <span style={{ color: '#FFD54F' }}>{turnState.turnNumber}</span>
           </div>
@@ -449,145 +489,158 @@ export const App: React.FC = () => {
             alignItems: 'center',
             backgroundColor: '#111',
             borderRadius: '8px',
-            padding: '20px',
-            overflow: 'auto',
+            overflow: 'hidden',
+            position: 'relative',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${mapData.width}, 64px)`,
-              gridTemplateRows: `repeat(${mapData.height}, 64px)`,
-              gap: '2px',
-              backgroundColor: '#000',
-              padding: '4px',
-              borderRadius: '4px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-            }}
-          >
-            {mapData.grid.map((row, y) =>
-              row.map((terrainId, x) => {
-                const key = `${x},${y}`;
-                const terrain = TERRAIN_COLORS[terrainId] || { bg: '#333', label: terrainId, icon: '' };
-                const isReachable = reachableKeys.has(key);
-                const isDanger = dangerZoneKeys.has(key);
-                const extUnit = extendedUnits.find(
-                  (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
-                );
-                const isSelected = selectedUnit && selectedUnit.position.x === x && selectedUnit.position.y === y;
-                const isAttackTarget = attackableTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y);
+          {viewMode === '3d' ? (
+            <ThreeScene
+              mapData={mapData}
+              units={extendedUnits}
+              reachableKeys={reachableKeys}
+              dangerZoneKeys={dangerZoneKeys}
+              selectedPos={pendingMovePos || (selectedExtUnit ? selectedExtUnit.unit.position : null)}
+              attackTargetKeys={attackTargetKeys}
+              onTileClick={handleTileClick}
+              onTileHover={(x, y) => setHoveredTile({ x, y })}
+            />
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${mapData.width}, 64px)`,
+                gridTemplateRows: `repeat(${mapData.height}, 64px)`,
+                gap: '2px',
+                backgroundColor: '#000',
+                padding: '4px',
+                borderRadius: '4px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+              }}
+            >
+              {mapData.grid.map((row, y) =>
+                row.map((terrainId, x) => {
+                  const key = `${x},${y}`;
+                  const terrain = TERRAIN_COLORS[terrainId] || { bg: '#333', label: terrainId, icon: '' };
+                  const isReachable = reachableKeys.has(key);
+                  const isDanger = dangerZoneKeys.has(key);
+                  const extUnit = extendedUnits.find(
+                    (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
+                  );
+                  const isSelected = selectedUnit && selectedUnit.position.x === x && selectedUnit.position.y === y;
+                  const isAttackTarget = attackableTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y);
 
-                return (
-                  <div
-                    key={key}
-                    onClick={() => handleTileClick(x, y)}
-                    onMouseEnter={() => setHoveredTile({ x, y })}
-                    style={{
-                      position: 'relative',
-                      width: '64px',
-                      height: '64px',
-                      backgroundColor: terrain.bg,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                      border: isSelected
-                        ? '2px solid #FFEB3B'
-                        : isAttackTarget
-                        ? '2px solid #FF1744'
-                        : '1px solid rgba(255,255,255,0.05)',
-                      boxSizing: 'border-box',
-                      transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {/* Danger zone overlay */}
-                    {isDanger && !isReachable && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          backgroundColor: 'rgba(239, 83, 80, 0.25)',
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    )}
-
-                    {/* Reachable tile overlay */}
-                    {isReachable && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          backgroundColor: 'rgba(33, 150, 243, 0.45)',
-                          border: '1px dashed #90CAF9',
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    )}
-
-                    {/* Attack target indicator */}
-                    {isAttackTarget && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          backgroundColor: 'rgba(255, 23, 68, 0.35)',
-                          pointerEvents: 'none',
-                        }}
-                      />
-                    )}
-
-                    <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
-
-                    {/* Unit display */}
-                    {extUnit && (
-                      <div
-                        style={{
-                          zIndex: 2,
-                          width: '46px',
-                          height: '46px',
-                          borderRadius: '50%',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          fontSize: '11px',
-                          fontWeight: 'bold',
-                          color: '#fff',
-                          backgroundColor: extUnit.unit.hasActed
-                            ? '#616161'
-                            : extUnit.unit.faction === 'player'
-                            ? '#1E88E5'
-                            : '#E53935',
-                          border: isSelected ? '2px solid #FFEB3B' : '2px solid rgba(0,0,0,0.4)',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                        }}
-                      >
-                        <div>{extUnit.unit.name.substring(0, 3)}</div>
-                        <div style={{ fontSize: '9px', opacity: 0.9 }}>
-                          HP:{extUnit.stats.hp}
-                        </div>
-                      </div>
-                    )}
-
-                    <span
+                  return (
+                    <div
+                      key={key}
+                      onClick={() => handleTileClick(x, y)}
+                      onMouseEnter={() => setHoveredTile({ x, y })}
                       style={{
-                        position: 'absolute',
-                        bottom: '2px',
-                        right: '3px',
-                        fontSize: '9px',
-                        color: 'rgba(255,255,255,0.4)',
-                        zIndex: 1,
+                        position: 'relative',
+                        width: '64px',
+                        height: '64px',
+                        backgroundColor: terrain.bg,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        border: isSelected
+                          ? '2px solid #FFEB3B'
+                          : isAttackTarget
+                          ? '2px solid #FF1744'
+                          : '1px solid rgba(255,255,255,0.05)',
+                        boxSizing: 'border-box',
+                        transition: 'all 0.15s ease',
                       }}
                     >
-                      {x},{y}
-                    </span>
-                  </div>
-                );
-              })
-            )}
-          </div>
+                      {/* Danger zone overlay */}
+                      {isDanger && !isReachable && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'rgba(239, 83, 80, 0.25)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+                      )}
+
+                      {/* Reachable tile overlay */}
+                      {isReachable && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'rgba(33, 150, 243, 0.45)',
+                            border: '1px dashed #90CAF9',
+                            pointerEvents: 'none',
+                          }}
+                        />
+                      )}
+
+                      {/* Attack target indicator */}
+                      {isAttackTarget && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            backgroundColor: 'rgba(255, 23, 68, 0.35)',
+                            pointerEvents: 'none',
+                          }}
+                        />
+                      )}
+
+                      <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
+
+                      {/* Unit display */}
+                      {extUnit && (
+                        <div
+                          style={{
+                            zIndex: 2,
+                            width: '46px',
+                            height: '46px',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontSize: '11px',
+                            fontWeight: 'bold',
+                            color: '#fff',
+                            backgroundColor: extUnit.unit.hasActed
+                              ? '#616161'
+                              : extUnit.unit.faction === 'player'
+                              ? '#1E88E5'
+                              : '#E53935',
+                            border: isSelected ? '2px solid #FFEB3B' : '2px solid rgba(0,0,0,0.4)',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+                          }}
+                        >
+                          <div>{extUnit.unit.name.substring(0, 3)}</div>
+                          <div style={{ fontSize: '9px', opacity: 0.9 }}>
+                            HP:{extUnit.stats.hp}
+                          </div>
+                        </div>
+                      )}
+
+                      <span
+                        style={{
+                          position: 'absolute',
+                          bottom: '2px',
+                          right: '3px',
+                          fontSize: '9px',
+                          color: 'rgba(255,255,255,0.4)',
+                          zIndex: 1,
+                        }}
+                      >
+                        {x},{y}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
 
         {/* Side Panel: Combat Forecast, Actions & Inspector */}
