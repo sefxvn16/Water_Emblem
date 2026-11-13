@@ -46,5 +46,8 @@ ehthumbs.db
 # Temporary files & cache
 .eslintcache
 .cache/
+.vite/
+test-results/
+playwright-report/
 tmp/
 temp/

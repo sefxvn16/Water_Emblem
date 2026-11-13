@@ -47,7 +47,7 @@ describe('save validation', () => {
     expect(isGameSnapshot(tamperedWeapon)).toBe(false);
 
     const tamperedMovement = makeSnapshot();
-    tamperedMovement.extendedUnits[0]!.unit.moveType = 'teleport' as typeof tamperedMovement.extendedUnits[0]['unit']['moveType'];
+    Object.assign(tamperedMovement.extendedUnits[0]!.unit, { moveType: 'teleport' });
     expect(isGameSnapshot(tamperedMovement)).toBe(false);
   });
 });

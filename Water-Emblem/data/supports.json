@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "activationRange": 3,
+  "relationships": [
+    {
+      "supporterId": "caeda",
+      "supportedId": "marth",
+      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 5 }
+    },
+    {
+      "supporterId": "marth",
+      "supportedId": "caeda",
+      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 5 }
+    },
+    {
+      "supporterId": "cain",
+      "supportedId": "abel",
+      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 0 }
+    },
+    {
+      "supporterId": "abel",
+      "supportedId": "cain",
+      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 0 }
+    },
+    {
+      "supporterId": "jagen",
+      "supportedId": "marth",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 5 }
+    },
+    {
+      "supporterId": "draug",
+      "supportedId": "gordin",
+      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+    },
+    {
+      "supporterId": "ogma",
+      "supportedId": "caeda",
+      "bonus": { "hit": 10, "avoid": 5, "crit": 5, "dodge": 0 }
+    }
+  ]
+}

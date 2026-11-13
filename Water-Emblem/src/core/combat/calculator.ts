@@ -11,6 +11,7 @@ import {
 import { GridUnit, Position } from '../grid/types';
 import { SeededRNG } from './rng';
 import { TerrainRegistry } from '../grid/terrain';
+import { calculateSupportBonus } from './support';
 
 export interface TriangleResult {
   readonly damage: number;
@@ -66,7 +67,8 @@ export function calculateCombatSide(
   distance: number,
   terrainRegistry: TerrainRegistry,
   _terrainId: string,
-  opponentTerrainId: string
+  opponentTerrainId: string,
+  allUnits?: readonly GridUnit[]
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -101,6 +103,10 @@ export function calculateCombatSide(
     ? getWeaponTriangleModifier(weapon.type, opponentWeapon.type)
     : balanceConfig.triangleModifiers.neutral;
 
+  // Tính Support Bonuses
+  const unitSupport = allUnits ? calculateSupportBonus(unit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
+  const opponentSupport = allUnits ? calculateSupportBonus(opponentUnit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
+
   // Tính Effective Might
   const isEffective = isWeaponEffective(weapon, opponentUnit);
   const effectiveMight = isEffective
@@ -114,13 +120,13 @@ export function calculateCombatSide(
   const damage = Math.max(0, attackPower - defense);
 
   // Tính Hit
-  const accuracy = weapon.hit + 2 * stats.dex + Math.floor(stats.lck / 2) + triangle.hit;
+  const accuracy = weapon.hit + 2 * stats.dex + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit;
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
-  const opponentAvoid = 2 * opponentAs + opponentStats.lck + terrainRegistry.getAvoidBonus(opponentTerrainId);
+  const opponentAvoid = 2 * opponentAs + opponentStats.lck + terrainRegistry.getAvoidBonus(opponentTerrainId) + opponentSupport.avoid;
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.dex / 2) - opponentStats.lck;
+  const rawCrit = weapon.crit + Math.floor(stats.dex / 2) + unitSupport.crit - (opponentStats.lck + opponentSupport.dodge);
   const critRate = Math.min(100, Math.max(0, rawCrit));
 
   const as = calculateAttackSpeed(stats, weapon);
@@ -148,7 +154,8 @@ export function calculateCombatForecast(
   distance: number,
   terrainRegistry: TerrainRegistry,
   attackerTerrainId: string,
-  defenderTerrainId: string
+  defenderTerrainId: string,
+  allUnits?: readonly GridUnit[]
 ): CombatForecast {
   let attackerSide = calculateCombatSide(
     attackerUnit,
@@ -160,7 +167,8 @@ export function calculateCombatForecast(
     distance,
     terrainRegistry,
     attackerTerrainId,
-    defenderTerrainId
+    defenderTerrainId,
+    allUnits
   );
 
   let defenderSide = calculateCombatSide(
@@ -173,7 +181,8 @@ export function calculateCombatForecast(
     distance,
     terrainRegistry,
     defenderTerrainId,
-    attackerTerrainId
+    attackerTerrainId,
+    allUnits
   );
 
   // Đánh 2 lần (Double Attack)

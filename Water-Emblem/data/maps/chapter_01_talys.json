@@ -1,0 +1,36 @@
+{
+  "id": "chapter_01_talys",
+  "name": "Chương 1: Đảo Talys (Marth Embarks)",
+  "width": 30,
+  "height": 13,
+  "grid": [
+    ["sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["sea", "sea", "plains", "plains", "forest", "plains", "plains", "mountain", "mountain", "peak", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "sea", "sea", "sea", "sea"],
+    ["sea", "plains", "plains", "fort", "plains", "plains", "forest", "mountain", "peak", "peak", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "sea", "sea", "sea"],
+    ["sea", "plains", "forest", "plains", "plains", "forest", "mountain", "mountain", "peak", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "plains", "plains", "forest", "mountain", "mountain", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "sea", "plains", "mountain", "mountain", "sea", "sea", "sea", "sea", "sea", "river", "bridge", "river", "river", "river", "sea", "sea", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "plains", "plains", "mountain", "sea", "sea", "sea", "sea", "sea", "river", "river", "plains", "river", "river", "river", "sea", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "river", "river", "plains", "plains", "plains", "bridge", "river", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "plains", "forest", "plains", "plains", "plains", "sea", "sea", "river", "river", "plains", "plains", "forest", "plains", "plains", "river", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "plains", "plains", "gate", "plains", "plains", "plains", "river", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "fort", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "plains", "fort", "plains", "plains", "river", "river", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "sea", "plains", "plains", "river", "river", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea"],
+    ["sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"]
+  ],
+  "elevations": [
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
+    [-1, -1,  0,  0,  0,  0,  0,  1,  1,  2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  0, -1, -1, -1, -1],
+    [-1,  0,  0,  0,  0,  0,  0,  1,  2,  2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1],
+    [-1,  0,  0,  0,  0,  0,  1,  1,  2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1, -1,  0,  0,  0,  1,  1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1, -1, -1,  0,  1,  1, -1, -1, -1, -1, -1, -1,  0, -1, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1, -1,  0,  0,  1, -1, -1, -1, -1, -1, -1, -1,  0, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1,  0,  0,  0,  0, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1,  0,  0,  0,  0,  0, -1, -1, -1, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1,  0,  0,  1,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1, -1,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1, -1, -1,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1],
+    [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+  ]
+}

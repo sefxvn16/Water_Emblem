@@ -1,11 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import mapDataRaw from '../data/maps/test_map_01.json';
+import mapDataRaw from '../data/maps/chapter_01_talys.json';
+import dialoguesData from '../data/dialogues/chapter_01_dialogues.json';
+import itemsData from '../data/items.json';
 import { defaultTerrainRegistry } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
-import { CombatForecast } from './core/combat/types';
+import { CombatForecast, ItemDefinition } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
+import { calculateSupportBonus } from './core/combat/support';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
@@ -36,6 +39,8 @@ export const App: React.FC = () => {
   // Giao tranh & Hành động
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [showStoryIntro, setShowStoryIntro] = useState<boolean>(true);
+  const [showVillageDialogue, setShowVillageDialogue] = useState<boolean>(false);
+  const [villageVisited, setVillageVisited] = useState<boolean>(false);
   const [chapterOutcome, setChapterOutcome] = useState<'ongoing' | 'victory' | 'defeat'>('ongoing');
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
@@ -135,7 +140,8 @@ export const App: React.FC = () => {
           dist,
           defaultTerrainRegistry,
           attackerTerrain,
-          defenderTerrain
+          defenderTerrain,
+          extendedUnits.map((u) => u.unit)
         );
         setCombatForecast(forecast);
         return;
@@ -150,6 +156,10 @@ export const App: React.FC = () => {
         setPendingMovePos({ x, y });
         setExtendedUnits([...extendedUnits]);
         syncState();
+
+        if (x === 3 && y === 2 && !villageVisited) {
+          setShowVillageDialogue(true);
+        }
       }
       return;
     }
@@ -186,6 +196,9 @@ export const App: React.FC = () => {
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
+    if (selectedTarget.unit.id === 'gazzak') {
+      logs.push(`🗣️ Gazzak: "${dialoguesData.boss_gazzak.startCombat}"`);
+    }
     logs.push(`⚔️ GIAO TRANH: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
     for (const ev of result.events) {
       const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Ai đó';
@@ -201,6 +214,9 @@ export const App: React.FC = () => {
     if (result.unitDefeatedId) {
       const deadName = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
       logs.push(`💀 ${deadName} đã bị hạ gục!`);
+      if (result.unitDefeatedId === 'gazzak') {
+        logs.push(`🗣️ Gazzak trăn trối: "${dialoguesData.boss_gazzak.death}"`);
+      }
     }
 
     setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
@@ -238,8 +254,53 @@ export const App: React.FC = () => {
     syncState();
   };
 
+  // Chiêu mộ Wrys khi thăm làng
+  const handleRecruitWrys = () => {
+    const healStaff = itemsData.items.find((i) => i.id === 'heal_staff') as ItemDefinition;
+    const wrysExt: ExtendedUnitState = {
+      unit: {
+        id: 'wrys',
+        name: 'Wrys',
+        faction: 'player',
+        position: { x: 3, y: 3 },
+        mov: 5,
+        moveType: 'foot',
+        hasActed: true,
+        isDead: false,
+      },
+      stats: {
+        hp: 16,
+        maxHp: 16,
+        str: 1,
+        mag: 2,
+        dex: 5,
+        spd: 6,
+        lck: 2,
+        def: 3,
+        res: 6,
+      },
+      weapon: healStaff,
+      title: 'Nhân sĩ làng Talys',
+      avatarUrl: '/avatars/wrys.svg',
+      growths: { hp: 40, str: 0, mag: 20, dex: 20, spd: 20, lck: 40, def: 5, res: 45 },
+    };
+
+    const nextUnits = [...extendedUnits, wrysExt];
+    setExtendedUnits(nextUnits);
+    turnManager.replaceUnits(nextUnits.map((u) => u.unit));
+    setVillageVisited(true);
+    setShowVillageDialogue(false);
+    setCombatLog((prev) => [
+      '🌟 Tu sĩ Wrys đã gia nhập nghĩa quân Altea và mang theo Trượng trị liệu (Heal)!',
+      ...prev,
+    ]);
+  };
+
   // Xác nhận Chờ
   const handleConfirmWait = () => {
+    if (pendingMovePos && pendingMovePos.x === 3 && pendingMovePos.y === 2 && !villageVisited) {
+      setShowVillageDialogue(true);
+    }
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
     setSelectedTarget(null);
@@ -911,6 +972,20 @@ export const App: React.FC = () => {
                           </div>
                         </div>
                       )}
+
+                      {/* Support Relationship Bonus */}
+                      {u.unit.faction === 'player' && (() => {
+                        const sup = calculateSupportBonus(u.unit, extendedUnits.map((item) => item.unit));
+                        if (sup.hit > 0 || sup.avoid > 0 || sup.crit > 0) {
+                          return (
+                            <div style={{ backgroundColor: '#1e3a8a', padding: '6px 8px', borderRadius: '4px', marginTop: '6px', fontSize: '11px', color: '#bfdbfe', border: '1px solid #3b82f6' }}>
+                              💙 <strong>Chi viện đồng đội (Support):</strong>
+                              <div style={{ marginTop: '2px' }}>+{sup.hit}% Hit | +{sup.avoid}% Né | +{sup.crit}% Bạo kích</div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })()}
                     </div>
                   </div>
                 );
@@ -994,31 +1069,23 @@ export const App: React.FC = () => {
               border: '2px solid #3b82f6',
               borderRadius: '12px',
               padding: '24px',
-              maxWidth: '520px',
+              maxWidth: '540px',
               boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
             }}
           >
             <h2 style={{ margin: '0 0 16px 0', color: '#60a5fa' }}>
               📜 {initialChapterData.name}
             </h2>
-            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {/* Marth line */}
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
-                <img src="/avatars/marth.svg" alt="Marth" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #3b82f6', flexShrink: 0 }} />
-                <div>
-                  <strong style={{ color: '#60a5fa' }}>Marth:</strong>
-                  <div>"{initialChapterData.introLines[0]?.text}"</div>
+            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '340px', overflowY: 'auto' }}>
+              {dialoguesData.opening.map((line, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
+                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #3b82f6', flexShrink: 0 }} />
+                  <div>
+                    <strong style={{ color: '#60a5fa' }}>{line.speaker}:</strong>
+                    <div>"{line.text}"</div>
+                  </div>
                 </div>
-              </div>
-
-              {/* Jagen line */}
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
-                <img src="/avatars/jagen.svg" alt="Jagen" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #94a3b8', flexShrink: 0 }} />
-                <div>
-                  <strong style={{ color: '#cbd5e1' }}>Jagen:</strong>
-                  <div>"{initialChapterData.introLines[1]?.text}"</div>
-                </div>
-              </div>
+              ))}
 
               <div style={{ backgroundColor: '#1e293b', padding: '10px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
                 <strong style={{ color: '#fbbf24' }}>Mục tiêu chiến thắng:</strong> {chapterObjective.descriptionVi}.
@@ -1046,8 +1113,8 @@ export const App: React.FC = () => {
         </div>
       )}
 
-      {/* Victory Modal */}
-      {chapterOutcome === 'victory' && (
+      {/* Village Visit Dialogue Modal (Wrys Recruitment) */}
+      {showVillageDialogue && (
         <div
           style={{
             position: 'fixed',
@@ -1061,26 +1128,93 @@ export const App: React.FC = () => {
         >
           <div
             style={{
-              backgroundColor: '#14532d',
-              border: '2px solid #22c55e',
+              backgroundColor: '#1e293b',
+              border: '2px solid #10b981',
               borderRadius: '12px',
-              padding: '28px',
-              maxWidth: '460px',
-              textAlign: 'center',
+              padding: '24px',
+              maxWidth: '540px',
               boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
             }}
           >
-            <h2 style={{ margin: '0 0 10px 0', color: '#86efac', fontSize: '24px' }}>
-              🏆 CHIẾN THẮNG! (STAGE CLEAR)
+            <h2 style={{ margin: '0 0 16px 0', color: '#34d399' }}>
+              🏡 Thăm Làng Talys - Chiêu mộ Tu sĩ Wrys
             </h2>
-            <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#dcfce7', marginBottom: '20px' }}>
-              Bạn đã hoàn thành mục tiêu: {chapterObjective.descriptionVi}.
-              <br />
-              Chương 1 của Water Emblem đã hoàn thành xuất sắc!
-            </p>
+            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {dialoguesData.village_wrys.map((line, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
+                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #10b981', flexShrink: 0 }} />
+                  <div>
+                    <strong style={{ color: '#34d399' }}>{line.speaker}:</strong>
+                    <div>"{line.text}"</div>
+                  </div>
+                </div>
+              ))}
+              <div style={{ backgroundColor: '#064e3b', padding: '10px', borderRadius: '6px', color: '#a7f3d0' }}>
+                🎁 <strong>Nhận được:</strong> Nhân vật mới [Wrys - Tu sĩ] và [Trượng Trị Liệu - Heal]!
+              </div>
+            </div>
+            <button
+              onClick={handleRecruitWrys}
+              style={{
+                width: '100%',
+                padding: '12px',
+                backgroundColor: '#059669',
+                border: 'none',
+                borderRadius: '6px',
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '15px',
+                cursor: 'pointer',
+              }}
+            >
+              🙏 Mời Tu sĩ Wrys gia nhập nghĩa quân
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Victory Modal with Ending Story Cutscene */}
+      {chapterOutcome === 'victory' && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.88)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0f291e',
+              border: '2px solid #22c55e',
+              borderRadius: '12px',
+              padding: '24px',
+              maxWidth: '560px',
+              textAlign: 'left',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 12px 0', color: '#86efac', fontSize: '22px', textAlign: 'center' }}>
+              🏆 CHIẾN THẮNG KHẢI HOÀN! (STAGE CLEAR)
+            </h2>
+            <div style={{ maxHeight: '360px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
+              {dialoguesData.ending.map((line, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#052e16', padding: '10px', borderRadius: '8px' }}>
+                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #22c55e', flexShrink: 0 }} />
+                  <div>
+                    <strong style={{ color: '#86efac' }}>{line.speaker}:</strong>
+                    <div style={{ color: '#ecfdf5', fontSize: '13px' }}>"{line.text}"</div>
+                  </div>
+                </div>
+              ))}
+            </div>
             <button
               onClick={handleRestartChapter}
               style={{
+                width: '100%',
                 padding: '12px 24px',
                 backgroundColor: '#22c55e',
                 border: 'none',
@@ -1091,7 +1225,7 @@ export const App: React.FC = () => {
                 cursor: 'pointer',
               }}
             >
-              🔄 Chơi lại chương
+              🔄 Tiếp tục / Chơi lại chương
             </button>
           </div>
         </div>

@@ -1,9 +1,15 @@
 import Dexie, { type Table } from 'dexie';
-import mapJson from '../../../data/maps/test_map_01.json';
+import talysMapJson from '../../../data/maps/chapter_01_talys.json';
+import testMapJson from '../../../data/maps/test_map_01.json';
 import type { ChapterOutcome } from '../chapter/types';
 import type { ItemDefinition } from '../combat/types';
-import { initialChapterData, type ExtendedUnitState } from '../data/chapterData';
+import { chapters, type ExtendedUnitState } from '../data/chapterData';
 import type { GamePhase } from '../turn/turnManager';
+
+const mapsById: Record<string, { width: number; height: number }> = {
+  chapter_01_talys: talysMapJson,
+  test_map_01: testMapJson,
+};
 
 export interface GameSnapshot {
   chapterId: string;
@@ -87,7 +93,10 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {
   if (!isRecord(value) || !isRecord(value.turnState) || !Array.isArray(value.extendedUnits)) return false;
-  if (value.chapterId !== initialChapterData.id) return false;
+  const chapter = chapters[value.chapterId as string];
+  if (!chapter) return false;
+  const map = mapsById[chapter.mapId];
+  if (!map) return false;
   if (!Number.isInteger(value.turnState.turnNumber) || (value.turnState.turnNumber as number) < 1) return false;
   if (value.turnState.activePhase !== 'player_phase' && value.turnState.activePhase !== 'enemy_phase') return false;
   if (typeof value.rngSeed !== 'number' || !Number.isInteger(value.rngSeed)
@@ -95,10 +104,10 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   if (value.chapterOutcome !== 'ongoing' && value.chapterOutcome !== 'victory' && value.chapterOutcome !== 'defeat') return false;
   if (typeof value.showStoryIntro !== 'boolean') return false;
   if (!Array.isArray(value.combatLog) || !value.combatLog.every((entry) => typeof entry === 'string')) return false;
-  if (value.extendedUnits.length !== initialChapterData.units.length || !value.extendedUnits.every(isSavedUnit)) return false;
+  if (value.extendedUnits.length !== chapter.units.length || !value.extendedUnits.every(isSavedUnit)) return false;
 
   const savedUnits = value.extendedUnits as ExtendedUnitState[];
-  const expected = new Map(initialChapterData.units.map((item) => [item.unit.id, item]));
+  const expected = new Map(chapter.units.map((item) => [item.unit.id, item]));
   const ids = new Set<string>();
   const positions = new Set<string>();
   for (const { unit, stats, weapon } of savedUnits) {
@@ -106,7 +115,7 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
     if (ids.has(unit.id) || !original || !matchesWeapon(weapon, original.weapon)) return false;
     if (unit.moveType !== original.unit.moveType || unit.mov !== original.unit.mov || unit.faction !== original.unit.faction) return false;
     ids.add(unit.id);
-    if (unit.position.x >= mapJson.width || unit.position.y >= mapJson.height) return false;
+    if (unit.position.x >= map.width || unit.position.y >= map.height) return false;
     if (unit.isDead !== (stats.hp === 0)) return false;
     if (!unit.isDead) {
       const position = `${unit.position.x},${unit.position.y}`;

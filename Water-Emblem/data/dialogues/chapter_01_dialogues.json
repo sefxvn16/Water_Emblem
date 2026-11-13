@@ -1,0 +1,63 @@
+{
+  "chapterId": "chapter_01",
+  "opening": [
+    {
+      "speaker": "Jagen",
+      "avatarUrl": "/avatars/jagen.svg",
+      "text": "Điện hạ! Có người vừa từ hoàng thành Talys chạy tới cấp báo. Là Công chúa Caeda!"
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.svg",
+      "text": "Caeda! Có chuyện gì xảy ra vậy? Trông nàng xanh xao quá!"
+    },
+    {
+      "speaker": "Caeda",
+      "avatarUrl": "/avatars/caeda.svg",
+      "text": "Marth, mau cứu lấy phụ vương ta! Toán hải tặc Galder hung hãn bất ngờ tràn lên bờ biển đảo Talys. Chúng đã phá cổng thành, tàn sát binh lính và đe dọa mạng sống của phụ vương!"
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.svg",
+      "text": "Nàng hãy bình tâm, Caeda. Các kỵ sĩ Altea đã tề tựu sẵn sàng. Bọn hải tặc ô hợp không phải là đối thủ của chúng ta! Xuất quân, giải phóng lâu đài Talys!"
+    }
+  ],
+  "village_wrys": [
+    {
+      "speaker": "Wrys",
+      "avatarUrl": "/avatars/wrys.svg",
+      "text": "Bần tăng là Wrys, một tu sĩ chất phác của đảo Talys. Bần tăng không biết cầm vũ khí chiến đấu, nhưng trượng trị liệu này có thể chữa lành vết thương cho các dũng sĩ. Xin hãy cho bần tăng đi theo, các vị sẽ thấy điều đó vô cùng hữu ích!"
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.svg",
+      "text": "Được sự trợ giúp của Đại sư là niềm vinh dự lớn của quân ta. Xin mời người gia nhập nghĩa quân Altea!"
+    }
+  ],
+  "boss_gazzak": {
+    "startCombat": "Ngươi bảo là sức mạnh của các kỵ sĩ Altea đấy ư? Ha ha! Lũ nhãi ranh các ngươi trông chả có tí sức mạnh nào cả! Chuẩn bị làm mồi cho cá đi!",
+    "death": "Ư... Khốn kiếp... Lũ nhãi các ngươi... sẽ phải trả giá..."
+  },
+  "ending": [
+    {
+      "speaker": "Quốc vương Mostyn (Talys)",
+      "avatarUrl": "/avatars/jagen.svg",
+      "text": "Marth! Cháu và các dũng sĩ Altea đã đập tan toán cướp biển, giải phóng đảo quốc Talys! Vương quốc chúng ta nợ cháu một ân tình sâu sắc."
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.svg",
+      "text": "Bệ hạ đã cưu mang thần và tàn quân Altea trong những năm tháng đen tối nhất khi đất nước bị chiếm đóng. Thần chỉ làm tròn bổn phận đáp đền ơn nghĩa của người."
+    },
+    {
+      "speaker": "Quốc vương Mostyn (Talys)",
+      "avatarUrl": "/avatars/jagen.svg",
+      "text": "Sứ mệnh lớn hơn đang chờ cháu ở phía trước. Công chúa Nyna của vương triều Archanea vừa gửi thư cầu viện từ bình nguyên Aurelis. Hãy nhận lấy chiến thuyền và đưa Caeda cùng cháu vượt biển giành lại quê hương!"
+    },
+    {
+      "speaker": "Caeda",
+      "avatarUrl": "/avatars/caeda.svg",
+      "text": "Marth, dù chân trời góc biển hay muôn trùng nguy nan, ta sẽ luôn kề vai chiến đấu bên chàng cho tới ngày khải hoàn!"
+    }
+  ]
+}

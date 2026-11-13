@@ -1,0 +1,168 @@
+{
+  "id": "chapter_01",
+  "name": "Chương 1: Bờ biển Talys (Marth Embarks)",
+  "mapId": "chapter_01_talys",
+  "objective": {
+    "type": "defeat_boss",
+    "bossUnitId": "gazzak",
+    "descriptionVi": "Hạ gục thủ lĩnh Gazzak (Boss) đang chiếm giữ cổng thành Talys"
+  },
+  "introLines": [
+    {
+      "speaker": "Jagen",
+      "text": "Điện hạ! Có người vừa từ hoàng thành Talys chạy tới cấp báo. Là Công chúa Caeda!"
+    },
+    {
+      "speaker": "Caeda",
+      "text": "Marth, mau cứu lấy phụ vương ta! Toán hải tặc Galder hung hãn bất ngờ tràn lên bờ biển đảo Talys!"
+    },
+    {
+      "speaker": "Marth",
+      "text": "Các kỵ sĩ Altea đã tề tựu sẵn sàng. Bọn hải tặc ô hợp không phải là đối thủ của chúng ta! Xuất quân, giải phóng lâu đài Talys!"
+    }
+  ],
+  "units": [
+    {
+      "id": "marth",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 9
+      },
+      "weaponId": "rapier",
+      "characterId": "marth"
+    },
+    {
+      "id": "jagen",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "weaponId": "silver_lance",
+      "characterId": "jagen"
+    },
+    {
+      "id": "caeda",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 8
+      },
+      "weaponId": "wing_spear",
+      "characterId": "caeda"
+    },
+    {
+      "id": "cain",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 8
+      },
+      "weaponId": "iron_sword",
+      "characterId": "cain"
+    },
+    {
+      "id": "abel",
+      "faction": "player",
+      "position": {
+        "x": 26,
+        "y": 9
+      },
+      "weaponId": "iron_lance",
+      "characterId": "abel"
+    },
+    {
+      "id": "draug",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 10
+      },
+      "weaponId": "iron_lance",
+      "characterId": "draug"
+    },
+    {
+      "id": "gordin",
+      "faction": "player",
+      "position": {
+        "x": 26,
+        "y": 8
+      },
+      "weaponId": "iron_bow",
+      "characterId": "gordin"
+    },
+    {
+      "id": "gazzak",
+      "name": "Gazzak (Boss)",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 9
+      },
+      "mov": 0,
+      "weaponId": "steel_axe",
+      "aiRole": "stationary",
+      "characterId": "gazzak"
+    },
+    {
+      "id": "enemy_pirate_1",
+      "name": "Galder Pirate A",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 9
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_2",
+      "name": "Galder Pirate B",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 7
+      },
+      "weaponId": "hand_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_3",
+      "name": "Galder Pirate C",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 7
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 8
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "pursue",
+      "characterId": "galder_hunter"
+    },
+    {
+      "id": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 3
+      },
+      "mov": 6,
+      "weaponId": "iron_sword",
+      "aiRole": "pursue",
+      "characterId": "galder_thief"
+    }
+  ]
+}

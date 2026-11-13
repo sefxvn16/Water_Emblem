@@ -96,7 +96,8 @@ export function evaluateAITurn(
           distance,
           terrains,
           attackerTerrainId,
-          defenderTerrainId
+          defenderTerrainId,
+          units
         );
 
         // Chấm điểm theo trọng số cấu hình trong data/balance.json

@@ -83,8 +83,10 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
     const centerX = (mapData.width - 1) / 2;
     const centerZ = (mapData.height - 1) / 2;
+    const maxDim = Math.max(mapData.width, mapData.height);
+    const distance = Math.max(16, maxDim * 0.75);
 
-    camera.position.set(centerX + 12, 14, centerZ + 14);
+    camera.position.set(centerX + distance * 0.7, distance * 0.85, centerZ + distance * 0.7);
     camera.lookAt(centerX, 0, centerZ);
     cameraRef.current = camera;
 
@@ -383,12 +385,13 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
 
     const centerX = (mapData.width - 1) / 2;
     const centerZ = (mapData.height - 1) / 2;
-    const distance = 18;
+    const maxDim = Math.max(mapData.width, mapData.height);
+    const distance = Math.max(18, maxDim * 0.75);
 
     const newX = centerX + distance * Math.sin(cameraAngleRef.current);
     const newZ = centerZ + distance * Math.cos(cameraAngleRef.current);
 
-    cameraRef.current.position.set(newX, 14, newZ);
+    cameraRef.current.position.set(newX, distance * 0.85, newZ);
     cameraRef.current.lookAt(centerX, 0, centerZ);
   };
 

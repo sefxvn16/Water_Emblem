@@ -1,6 +1,10 @@
-import chapterJson from '../../../data/chapters/test_chapter_01.json';
-import mapJson from '../../../data/maps/test_map_01.json';
+import testChapterJson from '../../../data/chapters/test_chapter_01.json';
+import testMapJson from '../../../data/maps/test_map_01.json';
+import talysChapterJson from '../../../data/chapters/chapter_01_talys.json';
+import talysMapJson from '../../../data/maps/chapter_01_talys.json';
 import itemsJson from '../../../data/items.json';
+import charactersJson from '../../../data/characters.json';
+import classesJson from '../../../data/classes.json';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
@@ -96,7 +100,24 @@ function readStats(value: unknown, label: string): UnitCombatStats {
   return stats;
 }
 
-export function loadChapterData(raw: unknown, map: MapData, items: readonly ItemDefinition[]): ChapterData {
+function readGrowths(value: unknown, label: string): Record<string, number> {
+  const data = requireRecord(value, label);
+  const growths: Record<string, number> = {};
+  for (const key of ['hp', 'str', 'mag', 'dex', 'spd', 'lck', 'def', 'res']) {
+    const rate = requireInteger(data[key], `${label}.${key}`);
+    if (rate > 100) throw new Error(`${label}.${key} exceeds 100`);
+    growths[key] = rate;
+  }
+  return growths;
+}
+
+export function loadChapterData(
+  raw: unknown,
+  map: MapData,
+  items: readonly ItemDefinition[],
+  characterCatalog: unknown = charactersJson,
+  classCatalog: unknown = classesJson,
+): ChapterData {
   const data = requireRecord(raw, 'chapter');
   const id = requireString(data.id, 'chapter.id');
   const name = requireString(data.name, 'chapter.name');
@@ -105,6 +126,23 @@ export function loadChapterData(raw: unknown, map: MapData, items: readonly Item
 
   const itemById = new Map(items.map((item) => [item.id, item]));
   if (itemById.size !== items.length) throw new Error('Duplicate item ID');
+  const characterRows = requireRecord(characterCatalog, 'characters').characters;
+  const classRows = requireRecord(classCatalog, 'classes').classes;
+  if (!Array.isArray(characterRows) || !Array.isArray(classRows)) throw new Error('Catalog entries must be arrays');
+  const characterById = new Map<string, RecordValue>();
+  const classById = new Map<string, RecordValue>();
+  for (const value of characterRows) {
+    const character = requireRecord(value, 'character');
+    const characterId = requireString(character.id, 'character.id');
+    if (characterById.has(characterId)) throw new Error(`Duplicate character ID ${characterId}`);
+    characterById.set(characterId, character);
+  }
+  for (const value of classRows) {
+    const classData = requireRecord(value, 'class');
+    const classId = requireString(classData.id, 'class.id');
+    if (classById.has(classId)) throw new Error(`Duplicate class ID ${classId}`);
+    classById.set(classId, classData);
+  }
 
   const objectiveRaw = requireRecord(data.objective, 'chapter.objective');
   const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize'], 'chapter.objective.type');
@@ -135,24 +173,36 @@ export function loadChapterData(raw: unknown, map: MapData, items: readonly Item
     const weaponId = requireString(item.weaponId, `${label}.weaponId`);
     const weapon = itemById.get(weaponId);
     if (!weapon) throw new Error(`${label} references unknown weapon ${weaponId}`);
+    const characterId = requireString(item.characterId, `${label}.characterId`);
+    const character = characterById.get(characterId);
+    if (!character) throw new Error(`${label} references unknown character ${characterId}`);
+    const classId = requireString(character.classId, `character ${characterId}.classId`);
+    const classData = classById.get(classId);
+    if (!classData) throw new Error(`Character ${characterId} references unknown class ${classId}`);
+    const baseStats = requireRecord(character.baseStats, `character ${characterId}.baseStats`);
+    const hp = requireInteger(baseStats.hp, `character ${characterId}.baseStats.hp`, 1);
     const unit: GridUnit = {
       id: requireString(item.id, `${label}.id`),
-      name: requireString(item.name, `${label}.name`),
+      name: item.name === undefined
+        ? requireString(character.name, `character ${characterId}.name`)
+        : requireString(item.name, `${label}.name`),
       faction: requireChoice(item.faction, FACTIONS, `${label}.faction`),
       position: readPosition(item.position, map, `${label}.position`),
-      mov: requireInteger(item.mov, `${label}.mov`),
-      moveType: requireChoice(item.moveType, MOVE_TYPES, `${label}.moveType`),
+      mov: item.mov === undefined
+        ? requireInteger(classData.baseMov, `class ${classId}.baseMov`)
+        : requireInteger(item.mov, `${label}.mov`),
+      moveType: requireChoice(classData.moveType, MOVE_TYPES, `class ${classId}.moveType`),
       hasActed: false,
       isDead: false,
     };
     return {
       unit,
-      stats: readStats(item.stats, `${label}.stats`),
+      stats: readStats({ ...baseStats, maxHp: hp }, `character ${characterId}.baseStats`),
       weapon,
       ...(item.aiRole === undefined ? {} : { aiRole: requireChoice(item.aiRole, AI_ROLES, `${label}.aiRole`) }),
-      ...(typeof item.title === 'string' ? { title: item.title } : {}),
-      ...(typeof item.avatarUrl === 'string' ? { avatarUrl: item.avatarUrl } : {}),
-      ...(isRecord(item.growths) ? { growths: item.growths as Record<string, number> } : {}),
+      title: requireString(character.title, `character ${characterId}.title`),
+      avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),
+      growths: readGrowths(character.growths, `character ${characterId}.growths`),
     };
   });
 
@@ -168,8 +218,21 @@ export function loadChapterData(raw: unknown, map: MapData, items: readonly Item
   return { id, name, mapId, objective, introLines, units };
 }
 
-export const initialChapterData = loadChapterData(
-  chapterJson,
-  mapJson as MapData,
+export const chapter01Data = loadChapterData(
+  talysChapterJson,
+  talysMapJson as MapData,
   itemsJson.items as ItemDefinition[],
 );
+
+export const testChapter01Data = loadChapterData(
+  testChapterJson,
+  testMapJson as MapData,
+  itemsJson.items as ItemDefinition[],
+);
+
+export const chapters: Record<string, ChapterData> = {
+  chapter_01: chapter01Data,
+  test_chapter_01: testChapter01Data,
+};
+
+export const initialChapterData = chapter01Data;

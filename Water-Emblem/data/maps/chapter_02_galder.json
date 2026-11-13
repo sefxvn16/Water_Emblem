@@ -1,0 +1,21 @@
+{
+  "id": "chapter_02_galder",
+  "name": "Chương 2: Hải tặc xứ Galder (The Pirates of Galder)",
+  "width": 30,
+  "height": 13,
+  "grid": [
+    ["mountain", "mountain", "mountain", "peak", "peak", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "mountain", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["mountain", "gate", "fort", "mountain", "mountain", "plains", "plains", "forest", "plains", "mountain", "mountain", "plains", "plains", "forest", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["mountain", "plains", "plains", "plains", "plains", "plains", "forest", "forest", "plains", "plains", "mountain", "plains", "forest", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["mountain", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["sea", "sea", "plains", "plains", "bridge", "plains", "plains", "forest", "plains", "plains", "plains", "forest", "plains", "bridge", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"],
+    ["sea", "sea", "sea", "river", "river", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea"],
+    ["sea", "sea", "river", "river", "river", "plains", "plains", "forest", "plains", "plains", "fort", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "sea", "sea", "sea"],
+    ["sea", "sea", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "bridge", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "fort", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "sea", "plains", "forest", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea"],
+    ["sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "sea"],
+    ["sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"]
+  ]
+}
