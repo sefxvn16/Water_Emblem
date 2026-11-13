@@ -26,9 +26,9 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
   - Tiêu chí xong: Trình duyệt tải được bản đồ thử; chọn và di chuyển đơn vị theo địa hình, hiển thị vùng di chuyển/nguy hiểm, kết thúc và chuyển lượt; thao tác sai không làm hỏng state. Logic chạy được không cần renderer và có test cho đường đi, tầm di chuyển, lượt.
   - Kết quả: PASS: Đã xây dựng `src/core/grid/` (TerrainRegistry, Dijkstra/BFS calculateMovementRange) và `src/core/turn/` (TurnManager quản lý phase & lượt); 12/12 unit test Vitest PASS; `data/terrains.json` và `data/maps/test_map_01.json` đúng schema; giao diện tải bản đồ, highlight vùng di chuyển xanh, vùng nguy hiểm đỏ, chọn/chuyển lượt hoạt động và `npm run build` PASS.
 
-- [ ] 4. Hoàn thành chiến đấu và AI cho bản đồ thử.
+- [x] 4. Hoàn thành chiến đấu và AI cho bản đồ thử.
   - Tiêu chí xong: Dự báo và thực hiện giao tranh đúng các quy tắc đã duyệt trong `Game_Design/battle.md`; tam giác vũ khí, vũ khí khắc class, AI và nguồn RNG cho kết quả tái lập; AI không dùng thông tin bị che. Test tự động bao phủ các công thức và tình huống biên đã chọn, một trận thử kết thúc được.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Chỉ triển khai sau khi mục 3 PASS và các công thức còn mở được chốt.
+  - Kết quả: PASS: Đã xây dựng `src/core/combat/` (calculator, types, SeededRNG với Mulberry32 hỗ trợ 1RN/2RN), `src/core/ai/` (evaluateAITurn cho các vai trò stationary và pursue, thuật toán chấm điểm ưu tiên mục tiêu kết liễu); các tham số và vũ khí đặt trong `data/balance.json` và `data/items.json`; bao phủ tam giác vũ khí (Kiếm > Rìu > Thương), vũ khí khắc class (Rapier, Cung), tốc độ đánh AS và đòn đánh đôi; 19/19 unit tests Vitest PASS; giao diện tích hợp cửa sổ Combat Forecast (Q05), xác nhận giao tranh, nhật ký trận đấu và vòng lặp Enemy Phase AI tự động; bản build Vite PASS.
 
 - [ ] 5. Đưa bản đồ thử sang 3D low-poly.
   - Tiêu chí xong: Bản đồ, đơn vị, camera và chỉ báo nước đi hiển thị trong Three.js; cùng thao tác tạo cùng kết quả game như bản logic; kiểm tay trên trình duyệt mục tiêu và đo FPS, draw calls, triangles theo ngân sách được chốt.

@@ -1,48 +1,80 @@
 import React, { useState, useMemo } from 'react';
 import mapDataRaw from '../data/maps/test_map_01.json';
+import itemsData from '../data/items.json';
 import { defaultTerrainRegistry } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { GridUnit, MapData, Position } from './core/grid/types';
-import { TurnManager, GamePhase } from './core/turn/turnManager';
+import { TurnManager } from './core/turn/turnManager';
+import { ItemDefinition, UnitCombatStats, CombatForecast } from './core/combat/types';
+import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
+import { defaultRNG } from './core/combat/rng';
+import { evaluateAITurn, AIRole } from './core/ai/decision';
 
 const mapData: MapData = mapDataRaw as MapData;
+const itemsList = itemsData.items as ItemDefinition[];
+const getItem = (id: string): ItemDefinition => itemsList.find((i) => i.id === id) || itemsList[0]!;
 
-const INITIAL_UNITS: GridUnit[] = [
+interface ExtendedUnitState {
+  unit: GridUnit;
+  stats: UnitCombatStats;
+  weapon: ItemDefinition;
+  aiRole?: AIRole;
+}
+
+const INITIAL_EXTENDED_UNITS: ExtendedUnitState[] = [
   {
-    id: 'marth',
-    name: 'Marth',
-    faction: 'player',
-    position: { x: 1, y: 1 },
-    mov: 4,
-    moveType: 'foot',
-    hasActed: false,
+    unit: {
+      id: 'marth',
+      name: 'Marth',
+      faction: 'player',
+      position: { x: 1, y: 1 },
+      mov: 4,
+      moveType: 'foot',
+      hasActed: false,
+    },
+    stats: { hp: 18, maxHp: 18, str: 6, mag: 0, dex: 6, spd: 9, lck: 7, def: 5, res: 0 },
+    weapon: getItem('rapier'),
   },
   {
-    id: 'jagen',
-    name: 'Jagen',
-    faction: 'player',
-    position: { x: 0, y: 1 },
-    mov: 7,
-    moveType: 'cavalry',
-    hasActed: false,
+    unit: {
+      id: 'jagen',
+      name: 'Jagen',
+      faction: 'player',
+      position: { x: 0, y: 1 },
+      mov: 7,
+      moveType: 'cavalry',
+      hasActed: false,
+    },
+    stats: { hp: 22, maxHp: 22, str: 7, mag: 0, dex: 10, spd: 8, lck: 3, def: 8, res: 1 },
+    weapon: getItem('silver_lance'),
   },
   {
-    id: 'enemy_pirate_1',
-    name: 'Pirate A',
-    faction: 'enemy',
-    position: { x: 5, y: 5 },
-    mov: 5,
-    moveType: 'bandit',
-    hasActed: false,
+    unit: {
+      id: 'enemy_pirate_1',
+      name: 'Pirate A',
+      faction: 'enemy',
+      position: { x: 2, y: 4 },
+      mov: 4,
+      moveType: 'bandit',
+      hasActed: false,
+    },
+    stats: { hp: 18, maxHp: 18, str: 6, mag: 0, dex: 4, spd: 5, lck: 2, def: 3, res: 0 },
+    weapon: getItem('iron_axe'),
+    aiRole: 'pursue',
   },
   {
-    id: 'enemy_pirate_2',
-    name: 'Pirate B',
-    faction: 'enemy',
-    position: { x: 6, y: 2 },
-    mov: 5,
-    moveType: 'bandit',
-    hasActed: false,
+    unit: {
+      id: 'enemy_pirate_2',
+      name: 'Pirate B (Boss)',
+      faction: 'enemy',
+      position: { x: 4, y: 7 }, // Canh gác tại Cổng thành Gate (4,7)
+      mov: 0,
+      moveType: 'armor',
+      hasActed: false,
+    },
+    stats: { hp: 26, maxHp: 26, str: 9, mag: 0, dex: 5, spd: 4, lck: 1, def: 7, res: 0 },
+    weapon: getItem('steel_axe'),
+    aiRole: 'stationary',
   },
 ];
 
@@ -60,68 +92,114 @@ const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }
 };
 
 export const App: React.FC = () => {
-  const [turnManager] = useState<TurnManager>(() => new TurnManager(INITIAL_UNITS));
+  const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(INITIAL_EXTENDED_UNITS);
+  const [turnManager] = useState<TurnManager>(() => new TurnManager(INITIAL_EXTENDED_UNITS.map((u) => u.unit)));
   const [turnState, setTurnState] = useState(turnManager.getState());
-  const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
-  const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
 
-  // Sync state helper
+  // Giao tranh & Hành động
+  const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
+  const [originalPos, setOriginalPos] = useState<Position | null>(null);
+  const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
+  const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
+  const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
+  const [combatLog, setCombatLog] = useState<string[]>([]);
+  const [isProcessingAI, setIsProcessingAI] = useState(false);
+
   const syncState = () => {
     setTurnState({ ...turnManager.getState() });
   };
 
   const selectedUnit = turnManager.getSelectedUnit();
+  const selectedExtUnit = extendedUnits.find((u) => u.unit.id === selectedUnit?.id);
 
-  // Vùng di chuyển (Reachability)
+  // Vùng di chuyển
   const reachableKeys = useMemo(() => {
     if (!turnState.reachableTiles) return new Set<string>();
     return new Set(Array.from(turnState.reachableTiles.keys()));
   }, [turnState.reachableTiles]);
 
-  // Vùng nguy hiểm (Danger zone: tầm di chuyển + 1 của toàn bộ quân địch)
+  // Vùng nguy hiểm của quân địch
   const dangerZoneKeys = useMemo(() => {
     const danger = new Set<string>();
-    const enemies = turnState.units.filter((u) => u.faction === 'enemy' && !u.isDead);
+    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
 
     for (const enemy of enemies) {
-      const range = calculateMovementRange(enemy, {
+      const range = calculateMovementRange(enemy.unit, {
         map: mapData,
         terrains: defaultTerrainRegistry,
-        units: turnState.units,
+        units: extendedUnits.map((u) => u.unit),
       });
 
       for (const tile of range.values()) {
-        // Tầm đánh 1 ô xung quanh vị trí di chuyển
-        const neighbors = [
-          { x: tile.position.x, y: tile.position.y },
-          { x: tile.position.x + 1, y: tile.position.y },
-          { x: tile.position.x - 1, y: tile.position.y },
-          { x: tile.position.x, y: tile.position.y + 1 },
-          { x: tile.position.x, y: tile.position.y - 1 },
-        ];
-        for (const n of neighbors) {
-          if (n.x >= 0 && n.x < mapData.width && n.y >= 0 && n.y < mapData.height) {
-            danger.add(`${n.x},${n.y}`);
+        const minR = enemy.weapon.minRange;
+        const maxR = enemy.weapon.maxRange;
+        for (let dx = -maxR; dx <= maxR; dx++) {
+          for (let dy = -maxR; dy <= maxR; dy++) {
+            const dist = Math.abs(dx) + Math.abs(dy);
+            if (dist >= minR && dist <= maxR) {
+              const nx = tile.position.x + dx;
+              const ny = tile.position.y + dy;
+              if (nx >= 0 && nx < mapData.width && ny >= 0 && ny < mapData.height) {
+                danger.add(`${nx},${ny}`);
+              }
+            }
           }
         }
       }
     }
     return danger;
-  }, [turnState.units]);
+  }, [extendedUnits]);
 
-  // Xử lý click vào một ô trên bản đồ
+  // Danh sách các mục tiêu có thể tấn công từ vị trí hiện tại
+  const attackableTargets = useMemo(() => {
+    if (!selectedExtUnit || !pendingMovePos) return [];
+
+    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+    return enemies.filter((enemy) => {
+      const dist = getManhattanDistance(pendingMovePos, enemy.unit.position);
+      return dist >= selectedExtUnit.weapon.minRange && dist <= selectedExtUnit.weapon.maxRange;
+    });
+  }, [selectedExtUnit, pendingMovePos, extendedUnits]);
+
+  // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
-    if (turnState.activePhase !== 'player_phase') {
+    if (turnState.activePhase !== 'player_phase' || isProcessingAI) {
       return;
     }
 
-    const clickedUnit = turnState.units.find(
-      (u) => !u.isDead && u.position.x === x && u.position.y === y
+    const clickedExt = extendedUnits.find(
+      (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
     );
 
-    // Nếu đã chọn một đơn vị và click vào ô có thể đi
-    if (selectedUnit && reachableKeys.has(`${x},${y}`)) {
-      // Thực hiện di chuyển tạm thời
+    // Nếu đã di chuyển và đang chọn mục tiêu tấn công
+    if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy') {
+      const isTargetValid = attackableTargets.some((t) => t.unit.id === clickedExt.unit.id);
+      if (isTargetValid && selectedExtUnit) {
+        setSelectedTarget(clickedExt);
+        const dist = getManhattanDistance(pendingMovePos, clickedExt.unit.position);
+        const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
+        const defenderTerrain = mapData.grid[clickedExt.unit.position.y]?.[clickedExt.unit.position.x] ?? 'plains';
+
+        const forecast = calculateCombatForecast(
+          selectedExtUnit.unit,
+          selectedExtUnit.stats,
+          selectedExtUnit.weapon,
+          clickedExt.unit,
+          clickedExt.stats,
+          clickedExt.weapon,
+          dist,
+          defaultTerrainRegistry,
+          attackerTerrain,
+          defenderTerrain
+        );
+        setCombatForecast(forecast);
+        return;
+      }
+    }
+
+    // Nếu đã chọn 1 quân ta và click vào ô di chuyển
+    if (selectedExtUnit && reachableKeys.has(`${x},${y}`) && !pendingMovePos) {
+      setOriginalPos({ ...selectedExtUnit.unit.position });
       const success = turnManager.moveSelectedUnit({ x, y });
       if (success) {
         setPendingMovePos({ x, y });
@@ -130,54 +208,177 @@ export const App: React.FC = () => {
       return;
     }
 
-    // Nếu click vào một đơn vị quân ta chưa đi
-    if (clickedUnit && clickedUnit.faction === 'player' && !clickedUnit.hasActed) {
-      const range = calculateMovementRange(clickedUnit, {
+    // Chọn đơn vị quân ta chưa đi
+    if (clickedExt && clickedExt.unit.faction === 'player' && !clickedExt.unit.hasActed && !pendingMovePos) {
+      const range = calculateMovementRange(clickedExt.unit, {
         map: mapData,
         terrains: defaultTerrainRegistry,
-        units: turnState.units,
+        units: extendedUnits.map((u) => u.unit),
       });
-      turnManager.selectUnit(clickedUnit.id, range);
+      turnManager.selectUnit(clickedExt.unit.id, range);
       setPendingMovePos(null);
+      setSelectedTarget(null);
+      setCombatForecast(null);
       syncState();
       return;
     }
 
-    // Click ra ngoài hoặc hủy chọn
-    turnManager.cancelSelect();
+    // Bỏ chọn
+    if (!pendingMovePos) {
+      turnManager.cancelSelect();
+      setSelectedTarget(null);
+      setCombatForecast(null);
+      syncState();
+    }
+  };
+
+  // Xác nhận Tấn công
+  const handleConfirmAttack = () => {
+    if (!combatForecast || !selectedExtUnit || !selectedTarget) return;
+
+    const result = executeCombat(combatForecast, defaultRNG);
+
+    // Cập nhật log trận đánh
+    const logs: string[] = [];
+    logs.push(`⚔️ GIAO TRANH: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
+    for (const ev of result.events) {
+      const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Ai đó';
+      const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Ai đó';
+      if (!ev.isHit) {
+        logs.push(`${atk} tấn công ${def} nhưng bị TRƯỢT (Miss)!`);
+      } else {
+        const critText = ev.isCrit ? ' [CHÍ MẠNG (CRIT)!]' : '';
+        logs.push(`${atk} đánh trúng ${def} gây ${ev.damageDealt} sát thương!${critText} (${def} còn ${ev.defenderHpAfter} HP)`);
+      }
+    }
+
+    if (result.unitDefeatedId) {
+      const deadName = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
+      logs.push(`💀 ${deadName} đã bị hạ gục!`);
+    }
+
+    setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
+
+    // Cập nhật trạng thái sống/chết và HP
+    setExtendedUnits((prev) =>
+      prev.map((item) => {
+        if (item.unit.id === selectedExtUnit.unit.id) {
+          return {
+            ...item,
+            stats: { ...combatForecast.attacker.stats },
+            unit: { ...item.unit, isDead: combatForecast.attacker.stats.hp <= 0 },
+          };
+        }
+        if (item.unit.id === selectedTarget.unit.id) {
+          return {
+            ...item,
+            stats: { ...combatForecast.defender.stats },
+            unit: { ...item.unit, isDead: combatForecast.defender.stats.hp <= 0 },
+          };
+        }
+        return item;
+      })
+    );
+
+    // Đánh dấu hành động hoàn thành
+    turnManager.waitSelectedUnit();
     setPendingMovePos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
     syncState();
   };
 
-  // Xác nhận Chờ (Wait)
+  // Xác nhận Chờ
   const handleConfirmWait = () => {
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
     syncState();
   };
 
   // Hủy bước di chuyển
   const handleCancelMove = () => {
+    if (selectedExtUnit && originalPos) {
+      selectedExtUnit.unit.position = { ...originalPos };
+    }
     turnManager.cancelSelect();
     setPendingMovePos(null);
+    setOriginalPos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
     syncState();
   };
 
-  // Chuyển lượt thủ công
+  // Chạy AI Turn
+  const runAITurn = () => {
+    setIsProcessingAI(true);
+    const activeEnemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+
+    const statsMap = new Map(extendedUnits.map((u) => [u.unit.id, u.stats]));
+    const weaponsMap = new Map(extendedUnits.map((u) => [u.unit.id, u.weapon]));
+
+    const logs: string[] = [`🔴 BẮT ĐẦU ENEMY PHASE (Lượt ${turnState.turnNumber})`];
+
+    for (const enemy of activeEnemies) {
+      const decision = evaluateAITurn(enemy.unit, enemy.aiRole || 'pursue', {
+        map: mapData,
+        terrains: defaultTerrainRegistry,
+        units: extendedUnits.map((u) => u.unit),
+        unitStatsMap: statsMap,
+        unitWeaponsMap: weaponsMap,
+      });
+
+      if (decision.type === 'attack') {
+        enemy.unit.position = { ...decision.movePosition };
+        logs.push(`🔴 ${enemy.unit.name} di chuyển đến (${decision.movePosition.x},${decision.movePosition.y}) và tấn công ${decision.targetUnit.name}!`);
+
+        const result = executeCombat(decision.forecast, defaultRNG);
+        for (const ev of result.events) {
+          const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
+          const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
+          if (!ev.isHit) {
+            logs.push(`  ${atk} đánh trượt ${def}!`);
+          } else {
+            const critText = ev.isCrit ? ' [CHÍ MẠNG!]' : '';
+            logs.push(`  ${atk} đánh trúng ${def} gây ${ev.damageDealt} dame!${critText}`);
+          }
+        }
+        if (result.unitDefeatedId) {
+          const defeated = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
+          logs.push(`  💀 ${defeated} đã ngã xuống!`);
+        }
+      } else if (decision.type === 'move_only') {
+        enemy.unit.position = { ...decision.movePosition };
+        logs.push(`🔴 ${enemy.unit.name} tiến về phía quân ta đến (${decision.movePosition.x},${decision.movePosition.y}).`);
+      } else {
+        logs.push(`🔴 ${enemy.unit.name} giữ nguyên vị trí canh gác.`);
+      }
+
+      enemy.unit.hasActed = true;
+    }
+
+    setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
+
+    // Chuyển lại về Player Phase
+    turnManager.switchPhase('player_phase');
+    setIsProcessingAI(false);
+    syncState();
+  };
+
   const handleEndTurn = () => {
-    const nextPhase: GamePhase =
-      turnState.activePhase === 'player_phase' ? 'enemy_phase' : 'player_phase';
-    turnManager.switchPhase(nextPhase);
-    setPendingMovePos(null);
+    turnManager.switchPhase('enemy_phase');
     syncState();
+    setTimeout(() => {
+      runAITurn();
+    }, 400);
   };
 
-  // Thông tin ô đang hover
   const hoveredTerrainId = hoveredTile ? mapData.grid[hoveredTile.y]?.[hoveredTile.x] : null;
   const hoveredTerrain = hoveredTerrainId ? defaultTerrainRegistry.get(hoveredTerrainId) : null;
   const hoveredUnit = hoveredTile
-    ? turnState.units.find(
-        (u) => !u.isDead && u.position.x === hoveredTile.x && u.position.y === hoveredTile.y
+    ? extendedUnits.find(
+        (u) => !u.unit.isDead && u.unit.position.x === hoveredTile.x && u.unit.position.y === hoveredTile.y
       )
     : null;
 
@@ -200,7 +401,7 @@ export const App: React.FC = () => {
             Water Emblem - Mystery of Nothing
           </h1>
           <span style={{ fontSize: '13px', color: '#aaa' }}>
-            Mốc 3: Vòng lặp tối thiểu (Movement & Grid Core)
+            Mốc 4: Chiến đấu, Tam giác vũ khí & AI Thông minh
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -217,20 +418,23 @@ export const App: React.FC = () => {
           >
             {turnState.activePhase === 'player_phase' ? '🛡️ PLAYER PHASE' : '⚔️ ENEMY PHASE'}
           </div>
-          <button
-            onClick={handleEndTurn}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#424242',
-              border: '1px solid #666',
-              borderRadius: '6px',
-              color: '#fff',
-              cursor: 'pointer',
-              fontWeight: 'bold',
-            }}
-          >
-            {turnState.activePhase === 'player_phase' ? 'Kết thúc lượt' : 'Bỏ qua lượt địch'}
-          </button>
+          {turnState.activePhase === 'player_phase' && (
+            <button
+              onClick={handleEndTurn}
+              disabled={isProcessingAI}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#37474F',
+                border: '1px solid #607D8B',
+                borderRadius: '6px',
+                color: '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              }}
+            >
+              Kết thúc lượt (End Turn)
+            </button>
+          )}
         </div>
       </header>
 
@@ -267,10 +471,11 @@ export const App: React.FC = () => {
                 const terrain = TERRAIN_COLORS[terrainId] || { bg: '#333', label: terrainId, icon: '' };
                 const isReachable = reachableKeys.has(key);
                 const isDanger = dangerZoneKeys.has(key);
-                const unit = turnState.units.find(
-                  (u) => !u.isDead && u.position.x === x && u.position.y === y
+                const extUnit = extendedUnits.find(
+                  (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
                 );
                 const isSelected = selectedUnit && selectedUnit.position.x === x && selectedUnit.position.y === y;
+                const isAttackTarget = attackableTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y);
 
                 return (
                   <div
@@ -287,7 +492,11 @@ export const App: React.FC = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       cursor: 'pointer',
-                      border: isSelected ? '2px solid #FFEB3B' : '1px solid rgba(255,255,255,0.05)',
+                      border: isSelected
+                        ? '2px solid #FFEB3B'
+                        : isAttackTarget
+                        ? '2px solid #FF1744'
+                        : '1px solid rgba(255,255,255,0.05)',
                       boxSizing: 'border-box',
                       transition: 'all 0.15s ease',
                     }}
@@ -317,16 +526,27 @@ export const App: React.FC = () => {
                       />
                     )}
 
-                    {/* Terrain icon */}
+                    {/* Attack target indicator */}
+                    {isAttackTarget && (
+                      <div
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          backgroundColor: 'rgba(255, 23, 68, 0.35)',
+                          pointerEvents: 'none',
+                        }}
+                      />
+                    )}
+
                     <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
 
                     {/* Unit display */}
-                    {unit && (
+                    {extUnit && (
                       <div
                         style={{
                           zIndex: 2,
-                          width: '44px',
-                          height: '44px',
+                          width: '46px',
+                          height: '46px',
                           borderRadius: '50%',
                           display: 'flex',
                           flexDirection: 'column',
@@ -335,22 +555,22 @@ export const App: React.FC = () => {
                           fontSize: '11px',
                           fontWeight: 'bold',
                           color: '#fff',
-                          backgroundColor:
-                            unit.hasActed
-                              ? '#616161'
-                              : unit.faction === 'player'
-                              ? '#1E88E5'
-                              : '#E53935',
-                          border: isSelected ? '2px solid #fff' : '2px solid rgba(0,0,0,0.4)',
+                          backgroundColor: extUnit.unit.hasActed
+                            ? '#616161'
+                            : extUnit.unit.faction === 'player'
+                            ? '#1E88E5'
+                            : '#E53935',
+                          border: isSelected ? '2px solid #FFEB3B' : '2px solid rgba(0,0,0,0.4)',
                           boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
                         }}
                       >
-                        <div>{unit.name.substring(0, 3)}</div>
-                        <div style={{ fontSize: '9px', opacity: 0.8 }}>M:{unit.mov}</div>
+                        <div>{extUnit.unit.name.substring(0, 3)}</div>
+                        <div style={{ fontSize: '9px', opacity: 0.9 }}>
+                          HP:{extUnit.stats.hp}
+                        </div>
                       </div>
                     )}
 
-                    {/* Coordinate indicator */}
                     <span
                       style={{
                         position: 'absolute',
@@ -370,33 +590,114 @@ export const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Side Panel: Tile & Unit Inspector + Action Menu */}
+        {/* Side Panel: Combat Forecast, Actions & Inspector */}
         <div
           style={{
-            width: '280px',
+            width: '320px',
             backgroundColor: '#212121',
             borderRadius: '8px',
             padding: '16px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px',
+            gap: '14px',
             border: '1px solid #333',
+            overflowY: 'auto',
           }}
         >
+          {/* Combat Forecast Window (Q05) */}
+          {combatForecast && selectedExtUnit && selectedTarget && (
+            <div
+              style={{
+                backgroundColor: '#1b2a47',
+                padding: '14px',
+                borderRadius: '8px',
+                border: '2px solid #42a5f5',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+              }}
+            >
+              <div style={{ fontWeight: 'bold', color: '#90caf9', marginBottom: '8px', fontSize: '15px' }}>
+                ⚔️ DỰ BÁO CHIẾN ĐẤU (Combat Forecast)
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', marginBottom: '12px' }}>
+                {/* Attacker */}
+                <div style={{ backgroundColor: '#0d47a1', padding: '8px', borderRadius: '4px' }}>
+                  <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedExtUnit.unit.name}</div>
+                  <div style={{ color: '#90caf9' }}>{selectedExtUnit.weapon.nameVi}</div>
+                  <div>HP: <strong>{selectedExtUnit.stats.hp}</strong></div>
+                  <div>Sát thương: <strong style={{ color: '#ffca28' }}>{combatForecast.attacker.damage} {combatForecast.attacker.attackCount > 1 ? `x${combatForecast.attacker.attackCount}` : ''}</strong></div>
+                  <div>Trúng (Hit): <strong>{combatForecast.attacker.hitRate}%</strong></div>
+                  <div>Chí mạng: <strong>{combatForecast.attacker.critRate}%</strong></div>
+                </div>
+
+                {/* Defender */}
+                <div style={{ backgroundColor: '#b71c1c', padding: '8px', borderRadius: '4px' }}>
+                  <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedTarget.unit.name}</div>
+                  <div style={{ color: '#ef9a9a' }}>{selectedTarget.weapon.nameVi}</div>
+                  <div>HP: <strong>{selectedTarget.stats.hp}</strong></div>
+                  {combatForecast.defender.canCounter ? (
+                    <>
+                      <div>Sát thương: <strong style={{ color: '#ffca28' }}>{combatForecast.defender.damage} {combatForecast.defender.attackCount > 1 ? `x${combatForecast.defender.attackCount}` : ''}</strong></div>
+                      <div>Trúng (Hit): <strong>{combatForecast.defender.hitRate}%</strong></div>
+                      <div>Chí mạng: <strong>{combatForecast.defender.critRate}%</strong></div>
+                    </>
+                  ) : (
+                    <div style={{ color: '#aaa', fontStyle: 'italic', marginTop: '6px' }}>Không thể phản đòn</div>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={handleConfirmAttack}
+                  style={{
+                    flex: 1,
+                    padding: '8px',
+                    backgroundColor: '#e53935',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ⚔️ Tấn công!
+                </button>
+                <button
+                  onClick={() => { setCombatForecast(null); setSelectedTarget(null); }}
+                  style={{
+                    padding: '8px 12px',
+                    backgroundColor: '#555',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Hủy
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Action Menu when unit moved */}
-          {pendingMovePos && (
+          {pendingMovePos && !combatForecast && (
             <div
               style={{
                 backgroundColor: '#2c3e50',
-                padding: '14px',
+                padding: '12px',
                 borderRadius: '8px',
                 border: '1px solid #3498db',
               }}
             >
-              <div style={{ fontWeight: 'bold', marginBottom: '10px', color: '#64B5F6' }}>
-                Hành động ({selectedUnit?.name})
+              <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#64B5F6' }}>
+                Lựa chọn hành động ({selectedExtUnit?.unit.name})
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {attackableTargets.length > 0 && (
+                <div style={{ fontSize: '12px', color: '#FFD54F', marginBottom: '8px' }}>
+                  🎯 Click vào mục tiêu màu đỏ để xem dự báo trận đánh!
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <button
                   onClick={handleConfirmWait}
                   style={{
@@ -429,91 +730,65 @@ export const App: React.FC = () => {
             </div>
           )}
 
-          {/* Unit Inspector */}
+          {/* Unit & Terrain Inspector */}
           <div
             style={{
               backgroundColor: '#2a2a2a',
-              padding: '14px',
+              padding: '12px',
               borderRadius: '8px',
               border: '1px solid #444',
             }}
           >
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '15px', color: '#FFD54F' }}>
-              👤 Thông tin đơn vị
+            <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#FFD54F' }}>
+              👤 Thông tin đơn vị & Địa hình
             </h3>
-            {hoveredUnit || selectedUnit ? (
+            {hoveredUnit || selectedExtUnit ? (
               (() => {
-                const u = (hoveredUnit || selectedUnit)!;
+                const u = (hoveredUnit || selectedExtUnit)!;
                 return (
-                  <div style={{ fontSize: '13px', lineHeight: '1.6' }}>
-                    <div><strong>Tên:</strong> {u.name}</div>
-                    <div>
-                      <strong>Phe:</strong>{' '}
-                      <span style={{ color: u.faction === 'player' ? '#64B5F6' : '#EF5350' }}>
-                        {u.faction === 'player' ? 'Quân ta' : 'Quân địch'}
-                      </span>
-                    </div>
-                    <div><strong>Di chuyển (Mov):</strong> {u.mov} ô</div>
-                    <div><strong>Loại di chuyển:</strong> {u.moveType}</div>
-                    <div><strong>Vị trí:</strong> ({u.position.x}, {u.position.y})</div>
-                    <div>
-                      <strong>Trạng thái:</strong>{' '}
-                      {u.hasActed ? (
-                        <span style={{ color: '#888' }}>Đã hành động</span>
-                      ) : (
-                        <span style={{ color: '#81C784' }}>Sẵn sàng</span>
-                      )}
-                    </div>
+                  <div style={{ fontSize: '12px', lineHeight: '1.5' }}>
+                    <div><strong>Tên:</strong> {u.unit.name} ({u.unit.faction === 'player' ? 'Quân ta' : 'Quân địch'})</div>
+                    <div><strong>Vũ khí:</strong> {u.weapon.nameVi} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
+                    <div><strong>HP:</strong> {u.stats.hp} / {u.stats.maxHp} | <strong>Mov:</strong> {u.unit.mov} ({u.unit.moveType})</div>
+                    <div><strong>Chỉ số:</strong> Str:{u.stats.str} | Spd:{u.stats.spd} | Dex:{u.stats.dex} | Def:{u.stats.def}</div>
                   </div>
                 );
               })()
             ) : (
-              <div style={{ fontSize: '13px', color: '#888' }}>
-                Di chuột hoặc click vào đơn vị để xem chi tiết
+              <div style={{ fontSize: '12px', color: '#888' }}>
+                Di chuột vào đơn vị để xem chi tiết
+              </div>
+            )}
+            {hoveredTerrain && hoveredTile && (
+              <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #333', fontSize: '12px', color: '#81C784' }}>
+                <div><strong>Ô ({hoveredTile.x}, {hoveredTile.y}):</strong> {hoveredTerrain.nameVi}</div>
+                <div>Né tránh: +{hoveredTerrain.avoidBonus}% | Phòng thủ: +{hoveredTerrain.defenseBonus}</div>
               </div>
             )}
           </div>
 
-          {/* Terrain Inspector */}
+          {/* Combat Battle Log */}
           <div
             style={{
-              backgroundColor: '#2a2a2a',
-              padding: '14px',
+              backgroundColor: '#1e1e1e',
+              padding: '12px',
               borderRadius: '8px',
-              border: '1px solid #444',
+              border: '1px solid #333',
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '120px',
             }}
           >
-            <h3 style={{ margin: '0 0 10px 0', fontSize: '15px', color: '#81C784' }}>
-              🗺️ Thông tin địa hình
-            </h3>
-            {hoveredTerrain && hoveredTile ? (
-              <div style={{ fontSize: '13px', lineHeight: '1.6' }}>
-                <div><strong>Loại ô:</strong> {hoveredTerrain.nameVi} ({hoveredTerrain.name})</div>
-                <div><strong>Tọa độ:</strong> ({hoveredTile.x}, {hoveredTile.y})</div>
-                <div><strong>Né tránh (Avoid):</strong> +{hoveredTerrain.avoidBonus}%</div>
-                <div><strong>Phòng thủ (Def):</strong> +{hoveredTerrain.defenseBonus}</div>
-                {hoveredTerrain.healPercent > 0 && (
-                  <div style={{ color: '#81C784' }}>
-                    <strong>Hồi phục máu:</strong> +{hoveredTerrain.healPercent}%/lượt
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div style={{ fontSize: '13px', color: '#888' }}>
-                Di chuột lên ô bản đồ để xem địa hình
-              </div>
-            )}
-          </div>
-
-          {/* Legend */}
-          <div style={{ fontSize: '12px', color: '#aaa', marginTop: 'auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <div style={{ width: '12px', height: '12px', backgroundColor: 'rgba(33, 150, 243, 0.7)' }} />
-              <span>Vùng di chuyển (Reachable)</span>
+            <div style={{ fontWeight: 'bold', fontSize: '13px', color: '#90caf9', marginBottom: '6px' }}>
+              📜 Nhật ký trận đấu
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '12px', height: '12px', backgroundColor: 'rgba(239, 83, 80, 0.5)' }} />
-              <span>Vùng nguy hiểm (Danger zone)</span>
+            <div style={{ overflowY: 'auto', flex: 1, fontSize: '11px', lineHeight: '1.4', color: '#ddd' }}>
+              {combatLog.length === 0 ? (
+                <span style={{ color: '#777' }}>Chưa có giao tranh nào diễn ra.</span>
+              ) : (
+                combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '3px' }}>{log}</div>)
+              )}
             </div>
           </div>
         </div>

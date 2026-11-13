@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "weaponTriangle": {
+    "sword": { "strongAgainst": "axe", "weakAgainst": "lance" },
+    "lance": { "strongAgainst": "sword", "weakAgainst": "axe" },
+    "axe": { "strongAgainst": "lance", "weakAgainst": "sword" },
+    "bow": { "strongAgainst": null, "weakAgainst": null },
+    "tome": { "strongAgainst": null, "weakAgainst": null },
+    "staff": { "strongAgainst": null, "weakAgainst": null }
+  },
+  "triangleModifiers": {
+    "advantage": { "damage": 1, "hit": 15 },
+    "disadvantage": { "damage": -1, "hit": -15 },
+    "neutral": { "damage": 0, "hit": 0 }
+  },
+  "effectiveMultiplier": 3,
+  "effectiveMultipliesOnlyMight": true,
+  "doubleAttackSpeedThreshold": 4,
+  "critMultiplier": 3,
+  "rngMode": "2RN",
+  "aiWeights": {
+    "killBonus": 100,
+    "damageMultiplier": 2,
+    "counterDamagePenalty": 1,
+    "triangleAdvantageBonus": 10,
+    "lowHpTargetBonus": 15
+  }
+}
