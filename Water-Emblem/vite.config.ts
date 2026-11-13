@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@core': path.resolve(__dirname, './src/core'),
-      '@renderer': path.resolve(__dirname, './src/renderer'),
-      '@ui': path.resolve(__dirname, './src/ui'),
-      '@data': path.resolve(__dirname, './data'),
+      '@core': path.resolve(import.meta.dirname, './src/core'),
+      '@renderer': path.resolve(import.meta.dirname, './src/renderer'),
+      '@ui': path.resolve(import.meta.dirname, './src/ui'),
+      '@data': path.resolve(import.meta.dirname, './data'),
     },
   },
   test: {

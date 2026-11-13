@@ -3,24 +3,13 @@
   "name": "Chương 1: Bờ biển Talys (Marth Embarks)",
   "mapId": "chapter_01_talys",
   "objective": {
-    "type": "defeat_boss",
-    "bossUnitId": "gazzak",
-    "descriptionVi": "Hạ gục thủ lĩnh Gazzak (Boss) đang chiếm giữ cổng thành Talys"
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 3,
+      "y": 9
+    },
+    "descriptionVi": "Marth chiếm cổng thành sau khi mở đường"
   },
-  "introLines": [
-    {
-      "speaker": "Jagen",
-      "text": "Điện hạ! Có người vừa từ hoàng thành Talys chạy tới cấp báo. Là Công chúa Caeda!"
-    },
-    {
-      "speaker": "Caeda",
-      "text": "Marth, mau cứu lấy phụ vương ta! Toán hải tặc Galder hung hãn bất ngờ tràn lên bờ biển đảo Talys!"
-    },
-    {
-      "speaker": "Marth",
-      "text": "Các kỵ sĩ Altea đã tề tựu sẵn sàng. Bọn hải tặc ô hợp không phải là đối thủ của chúng ta! Xuất quân, giải phóng lâu đài Talys!"
-    }
-  ],
   "units": [
     {
       "id": "marth",
@@ -49,7 +38,7 @@
         "x": 25,
         "y": 8
       },
-      "weaponId": "wing_spear",
+      "weaponId": "slim_lance",
       "characterId": "caeda"
     },
     {
@@ -101,7 +90,7 @@
         "y": 9
       },
       "mov": 0,
-      "weaponId": "steel_axe",
+      "weaponId": "iron_axe",
       "aiRole": "stationary",
       "characterId": "gazzak"
     },

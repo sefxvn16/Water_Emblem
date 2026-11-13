@@ -32,7 +32,7 @@
         "rapier",
         "iron_sword"
       ],
-      "avatarUrl": "/avatars/marth.svg"
+      "avatarUrl": "/avatars/marth.png"
     },
     {
       "id": "jagen",
@@ -65,7 +65,7 @@
         "silver_lance",
         "iron_sword"
       ],
-      "avatarUrl": "/avatars/jagen.svg"
+      "avatarUrl": "/avatars/jagen.png"
     },
     {
       "id": "caeda",
@@ -95,10 +95,10 @@
         "res": 0
       },
       "startingWeapons": [
-        "wing_spear",
-        "iron_lance"
+        "slim_lance",
+        "iron_sword"
       ],
-      "avatarUrl": "/avatars/caeda.svg"
+      "avatarUrl": "/avatars/caeda.png"
     },
     {
       "id": "cain",
@@ -131,7 +131,7 @@
         "iron_sword",
         "iron_lance"
       ],
-      "avatarUrl": "/avatars/cain.svg"
+      "avatarUrl": "/avatars/cain.png"
     },
     {
       "id": "abel",
@@ -164,7 +164,7 @@
         "iron_lance",
         "javelin"
       ],
-      "avatarUrl": "/avatars/abel.svg"
+      "avatarUrl": "/avatars/abel.png"
     },
     {
       "id": "draug",
@@ -196,7 +196,7 @@
       "startingWeapons": [
         "iron_lance"
       ],
-      "avatarUrl": "/avatars/draug.svg"
+      "avatarUrl": "/avatars/draug.png"
     },
     {
       "id": "gordin",
@@ -228,40 +228,7 @@
       "startingWeapons": [
         "iron_bow"
       ],
-      "avatarUrl": "/avatars/gordin.svg"
-    },
-    {
-      "id": "wrys",
-      "name": "Wrys",
-      "nameVi": "Wrys",
-      "title": "Nhân sĩ làng Talys",
-      "classId": "curate",
-      "level": 1,
-      "baseStats": {
-        "hp": 16,
-        "str": 1,
-        "mag": 2,
-        "dex": 5,
-        "spd": 6,
-        "lck": 2,
-        "def": 3,
-        "res": 6
-      },
-      "growths": {
-        "hp": 40,
-        "str": 0,
-        "mag": 20,
-        "dex": 20,
-        "spd": 20,
-        "lck": 40,
-        "def": 5,
-        "res": 45
-      },
-      "startingWeapons": [
-        "heal_staff",
-        "vulnerary"
-      ],
-      "avatarUrl": "/avatars/wrys.svg"
+      "avatarUrl": "/avatars/gordin.png"
     },
     {
       "id": "gazzak",
@@ -271,13 +238,13 @@
       "classId": "pirate",
       "level": 5,
       "baseStats": {
-        "hp": 30,
-        "str": 9,
+        "hp": 26,
+        "str": 6,
         "mag": 0,
-        "dex": 5,
-        "spd": 6,
-        "lck": 1,
-        "def": 7,
+        "dex": 0,
+        "spd": 3,
+        "lck": 0,
+        "def": 5,
         "res": 0
       },
       "growths": {
@@ -291,10 +258,9 @@
         "res": 0
       },
       "startingWeapons": [
-        "steel_axe",
-        "hand_axe"
+        "iron_axe"
       ],
-      "avatarUrl": "/avatars/gazzak.svg"
+      "avatarUrl": "/avatars/gazzak.png"
     },
     {
       "id": "galder_pirate",
@@ -324,7 +290,7 @@
         "res": 0
       },
       "startingWeapons": [],
-      "avatarUrl": "/avatars/gazzak.svg"
+      "avatarUrl": "/avatars/generic_pirate.png"
     },
     {
       "id": "galder_hunter",
@@ -354,7 +320,7 @@
         "res": 0
       },
       "startingWeapons": [],
-      "avatarUrl": "/avatars/gordin.svg"
+      "avatarUrl": "/avatars/generic_hunter.png"
     },
     {
       "id": "galder_thief",
@@ -384,7 +350,7 @@
         "res": 0
       },
       "startingWeapons": [],
-      "avatarUrl": "/avatars/cain.svg"
+      "avatarUrl": "/avatars/generic_thief.png"
     },
     {
       "id": "ogma",
@@ -392,11 +358,31 @@
       "nameVi": "Ogma",
       "title": "Đội trưởng lính đánh thuê Talys",
       "classId": "mercenary",
-      "level": 4,
-      "baseStats": { "hp": 22, "str": 6, "mag": 0, "dex": 11, "spd": 12, "lck": 3, "def": 6, "res": 0 },
-      "growths": { "hp": 80, "str": 40, "mag": 0, "dex": 40, "spd": 30, "lck": 40, "def": 15, "res": 0 },
-      "startingWeapons": ["steel_sword", "iron_sword"],
-      "avatarUrl": "/avatars/ogma.svg"
+      "level": 2,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 0,
+        "dex": 11,
+        "spd": 12,
+        "lck": 3,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": 0,
+        "dex": 40,
+        "spd": 30,
+        "lck": 40,
+        "def": 15,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/ogma.png"
     },
     {
       "id": "barst",
@@ -405,10 +391,31 @@
       "title": "Dũng sĩ rìu Talys",
       "classId": "fighter",
       "level": 3,
-      "baseStats": { "hp": 24, "str": 10, "mag": 0, "dex": 6, "spd": 9, "lck": 5, "def": 6, "res": 0 },
-      "growths": { "hp": 80, "str": 40, "mag": 0, "dex": 40, "spd": 30, "lck": 40, "def": 15, "res": 0 },
-      "startingWeapons": ["iron_axe", "hand_axe"],
-      "avatarUrl": "/avatars/barst.svg"
+      "baseStats": {
+        "hp": 24,
+        "str": 10,
+        "mag": 0,
+        "dex": 6,
+        "spd": 9,
+        "lck": 5,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": 0,
+        "dex": 40,
+        "spd": 30,
+        "lck": 40,
+        "def": 15,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_axe",
+        "hand_axe"
+      ],
+      "avatarUrl": "/avatars/barst.png"
     },
     {
       "id": "bord",
@@ -417,10 +424,31 @@
       "title": "Tiên phong rìu Talys",
       "classId": "fighter",
       "level": 2,
-      "baseStats": { "hp": 20, "str": 8, "mag": 0, "dex": 4, "spd": 7, "lck": 1, "def": 5, "res": 0 },
-      "growths": { "hp": 70, "str": 55, "mag": 0, "dex": 45, "spd": 10, "lck": 35, "def": 10, "res": 0 },
-      "startingWeapons": ["iron_axe", "hammer"],
-      "avatarUrl": "/avatars/bord.svg"
+      "baseStats": {
+        "hp": 20,
+        "str": 8,
+        "mag": 0,
+        "dex": 4,
+        "spd": 7,
+        "lck": 1,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 70,
+        "str": 55,
+        "mag": 0,
+        "dex": 45,
+        "spd": 10,
+        "lck": 35,
+        "def": 10,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_axe",
+        "hammer"
+      ],
+      "avatarUrl": "/avatars/bord.png"
     },
     {
       "id": "cord",
@@ -429,22 +457,31 @@
       "title": "Hậu vệ rìu Talys",
       "classId": "fighter",
       "level": 2,
-      "baseStats": { "hp": 20, "str": 7, "mag": 0, "dex": 5, "spd": 9, "lck": 5, "def": 5, "res": 0 },
-      "growths": { "hp": 60, "str": 50, "mag": 0, "dex": 35, "spd": 40, "lck": 40, "def": 10, "res": 0 },
-      "startingWeapons": ["iron_axe", "hand_axe"],
-      "avatarUrl": "/avatars/cord.svg"
-    },
-    {
-      "id": "darros",
-      "name": "Darros",
-      "nameVi": "Darros",
-      "title": "Thủy thủ hoàn lương",
-      "classId": "pirate",
-      "level": 3,
-      "baseStats": { "hp": 21, "str": 6, "mag": 0, "dex": 2, "spd": 7, "lck": 3, "def": 5, "res": 0 },
-      "growths": { "hp": 90, "str": 60, "mag": 0, "dex": 20, "spd": 10, "lck": 40, "def": 30, "res": 0 },
-      "startingWeapons": ["iron_axe"],
-      "avatarUrl": "/avatars/darros.svg"
+      "baseStats": {
+        "hp": 20,
+        "str": 7,
+        "mag": 0,
+        "dex": 5,
+        "spd": 9,
+        "lck": 5,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 50,
+        "mag": 0,
+        "dex": 35,
+        "spd": 40,
+        "lck": 40,
+        "def": 10,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_axe",
+        "hand_axe"
+      ],
+      "avatarUrl": "/avatars/cord.png"
     },
     {
       "id": "castor",
@@ -453,10 +490,96 @@
       "title": "Thợ săn nghèo Talys",
       "classId": "hunter",
       "level": 2,
-      "baseStats": { "hp": 20, "str": 6, "mag": 0, "dex": 3, "spd": 6, "lck": 3, "def": 4, "res": 0 },
-      "growths": { "hp": 60, "str": 60, "mag": 0, "dex": 40, "spd": 40, "lck": 20, "def": 25, "res": 0 },
-      "startingWeapons": ["iron_bow"],
-      "avatarUrl": "/avatars/castor.svg"
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 0,
+        "dex": 3,
+        "spd": 6,
+        "lck": 3,
+        "def": 4,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 60,
+        "mag": 0,
+        "dex": 40,
+        "spd": 40,
+        "lck": 20,
+        "def": 25,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/castor.png"
+    },
+    {
+      "id": "darros",
+      "name": "Darros",
+      "nameVi": "Darros",
+      "title": "Hải tặc cảng Galder muốn hoàn lương",
+      "classId": "pirate",
+      "level": 3,
+      "baseStats": {
+        "hp": 21,
+        "str": 6,
+        "mag": 0,
+        "dex": 2,
+        "spd": 7,
+        "lck": 3,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "dex": 20,
+        "spd": 10,
+        "lck": 40,
+        "def": 30,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_axe",
+        "hand_axe"
+      ],
+      "avatarUrl": "/avatars/darros.png"
+    },
+    {
+      "id": "wrys",
+      "name": "Wrys",
+      "nameVi": "Wrys",
+      "title": "Tu sĩ nhân hậu Talys",
+      "classId": "curate",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "dex": 5,
+        "spd": 6,
+        "lck": 2,
+        "def": 3,
+        "res": 6
+      },
+      "growths": {
+        "hp": 20,
+        "str": 0,
+        "mag": 20,
+        "dex": 20,
+        "spd": 20,
+        "lck": 10,
+        "def": 5,
+        "res": 45
+      },
+      "startingWeapons": [
+        "heal_staff",
+        "vulnerary"
+      ],
+      "avatarUrl": "/avatars/wrys.png"
     },
     {
       "id": "gomer",
@@ -465,10 +588,31 @@
       "title": "Thủ lĩnh hải tặc Galder",
       "classId": "pirate",
       "level": 7,
-      "baseStats": { "hp": 32, "str": 10, "mag": 0, "dex": 6, "spd": 7, "lck": 2, "def": 8, "res": 0 },
-      "growths": { "hp": 0, "str": 0, "mag": 0, "dex": 0, "spd": 0, "lck": 0, "def": 0, "res": 0 },
-      "startingWeapons": ["steel_axe", "hand_axe"],
-      "avatarUrl": "/avatars/gomer.svg"
+      "baseStats": {
+        "hp": 27,
+        "str": 7,
+        "mag": 0,
+        "dex": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "dex": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "hand_axe",
+        "steel_sword"
+      ],
+      "avatarUrl": "/avatars/gomer.png"
     }
   ]
 }

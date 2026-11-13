@@ -33,6 +33,8 @@ Các nhãn trong thư mục: **Đã chọn** = chủ dự án muốn có cơ ch�
 - [audio.md](audio.md): nhạc, SFX và tín hiệu âm thanh.
 - [decisions.md](decisions.md): danh sách đã chọn, chưa chọn và các quyết định còn mở.
 - [implementation_spec.md](implementation_spec.md): kiến trúc, stack, data, asset pipeline, kiểm thử và hiệu năng.
+- [asset_sources.md](asset_sources.md): vị trí kho asset 3D ngoài, bảng ánh xạ model vào game và quy trình trích xuất đơn lẻ.
+- [hardin_chronicles.md](../Story/hardin_chronicles.md): cốt truyện gốc chuẩn xác của Hardin và định hướng viết lại theo hình tượng Arthas / Chúa Tể Bóng Tối.
 
 ## Cách cập nhật
 

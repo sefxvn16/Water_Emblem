@@ -86,6 +86,20 @@
       "effectiveAgainst": []
     },
     {
+      "id": "slim_lance",
+      "name": "Slim Lance",
+      "nameVi": "Thương mảnh",
+      "type": "lance",
+      "might": 5,
+      "hit": 100,
+      "weight": 2,
+      "crit": 5,
+      "minRange": 1,
+      "maxRange": 1,
+      "maxUses": 30,
+      "effectiveAgainst": []
+    },
+    {
       "id": "steel_lance",
       "name": "Steel Lance",
       "nameVi": "Thương thép",

@@ -22,18 +22,15 @@ export interface ExtendedUnitState {
   growths?: Record<string, number>;
 }
 
-export interface IntroLine {
-  readonly speaker: string;
-  readonly text: string;
-}
-
 export interface ChapterData {
   readonly id: string;
   readonly name: string;
   readonly mapId: string;
   readonly objective: ChapterObjective;
-  readonly introLines: readonly IntroLine[];
   readonly units: ExtendedUnitState[];
+  readonly optionalUnits: ExtendedUnitState[];
+  readonly recruitments: readonly { speakerUnitId: string; targetUnitId: string; maxDistance: number }[];
+  readonly carryoverUnitIds: readonly string[];
 }
 
 type RecordValue = Record<string, unknown>;
@@ -159,18 +156,8 @@ export function loadChapterData(
       : {}),
   };
 
-  if (!Array.isArray(data.introLines)) throw new Error('chapter.introLines must be an array');
-  const introLines: IntroLine[] = data.introLines.map((line: unknown, index: number) => {
-    const item = requireRecord(line, `chapter.introLines[${index}]`);
-    return {
-      speaker: requireString(item.speaker, `chapter.introLines[${index}].speaker`),
-      text: requireString(item.text, `chapter.introLines[${index}].text`),
-    };
-  });
-
   if (!Array.isArray(data.units) || data.units.length === 0) throw new Error('chapter.units must be a nonempty array');
-  const units: ExtendedUnitState[] = data.units.map((value: unknown, index: number) => {
-    const label = `chapter.units[${index}]`;
+  const parseUnit = (value: unknown, label: string): ExtendedUnitState => {
     const item = requireRecord(value, label);
     const weaponId = requireString(item.weaponId, `${label}.weaponId`);
     const weapon = itemById.get(weaponId);
@@ -206,9 +193,27 @@ export function loadChapterData(
       avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),
       growths: readGrowths(character.growths, `character ${characterId}.growths`),
     };
+  };
+  const units: ExtendedUnitState[] = data.units.map((value: unknown, index: number) => parseUnit(value, `chapter.units[${index}]`));
+  const optionalRows = data.optionalUnits ?? [];
+  if (!Array.isArray(optionalRows)) throw new Error('chapter.optionalUnits must be an array');
+  const optionalUnits: ExtendedUnitState[] = optionalRows.map((value: unknown, index: number) => parseUnit(value, `chapter.optionalUnits[${index}]`));
+  const recruitmentRows = data.recruitments ?? [];
+  if (!Array.isArray(recruitmentRows)) throw new Error('chapter.recruitments must be an array');
+  const recruitments = recruitmentRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.recruitments[${index}]`);
+    return {
+      speakerUnitId: requireString(item.speakerUnitId, `chapter.recruitments[${index}].speakerUnitId`),
+      targetUnitId: requireString(item.targetUnitId, `chapter.recruitments[${index}].targetUnitId`),
+      maxDistance: requireInteger(item.maxDistance, `chapter.recruitments[${index}].maxDistance`, 1),
+    };
   });
+  const carryoverRows = data.carryoverUnitIds ?? [];
+  if (!Array.isArray(carryoverRows)) throw new Error('chapter.carryoverUnitIds must be an array');
+  const carryoverUnitIds = carryoverRows.map((value: unknown, index: number) =>
+    requireString(value, `chapter.carryoverUnitIds[${index}]`));
 
-  const ids = units.map(({ unit }) => unit.id);
+  const ids = [...units, ...optionalUnits].map(({ unit }) => unit.id);
   if (new Set(ids).size !== ids.length) throw new Error('Duplicate unit ID');
   const positions = units.map(({ unit }) => `${unit.position.x},${unit.position.y}`);
   if (new Set(positions).size !== positions.length) throw new Error('Multiple units occupy one tile');
@@ -216,8 +221,18 @@ export function loadChapterData(
   if (objective.type === 'defeat_boss' && !ids.includes(objective.bossUnitId ?? '')) {
     throw new Error('Chapter boss ID does not reference a unit');
   }
+  if (new Set(recruitments.map(({ targetUnitId }) => targetUnitId)).size !== recruitments.length
+    || recruitments.some(({ speakerUnitId, targetUnitId }) =>
+      !units.some(({ unit }) => unit.id === speakerUnitId && unit.faction === 'player')
+      || !units.some(({ unit }) => unit.id === targetUnitId && unit.faction === 'enemy'))) {
+    throw new Error('Recruitment must reference one player speaker and one enemy target');
+  }
+  if (new Set(carryoverUnitIds).size !== carryoverUnitIds.length
+    || carryoverUnitIds.some((unitId) => ![...units, ...optionalUnits].some(({ unit }) => unit.id === unitId && unit.faction === 'player'))) {
+    throw new Error('Carryover unit ID must reference one player unit');
+  }
 
-  return { id, name, mapId, objective, introLines, units };
+  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds };
 }
 
 export const chapter01Data = loadChapterData(

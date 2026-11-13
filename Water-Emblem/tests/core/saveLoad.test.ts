@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { initialChapterData } from '../../src/core/data/chapterData';
-import { isGameSnapshot, isSaveGameData, type GameSnapshot } from '../../src/core/storage/saveLoad';
+import { chapter02Data, initialChapterData } from '../../src/core/data/chapterData';
+import { isGameSnapshot, isSaveGameData, type GameSnapshot } from '../../src/storage/saveLoad';
 
 const makeSnapshot = (): GameSnapshot => ({
   chapterId: initialChapterData.id,
@@ -49,5 +49,33 @@ describe('save validation', () => {
     const tamperedMovement = makeSnapshot();
     Object.assign(tamperedMovement.extendedUnits[0]!.unit, { moveType: 'teleport' });
     expect(isGameSnapshot(tamperedMovement)).toBe(false);
+  });
+
+  it('accepts recruited units while rejecting unauthorized faction changes', () => {
+    const galder: GameSnapshot = {
+      ...makeSnapshot(),
+      chapterId: chapter02Data.id,
+      extendedUnits: structuredClone(chapter02Data.units),
+    };
+    const castor = galder.extendedUnits.find(({ unit }) => unit.id === 'castor')!;
+    Object.assign(castor.unit, { faction: 'player' });
+    expect(isGameSnapshot(galder)).toBe(true);
+    const gomer = galder.extendedUnits.find(({ unit }) => unit.id === 'gomer')!;
+    Object.assign(gomer.unit, { faction: 'player' });
+    expect(isGameSnapshot(galder)).toBe(false);
+  });
+
+  it('saves a chapter two reserve without treating it as a map collision', () => {
+    const units = structuredClone(chapter02Data.units);
+    const abel = units.find(({ unit }) => unit.id === 'abel')!;
+    const snapshot: GameSnapshot = {
+      ...makeSnapshot(),
+      chapterId: chapter02Data.id,
+      extendedUnits: units.filter(({ unit }) => unit.id !== 'abel'),
+      reserveUnits: [abel],
+    };
+    expect(isGameSnapshot(snapshot)).toBe(true);
+    snapshot.reserveUnits!.push(abel);
+    expect(isGameSnapshot(snapshot)).toBe(false);
   });
 });

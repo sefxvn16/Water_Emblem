@@ -19,6 +19,12 @@ Cập nhật: 2026-11-13. Nguồn lựa chọn: chủ dự án chọn trực ti�
 
 Danh sách này có 30 mã. B09 là điều kiện thu phục trong trận; N11 là quy tắc đưa đơn vị thu phục vào đội. C01 **không bao gồm Break**. V05 là đòn phối hợp do đánh kẹp vị trí, **không tự thêm** Chain Attack hoặc Attack Stance. Q12 áp dụng cho mode riêng, không thay bản đồ FE3 của chiến dịch.
 
+## Quyết định giao diện ngày 2026-11-13
+
+Chủ dự án chọn giao diện tối giản theo hướng Bắc Âu, ưu tiên biểu tượng có popup giải thích khi di chuột hoặc chạm, thông tin và chữ dễ đọc. Camera xoay tự do. Quy tắc chi tiết nằm ở `art_ui.md`; đây là yêu cầu thiết kế, chưa phải bằng chứng đã triển khai.
+
+Chủ dự án bổ sung minimap tròn ở góc trên trái theo khu vực ô chọn. Sau khi xem bản chạy, chủ dự án bỏ ba nấc zoom, chọn zoom liên tục bằng lăn chuột hoặc nút cộng/trừ dưới minimap, mặc định ở góc nhìn khu vực; mức thu nhỏ nhất vẫn phải để toàn bộ bản đồ vừa và chiếm phần lớn khung. Chi tiết thuộc `art_ui.md`.
+
 ## Ý tưởng có trong đề án cũ nhưng chưa được chọn
 
 Break; Arts khắc Bow/Tome/Dagger; Battle Styles đầy đủ; Chain Attack tự động; Combat Arts; Gambits; Pair Up/Guard Stance; Rescue/Drop/Shove/Swap; rewind; Ironman/Classic/Casual; Fog of War; tương tác nguyên tố và phá/đốt/đóng băng diện rộng; tháp thử thách; randomizer; toàn bộ campaign 40+ chương; shop/forge và hub mở rộng. Những mục này không được triển khai chỉ vì từng xuất hiện trong báo cáo hoặc đề án. Một số có thể trở lại nếu chủ dự án chọn sau.

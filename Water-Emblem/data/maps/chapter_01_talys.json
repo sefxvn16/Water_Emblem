@@ -13,7 +13,7 @@
     ["sea", "sea", "plains", "plains", "mountain", "sea", "sea", "sea", "sea", "sea", "river", "river", "plains", "river", "river", "river", "sea", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
     ["sea", "plains", "plains", "plains", "plains", "sea", "sea", "sea", "sea", "river", "river", "plains", "plains", "plains", "bridge", "river", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "sea", "sea"],
     ["sea", "plains", "forest", "plains", "plains", "plains", "sea", "sea", "river", "river", "plains", "plains", "forest", "plains", "plains", "river", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
-    ["sea", "plains", "plains", "gate", "plains", "plains", "plains", "river", "river", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "fort", "plains", "plains", "plains", "plains", "sea", "sea"],
+    ["sea", "plains", "plains", "gate", "plains", "plains", "plains", "bridge", "bridge", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "fort", "plains", "plains", "plains", "plains", "sea", "sea"],
     ["sea", "sea", "plains", "fort", "plains", "plains", "river", "river", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea"],
     ["sea", "sea", "sea", "plains", "plains", "river", "river", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "plains", "forest", "plains", "plains", "plains", "plains", "plains", "plains", "sea", "sea", "sea"],
     ["sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea", "sea"]
@@ -28,7 +28,7 @@
     [-1, -1,  0,  0,  1, -1, -1, -1, -1, -1, -1, -1,  0, -1, -1, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
     [-1,  0,  0,  0,  0, -1, -1, -1, -1, -1, -1,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
     [-1,  0,  0,  0,  0,  0, -1, -1, -1, -1,  0,  0,  0,  0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
-    [-1,  0,  0,  1,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
+    [-1,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
     [-1, -1,  0,  0,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1],
     [-1, -1, -1,  0,  0, -1, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, -1, -1, -1],
     [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]

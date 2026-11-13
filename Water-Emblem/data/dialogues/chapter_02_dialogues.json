@@ -2,69 +2,57 @@
   "chapterId": "chapter_02",
   "opening": [
     {
-      "speaker": "Jagen",
-      "avatarUrl": "/avatars/jagen.svg",
-      "text": "Điện hạ Marth, chiến thuyền của chúng ta đã cập bờ biển cảng Galder. Cứ điểm này đang bị toán cướp biển khét tiếng của tên Gomer chiếm giữ!"
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.svg",
-      "text": "Đội quân tinh nhuệ do Đội trưởng Ogma chỉ huy từ Talys đã được phái tới hỗ trợ chúng ta từ phía bắc. Hãy mau chóng tiến quân hợp binh cùng Ogma!"
+      "speaker": "Ogma",
+      "avatarUrl": "/avatars/ogma.png",
+      "text": "Điện hạ, tôi là Ogma. Vua Talys cử tôi cùng ba người trong đội tới giúp ngài. Galder đang bị hải tặc chiếm giữ."
     },
     {
       "speaker": "Ogma",
-      "avatarUrl": "/avatars/ogma.svg",
-      "text": "Công chúa Caeda và Hoàng tử Marth đã đến! Barst, Bord, Cord! Chuẩn bị vũ khí, cùng ta nghênh chiến lũ cướp biển Galder!"
-    }
-  ],
-  "recruit_darros": [
-    {
-      "speaker": "Darros",
-      "avatarUrl": "/avatars/darros.svg",
-      "text": "Khoan đã, thưa Hoàng tử! Tôi là Darros. Tôi đã chán ngấy cuộc đời cướp bóc vô nhân đạo này rồi. Xin người hãy cho tôi một cơ hội chuộc lỗi và gia nhập nghĩa quân Altea!"
+      "avatarUrl": "/avatars/ogma.png",
+      "text": "Quân Grust cũng đã tới đây để truy đuổi ngài. Xin mọi người cẩn trọng."
     },
     {
       "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.svg",
-      "text": "Ai cũng xứng đáng có cơ hội thứ hai nếu thực tâm hướng thiện. Hãy cầm chắc rìu chiến và kề vai chiến đấu bảo vệ lẽ phải cùng chúng ta, Darros!"
+      "avatarUrl": "/avatars/marth.png",
+      "text": "Ta hiểu. Hãy giữ đội hình và tiến vào cảng."
     }
   ],
   "recruit_castor": [
     {
       "speaker": "Caeda",
-      "avatarUrl": "/avatars/caeda.svg",
-      "text": "Castor? Chẳng phải chàng là chàng thợ săn hiếu thảo ở Talys sao? Vì sao chàng lại đứng trong hàng ngũ toán cướp biển này?"
+      "avatarUrl": "/avatars/caeda.png",
+      "text": "Castor? Sao chàng lại đi cùng hải tặc?"
     },
     {
       "speaker": "Castor",
-      "avatarUrl": "/avatars/castor.svg",
-      "text": "Công chúa Caeda tha mạng! Mẹ già của tôi đang lâm bạo bệnh nguy kịch... Tôi cần tiền mua thuốc men nên mới bị bọn chúng lừa gạt. Xin người cứu giúp!"
+      "avatarUrl": "/avatars/castor.png",
+      "text": "Mẹ tôi đang bệnh. Tôi cần tiền mua thuốc nên mới theo họ. Xin công chúa tha thứ."
     },
     {
       "speaker": "Caeda",
-      "avatarUrl": "/avatars/caeda.svg",
-      "text": "Đừng lo, Castor. Ta sẽ lo chu toàn thuốc men cho mẹ chàng. Giờ hãy đem tài thiện xạ của chàng giúp sức cho Hoàng tử Marth giải phóng vùng đất này!"
+      "avatarUrl": "/avatars/caeda.png",
+      "text": "Ta có thể giúp chàng lo thuốc cho mẹ. Hãy rời toán hải tặc và đi cùng chúng ta."
     }
   ],
   "boss_gomer": {
-    "startCombat": "Lũ chó săn Altea các ngươi dám bén mảng tới cảng Galder này ư? Ta là Gomer, và đây sẽ là mồ chôn của các ngươi!",
-    "death": "Khốn... kiếp... Cảng Galder... rơi vào tay... lũ nhãi Altea rồi sao..."
+    "startCombat": "Đừng coi thường hải tặc Galder. Hãy đỡ chiếc rìu này!",
+    "death": "Không ngờ... ta lại thua..."
   },
   "ending": [
     {
-      "speaker": "Ogma",
-      "avatarUrl": "/avatars/ogma.svg",
-      "text": "Điện hạ Marth, bến cảng Galder đã hoàn toàn được giải phóng. Lũ cướp biển đã bị đập tan!"
+      "speaker": "Dân làng Galder",
+      "avatarUrl": "/avatars/village_man.png",
+      "text": "Cảm ơn điện hạ đã đuổi hải tặc. Chúng tôi lại có thể sống yên ổn."
+    },
+    {
+      "speaker": "Dân làng Galder",
+      "avatarUrl": "/avatars/village_man.png",
+      "text": "Muốn tới Aurelis, đoàn quân phải vượt núi Devil. Bọn cướp ở đó thường phục kích người qua đường; trong bọn có kiếm sĩ Navarre rất nguy hiểm."
     },
     {
       "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.svg",
-      "text": "Đa tạ dũng khí của đội quân đánh thuê Talys và lòng quả cảm của Đội trưởng Ogma. Cảng Galder an toàn, con đường vượt biển tới lục địa Archanea đã rộng mở!"
-    },
-    {
-      "speaker": "Caeda",
-      "avatarUrl": "/avatars/caeda.svg",
-      "text": "Marth, bình nguyên Aurelis và dãy núi Warren đang ở ngay trước mắt. Chúng ta hãy tiếp tục tiến lên hội quân cùng Công chúa Nyna và Hardin!"
+      "avatarUrl": "/avatars/marth.png",
+      "text": "Cảm ơn ông đã báo. Chúng ta sẽ đề phòng trên đường đi."
     }
   ]
 }

@@ -2,6 +2,14 @@
 
 File này sở hữu thứ tự chương, mục tiêu, sự kiện, boss và các mode ngoài chiến dịch. Cốt truyện cơ bản và thứ tự chương tham chiếu FE3; danh sách chương, dữ liệu bản đồ và số chương phát hành chưa được kiểm hoặc chốt. Những con số 10+, 25+ và 40+ trong đề án cũ là các mức dự kiến khác nhau, không phải cam kết.
 
+## Quy tắc tái hiện chiến dịch
+
+Chủ dự án đã xác nhận ngày 2026-11-13: tất cả màn chiến dịch theo cốt truyện và diễn tiến **FE3: Mystery of the Emblem** đúng Book/chương, trừ khi có yêu cầu khác. Trước khi nhập dữ liệu chương, đối chiếu ít nhất mục tiêu, nhân vật/địch, thu phục, viện binh và chuẩn bị đội với nguồn FE3; không thay bằng dữ liệu FE1/FE11. Phần chưa xác minh giữ nhãn prototype, không tự điền để đủ tính năng.
+
+Đối chiếu hiện có cho Book 1: chương 1–2 đều cần Marth chiếm cổng để thắng; Marth chết thì thua. Chương 2 có màn chuẩn bị. Wrys và Darros không có trong FE3; Ogma, Barst, Bord, Cord vào đội đầu chương 2, Castor có thể thu phục ở chương 2. Bảng địch chương 2 ghi một số hải tặc chưa hiện trong màn chuẩn bị nhưng xuất hiện khi vào trận; đây là sự kiện mở màn cần kiểm riêng, không tự biến thành viện binh giữa trận. Bảng quân Book 1 chưa ghi đợt viện binh giữa trận ở chương 1–2, nên không tạo đợt giả. Quy tắc B04 áp dụng tại chương FE3 có viện binh thật: báo trước để người chơi phản ứng và quân mới không hành động ngay lúc xuất hiện theo thiết kế đã chọn.
+
+Nguồn đối chiếu: [sổ tay Nintendo](https://www.nintendo.co.jp/data/software/manual/man_jahj.pdf), [danh sách chương FE3](https://fireemblemwiki.org/wiki/List_of_chapters_in_Fire_Emblem:_Mystery_of_the_Emblem), [dữ liệu địch FE3 Book 1](https://serenesforest.net/mystery-of-the-emblem/characters/enemy-data/book-1/). Dữ liệu vị trí ô, chỉ số và lời thoại trong prototype vẫn cần kiểm riêng; các nguồn này không xác nhận toàn bộ JSON hiện có.
+
 ## Cấu trúc một chương
 
 Mỗi chương cần ID, tên, map, đơn vị người chơi/địch, vị trí xuất phát, điều kiện thắng/thua, sự kiện hội thoại, thời điểm viện binh, nhạc và những nhân vật có thể chiêu mộ. Cấu trúc dữ liệu cụ thể thuộc `implementation_spec.md`; chương nào có nội dung gì sẽ được điền sau khi đối chiếu nguồn FE3 và quyết định của chủ dự án. Không lấy dữ liệu FE11 mặc nhiên làm dữ liệu FE3 Book 2.

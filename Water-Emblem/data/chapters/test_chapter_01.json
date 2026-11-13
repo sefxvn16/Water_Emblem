@@ -7,16 +7,6 @@
     "bossUnitId": "gazzak",
     "descriptionVi": "Hạ gục thủ lĩnh Gazzak (Boss) đang chiếm giữ cổng thành Talys"
   },
-  "introLines": [
-    {
-      "speaker": "Marth",
-      "text": "Toán cướp biển Galder dưới trướng tên Gazzak đã tràn lên bờ biển đảo Talys! Chúng ta phải bảo vệ lãnh thổ và người dân vô tội!"
-    },
-    {
-      "speaker": "Jagen",
-      "text": "Bẩm Điện hạ, tên đầu sỏ Gazzak đang cố thủ tại pháo đài cổng thành phía nam. Caeda, Cain, Abel, Draug và Gordin đã sẵn sàng nghênh chiến theo lệnh người!"
-    }
-  ],
   "units": [
     {
       "id": "marth",

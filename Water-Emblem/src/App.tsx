@@ -4,19 +4,19 @@ import galderMapRaw from '../data/maps/chapter_02_galder.json';
 import testMapRaw from '../data/maps/test_map_01.json';
 import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json';
 import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json';
-import itemsData from '../data/items.json';
 import { defaultTerrainRegistry } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
-import { CombatForecast, ItemDefinition } from './core/combat/types';
+import { CombatForecast } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { calculateSupportBonus } from './core/combat/support';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { evaluateChapterOutcome } from './core/chapter/types';
-import { saveGameState, loadGameState } from './core/storage/saveLoad';
+import { carryUnitsToChapter } from './core/chapter/transition';
+import { saveGameState, loadGameState } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 
 const chapterMaps: Record<string, MapData> = {
@@ -34,8 +34,6 @@ interface DialogueLine {
 interface ChapterDialogueData {
   chapterId: string;
   opening: DialogueLine[];
-  village_wrys?: DialogueLine[];
-  recruit_darros?: DialogueLine[];
   recruit_castor?: DialogueLine[];
   boss_gazzak?: { startCombat: string; death: string };
   boss_gomer?: { startCombat: string; death: string };
@@ -68,14 +66,14 @@ export const App: React.FC = () => {
   const chapterObjective = currentChapter.objective;
 
   const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(() => structuredClone(currentChapter.units));
+  const [reserveUnits, setReserveUnits] = useState<ExtendedUnitState[]>([]);
   const [turnManager] = useState<TurnManager>(() => new TurnManager(extendedUnits.map((u) => u.unit)));
   const [turnState, setTurnState] = useState(turnManager.getState());
 
   // Giao tranh & Hành động
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
   const [showStoryIntro, setShowStoryIntro] = useState<boolean>(true);
-  const [showVillageDialogue, setShowVillageDialogue] = useState<boolean>(false);
-  const [villageVisited, setVillageVisited] = useState<boolean>(false);
+  const [showPreparation, setShowPreparation] = useState<boolean>(false);
   const [chapterOutcome, setChapterOutcome] = useState<'ongoing' | 'victory' | 'defeat'>('ongoing');
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
@@ -90,24 +88,47 @@ export const App: React.FC = () => {
     setTurnState({ ...turnManager.getState() });
   };
 
-  const loadChapter = (chapterId: string) => {
+  const loadChapter = (chapterId: string, carryoverUnits?: readonly ExtendedUnitState[]) => {
     const targetChapter = chapters[chapterId];
     if (!targetChapter) return;
     setCurrentChapterId(chapterId);
-    const newUnits = structuredClone(targetChapter.units);
+    const newUnits = carryoverUnits
+      ? carryUnitsToChapter(carryoverUnits, targetChapter)
+      : structuredClone(targetChapter.units);
     setExtendedUnits(newUnits);
+    setReserveUnits([]);
     turnManager.restoreState({ turnNumber: 1, activePhase: 'player_phase' }, newUnits.map((u) => u.unit));
     setTurnState(turnManager.getState());
     setChapterOutcome('ongoing');
     setShowStoryIntro(true);
+    setShowPreparation(chapterId === 'chapter_02');
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
     setStatusNotice(`Đã chuyển sang ${targetChapter.name}`);
     setTimeout(() => setStatusNotice(null), 3000);
     setCombatLog([`📜 Bắt đầu ${targetChapter.name}`]);
-    setShowVillageDialogue(false);
-    setVillageVisited(false);
+  };
+
+  const toggleDeployment = (unitId: string) => {
+    if (unitId === 'marth') return;
+    const active = extendedUnits.find(({ unit }) => unit.id === unitId && unit.faction === 'player');
+    if (active) {
+      const nextActive = extendedUnits.filter(({ unit }) => unit.id !== unitId);
+      setExtendedUnits(nextActive);
+      setReserveUnits([...reserveUnits, active]);
+      turnManager.replaceUnits(nextActive.map(({ unit }) => unit));
+      syncState();
+      return;
+    }
+    const reserve = reserveUnits.find(({ unit }) => unit.id === unitId);
+    const deploymentLimit = currentChapter.units.filter(({ unit }) => unit.faction === 'player').length;
+    if (!reserve || extendedUnits.filter(({ unit }) => unit.faction === 'player').length >= deploymentLimit) return;
+    const nextActive = [...extendedUnits, reserve];
+    setExtendedUnits(nextActive);
+    setReserveUnits(reserveUnits.filter(({ unit }) => unit.id !== unitId));
+    turnManager.replaceUnits(nextActive.map(({ unit }) => unit));
+    syncState();
   };
 
   const selectedUnit = turnManager.getSelectedUnit();
@@ -166,6 +187,14 @@ export const App: React.FC = () => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
 
+  const talkTarget = selectedExtUnit && pendingMovePos
+    ? extendedUnits.find(({ unit }) => currentChapter.recruitments.some((rule) =>
+      rule.speakerUnitId === selectedExtUnit.unit.id
+      && rule.targetUnitId === unit.id
+      && unit.faction === 'enemy' && !unit.isDead
+      && getManhattanDistance(pendingMovePos, unit.position) <= rule.maxDistance))
+    : undefined;
+
   // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
     if (turnState.activePhase !== 'player_phase' || isProcessingAI) {
@@ -212,42 +241,6 @@ export const App: React.FC = () => {
         setExtendedUnits([...extendedUnits]);
         syncState();
 
-        // Chương 1: Thăm làng Wrys tại ô (3, 2)
-        if (currentChapterId === 'chapter_01' && x === 3 && y === 2 && !villageVisited) {
-          setShowVillageDialogue(true);
-        }
-
-        // Chương 2: Marth chiêu mộ Darros (đứng cạnh Darros trong phạm vi 1 ô)
-        if (currentChapterId === 'chapter_02' && selectedExtUnit.unit.id === 'marth') {
-          const darros = extendedUnits.find((u) => u.unit.id === 'darros' && u.unit.faction === 'enemy' && !u.unit.isDead);
-          if (darros && getManhattanDistance({ x, y }, darros.unit.position) <= 1) {
-            darros.unit = { ...darros.unit, faction: 'player', name: 'Darros' };
-            darros.aiRole = undefined;
-            setStatusNotice('🤝 Darros đã hoàn lương và gia nhập nghĩa quân Altea!');
-            setCombatLog((prev) => [
-              '🗣️ Darros: "Tôi đã chán ngấy cuộc đời cướp bóc này rồi... Xin hãy cho tôi gia nhập nghĩa quân Altea!"',
-              '🗣️ Marth: "Ai cũng xứng đáng có cơ hội thứ hai. Hãy kề vai sát cánh cùng chúng ta, Darros!"',
-              '🌟 Thủy thủ Darros chính thức gia nhập nghĩa quân Altea!',
-              ...prev,
-            ]);
-          }
-        }
-
-        // Chương 2: Caeda chiêu mộ Castor (đứng cạnh Castor trong phạm vi 1 ô)
-        if (currentChapterId === 'chapter_02' && selectedExtUnit.unit.id === 'caeda') {
-          const castor = extendedUnits.find((u) => u.unit.id === 'castor' && u.unit.faction === 'enemy' && !u.unit.isDead);
-          if (castor && getManhattanDistance({ x, y }, castor.unit.position) <= 1) {
-            castor.unit = { ...castor.unit, faction: 'player', name: 'Castor' };
-            castor.aiRole = undefined;
-            setStatusNotice('🤝 Caeda đã thuyết phục thành công Castor gia nhập nghĩa quân!');
-            setCombatLog((prev) => [
-              '🗣️ Castor: "Công chúa Caeda tha mạng! Tôi cần tiền thuốc men cho mẹ già..."',
-              '🗣️ Caeda: "Ta sẽ lo chu toàn cho mẹ chàng. Hãy đem tài thiện xạ giúp sức cho Hoàng tử Marth!"',
-              '🌟 Thợ săn Castor chính thức gia nhập nghĩa quân Altea!',
-              ...prev,
-            ]);
-          }
-        }
       }
       return;
     }
@@ -346,57 +339,38 @@ export const App: React.FC = () => {
     syncState();
   };
 
-  // Chiêu mộ Wrys khi thăm làng
-  const handleRecruitWrys = () => {
-    const healStaff = itemsData.items.find((i) => i.id === 'heal_staff') as ItemDefinition;
-    const wrysExt: ExtendedUnitState = {
-      unit: {
-        id: 'wrys',
-        name: 'Wrys',
-        faction: 'player',
-        position: { x: 3, y: 3 },
-        mov: 5,
-        moveType: 'foot',
-        hasActed: true,
-        isDead: false,
-      },
-      stats: {
-        hp: 16,
-        maxHp: 16,
-        str: 1,
-        mag: 2,
-        dex: 5,
-        spd: 6,
-        lck: 2,
-        def: 3,
-        res: 6,
-      },
-      weapon: healStaff,
-      title: 'Nhân sĩ làng Talys',
-      avatarUrl: '/avatars/wrys.svg',
-      growths: { hp: 40, str: 0, mag: 20, dex: 20, spd: 20, lck: 40, def: 5, res: 45 },
-    };
-
-    const nextUnits = [...extendedUnits, wrysExt];
-    setExtendedUnits(nextUnits);
-    turnManager.replaceUnits(nextUnits.map((u) => u.unit));
-    setVillageVisited(true);
-    setShowVillageDialogue(false);
-    setCombatLog((prev) => [
-      '🌟 Tu sĩ Wrys đã gia nhập nghĩa quân Altea và mang theo Trượng trị liệu (Heal)!',
-      ...prev,
-    ]);
-  };
-
   // Xác nhận Chờ
   const handleConfirmWait = () => {
-    if (pendingMovePos && pendingMovePos.x === 3 && pendingMovePos.y === 2 && !villageVisited) {
-      setShowVillageDialogue(true);
-    }
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    syncState();
+  };
+
+  const handleSeize = () => {
+    if (!selectedExtUnit || selectedExtUnit.unit.id !== 'marth' || !pendingMovePos) return;
+    const outcome = evaluateChapterOutcome(extendedUnits.map(({ unit }) => unit), chapterObjective, true);
+    if (outcome !== 'victory') return;
+    turnManager.waitSelectedUnit();
+    setPendingMovePos(null);
+    setChapterOutcome('victory');
+    syncState();
+  };
+
+  const handleTalk = () => {
+    if (!talkTarget || !selectedExtUnit) return;
+    const nextUnits = extendedUnits.map((entry) => entry.unit.id === talkTarget.unit.id
+      ? { ...entry, unit: { ...entry.unit, faction: 'player' as const }, aiRole: undefined }
+      : entry);
+    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    turnManager.waitSelectedUnit();
+    setExtendedUnits(nextUnits);
+    setPendingMovePos(null);
+    setCombatLog((prev) => [
+      ...(currentDialogues.recruit_castor ?? []).map(({ speaker, text }) => `${speaker}: ${text}`),
+      ...prev,
+    ]);
     syncState();
   };
 
@@ -493,6 +467,7 @@ export const App: React.FC = () => {
       chapterId: currentChapterId,
       turnState: { turnNumber: turnState.turnNumber, activePhase: turnState.activePhase },
       extendedUnits,
+      reserveUnits,
       rngSeed: defaultRNG.getSeed(),
       chapterOutcome,
       showStoryIntro,
@@ -513,6 +488,8 @@ export const App: React.FC = () => {
         setCurrentChapterId(data.chapterId);
       }
       setExtendedUnits(data.extendedUnits);
+      setReserveUnits(data.reserveUnits ?? []);
+      setShowPreparation(false);
       turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
       defaultRNG.setSeed(data.rngSeed);
       setChapterOutcome(data.chapterOutcome);
@@ -896,7 +873,7 @@ export const App: React.FC = () => {
                       <img
                         src={selectedExtUnit.avatarUrl}
                         alt={selectedExtUnit.unit.name}
-                        style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid #90caf9' }}
+                        style={{ width: '40px', height: '48px', borderRadius: '4px', border: '1px solid #90caf9', imageRendering: 'pixelated', objectFit: 'cover' }}
                       />
                     )}
                     <div>
@@ -917,7 +894,7 @@ export const App: React.FC = () => {
                       <img
                         src={selectedTarget.avatarUrl}
                         alt={selectedTarget.unit.name}
-                        style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid #ef9a9a' }}
+                        style={{ width: '40px', height: '48px', borderRadius: '4px', border: '1px solid #ef9a9a', imageRendering: 'pixelated', objectFit: 'cover' }}
                       />
                     )}
                     <div>
@@ -984,6 +961,12 @@ export const App: React.FC = () => {
               <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#64B5F6' }}>
                 Lựa chọn hành động ({selectedExtUnit?.unit.name})
               </div>
+              {chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === 'marth'
+                && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
+                && pendingMovePos.y === chapterObjective.seizeTargetTile?.y && (
+                  <button onClick={handleSeize}>Chiếm cổng thành (Seize)</button>
+                )}
+              {talkTarget && <button onClick={handleTalk}>Nói chuyện: {talkTarget.unit.name}</button>}
               {attackableTargets.length > 0 && (
                 <div style={{ fontSize: '12px', color: '#FFD54F', marginBottom: '8px' }}>
                   🎯 Click vào mục tiêu màu đỏ để xem dự báo trận đánh!
@@ -1046,10 +1029,12 @@ export const App: React.FC = () => {
                           alt={u.unit.name}
                           style={{
                             width: '46px',
-                            height: '46px',
-                            borderRadius: '8px',
+                            height: '56px',
+                            borderRadius: '4px',
                             border: `2px solid ${u.unit.faction === 'player' ? '#42a5f5' : '#ef5350'}`,
                             boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+                            imageRendering: 'pixelated',
+                            objectFit: 'cover',
                           }}
                         />
                       )}
@@ -1163,6 +1148,28 @@ export const App: React.FC = () => {
         </div>
       )}
 
+      {showPreparation && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
+          <section style={{ width: 'min(680px, 90vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '10px' }}>
+            <h2>Chuẩn bị xuất trận: {currentChapter.name}</h2>
+            <p>Chọn quân xuất trận. Marth bắt buộc tham chiến; quân không chọn ở lại đội dự bị.</p>
+            <p>Đang chọn {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}</p>
+            {[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player').map((entry) => (
+              <label key={entry.unit.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', borderBottom: '1px solid #334155' }}>
+                <input
+                  type="checkbox"
+                  checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
+                  disabled={entry.unit.id === 'marth' || entry.unit.isDead}
+                  onChange={() => toggleDeployment(entry.unit.id)}
+                />
+                <span>{entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.nameVi}{entry.unit.isDead ? ' (đã ngã xuống)' : ''}</span>
+              </label>
+            ))}
+            <button onClick={() => setShowPreparation(false)} style={{ marginTop: '20px', padding: '10px 20px' }}>Bắt đầu chương</button>
+          </section>
+        </div>
+      )}
+
       {/* Opening Story Dialogue Cutscene Modal */}
       {showStoryIntro && (
         <div
@@ -1192,7 +1199,7 @@ export const App: React.FC = () => {
             <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '340px', overflowY: 'auto' }}>
               {currentDialogues.opening.map((line, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
-                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #3b82f6', flexShrink: 0 }} />
+                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '54px', borderRadius: '4px', border: '2px solid #3b82f6', flexShrink: 0, imageRendering: 'pixelated', objectFit: 'cover' }} />
                   <div>
                     <strong style={{ color: '#60a5fa' }}>{line.speaker}:</strong>
                     <div>"{line.text}"</div>
@@ -1221,66 +1228,6 @@ export const App: React.FC = () => {
               }}
             >
               ⚔️ Vào trận đánh (Start Battle)
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Village Visit Dialogue Modal (Wrys Recruitment) */}
-      {showVillageDialogue && currentDialogues.village_wrys && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.85)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#1e293b',
-              border: '2px solid #10b981',
-              borderRadius: '12px',
-              padding: '24px',
-              maxWidth: '540px',
-              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 16px 0', color: '#34d399' }}>
-              🏡 Thăm Làng Talys - Chiêu mộ Tu sĩ Wrys
-            </h2>
-            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {currentDialogues.village_wrys.map((line, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
-                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #10b981', flexShrink: 0 }} />
-                  <div>
-                    <strong style={{ color: '#34d399' }}>{line.speaker}:</strong>
-                    <div>"{line.text}"</div>
-                  </div>
-                </div>
-              ))}
-              <div style={{ backgroundColor: '#064e3b', padding: '10px', borderRadius: '6px', color: '#a7f3d0' }}>
-                🎁 <strong>Nhận được:</strong> Nhân vật mới [Wrys - Tu sĩ] và [Trượng Trị Liệu - Heal]!
-              </div>
-            </div>
-            <button
-              onClick={handleRecruitWrys}
-              style={{
-                width: '100%',
-                padding: '12px',
-                backgroundColor: '#059669',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              🙏 Mời Tu sĩ Wrys gia nhập nghĩa quân
             </button>
           </div>
         </div>
@@ -1316,7 +1263,7 @@ export const App: React.FC = () => {
             <div style={{ maxHeight: '360px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
               {currentDialogues.ending.map((line, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#052e16', padding: '10px', borderRadius: '8px' }}>
-                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '44px', borderRadius: '50%', border: '2px solid #22c55e', flexShrink: 0 }} />
+                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '54px', borderRadius: '4px', border: '2px solid #22c55e', flexShrink: 0, imageRendering: 'pixelated', objectFit: 'cover' }} />
                   <div>
                     <strong style={{ color: '#86efac' }}>{line.speaker}:</strong>
                     <div style={{ color: '#ecfdf5', fontSize: '13px' }}>"{line.text}"</div>
@@ -1326,7 +1273,7 @@ export const App: React.FC = () => {
             </div>
             {currentChapterId === 'chapter_01' ? (
               <button
-                onClick={() => loadChapter('chapter_02')}
+                onClick={() => loadChapter('chapter_02', [...extendedUnits, ...reserveUnits])}
                 style={{
                   width: '100%',
                   padding: '12px 24px',

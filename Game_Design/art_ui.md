@@ -8,9 +8,21 @@ File này mô tả thứ người chơi nhìn thấy và thao tác. Quy tắc t�
 
 Pipeline dự kiến là dựng model/animation, xuất GLB, kiểm độ đọc trên bản đồ, rồi tối ưu theo số đo. Cần xác định nguồn hợp lệ cho portrait, icon, model, texture và hiệu ứng trước khi dùng. Không tự sao chép tài nguyên từ repository tham khảo vì báo cáo cũ khẳng định có thể dùng.
 
+## Nguyên tắc giao diện đã chốt
+
+Chủ dự án đánh giá hình ảnh bản hiện tại chưa đạt; việc model tải thành công và scene chạy được không đồng nghĩa giao diện hoặc chất lượng hình ảnh đã được duyệt.
+
+Giao diện theo hướng tối giản, ưu tiên tinh thần thiết kế Bắc Âu: bố cục thoáng, ít chi tiết trang trí, phân cấp thông tin rõ và dễ theo dõi trong lúc chơi. Các thông tin cần thiết như quân đang chọn, HP, hành động khả dụng, mục tiêu và trạng thái lượt phải tìm thấy nhanh, không bị chìm trong nền 3D.
+
+Ưu tiên biểu tượng thay chữ ở những thao tác có thể nhận biết rõ bằng hình. Khi di chuột hoặc chạm vào biểu tượng, hiện popup nhỏ giải thích chức năng; biểu tượng vẫn phải có tên cho công nghệ hỗ trợ. Những thông tin hoặc hành động dễ hiểu sai phải giữ nhãn chữ. Tất cả chữ hiển thị phải đọc được trên nền thực tế của game, với cỡ chữ, độ tương phản và khoảng cách phù hợp; không hy sinh độ đọc để thu gọn giao diện.
+
 ## Camera và hoạt cảnh
 
-Góc nhìn chính là isometric/dimetric, có zoom và pan. Đề án cũ vừa ghi xoay 4 hướng 90° vừa ghi deliverable “xoay 360°”; số góc xoay **chờ chốt** theo độ đọc bản đồ và thao tác người chơi. Camera phải giúp nhìn rõ ô, cao độ V07, cover C12 và bẫy V08; không che ô mục tiêu khi dự báo.
+Góc nhìn chính bắt đầu ở góc 3/4 để đọc bản đồ, nhưng camera xoay tự do và liên tục quanh điểm quan sát, không khóa ở bốn hướng 90°. Kéo chuột trái hoặc một ngón để di chuyển bản đồ; kéo chuột phải để xoay camera. Chỉ dẫn thao tác phải hiện rõ trong khung chơi. Camera phải giúp nhìn rõ ô, cao độ V07, cover C12 và bẫy V08; không che ô mục tiêu khi dự báo.
+
+Zoom liên tục bằng lăn chuột hoặc nút cộng/trừ dưới minimap, không chia thành ba nấc. Góc nhìn ban đầu ở khoảng cách khu vực để thao tác chiến thuật; người chơi có thể thu nhỏ tới mức toàn bộ bản đồ vừa khung và chiếm phần lớn diện tích khả dụng, hoặc phóng gần nhân vật. Giữ hướng xoay và tâm quan sát khi zoom; chữ, dấu chọn và thông tin chiến thuật vẫn phải đọc được. Quy tắc này thay thế mô tả ba nấc zoom trước đó.
+
+Minimap hình tròn đặt ở góc trên bên trái khung chơi, hiển thị khu vực quanh ô hoặc quân đang chọn; đánh dấu ô trung tâm và vị trí quân trong vùng đang thấy. Khi chọn ô khác, minimap chuyển sang khu vực đó. Hai nút cộng và trừ đặt gọn dưới minimap để điều chỉnh zoom liên tục.
 
 Hoạt cảnh cần tối thiểu các trạng thái đọc được: đứng, đi, ra đòn, trúng/né, bị hạ và hiệu ứng hành động hỗ trợ. Số bộ hoạt cảnh và camera zoom giao tranh tùy quy mô asset được duyệt. Q07 cho phép tua hoặc bỏ hoạt cảnh; kết quả trận đánh, RNG, thứ tự hiệu ứng và thời điểm lưu không phụ thuộc tốc độ hiển thị.
 
@@ -25,7 +37,7 @@ Hoạt cảnh cần tối thiểu các trạng thái đọc được: đứng, �
 | Q06: chuẩn bị trận | Cho xem bản đồ, mục tiêu, quân được chọn, vị trí xuất phát, class, vũ khí và trượng; cảnh báo trang bị không hợp lệ. |
 | Q07: tốc độ | Tua hoặc bỏ animation trong giao tranh; giữ thông báo kết quả đủ để hiểu diễn biến. |
 
-Giao diện còn cần menu hành động, trạng thái đơn vị, thông tin ô, HP, điều kiện thắng/thua, cảnh báo viện binh B04 và kết quả thu phục B09. Đề án cũ có minimap, level-up screen và nhiều hiệu ứng phụ; chỉ đưa vào phạm vi khi chủ dự án chốt. Với màu vùng nguy hiểm, không chỉ dùng màu để phân biệt nếu còn cách ký hiệu hoặc đường viền dễ đọc.
+Giao diện còn cần menu hành động, trạng thái đơn vị, thông tin ô, HP, điều kiện thắng/thua, cảnh báo viện binh B04 và kết quả thu phục B09. Minimap đã được chủ dự án chọn như trên; level-up screen và nhiều hiệu ứng phụ trong đề án cũ chỉ đưa vào phạm vi khi chủ dự án chốt. Với màu vùng nguy hiểm, không chỉ dùng màu để phân biệt nếu còn cách ký hiệu hoặc đường viền dễ đọc.
 
 ## Kiểm chứng hình ảnh và hiệu năng
 

@@ -46,4 +46,19 @@ describe('Chapter Win/Loss Conditions', () => {
     ];
     expect(evaluateChapterOutcome(units, objectiveRout)).toBe('victory');
   });
+
+  it('seize chỉ thắng khi Marth ở cổng và dùng lệnh chiếm', () => {
+    const objective: ChapterObjective = {
+      type: 'seize',
+      seizeTargetTile: { x: 2, y: 2 },
+      descriptionVi: 'Marth chiếm cổng',
+    };
+    const units: GridUnit[] = [
+      { id: 'marth', name: 'Marth', faction: 'player', position: { x: 2, y: 2 }, mov: 7, moveType: 'foot', isDead: false },
+    ];
+    expect(evaluateChapterOutcome(units, objective)).toBe('ongoing');
+    expect(evaluateChapterOutcome(units, objective, true)).toBe('victory');
+    Object.assign(units[0]!, { position: { x: 1, y: 2 } });
+    expect(evaluateChapterOutcome(units, objective, true)).toBe('ongoing');
+  });
 });

@@ -3,43 +3,211 @@
   "name": "Chương 2: Hải tặc xứ Galder (The Pirates of Galder)",
   "mapId": "chapter_02_galder",
   "objective": {
-    "type": "defeat_boss",
-    "bossUnitId": "gomer",
-    "descriptionVi": "Hạ gục thủ lĩnh sơn tặc Gomer (Boss) đang chiếm giữ cổng thành Galder"
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 1,
+      "y": 1
+    },
+    "descriptionVi": "Marth chiếm cổng thành sau khi mở đường"
   },
-  "introLines": [
+  "units": [
     {
-      "speaker": "Jagen",
-      "text": "Điện hạ Marth, chiến thuyền của chúng ta đã cập bờ biển cảng Galder. Cứ điểm này đang bị toán cướp biển khét tiếng của tên Gomer chiếm giữ!"
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 9
+      },
+      "weaponId": "rapier"
     },
     {
-      "speaker": "Marth",
-      "text": "Đội quân tinh nhuệ do Đội trưởng Ogma chỉ huy từ Talys đã được phái tới hỗ trợ chúng ta từ phía bắc. Hãy mau chóng tiến quân hợp binh cùng Ogma!"
+      "id": "jagen",
+      "characterId": "jagen",
+      "faction": "player",
+      "position": {
+        "x": 22,
+        "y": 9
+      },
+      "weaponId": "silver_lance"
     },
     {
-      "speaker": "Ogma",
-      "text": "Công chúa Caeda và Hoàng tử Marth đã đến! Barst, Bord, Cord! Chuẩn bị vũ khí, cùng ta nghênh chiến lũ cướp biển Galder!"
+      "id": "caeda",
+      "characterId": "caeda",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 8
+      },
+      "weaponId": "slim_lance"
+    },
+    {
+      "id": "cain",
+      "characterId": "cain",
+      "faction": "player",
+      "position": {
+        "x": 22,
+        "y": 8
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "abel",
+      "characterId": "abel",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "weaponId": "iron_lance"
+    },
+    {
+      "id": "draug",
+      "characterId": "draug",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 8
+      },
+      "weaponId": "iron_lance"
+    },
+    {
+      "id": "gordin",
+      "characterId": "gordin",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 9
+      },
+      "weaponId": "iron_bow"
+    },
+    {
+      "id": "ogma",
+      "characterId": "ogma",
+      "faction": "player",
+      "position": {
+        "x": 14,
+        "y": 2
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "barst",
+      "characterId": "barst",
+      "faction": "player",
+      "position": {
+        "x": 13,
+        "y": 3
+      },
+      "weaponId": "hand_axe"
+    },
+    {
+      "id": "bord",
+      "characterId": "bord",
+      "faction": "player",
+      "position": {
+        "x": 14,
+        "y": 3
+      },
+      "weaponId": "hammer"
+    },
+    {
+      "id": "cord",
+      "characterId": "cord",
+      "faction": "player",
+      "position": {
+        "x": 12,
+        "y": 3
+      },
+      "weaponId": "iron_axe"
+    },
+    {
+      "id": "gomer",
+      "characterId": "gomer",
+      "name": "Gomer (Boss)",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "weaponId": "hand_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "galder_guard",
+      "characterId": "galder_pirate",
+      "name": "Cận vệ Galder",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "weaponId": "hand_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "enemy_pirate_1",
+      "characterId": "galder_pirate",
+      "name": "Hải tặc cướp phá A",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 2
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_pirate_2",
+      "characterId": "galder_pirate",
+      "name": "Hải tặc cướp phá B",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 3
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_hunter",
+      "characterId": "galder_hunter",
+      "name": "Xạ thủ bến cảng",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 2
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "castor",
+      "characterId": "castor",
+      "name": "Castor (Thợ săn)",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 6
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "stationary"
     }
   ],
-  "units": [
-    { "id": "marth", "characterId": "marth", "faction": "player", "position": { "x": 23, "y": 9 }, "weaponId": "rapier" },
-    { "id": "jagen", "characterId": "jagen", "faction": "player", "position": { "x": 22, "y": 9 }, "weaponId": "silver_lance" },
-    { "id": "caeda", "characterId": "caeda", "faction": "player", "position": { "x": 23, "y": 8 }, "weaponId": "wing_spear" },
-    { "id": "cain", "characterId": "cain", "faction": "player", "position": { "x": 22, "y": 8 }, "weaponId": "iron_sword" },
-    { "id": "abel", "characterId": "abel", "faction": "player", "position": { "x": 24, "y": 9 }, "weaponId": "iron_lance" },
-    { "id": "draug", "characterId": "draug", "faction": "player", "position": { "x": 24, "y": 8 }, "weaponId": "iron_lance" },
-    { "id": "gordin", "characterId": "gordin", "faction": "player", "position": { "x": 25, "y": 9 }, "weaponId": "iron_bow" },
-    { "id": "wrys", "characterId": "wrys", "faction": "player", "position": { "x": 25, "y": 8 }, "weaponId": "heal_staff" },
-    { "id": "ogma", "characterId": "ogma", "faction": "player", "position": { "x": 14, "y": 2 }, "weaponId": "steel_sword" },
-    { "id": "barst", "characterId": "barst", "faction": "player", "position": { "x": 13, "y": 3 }, "weaponId": "hand_axe" },
-    { "id": "bord", "characterId": "bord", "faction": "player", "position": { "x": 14, "y": 3 }, "weaponId": "hammer" },
-    { "id": "cord", "characterId": "cord", "faction": "player", "position": { "x": 12, "y": 3 }, "weaponId": "iron_axe" },
-    { "id": "gomer", "characterId": "gomer", "name": "Gomer (Boss)", "faction": "enemy", "position": { "x": 1, "y": 1 }, "weaponId": "steel_axe", "aiRole": "stationary" },
-    { "id": "galder_guard", "characterId": "galder_pirate", "name": "Cận vệ Galder", "faction": "enemy", "position": { "x": 2, "y": 1 }, "weaponId": "hand_axe", "aiRole": "stationary" },
-    { "id": "enemy_pirate_1", "characterId": "galder_pirate", "name": "Hải tặc cướp phá A", "faction": "enemy", "position": { "x": 6, "y": 2 }, "weaponId": "iron_axe", "aiRole": "pursue" },
-    { "id": "enemy_pirate_2", "characterId": "galder_pirate", "name": "Hải tặc cướp phá B", "faction": "enemy", "position": { "x": 8, "y": 3 }, "weaponId": "iron_axe", "aiRole": "pursue" },
-    { "id": "enemy_hunter", "characterId": "galder_hunter", "name": "Xạ thủ bến cảng", "faction": "enemy", "position": { "x": 4, "y": 2 }, "weaponId": "iron_bow", "aiRole": "pursue" },
-    { "id": "darros", "characterId": "darros", "name": "Darros (Thủy thủ)", "faction": "enemy", "position": { "x": 19, "y": 6 }, "weaponId": "iron_axe", "aiRole": "stationary" },
-    { "id": "castor", "characterId": "castor", "name": "Castor (Thợ săn)", "faction": "enemy", "position": { "x": 10, "y": 6 }, "weaponId": "iron_bow", "aiRole": "stationary" }
+  "carryoverUnitIds": [
+    "marth",
+    "jagen",
+    "caeda",
+    "cain",
+    "abel",
+    "draug",
+    "gordin"
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "caeda",
+      "targetUnitId": "castor",
+      "maxDistance": 1
+    }
   ]
 }
