@@ -1,13 +1,13 @@
 # Game Design: Water Emblem
 
-Thư mục này ghi thiết kế của **Water Emblem - Mystery of Nothing**. Đọc file này trước, sau đó chỉ mở tài liệu liên quan đến việc đang làm. [PLAN.md](../PLAN.md) ở thư mục gốc theo dõi tiến độ; tài liệu trong `report/` là nghiên cứu và không tự trở thành luật game.
+Thư mục này ghi thiết kế của **Water Emblem - Mystery of Nothing**. Đọc file này trước, sau đó chỉ mở tài liệu liên quan đến việc đang làm. [PLAN.md](../PLAN.md) ở thư mục gốc theo dõi tiến độ; tài liệu trong `reports/` là nghiên cứu và không tự trở thành luật game.
 
 ## Nguồn có thẩm quyền và trạng thái
 
 1. Quyết định mới nhất của chủ dự án đứng trước nội dung cũ. `decisions.md` ghi những cơ chế đã chọn và vấn đề còn phải chốt.
 2. Mỗi file thiết kế bên dưới sở hữu quy tắc trong phạm vi của nó. Một quy tắc xuất hiện ở nhiều màn hình vẫn chỉ được định nghĩa một lần; file khác dẫn liên kết đến nơi sở hữu.
 3. `AGENTS.md` ở thư mục gốc quy định cách agent làm việc và ranh giới kỹ thuật. `implementation_spec.md` giữ đặc tả kỹ thuật đã được phê duyệt hoặc đang chờ duyệt.
-4. `report/` và `github.txt` là nguồn tham khảo. Nhận định về lịch sử game, dữ liệu, license hoặc khả năng dùng lại asset cần được kiểm trực tiếp trước khi dùng.
+4. `reports/` và `github.txt` là nguồn tham khảo. Nhận định về lịch sử game, dữ liệu, license hoặc khả năng dùng lại asset cần được kiểm trực tiếp trước khi dùng.
 
 Các nhãn trong thư mục: **Đã chọn** = chủ dự án muốn có cơ chế, chưa đồng nghĩa đã chốt công thức hoặc cách triển khai; **Đã chốt** = quy tắc chi tiết đã được chủ dự án duyệt; **Chờ chốt** = chưa được phép tự chọn; **Đề xuất cũ** = ghi lại để đối chiếu, không đưa vào phạm vi hiện hành. Trước khi code một phần có nhãn Chờ chốt, hỏi gộp các quyết định ảnh hưởng phần đó.
 

@@ -40,6 +40,20 @@ export class TurnManager {
     return this.state.units.find((u) => u.id === this.state.selectedUnitId);
   }
 
+  replaceUnits(units: GridUnit[]): void {
+    this.state.units = units;
+  }
+
+  restoreState(snapshot: Pick<TurnState, 'turnNumber' | 'activePhase'>, units: GridUnit[]): void {
+    this.state = {
+      turnNumber: snapshot.turnNumber,
+      activePhase: snapshot.activePhase,
+      selectedUnitId: null,
+      reachableTiles: null,
+      units,
+    };
+  }
+
   selectUnit(unitId: string, reachableTiles: Map<string, MoveTileResult>): boolean {
     if (this.state.activePhase !== 'player_phase') {
       return false;

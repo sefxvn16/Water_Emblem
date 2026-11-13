@@ -1,0 +1,101 @@
+{
+  "id": "test_chapter_01",
+  "name": "Chương 1: Bờ biển Talys (Marth Embarks)",
+  "mapId": "test_map_01",
+  "objective": {
+    "type": "defeat_boss",
+    "bossUnitId": "gazzak",
+    "descriptionVi": "Hạ gục thủ lĩnh Gazzak (Boss) đang chiếm giữ cổng thành Talys"
+  },
+  "introLines": [
+    { "speaker": "Marth", "text": "Toán cướp biển Galder dưới trướng tên Gazzak đã tràn lên bờ biển đảo Talys! Chúng ta phải bảo vệ lãnh thổ và người dân vô tội!" },
+    { "speaker": "Jagen", "text": "Bẩm Điện hạ, tên đầu sỏ Gazzak đang cố thủ tại pháo đài cổng thành phía nam. Caeda, Cain, Abel, Draug và Gordin đã sẵn sàng nghênh chiến theo lệnh người!" }
+  ],
+  "units": [
+    {
+      "id": "marth", "name": "Marth", "faction": "player", "position": { "x": 1, "y": 1 },
+      "mov": 7, "moveType": "foot", "weaponId": "rapier",
+      "title": "Hoàng tử nước Altea",
+      "avatarUrl": "/avatars/marth.svg",
+      "growths": { "hp": 80, "str": 50, "mag": 0, "dex": 40, "spd": 50, "lck": 70, "def": 20, "res": 2 },
+      "stats": { "hp": 18, "maxHp": 18, "str": 5, "mag": 0, "dex": 3, "spd": 7, "lck": 7, "def": 7, "res": 0 }
+    },
+    {
+      "id": "jagen", "name": "Jagen", "faction": "player", "position": { "x": 0, "y": 1 },
+      "mov": 10, "moveType": "cavalry", "weaponId": "silver_lance",
+      "title": "Lão tướng Altea",
+      "avatarUrl": "/avatars/jagen.svg",
+      "growths": { "hp": 40, "str": 20, "mag": 0, "dex": 35, "spd": 15, "lck": 30, "def": 15, "res": 5 },
+      "stats": { "hp": 22, "maxHp": 22, "str": 7, "mag": 0, "dex": 10, "spd": 8, "lck": 3, "def": 9, "res": 3 }
+    },
+    {
+      "id": "caeda", "name": "Caeda", "faction": "player", "position": { "x": 1, "y": 0 },
+      "mov": 8, "moveType": "flier", "weaponId": "wing_spear",
+      "title": "Công chúa nước Talys",
+      "avatarUrl": "/avatars/caeda.svg",
+      "growths": { "hp": 50, "str": 20, "mag": 0, "dex": 60, "spd": 85, "lck": 70, "def": 20, "res": 0 },
+      "stats": { "hp": 16, "maxHp": 16, "str": 4, "mag": 0, "dex": 6, "spd": 12, "lck": 9, "def": 7, "res": 3 }
+    },
+    {
+      "id": "cain", "name": "Cain", "faction": "player", "position": { "x": 0, "y": 0 },
+      "mov": 7, "moveType": "cavalry", "weaponId": "iron_sword",
+      "title": "Kỵ sĩ Bò Đực (The Bull)",
+      "avatarUrl": "/avatars/cain.svg",
+      "growths": { "hp": 75, "str": 35, "mag": 0, "dex": 50, "spd": 60, "lck": 40, "def": 20, "res": 0 },
+      "stats": { "hp": 20, "maxHp": 20, "str": 7, "mag": 0, "dex": 5, "spd": 6, "lck": 3, "def": 7, "res": 0 }
+    },
+    {
+      "id": "abel", "name": "Abel", "faction": "player", "position": { "x": 0, "y": 2 },
+      "mov": 7, "moveType": "cavalry", "weaponId": "iron_lance",
+      "title": "Kỵ sĩ Báo Đốm (The Panther)",
+      "avatarUrl": "/avatars/abel.svg",
+      "growths": { "hp": 65, "str": 40, "mag": 0, "dex": 50, "spd": 50, "lck": 25, "def": 20, "res": 0 },
+      "stats": { "hp": 20, "maxHp": 20, "str": 6, "mag": 0, "dex": 7, "spd": 7, "lck": 2, "def": 7, "res": 0 }
+    },
+    {
+      "id": "draug", "name": "Draug", "faction": "player", "position": { "x": 1, "y": 2 },
+      "mov": 5, "moveType": "armor", "weaponId": "iron_lance",
+      "title": "Bức tường thép Altea",
+      "avatarUrl": "/avatars/draug.svg",
+      "growths": { "hp": 60, "str": 40, "mag": 0, "dex": 30, "spd": 40, "lck": 20, "def": 30, "res": 0 },
+      "stats": { "hp": 20, "maxHp": 20, "str": 7, "mag": 0, "dex": 3, "spd": 3, "lck": 1, "def": 11, "res": 0 }
+    },
+    {
+      "id": "gordin", "name": "Gordin", "faction": "player", "position": { "x": 2, "y": 1 },
+      "mov": 5, "moveType": "foot", "weaponId": "iron_bow",
+      "title": "Tân xạ thủ Altea",
+      "avatarUrl": "/avatars/gordin.svg",
+      "growths": { "hp": 60, "str": 30, "mag": 0, "dex": 40, "spd": 35, "lck": 40, "def": 30, "res": 0 },
+      "stats": { "hp": 18, "maxHp": 18, "str": 5, "mag": 0, "dex": 5, "spd": 4, "lck": 4, "def": 6, "res": 0 }
+    },
+    {
+      "id": "gazzak", "name": "Gazzak (Boss)", "faction": "enemy", "position": { "x": 4, "y": 7 },
+      "mov": 0, "moveType": "bandit", "weaponId": "steel_axe", "aiRole": "stationary",
+      "title": "Thủ lĩnh toán cướp Galder",
+      "avatarUrl": "/avatars/gazzak.svg",
+      "growths": { "hp": 0, "str": 0, "mag": 0, "dex": 0, "spd": 0, "lck": 0, "def": 0, "res": 0 },
+      "stats": { "hp": 30, "maxHp": 30, "str": 9, "mag": 0, "dex": 5, "spd": 6, "lck": 1, "def": 7, "res": 0 }
+    },
+    {
+      "id": "enemy_pirate_1", "name": "Galder Pirate A", "faction": "enemy", "position": { "x": 2, "y": 4 },
+      "mov": 5, "moveType": "bandit", "weaponId": "iron_axe", "aiRole": "pursue",
+      "title": "Toán cướp Galder",
+      "avatarUrl": "/avatars/gazzak.svg",
+      "stats": { "hp": 20, "maxHp": 20, "str": 6, "mag": 0, "dex": 3, "spd": 5, "lck": 1, "def": 4, "res": 0 }
+    },
+    {
+      "id": "enemy_pirate_2", "name": "Galder Pirate B", "faction": "enemy", "position": { "x": 5, "y": 4 },
+      "mov": 5, "moveType": "bandit", "weaponId": "hand_axe", "aiRole": "pursue",
+      "title": "Toán cướp Galder",
+      "avatarUrl": "/avatars/gazzak.svg",
+      "stats": { "hp": 20, "maxHp": 20, "str": 6, "mag": 0, "dex": 3, "spd": 5, "lck": 1, "def": 4, "res": 0 }
+    },
+    {
+      "id": "enemy_hunter", "name": "Galder Hunter", "faction": "enemy", "position": { "x": 6, "y": 5 },
+      "mov": 6, "moveType": "foot", "weaponId": "iron_bow", "aiRole": "pursue",
+      "title": "Xạ thủ hải tặc",
+      "avatarUrl": "/avatars/gordin.svg",
+      "stats": { "hp": 18, "maxHp": 18, "str": 6, "mag": 0, "dex": 4, "spd": 6, "lck": 2, "def": 4, "res": 0 }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bgJagen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="16" fill="url(#bgJagen)"/>
+  <!-- Silver Hair -->
+  <path d="M 28 55 C 22 28 35 12 60 12 C 85 12 98 28 92 55 C 88 78 86 92 86 92 L 34 92 Z" fill="#cbd5e1"/>
+  <!-- Paladin Armor -->
+  <path d="M 28 115 L 38 86 L 82 86 L 92 115 Z" fill="#94a3b8"/>
+  <path d="M 44 86 L 48 115 L 72 115 L 76 86 Z" fill="#64748b"/>
+  <circle cx="60" cy="98" r="4" fill="#fbbf24"/>
+  <!-- Face -->
+  <path d="M 42 46 Q 42 78 60 82 Q 78 78 78 46 Z" fill="#fed7aa"/>
+  <!-- Eyes stern -->
+  <ellipse cx="51" cy="52" rx="3" ry="3.5" fill="#334155"/>
+  <ellipse cx="69" cy="52" rx="3" ry="3.5" fill="#334155"/>
+  <line x1="46" y1="47" x2="56" y2="49" stroke="#475569" stroke-width="2"/>
+  <line x1="74" y1="47" x2="64" y2="49" stroke="#475569" stroke-width="2"/>
+  <!-- Nose / Moustache -->
+  <path d="M 60 56 L 59 62 L 62 62" stroke="#d97706" stroke-width="1.2" fill="none"/>
+  <path d="M 50 69 Q 60 67 70 69 Q 60 74 50 69 Z" fill="#e2e8f0"/>
+  <!-- Hair bangs -->
+  <path d="M 32 40 Q 50 20 60 20 Q 70 20 88 40 Q 70 28 60 36 Q 50 28 32 40 Z" fill="#e2e8f0"/>
+</svg>

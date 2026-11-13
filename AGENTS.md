@@ -4,9 +4,11 @@
 
 Water Emblem - Mystery of Nothing là game chiến thuật theo lượt 3D low-poly chạy trực tiếp trên trình duyệt, không giả lập ROM. Dự án kế thừa bố cục bản đồ, tên nhân vật, cốt truyện cơ bản và tên vật phẩm của Fire Emblem 3; hệ thống chiến đấu và AI được thiết kế lại.
 
-Đọc `Game_Design/README.md` trước khi làm thiết kế hoặc game code, rồi mở các file được chỉ dẫn theo nhiệm vụ. `Game_Design/decisions.md` ghi cơ chế chủ dự án đã chọn và điểm chưa chốt; các file chuyên đề sở hữu luật chi tiết. `PLAN.md` ghi tiến độ và bằng chứng PASS. Các báo cáo trong `report/` là tài liệu nghiên cứu, không tự thành luật game. Khi tài liệu mâu thuẫn, kiểm code/dữ liệu thực có, báo điểm khác biệt và xin quyết định nếu nó làm đổi thiết kế.
+Đọc `Game_Design/README.md` trước khi làm thiết kế hoặc game code, rồi mở các file được chỉ dẫn theo nhiệm vụ. `Game_Design/decisions.md` ghi cơ chế chủ dự án đã chọn và điểm chưa chốt; các file chuyên đề sở hữu luật chi tiết. `PLAN.md` ghi tiến độ và bằng chứng PASS. Các báo cáo trong `reports/` là tài liệu nghiên cứu, không tự thành luật game. Khi tài liệu mâu thuẫn, kiểm code/dữ liệu thực có, báo điểm khác biệt và xin quyết định nếu nó làm đổi thiết kế.
 
 ## Ranh giới kỹ thuật
+
+Mã nguồn, dữ liệu game, asset giao diện, test và cấu hình build nằm trong `Water-Emblem/`. Các đường dẫn `src/`, `data/`, `public/` và `tests/` bên dưới được hiểu là tương đối với thư mục này.
 
 - Giữ TypeScript strict, Three.js, React hooks, XState v5, Vite, Howler.js, IndexedDB qua Dexie, Vitest và Playwright. Đường đi dùng thuật toán grid tự viết. Asset 3D dùng GLB; âm thanh ưu tiên OGG và có MP3 khi cần cho Safari. Không đổi stack hoặc thêm dependency khi chưa được chủ dự án duyệt.
 - `src/core/` chứa gameplay và chạy được trong môi trường không có trình duyệt. Nó không import Three.js, React, renderer hoặc UI. `src/renderer/` chỉ hiển thị state và sự kiện từ core; `src/ui/` gọi core qua giao diện được định nghĩa rõ, không trực tiếp điều khiển scene. Nếu thấy vi phạm ngoài phạm vi việc đang làm, ghi vào `PLAN.md` để xử lý theo thứ tự.

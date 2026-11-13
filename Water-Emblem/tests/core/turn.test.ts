@@ -117,4 +117,20 @@ describe('TurnManager & Phase Transition', () => {
     expect(marth?.hasActed).toBe(false);
     expect(jagen?.hasActed).toBe(false);
   });
+
+  it('khôi phục đúng lượt và dùng cùng quân với trạng thái đã tải', () => {
+    const manager = new TurnManager(getInitialUnits());
+    const restoredUnits = getInitialUnits();
+    restoredUnits[0]!.position = { x: 2, y: 2 };
+    restoredUnits[0]!.hasActed = true;
+
+    manager.restoreState({ turnNumber: 4, activePhase: 'player_phase' }, restoredUnits);
+
+    expect(manager.getState().turnNumber).toBe(4);
+    expect(manager.getState().units).toBe(restoredUnits);
+    expect(manager.getSelectedUnit()).toBeUndefined();
+    expect(manager.getState().reachableTiles).toBeNull();
+    expect(manager.getState().units[0]?.position).toEqual({ x: 2, y: 2 });
+    expect(manager.getState().units[0]?.hasActed).toBe(true);
+  });
 });

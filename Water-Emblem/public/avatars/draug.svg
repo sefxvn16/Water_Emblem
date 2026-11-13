@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#1e293b"/>
+  <!-- Helmet Heavy Armor -->
+  <path d="M 22 115 L 30 75 L 90 75 L 98 115 Z" fill="#475569"/>
+  <!-- Shoulder pads -->
+  <circle cx="26" cy="95" r="14" fill="#64748b"/>
+  <circle cx="94" cy="95" r="14" fill="#64748b"/>
+  <!-- Helmet head -->
+  <path d="M 32 60 C 28 20 40 10 60 10 C 80 10 92 20 88 60 L 82 82 L 38 82 Z" fill="#64748b"/>
+  <!-- Helmet Visor plate -->
+  <path d="M 40 40 L 80 40 L 76 68 L 44 68 Z" fill="#334155"/>
+  <rect x="46" y="48" width="28" height="6" rx="2" fill="#0284c7"/>
+  <!-- Guard slit -->
+  <line x1="60" y1="40" x2="60" y2="78" stroke="#1e293b" stroke-width="3"/>
+  <line x1="45" y1="62" x2="75" y2="62" stroke="#1e293b" stroke-width="2"/>
+</svg>

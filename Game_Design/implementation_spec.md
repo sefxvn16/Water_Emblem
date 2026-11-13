@@ -1,5 +1,7 @@
 # Đặc tả triển khai
 
+Mã nguồn và cấu hình chạy hiện nằm trong `../Water-Emblem/`; mọi đường dẫn `src/`, `data/`, `public/` và `tests/` trong tài liệu này tương đối với thư mục đó.
+
 File này giữ ranh giới kỹ thuật đã ghi trong `AGENTS.md` và phần còn dùng được của đề án triển khai cũ. Mô tả đường dẫn bên dưới là **cấu trúc dự kiến**, không khẳng định thư mục hoặc code đã tồn tại. Tình trạng thực tế và kết quả kiểm tra nằm ở `PLAN.md`.
 
 ## Công nghệ và ranh giới

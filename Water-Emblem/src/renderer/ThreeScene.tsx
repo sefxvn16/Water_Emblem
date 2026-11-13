@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { MapData, Position } from '../core/grid/types';
-import { ExtendedUnitState } from '../App';
+import { ExtendedUnitState } from '../core/data/chapterData';
 
 interface ThreeSceneProps {
   mapData: MapData;
@@ -27,6 +27,22 @@ const TERRAIN_3D_COLORS: Record<string, { color: number; heightScale: number }> 
   wall: { color: 0x424242, heightScale: 1.5 },
 };
 
+function clearAndDisposeGroup(group: THREE.Group): void {
+  const geometries = new Set<THREE.BufferGeometry>();
+  const materials = new Set<THREE.Material>();
+  group.traverse((object) => {
+    if (object instanceof THREE.Mesh) {
+      geometries.add(object.geometry);
+      for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+        materials.add(material);
+      }
+    }
+  });
+  group.clear();
+  geometries.forEach((geometry) => geometry.dispose());
+  materials.forEach((material) => material.dispose());
+}
+
 export const ThreeScene: React.FC<ThreeSceneProps> = ({
   mapData,
   units,
@@ -45,6 +61,10 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
   const unitsGroupRef = useRef<THREE.Group | null>(null);
   const overlaysGroupRef = useRef<THREE.Group | null>(null);
   const cameraAngleRef = useRef<number>(0); // 0, 90, 180, 270 degrees
+  const onTileClickRef = useRef(onTileClick);
+  const onTileHoverRef = useRef(onTileHover);
+  onTileClickRef.current = onTileClick;
+  onTileHoverRef.current = onTileHover;
 
   // Khởi tạo Three.js Scene
   useEffect(() => {
@@ -146,7 +166,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
         const hit = intersects[0];
         if (hit?.object.userData) {
           const { x, y } = hit.object.userData as { x: number; y: number };
-          onTileClick(x, y);
+          onTileClickRef.current(x, y);
         }
       }
     };
@@ -164,7 +184,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
         const hit = intersects[0];
         if (hit?.object.userData) {
           const { x, y } = hit.object.userData as { x: number; y: number };
-          onTileHover(x, y);
+          onTileHoverRef.current(x, y);
         }
       }
     };
@@ -197,6 +217,8 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       domElement.removeEventListener('pointerdown', handlePointerDown);
       domElement.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('resize', handleResize);
+      clearAndDisposeGroup(tilesGroup);
+      tileMeshesRef.current.clear();
       renderer.dispose();
       if (domElement.parentNode) {
         domElement.parentNode.removeChild(domElement);
@@ -210,12 +232,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     if (!overlaysGroup) return;
 
     // Dọn overlays cũ
-    while (overlaysGroup.children.length > 0) {
-      const child = overlaysGroup.children[0];
-      if (child) {
-        overlaysGroup.remove(child);
-      }
-    }
+    clearAndDisposeGroup(overlaysGroup);
 
     const planeGeo = new THREE.PlaneGeometry(0.9, 0.9);
     planeGeo.rotateX(-Math.PI / 2);
@@ -298,6 +315,14 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       p.position.set(selectedPos.x, h - 0.46, selectedPos.y);
       overlaysGroup.add(p);
     }
+    return () => {
+      clearAndDisposeGroup(overlaysGroup);
+      planeGeo.dispose();
+      blueMat.dispose();
+      redMat.dispose();
+      targetRedMat.dispose();
+      yellowMat.dispose();
+    };
   }, [reachableKeys, dangerZoneKeys, selectedPos, attackTargetKeys]);
 
   // Cập nhật Quân cờ 3D (Units 3D Model: Chibi low-poly cylinders & spheres)
@@ -305,12 +330,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     const unitsGroup = unitsGroupRef.current;
     if (!unitsGroup) return;
 
-    while (unitsGroup.children.length > 0) {
-      const child = unitsGroup.children[0];
-      if (child) {
-        unitsGroup.remove(child);
-      }
-    }
+    clearAndDisposeGroup(unitsGroup);
 
     const aliveUnits = units.filter((u) => !u.unit.isDead);
 
@@ -352,6 +372,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
 
       unitsGroup.add(unitGroup);
     }
+    return () => clearAndDisposeGroup(unitsGroup);
   }, [units]);
 
   // Xoay Camera 90 độ

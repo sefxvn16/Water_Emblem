@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#14532d"/>
+  <!-- Hair Green calm -->
+  <path d="M 28 50 C 20 22 40 10 60 10 C 80 10 100 22 92 50 L 86 85 L 34 85 Z" fill="#15803d"/>
+  <!-- Armor Green -->
+  <path d="M 28 115 L 38 86 L 82 86 L 92 115 Z" fill="#16a34a"/>
+  <path d="M 45 86 L 48 115 L 72 115 L 75 86 Z" fill="#14532d"/>
+  <!-- Face -->
+  <path d="M 42 46 Q 42 78 60 82 Q 78 78 78 46 Z" fill="#fed7aa"/>
+  <!-- Eyes -->
+  <ellipse cx="51" cy="53" rx="3.5" ry="3.8" fill="#14532d"/>
+  <ellipse cx="69" cy="53" rx="3.5" ry="3.8" fill="#14532d"/>
+  <circle cx="50" cy="52" r="1.2" fill="#fff"/>
+  <circle cx="68" cy="52" r="1.2" fill="#fff"/>
+  <!-- Nose / Smile -->
+  <path d="M 60 58 L 59 63 L 62 63" stroke="#d97706" stroke-width="1.2" fill="none"/>
+  <path d="M 55 70 Q 60 73 65 70" stroke="#166534" stroke-width="1.5" fill="none"/>
+  <!-- Smooth bangs -->
+  <path d="M 32 40 Q 55 24 62 42 Q 72 26 88 40 Q 60 28 32 40 Z" fill="#22c55e"/>
+</svg>

@@ -1,85 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import mapDataRaw from '../data/maps/test_map_01.json';
-import itemsData from '../data/items.json';
 import { defaultTerrainRegistry } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
-import { GridUnit, MapData, Position } from './core/grid/types';
+import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
-import { ItemDefinition, UnitCombatStats, CombatForecast } from './core/combat/types';
+import { CombatForecast } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { defaultRNG } from './core/combat/rng';
-import { evaluateAITurn, AIRole } from './core/ai/decision';
+import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
-import { evaluateChapterOutcome, ChapterObjective } from './core/chapter/types';
+import { evaluateChapterOutcome } from './core/chapter/types';
 import { saveGameState, loadGameState } from './core/storage/saveLoad';
+import { ExtendedUnitState, initialChapterData } from './core/data/chapterData';
 
 const mapData: MapData = mapDataRaw as MapData;
-const itemsList = itemsData.items as ItemDefinition[];
-const getItem = (id: string): ItemDefinition => itemsList.find((i) => i.id === id) || itemsList[0]!;
-
-export interface ExtendedUnitState {
-  unit: GridUnit;
-  stats: UnitCombatStats;
-  weapon: ItemDefinition;
-  aiRole?: AIRole;
-}
-
-const INITIAL_EXTENDED_UNITS: ExtendedUnitState[] = [
-  {
-    unit: {
-      id: 'marth',
-      name: 'Marth',
-      faction: 'player',
-      position: { x: 1, y: 1 },
-      mov: 4,
-      moveType: 'foot',
-      hasActed: false,
-    },
-    stats: { hp: 18, maxHp: 18, str: 6, mag: 0, dex: 6, spd: 9, lck: 7, def: 5, res: 0 },
-    weapon: getItem('rapier'),
-  },
-  {
-    unit: {
-      id: 'jagen',
-      name: 'Jagen',
-      faction: 'player',
-      position: { x: 0, y: 1 },
-      mov: 7,
-      moveType: 'cavalry',
-      hasActed: false,
-    },
-    stats: { hp: 22, maxHp: 22, str: 7, mag: 0, dex: 10, spd: 8, lck: 3, def: 8, res: 1 },
-    weapon: getItem('silver_lance'),
-  },
-  {
-    unit: {
-      id: 'enemy_pirate_1',
-      name: 'Pirate A',
-      faction: 'enemy',
-      position: { x: 2, y: 4 },
-      mov: 4,
-      moveType: 'bandit',
-      hasActed: false,
-    },
-    stats: { hp: 18, maxHp: 18, str: 6, mag: 0, dex: 4, spd: 5, lck: 2, def: 3, res: 0 },
-    weapon: getItem('iron_axe'),
-    aiRole: 'pursue',
-  },
-  {
-    unit: {
-      id: 'enemy_pirate_2',
-      name: 'Pirate B (Boss)',
-      faction: 'enemy',
-      position: { x: 4, y: 7 }, // Canh gác tại Cổng thành Gate (4,7)
-      mov: 0,
-      moveType: 'armor',
-      hasActed: false,
-    },
-    stats: { hp: 26, maxHp: 26, str: 9, mag: 0, dex: 5, spd: 4, lck: 1, def: 7, res: 0 },
-    weapon: getItem('steel_axe'),
-    aiRole: 'stationary',
-  },
-];
 
 const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }> = {
   plains: { bg: '#4a7c59', label: 'Đồng bằng', icon: '🌿' },
@@ -95,8 +29,8 @@ const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }
 };
 
 export const App: React.FC = () => {
-  const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(INITIAL_EXTENDED_UNITS);
-  const [turnManager] = useState<TurnManager>(() => new TurnManager(INITIAL_EXTENDED_UNITS.map((u) => u.unit)));
+  const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(() => structuredClone(initialChapterData.units));
+  const [turnManager] = useState<TurnManager>(() => new TurnManager(extendedUnits.map((u) => u.unit)));
   const [turnState, setTurnState] = useState(turnManager.getState());
 
   // Giao tranh & Hành động
@@ -214,6 +148,7 @@ export const App: React.FC = () => {
       const success = turnManager.moveSelectedUnit({ x, y });
       if (success) {
         setPendingMovePos({ x, y });
+        setExtendedUnits([...extendedUnits]);
         syncState();
       }
       return;
@@ -271,8 +206,7 @@ export const App: React.FC = () => {
     setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
 
     // Cập nhật trạng thái sống/chết và HP
-    setExtendedUnits((prev) =>
-      prev.map((item) => {
+    const updatedUnits = extendedUnits.map((item) => {
         if (item.unit.id === selectedExtUnit.unit.id) {
           return {
             ...item,
@@ -288,22 +222,13 @@ export const App: React.FC = () => {
           };
         }
         return item;
-      })
-    );
+      });
+    turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
+    setExtendedUnits(updatedUnits);
 
     // Kiểm tra kết quả chương
-    setTimeout(() => {
-      setExtendedUnits((currentUnits) => {
-        const outcome = evaluateChapterOutcome(
-          currentUnits.map((u) => u.unit),
-          chapterObjective
-        );
-        if (outcome !== 'ongoing') {
-          setChapterOutcome(outcome);
-        }
-        return currentUnits;
-      });
-    }, 100);
+    const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective);
+    if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
     // Đánh dấu hành động hoàn thành
     turnManager.waitSelectedUnit();
@@ -328,6 +253,7 @@ export const App: React.FC = () => {
       selectedExtUnit.unit.position = { ...originalPos };
     }
     turnManager.cancelSelect();
+    setExtendedUnits([...extendedUnits]);
     setPendingMovePos(null);
     setOriginalPos(null);
     setSelectedTarget(null);
@@ -370,6 +296,8 @@ export const App: React.FC = () => {
           }
         }
         if (result.unitDefeatedId) {
+          const defeatedUnit = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId);
+          if (defeatedUnit) defeatedUnit.unit.isDead = true;
           const defeated = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
           logs.push(`  💀 ${defeated} đã ngã xuống!`);
         }
@@ -381,7 +309,10 @@ export const App: React.FC = () => {
       }
 
       enemy.unit.hasActed = true;
+      if (evaluateChapterOutcome(extendedUnits.map((u) => u.unit), chapterObjective) !== 'ongoing') break;
     }
+
+    setExtendedUnits([...extendedUnits]);
 
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
@@ -395,34 +326,48 @@ export const App: React.FC = () => {
     }
 
     // Chuyển lại về Player Phase
-    turnManager.switchPhase('player_phase');
+    if (outcome === 'ongoing') turnManager.switchPhase('player_phase');
     setIsProcessingAI(false);
     syncState();
   };
 
-  const chapterObjective: ChapterObjective = {
-    type: 'defeat_boss',
-    bossUnitId: 'enemy_pirate_2',
-    descriptionVi: 'Hạ gục thủ lĩnh Pirate B (Boss) đang chiếm giữ cổng thành',
-  };
+  const chapterObjective = initialChapterData.objective;
 
-  const handleSave = () => {
-    const ok = saveGameState({
-      chapterId: 'test_chapter_01',
-      turnState: turnManager.getState(),
+  const handleSave = async () => {
+    if (pendingMovePos || combatForecast || isProcessingAI || turnState.activePhase !== 'player_phase') {
+      setStatusNotice('Hãy hoàn tất hành động trước khi lưu.');
+      return;
+    }
+    const ok = await saveGameState({
+      chapterId: initialChapterData.id,
+      turnState: { turnNumber: turnState.turnNumber, activePhase: turnState.activePhase },
       extendedUnits,
+      rngSeed: defaultRNG.getSeed(),
+      chapterOutcome,
+      showStoryIntro,
+      combatLog,
     });
     if (ok) {
       setStatusNotice('✓ Đã lưu tiến độ trận đánh thành công!');
       setTimeout(() => setStatusNotice(null), 2500);
+    } else {
+      setStatusNotice('Không thể lưu tiến độ.');
     }
   };
 
-  const handleLoad = () => {
-    const data = loadGameState();
+  const handleLoad = async () => {
+    const data = await loadGameState();
     if (data) {
       setExtendedUnits(data.extendedUnits);
-      turnManager.switchPhase(data.turnState.activePhase);
+      turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
+      defaultRNG.setSeed(data.rngSeed);
+      setChapterOutcome(data.chapterOutcome);
+      setShowStoryIntro(data.showStoryIntro);
+      setCombatLog(data.combatLog);
+      setPendingMovePos(null);
+      setOriginalPos(null);
+      setSelectedTarget(null);
+      setCombatForecast(null);
       syncState();
       setStatusNotice('✓ Đã nạp lại tiến độ từ file lưu!');
       setTimeout(() => setStatusNotice(null), 2500);
@@ -438,10 +383,13 @@ export const App: React.FC = () => {
   const handleEndTurn = () => {
     turnManager.switchPhase('enemy_phase');
     syncState();
-    setTimeout(() => {
-      runAITurn();
-    }, 400);
   };
+
+  useEffect(() => {
+    if (turnState.activePhase !== 'enemy_phase' || chapterOutcome !== 'ongoing') return;
+    const timer = window.setTimeout(runAITurn, 400);
+    return () => window.clearTimeout(timer);
+  }, [turnState.activePhase, chapterOutcome]);
 
   const hoveredTerrainId = hoveredTile ? mapData.grid[hoveredTile.y]?.[hoveredTile.x] : null;
   const hoveredTerrain = hoveredTerrainId ? defaultTerrainRegistry.get(hoveredTerrainId) : null;
@@ -556,7 +504,7 @@ export const App: React.FC = () => {
           {turnState.activePhase === 'player_phase' && (
             <button
               onClick={handleEndTurn}
-              disabled={isProcessingAI}
+              disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
               style={{
                 padding: '8px 16px',
                 backgroundColor: '#37474F',
@@ -769,8 +717,19 @@ export const App: React.FC = () => {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', marginBottom: '12px' }}>
                 {/* Attacker */}
                 <div style={{ backgroundColor: '#0d47a1', padding: '8px', borderRadius: '4px' }}>
-                  <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedExtUnit.unit.name}</div>
-                  <div style={{ color: '#90caf9' }}>{selectedExtUnit.weapon.nameVi}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    {selectedExtUnit.avatarUrl && (
+                      <img
+                        src={selectedExtUnit.avatarUrl}
+                        alt={selectedExtUnit.unit.name}
+                        style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid #90caf9' }}
+                      />
+                    )}
+                    <div>
+                      <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedExtUnit.unit.name}</div>
+                      <div style={{ color: '#90caf9', fontSize: '11px' }}>{selectedExtUnit.weapon.nameVi}</div>
+                    </div>
+                  </div>
                   <div>HP: <strong>{selectedExtUnit.stats.hp}</strong></div>
                   <div>Sát thương: <strong style={{ color: '#ffca28' }}>{combatForecast.attacker.damage} {combatForecast.attacker.attackCount > 1 ? `x${combatForecast.attacker.attackCount}` : ''}</strong></div>
                   <div>Trúng (Hit): <strong>{combatForecast.attacker.hitRate}%</strong></div>
@@ -779,8 +738,19 @@ export const App: React.FC = () => {
 
                 {/* Defender */}
                 <div style={{ backgroundColor: '#b71c1c', padding: '8px', borderRadius: '4px' }}>
-                  <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedTarget.unit.name}</div>
-                  <div style={{ color: '#ef9a9a' }}>{selectedTarget.weapon.nameVi}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    {selectedTarget.avatarUrl && (
+                      <img
+                        src={selectedTarget.avatarUrl}
+                        alt={selectedTarget.unit.name}
+                        style={{ width: '36px', height: '36px', borderRadius: '50%', border: '1px solid #ef9a9a' }}
+                      />
+                    )}
+                    <div>
+                      <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedTarget.unit.name}</div>
+                      <div style={{ color: '#ef9a9a', fontSize: '11px' }}>{selectedTarget.weapon.nameVi}</div>
+                    </div>
+                  </div>
                   <div>HP: <strong>{selectedTarget.stats.hp}</strong></div>
                   {combatForecast.defender.canCounter ? (
                     <>
@@ -894,11 +864,54 @@ export const App: React.FC = () => {
               (() => {
                 const u = (hoveredUnit || selectedExtUnit)!;
                 return (
-                  <div style={{ fontSize: '12px', lineHeight: '1.5' }}>
-                    <div><strong>Tên:</strong> {u.unit.name} ({u.unit.faction === 'player' ? 'Quân ta' : 'Quân địch'})</div>
-                    <div><strong>Vũ khí:</strong> {u.weapon.nameVi} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
-                    <div><strong>HP:</strong> {u.stats.hp} / {u.stats.maxHp} | <strong>Mov:</strong> {u.unit.mov} ({u.unit.moveType})</div>
-                    <div><strong>Chỉ số:</strong> Str:{u.stats.str} | Spd:{u.stats.spd} | Dex:{u.stats.dex} | Def:{u.stats.def}</div>
+                  <div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
+                      {u.avatarUrl && (
+                        <img
+                          src={u.avatarUrl}
+                          alt={u.unit.name}
+                          style={{
+                            width: '46px',
+                            height: '46px',
+                            borderRadius: '8px',
+                            border: `2px solid ${u.unit.faction === 'player' ? '#42a5f5' : '#ef5350'}`,
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
+                          }}
+                        />
+                      )}
+                      <div>
+                        <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff' }}>{u.unit.name}</div>
+                        {u.title && <div style={{ fontSize: '11px', color: '#aaa' }}>{u.title}</div>}
+                        <div style={{ fontSize: '11px', color: u.unit.faction === 'player' ? '#64b5f6' : '#ef9a9a' }}>
+                          {u.unit.faction === 'player' ? '🛡️ Phe Người chơi' : '⚔️ Phe Kẻ địch'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ fontSize: '12px', lineHeight: '1.5' }}>
+                      <div><strong>Vũ khí:</strong> {u.weapon.nameVi} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
+                      <div><strong>HP:</strong> {u.stats.hp} / {u.stats.maxHp} | <strong>Mov:</strong> {u.unit.mov} ({u.unit.moveType})</div>
+                      <div style={{ backgroundColor: '#1e1e1e', padding: '6px', borderRadius: '4px', margin: '4px 0', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', textAlign: 'center', fontSize: '11px' }}>
+                        <div>Str: <strong>{u.stats.str}</strong></div>
+                        <div>Mag: <strong>{u.stats.mag}</strong></div>
+                        <div>Dex: <strong>{u.stats.dex}</strong></div>
+                        <div>Spd: <strong>{u.stats.spd}</strong></div>
+                        <div>Lck: <strong>{u.stats.lck}</strong></div>
+                        <div>Def: <strong>{u.stats.def}</strong></div>
+                        <div>Res: <strong>{u.stats.res}</strong></div>
+                        <div>Mov: <strong>{u.unit.mov}</strong></div>
+                      </div>
+
+                      {/* Growth rates are provisional until the source and rules are verified. */}
+                      {u.growths && (
+                        <div style={{ fontSize: '11px', color: '#90caf9', marginTop: '4px' }}>
+                          <strong>Tăng trưởng tham khảo:</strong>
+                          <div style={{ color: '#ccc' }}>
+                            HP {u.growths.hp}% | Str {u.growths.str}% | Skl {u.growths.dex}% | Spd {u.growths.spd}% | Def {u.growths.def}%
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })()
@@ -985,17 +998,29 @@ export const App: React.FC = () => {
               boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
             }}
           >
-            <h2 style={{ margin: '0 0 12px 0', color: '#60a5fa' }}>
-              📜 Chương 1: Bờ biển Talys
+            <h2 style={{ margin: '0 0 16px 0', color: '#60a5fa' }}>
+              📜 {initialChapterData.name}
             </h2>
-            <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px' }}>
-              <p>
-                <strong>Marth:</strong> "Bọn hải tặc Gazak đã tràn lên bờ biển đảo Talys! Chúng đang cướp bóc làng mạc và đe dọa người dân vô tội."
-              </p>
-              <p>
-                <strong>Jagen:</strong> "Bẩm Điện hạ, tên thủ lĩnh Pirate B đang đóng giữ pháo đài cổng thành phía nam. Quân ta hãy chia đường tiến quân, tận dụng bụi rậm né tránh và tiêu diệt tên đầu sỏ!"
-              </p>
-              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
+            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {/* Marth line */}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
+                <img src="/avatars/marth.svg" alt="Marth" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #3b82f6', flexShrink: 0 }} />
+                <div>
+                  <strong style={{ color: '#60a5fa' }}>Marth:</strong>
+                  <div>"{initialChapterData.introLines[0]?.text}"</div>
+                </div>
+              </div>
+
+              {/* Jagen line */}
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
+                <img src="/avatars/jagen.svg" alt="Jagen" style={{ width: '48px', height: '48px', borderRadius: '50%', border: '2px solid #94a3b8', flexShrink: 0 }} />
+                <div>
+                  <strong style={{ color: '#cbd5e1' }}>Jagen:</strong>
+                  <div>"{initialChapterData.introLines[1]?.text}"</div>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: '#1e293b', padding: '10px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
                 <strong style={{ color: '#fbbf24' }}>Mục tiêu chiến thắng:</strong> {chapterObjective.descriptionVi}.
                 <br />
                 <span style={{ color: '#ef4444' }}>Thất bại nếu Marth tử trận.</span>
@@ -1049,7 +1074,7 @@ export const App: React.FC = () => {
               🏆 CHIẾN THẮNG! (STAGE CLEAR)
             </h2>
             <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#dcfce7', marginBottom: '20px' }}>
-              Bạn đã tiêu diệt thủ lĩnh Pirate B và giải cứu bờ biển Talys!
+              Bạn đã hoàn thành mục tiêu: {chapterObjective.descriptionVi}.
               <br />
               Chương 1 của Water Emblem đã hoàn thành xuất sắc!
             </p>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <rect width="120" height="120" rx="16" fill="#7f1d1d"/>
+  <!-- Hair Red wild -->
+  <path d="M 26 50 C 18 20 40 8 60 8 C 80 8 102 20 94 50 L 86 85 L 34 85 Z" fill="#b91c1c"/>
+  <!-- Armor Red -->
+  <path d="M 28 115 L 38 86 L 82 86 L 92 115 Z" fill="#dc2626"/>
+  <path d="M 45 86 L 48 115 L 72 115 L 75 86 Z" fill="#991b1b"/>
+  <!-- Face -->
+  <path d="M 42 46 Q 42 78 60 82 Q 78 78 78 46 Z" fill="#fed7aa"/>
+  <!-- Eyes -->
+  <ellipse cx="51" cy="53" rx="3.5" ry="4" fill="#450a0a"/>
+  <ellipse cx="69" cy="53" rx="3.5" ry="4" fill="#450a0a"/>
+  <circle cx="50" cy="52" r="1.2" fill="#fff"/>
+  <circle cx="68" cy="52" r="1.2" fill="#fff"/>
+  <!-- Nose / Grin -->
+  <path d="M 60 58 L 59 63 L 62 63" stroke="#d97706" stroke-width="1.2" fill="none"/>
+  <path d="M 54 71 Q 60 76 66 71" stroke="#991b1b" stroke-width="1.8" fill="none"/>
+  <!-- Spiky bangs -->
+  <path d="M 32 38 L 48 24 L 56 36 L 68 22 L 76 36 L 88 38 Q 60 26 32 38 Z" fill="#ef4444"/>
+</svg>

@@ -50,4 +50,4 @@ Break; Arts khắc Bow/Tome/Dagger; Battle Styles đầy đủ; Chain Attack t�
 | Lộ trình, milestone, tiêu chí nghiệm thu | `PLAN.md`; không chuyển dấu `[x]` cũ |
 | Cây thư mục dự kiến, rủi ro, nguồn dữ liệu/asset | `implementation_spec.md`, `overview.md` và bảng vấn đề còn mở ở trên |
 
-Các báo cáo trong `report/` còn nguyên để tra lại lập luận nghiên cứu. Bảng này ghi nơi chuyển nội dung, không khẳng định mọi ý tưởng cũ đã được phê duyệt.
+Các báo cáo trong `reports/` còn nguyên để tra lại lập luận nghiên cứu. Bảng này ghi nơi chuyển nội dung, không khẳng định mọi ý tưởng cũ đã được phê duyệt.

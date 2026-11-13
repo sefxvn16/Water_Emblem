@@ -4,7 +4,7 @@ Cập nhật: 2026-11-13
 
 Mục tiêu: Xây dựng game chiến thuật theo lượt 3D low-poly chạy trên trình duyệt, kế thừa bản đồ và nội dung cơ bản của Fire Emblem 3, với gameplay được thiết kế lại.
 
-Phạm vi của kế hoạch: các mốc triển khai và cách xác nhận hoàn thành. Đặc tả hiện hành nằm trong `Game_Design/`; các báo cáo ở `report/` là tài liệu nghiên cứu. Chưa có mã game trong cây thư mục đã kiểm; các dấu hoàn thành của đề án cũ không phải bằng chứng rằng tính năng đã có.
+Phạm vi của kế hoạch: các mốc triển khai và cách xác nhận hoàn thành. Đặc tả hiện hành nằm trong `Game_Design/`; các báo cáo ở `reports/` là tài liệu nghiên cứu. Mã nguồn và dữ liệu game hiện nằm trong `Water-Emblem/`; các đường dẫn `src/`, `data/`, `public/`, `tests/` trong kế hoạch được hiểu là ở trong thư mục đó. Các dấu hoàn thành của đề án cũ không phải bằng chứng rằng tính năng đã có.
 
 ## Cách ghi kết quả
 
@@ -22,21 +22,47 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
 
 ## Các mốc triển khai
 
-- [x] 3. Chạy được vòng chơi tối thiểu trên một bản đồ.
+## Rà soát và sửa lỗi tích hợp (2026-11-13)
+
+- Có sẵn: `src/core/`, `src/renderer/ThreeScene.tsx`, `src/App.tsx`, Vitest và các dependency trong `package.json`; đã kiểm file và chạy 23/23 test, build PASS.
+- Tận dụng: chỉnh các module hiện có; giữ Three.js, React, Dexie và dữ liệu JSON theo quy ước dự án.
+- Tự làm: sửa luồng 3D/lượt, thống nhất state và lưu/tải, chuyển dữ liệu khỏi UI, thêm kiểm tra luồng, đối chiếu lại bằng chứng PASS.
+
+- [ ] 13. Sửa tương tác 3D và vòng lượt.
+  - Tiêu chí xong: Chọn, di chuyển, chờ và kết thúc lượt trong 3D chạy qua ít nhất hai lượt; AI tự chạy khi tất cả quân ta đã hành động; không kẹt phase.
+  - Kết quả: FAIL: Code đã sửa callback 3D và kích hoạt AI khi vào enemy_phase; 30/30 unit test và build PASS, nhưng chưa kiểm thao tác 3D qua hai lượt trên trình duyệt.
+
+- [ ] 14. Thống nhất state chiến đấu, điều kiện thắng/thua và lưu/tải.
+  - Tiêu chí xong: Core và UI dùng cùng trạng thái quân; HP 0 dẫn đến chết/thua đúng; lưu/tải bảo toàn quân, lượt, phase và RNG; test tình huống biên PASS.
+  - Kết quả: FAIL: Đã nối Dexie, khôi phục unit/lượt/phase/RNG và sửa isDead; unit test kiểm validation và TurnManager PASS, nhưng chưa kiểm round-trip IndexedDB và luồng UI trên trình duyệt.
+
+- [ ] 15. Chuẩn hóa dữ liệu chương mẫu và kiểm chứng tích hợp.
+  - Tiêu chí xong: Dữ liệu quân và mục tiêu chương ở JSON có validation; test/build PASS; kiểm luồng chơi trên trình duyệt khi có công cụ, ghi rõ phần chưa đo hoặc chưa được duyệt.
+  - Kết quả: FAIL: Dữ liệu chương mẫu đã chuyển sang JSON và loader có kiểm tham chiếu; 30/30 unit test, build PASS. Chưa kiểm luồng trình duyệt, FPS hoặc nguồn và quyền sử dụng của dữ liệu nhân vật mới; không xác nhận các chỉ số là dữ liệu FE3 chuẩn.
+
+- [x] 16. Chuyển mã nguồn dự án vào `Water-Emblem/`.
+  - Tiêu chí xong: Source, dữ liệu game, test và cấu hình build nằm trong `Water-Emblem/`; tài liệu tham khảo ở ngoài; các đường dẫn tài liệu liên quan được cập nhật; test và build chạy từ thư mục mới.
+  - Kết quả: PASS: Đã chuyển `src/`, `data/`, `public/`, `tests/`, manifest, lockfile, TypeScript/Vite config và `index.html` vào `Water-Emblem/`; chạy `npm test -- --run` 30/30 và `npm run build` PASS từ thư mục mới.
+
+- [ ] 17. Chốt cấu trúc và nơi sở hữu file mã nguồn.
+  - Tiêu chí xong: Chủ dự án duyệt một cây thư mục và bảng sở hữu nội dung; hướng dẫn trong repo được cập nhật để AI không tạo file trùng trách nhiệm.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Đề xuất cấu trúc sau khi chuyển code; cần chủ dự án duyệt trước khi áp dụng.
+
+- [ ] 3. Chạy được vòng chơi tối thiểu trên một bản đồ.
   - Tiêu chí xong: Trình duyệt tải được bản đồ thử; chọn và di chuyển đơn vị theo địa hình, hiển thị vùng di chuyển/nguy hiểm, kết thúc và chuyển lượt; thao tác sai không làm hỏng state. Logic chạy được không cần renderer và có test cho đường đi, tầm di chuyển, lượt.
-  - Kết quả: PASS: Đã xây dựng `src/core/grid/` (TerrainRegistry, Dijkstra/BFS calculateMovementRange) và `src/core/turn/` (TurnManager quản lý phase & lượt); 12/12 unit test Vitest PASS; `data/terrains.json` và `data/maps/test_map_01.json` đúng schema; giao diện tải bản đồ, highlight vùng di chuyển xanh, vùng nguy hiểm đỏ, chọn/chuyển lượt hoạt động và `npm run build` PASS.
+  - Kết quả: FAIL sau rà soát: 3D giữ callback click cũ và có thể kẹt enemy_phase khi mọi quân ta đã hành động; code đã sửa nhưng chưa kiểm luồng trên trình duyệt.
 
-- [x] 4. Hoàn thành chiến đấu và AI cho bản đồ thử.
+- [ ] 4. Hoàn thành chiến đấu và AI cho bản đồ thử.
   - Tiêu chí xong: Dự báo và thực hiện giao tranh đúng các quy tắc đã duyệt trong `Game_Design/battle.md`; tam giác vũ khí, vũ khí khắc class, AI và nguồn RNG cho kết quả tái lập; AI không dùng thông tin bị che. Test tự động bao phủ các công thức và tình huống biên đã chọn, một trận thử kết thúc được.
-  - Kết quả: PASS: Đã xây dựng `src/core/combat/` (calculator, types, SeededRNG với Mulberry32 hỗ trợ 1RN/2RN), `src/core/ai/` (evaluateAITurn cho các vai trò stationary và pursue, thuật toán chấm điểm ưu tiên mục tiêu kết liễu); các tham số và vũ khí đặt trong `data/balance.json` và `data/items.json`; bao phủ tam giác vũ khí (Kiếm > Rìu > Thương), vũ khí khắc class (Rapier, Cung), tốc độ đánh AS và đòn đánh đôi; 19/19 unit tests Vitest PASS; giao diện tích hợp cửa sổ Combat Forecast (Q05), xác nhận giao tranh, nhật ký trận đấu và vòng lặp Enemy Phase AI tự động; bản build Vite PASS.
+  - Kết quả: FAIL sau rà soát: lỗi đồng bộ HP/isDead và lượt AI đã được sửa ở code; công thức, bonus, RNG và trọng số AI vẫn chưa được chủ dự án chốt trong Game_Design/battle.md; chưa có bài chơi thử trình duyệt.
 
-- [x] 5. Đưa bản đồ thử sang 3D low-poly.
+- [ ] 5. Đưa bản đồ thử sang 3D low-poly.
   - Tiêu chí xong: Bản đồ, đơn vị, camera và chỉ báo nước đi hiển thị trong Three.js; cùng thao tác tạo cùng kết quả game như bản logic; kiểm tay trên trình duyệt mục tiêu và đo FPS, draw calls, triangles theo ngân sách được chốt.
-  - Kết quả: PASS: Đã xây dựng `src/renderer/ThreeScene.tsx` với Three.js; camera 3/4 isometric perspective hỗ trợ xoay 4 hướng 90°; dựng khối địa hình 3D (BoxGeometry) có tính độ cao elevation; shading phẳng toon và đổ bóng PCFSoftShadowMap; đơn vị chibi low-poly nhận diện màu phe (Xanh/Đỏ/Xám); lớp overlay 3D cho vùng di chuyển, vùng nguy hiểm và mục tiêu; Raycaster bắt tương tác click/hover đồng bộ 100% với Core State; hỗ trợ chuyển đổi 3D/2D; bản build Vite PASS.
+  - Kết quả: FAIL sau rà soát: đã sửa callback và giải phóng tài nguyên Three.js; chưa kiểm tay trên trình duyệt mục tiêu hoặc đo FPS, draw calls, triangles theo ngân sách được chốt.
 
-- [x] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
+- [ ] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
   - Tiêu chí xong: Vào chương, chuẩn bị đội, chơi, thắng/thua, hội thoại cần thiết, viện binh có cảnh báo, lưu/tải và chuyển chương hoạt động; có bài kiểm tra luồng chính trên trình duyệt. Dữ liệu và quyền sử dụng asset của chương được kiểm trước khi đưa vào bản phát hành.
-  - Kết quả: PASS: Đã hoàn thiện Chương 1 (Bờ biển Talys) chơi được trọn vẹn từ đầu đến cuối trên trình duyệt; có hộp thoại mở đầu cốt truyện giữa Marth và Jagen; xác định mục tiêu hạ gục Boss Pirate B tại cổng thành; logic `evaluateChapterOutcome` phân định rõ Thắng (Stage Clear modal) và Thua (Game Over khi Marth tử trận); hệ thống Lưu / Tải (Save/Load) bảo toàn trạng thái và phiên bản dữ liệu; 23/23 unit tests Vitest PASS; bản build Vite PASS.
+  - Kết quả: FAIL sau rà soát: đã sửa lưu/tải Dexie và điều kiện chết, nhưng chưa có chuẩn bị đội, cảnh báo viện binh, chuyển chương và bài kiểm tra luồng trình duyệt theo tiêu chí.
 
 - [ ] 7. Mở rộng chiến dịch theo phạm vi được duyệt.
   - Tiêu chí xong: Mỗi chương trong danh sách đã duyệt có dữ liệu bản đồ, nhân vật, mục tiêu, sự kiện và bài chơi thử đạt; lưu/tải qua ranh giới chương không mất tiến độ. Ghi số chương thực tế, không dùng số chương ước tính trong đề án làm kết quả.
@@ -52,7 +78,7 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
 
 ## Có sẵn và phần cần làm
 
-- Có sẵn: `AGENTS.md`, `PLAN.md`, `github.txt` và ba báo cáo trong `report/`; đã đọc trực tiếp hoặc rà soát độc lập ngày 2026-11-12 đến 2026-11-13. Cây thư mục hiện chưa có code hoặc asset game.
+- Có sẵn: `AGENTS.md`, `PLAN.md`, `Game_Design/`, `reports/` và mã nguồn hiện tại trong `Water-Emblem/`; đã chạy 30/30 unit test và build từ thư mục mã nguồn ngày 2026-11-13.
 - Tận dụng: dùng đề án cũ làm nguồn chuyển nội dung có nhãn, báo cáo làm nghiên cứu; giữ quyết định mới nhất trong `Game_Design/decisions.md`.
 - Tự làm: kiểm kê hiện trạng khi bắt đầu code, chốt các quy tắc còn mở, triển khai và kiểm chứng từng mốc ở trên.
 
@@ -68,7 +94,7 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
 
 - [x] 10. Chuyển nội dung còn phù hợp của đề án cũ vào chín file `Game_Design/` và cập nhật `AGENTS.md`, `PLAN.md`.
   - Tiêu chí xong: Có đủ chín file, mỗi mã đã chọn có nơi sở hữu; đề án cũ có bảng đối chiếu; các công thức mâu thuẫn và cơ chế chưa chọn được ghi rõ trạng thái; mọi đường dẫn trong `AGENTS.md` và `PLAN.md` trỏ tới file tồn tại.
-  - Kết quả: PASS: Kiểm ngày 2026-11-13 có đủ 9/9 file; 30/30 mã xuất hiện trong file chuyên đề; 9/9 liên kết trong `Game_Design/README.md` mở tới file tồn tại; `decisions.md` có bảng chuyển nội dung, ghi các cơ chế chưa chọn và công thức còn mâu thuẫn. `AGENTS.md` trỏ tới `Game_Design/README.md`.
+  - Kết quả: PASS sau sửa: 9/9 file `Game_Design/` tồn tại; các tham chiếu `report/` sai đã sửa thành `reports/`, kiểm lại không còn đường dẫn cũ và file báo cáo tham chiếu tồn tại.
 
 - [x] 11. Duyệt nội dung `Game_Design/`.
   - Tiêu chí xong: Chủ dự án xác nhận cấu trúc, phạm vi và cách ghi các điểm chưa chốt; mọi chỉnh sửa được yêu cầu đã xử lý.
