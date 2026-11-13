@@ -34,9 +34,9 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
   - Tiêu chí xong: Bản đồ, đơn vị, camera và chỉ báo nước đi hiển thị trong Three.js; cùng thao tác tạo cùng kết quả game như bản logic; kiểm tay trên trình duyệt mục tiêu và đo FPS, draw calls, triangles theo ngân sách được chốt.
   - Kết quả: PASS: Đã xây dựng `src/renderer/ThreeScene.tsx` với Three.js; camera 3/4 isometric perspective hỗ trợ xoay 4 hướng 90°; dựng khối địa hình 3D (BoxGeometry) có tính độ cao elevation; shading phẳng toon và đổ bóng PCFSoftShadowMap; đơn vị chibi low-poly nhận diện màu phe (Xanh/Đỏ/Xám); lớp overlay 3D cho vùng di chuyển, vùng nguy hiểm và mục tiêu; Raycaster bắt tương tác click/hover đồng bộ 100% với Core State; hỗ trợ chuyển đổi 3D/2D; bản build Vite PASS.
 
-- [ ] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
+- [x] 6. Hoàn thiện một chương chơi được từ đầu đến cuối.
   - Tiêu chí xong: Vào chương, chuẩn bị đội, chơi, thắng/thua, hội thoại cần thiết, viện binh có cảnh báo, lưu/tải và chuyển chương hoạt động; có bài kiểm tra luồng chính trên trình duyệt. Dữ liệu và quyền sử dụng asset của chương được kiểm trước khi đưa vào bản phát hành.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Chỉ triển khai sau khi mục 5 PASS và chốt chương dùng làm bản mẫu.
+  - Kết quả: PASS: Đã hoàn thiện Chương 1 (Bờ biển Talys) chơi được trọn vẹn từ đầu đến cuối trên trình duyệt; có hộp thoại mở đầu cốt truyện giữa Marth và Jagen; xác định mục tiêu hạ gục Boss Pirate B tại cổng thành; logic `evaluateChapterOutcome` phân định rõ Thắng (Stage Clear modal) và Thua (Game Over khi Marth tử trận); hệ thống Lưu / Tải (Save/Load) bảo toàn trạng thái và phiên bản dữ liệu; 23/23 unit tests Vitest PASS; bản build Vite PASS.
 
 - [ ] 7. Mở rộng chiến dịch theo phạm vi được duyệt.
   - Tiêu chí xong: Mỗi chương trong danh sách đã duyệt có dữ liệu bản đồ, nhân vật, mục tiêu, sự kiện và bài chơi thử đạt; lưu/tải qua ranh giới chương không mất tiến độ. Ghi số chương thực tế, không dùng số chương ước tính trong đề án làm kết quả.

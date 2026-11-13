@@ -10,6 +10,8 @@ import { calculateCombatForecast, executeCombat, getManhattanDistance } from './
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn, AIRole } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
+import { evaluateChapterOutcome, ChapterObjective } from './core/chapter/types';
+import { saveGameState, loadGameState } from './core/storage/saveLoad';
 
 const mapData: MapData = mapDataRaw as MapData;
 const itemsList = itemsData.items as ItemDefinition[];
@@ -99,6 +101,9 @@ export const App: React.FC = () => {
 
   // Giao tranh & Hành động
   const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
+  const [showStoryIntro, setShowStoryIntro] = useState<boolean>(true);
+  const [chapterOutcome, setChapterOutcome] = useState<'ongoing' | 'victory' | 'defeat'>('ongoing');
+  const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [originalPos, setOriginalPos] = useState<Position | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
@@ -286,6 +291,20 @@ export const App: React.FC = () => {
       })
     );
 
+    // Kiểm tra kết quả chương
+    setTimeout(() => {
+      setExtendedUnits((currentUnits) => {
+        const outcome = evaluateChapterOutcome(
+          currentUnits.map((u) => u.unit),
+          chapterObjective
+        );
+        if (outcome !== 'ongoing') {
+          setChapterOutcome(outcome);
+        }
+        return currentUnits;
+      });
+    }, 100);
+
     // Đánh dấu hành động hoàn thành
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
@@ -366,10 +385,54 @@ export const App: React.FC = () => {
 
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
+    // Kiểm tra kết quả chương sau lượt địch
+    const outcome = evaluateChapterOutcome(
+      extendedUnits.map((u) => u.unit),
+      chapterObjective
+    );
+    if (outcome !== 'ongoing') {
+      setChapterOutcome(outcome);
+    }
+
     // Chuyển lại về Player Phase
     turnManager.switchPhase('player_phase');
     setIsProcessingAI(false);
     syncState();
+  };
+
+  const chapterObjective: ChapterObjective = {
+    type: 'defeat_boss',
+    bossUnitId: 'enemy_pirate_2',
+    descriptionVi: 'Hạ gục thủ lĩnh Pirate B (Boss) đang chiếm giữ cổng thành',
+  };
+
+  const handleSave = () => {
+    const ok = saveGameState({
+      chapterId: 'test_chapter_01',
+      turnState: turnManager.getState(),
+      extendedUnits,
+    });
+    if (ok) {
+      setStatusNotice('✓ Đã lưu tiến độ trận đánh thành công!');
+      setTimeout(() => setStatusNotice(null), 2500);
+    }
+  };
+
+  const handleLoad = () => {
+    const data = loadGameState();
+    if (data) {
+      setExtendedUnits(data.extendedUnits);
+      turnManager.switchPhase(data.turnState.activePhase);
+      syncState();
+      setStatusNotice('✓ Đã nạp lại tiến độ từ file lưu!');
+      setTimeout(() => setStatusNotice(null), 2500);
+    } else {
+      alert('Không tìm thấy dữ liệu lưu hợp lệ.');
+    }
+  };
+
+  const handleRestartChapter = () => {
+    window.location.reload();
   };
 
   const handleEndTurn = () => {
@@ -407,10 +470,42 @@ export const App: React.FC = () => {
             Water Emblem - Mystery of Nothing
           </h1>
           <span style={{ fontSize: '13px', color: '#aaa' }}>
-            Mốc 4: Chiến đấu, Tam giác vũ khí & AI Thông minh
+            Chương 1: Đảo Talys (Mục tiêu: {chapterObjective.descriptionVi})
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Save / Load buttons */}
+          <button
+            onClick={handleSave}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: '#2e7d32',
+              border: '1px solid #4caf50',
+              borderRadius: '4px',
+              color: '#fff',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+            }}
+          >
+            💾 Lưu Game
+          </button>
+          <button
+            onClick={handleLoad}
+            style={{
+              padding: '6px 12px',
+              backgroundColor: '#1565c0',
+              border: '1px solid #42a5f5',
+              borderRadius: '4px',
+              color: '#fff',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+            }}
+          >
+            📂 Nạp Game
+          </button>
+
           {/* View mode toggle */}
           <div style={{ display: 'flex', backgroundColor: '#1e1e1e', borderRadius: '6px', padding: '2px', border: '1px solid #444' }}>
             <button
@@ -846,6 +941,202 @@ export const App: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Status Notification Toast */}
+      {statusNotice && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            backgroundColor: '#2e7d32',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            zIndex: 9999,
+          }}
+        >
+          {statusNotice}
+        </div>
+      )}
+
+      {/* Opening Story Dialogue Cutscene Modal */}
+      {showStoryIntro && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.8)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#1e293b',
+              border: '2px solid #3b82f6',
+              borderRadius: '12px',
+              padding: '24px',
+              maxWidth: '520px',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 12px 0', color: '#60a5fa' }}>
+              📜 Chương 1: Bờ biển Talys
+            </h2>
+            <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px' }}>
+              <p>
+                <strong>Marth:</strong> "Bọn hải tặc Gazak đã tràn lên bờ biển đảo Talys! Chúng đang cướp bóc làng mạc và đe dọa người dân vô tội."
+              </p>
+              <p>
+                <strong>Jagen:</strong> "Bẩm Điện hạ, tên thủ lĩnh Pirate B đang đóng giữ pháo đài cổng thành phía nam. Quân ta hãy chia đường tiến quân, tận dụng bụi rậm né tránh và tiêu diệt tên đầu sỏ!"
+              </p>
+              <div style={{ backgroundColor: '#0f172a', padding: '10px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
+                <strong style={{ color: '#fbbf24' }}>Mục tiêu chiến thắng:</strong> {chapterObjective.descriptionVi}.
+                <br />
+                <span style={{ color: '#ef4444' }}>Thất bại nếu Marth tử trận.</span>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowStoryIntro(false)}
+              style={{
+                width: '100%',
+                padding: '10px',
+                backgroundColor: '#2563eb',
+                border: 'none',
+                borderRadius: '6px',
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '15px',
+                cursor: 'pointer',
+              }}
+            >
+              ⚔️ Vào trận đánh (Start Battle)
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Victory Modal */}
+      {chapterOutcome === 'victory' && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.85)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#14532d',
+              border: '2px solid #22c55e',
+              borderRadius: '12px',
+              padding: '28px',
+              maxWidth: '460px',
+              textAlign: 'center',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 10px 0', color: '#86efac', fontSize: '24px' }}>
+              🏆 CHIẾN THẮNG! (STAGE CLEAR)
+            </h2>
+            <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#dcfce7', marginBottom: '20px' }}>
+              Bạn đã tiêu diệt thủ lĩnh Pirate B và giải cứu bờ biển Talys!
+              <br />
+              Chương 1 của Water Emblem đã hoàn thành xuất sắc!
+            </p>
+            <button
+              onClick={handleRestartChapter}
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#22c55e',
+                border: 'none',
+                borderRadius: '6px',
+                color: '#052e16',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                cursor: 'pointer',
+              }}
+            >
+              🔄 Chơi lại chương
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Defeat Modal */}
+      {chapterOutcome === 'defeat' && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0,0,0,0.85)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#7f1d1d',
+              border: '2px solid #ef4444',
+              borderRadius: '12px',
+              padding: '28px',
+              maxWidth: '460px',
+              textAlign: 'center',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
+            }}
+          >
+            <h2 style={{ margin: '0 0 10px 0', color: '#fca5a5', fontSize: '24px' }}>
+              💀 THẤT BẠI (GAME OVER)
+            </h2>
+            <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#fee2e2', marginBottom: '20px' }}>
+              Marth đã ngã xuống trong trận chiến...
+              <br />
+              Hy vọng của vương quốc Altea đã vụt tắt.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={handleLoad}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#3b82f6',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                📂 Nạp lại điểm lưu
+              </button>
+              <button
+                onClick={handleRestartChapter}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#475569',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                }}
+              >
+                🔄 Chơi lại từ đầu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
