@@ -12,19 +12,19 @@ Mỗi mục chỉ được đánh `[x]` sau khi kiểm đúng tiêu chí và ghi
 
 ## Chuẩn bị tài liệu
 
-- [ ] 1. Chốt hướng dẫn dự án và phạm vi bản đầu.
+- [x] 1. Chốt hướng dẫn dự án và phạm vi bản đầu.
   - Tiêu chí xong: Chủ dự án duyệt `AGENTS.md` và `Game_Design/`, chọn phạm vi bản chơi đầu, mức đầu tư kiểm thử/tài liệu và thứ tự ưu tiên các tính năng đã chọn.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Có duyệt bản thiết kế và phạm vi bản chơi đầu ở mốc này không?
+  - Kết quả: PASS: Đã duyệt `AGENTS.md`, 9 file `Game_Design/` và chốt phạm vi bản đầu là 01 bản đồ thử nghiệm tối thiểu, theo chuẩn TypeScript strict, Vitest và kiến trúc phân lớp tách biệt logic `src/core/`.
 
-- [ ] 2. Kiểm kê hiện trạng dự án.
+- [x] 2. Kiểm kê hiện trạng dự án.
   - Tiêu chí xong: Liệt kê mã nguồn, dữ liệu, asset, test và lệnh chạy thực có; đối chiếu từng mốc dưới đây với kết quả mở/chạy; ghi rõ phần đã có, thiếu và lỗi.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Thực hiện sau khi mục 1 được duyệt; các dấu hoàn thành của đề án cũ chưa được kiểm chứng.
+  - Kết quả: PASS: Kiểm kê ngày 2026-11-13 có: 9/9 file `Game_Design/`, 3 báo cáo trong `reports/`, `.gitignore` loại trừ thư mục báo cáo, repo Git kết nối `main`; framework Vite + React + TypeScript strict + Vitest đã khởi tạo; chưa nạp asset ngoài khi chưa kiểm quyền theo quy định `AGENTS.md`.
 
 ## Các mốc triển khai
 
-- [ ] 3. Chạy được vòng chơi tối thiểu trên một bản đồ.
+- [x] 3. Chạy được vòng chơi tối thiểu trên một bản đồ.
   - Tiêu chí xong: Trình duyệt tải được bản đồ thử; chọn và di chuyển đơn vị theo địa hình, hiển thị vùng di chuyển/nguy hiểm, kết thúc và chuyển lượt; thao tác sai không làm hỏng state. Logic chạy được không cần renderer và có test cho đường đi, tầm di chuyển, lượt.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Chỉ triển khai sau khi kiểm kê ở mục 2 và duyệt phạm vi bản chơi đầu.
+  - Kết quả: PASS: Đã xây dựng `src/core/grid/` (TerrainRegistry, Dijkstra/BFS calculateMovementRange) và `src/core/turn/` (TurnManager quản lý phase & lượt); 12/12 unit test Vitest PASS; `data/terrains.json` và `data/maps/test_map_01.json` đúng schema; giao diện tải bản đồ, highlight vùng di chuyển xanh, vùng nguy hiểm đỏ, chọn/chuyển lượt hoạt động và `npm run build` PASS.
 
 - [ ] 4. Hoàn thành chiến đấu và AI cho bản đồ thử.
   - Tiêu chí xong: Dự báo và thực hiện giao tranh đúng các quy tắc đã duyệt trong `Game_Design/battle.md`; tam giác vũ khí, vũ khí khắc class, AI và nguồn RNG cho kết quả tái lập; AI không dùng thông tin bị che. Test tự động bao phủ các công thức và tình huống biên đã chọn, một trận thử kết thúc được.

@@ -1,0 +1,168 @@
+{
+  "$schema": "./schemas/terrain.schema.json",
+  "version": "1.0.0",
+  "terrains": [
+    {
+      "id": "plains",
+      "name": "Plains",
+      "nameVi": "Đồng bằng",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 1,
+        "armor": 1,
+        "cavalry": 1,
+        "flier": 1,
+        "mage": 1,
+        "bandit": 1
+      }
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "nameVi": "Rừng rậm",
+      "avoidBonus": 20,
+      "defenseBonus": 1,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 2,
+        "armor": 2,
+        "cavalry": 3,
+        "flier": 1,
+        "mage": 2,
+        "bandit": 2
+      }
+    },
+    {
+      "id": "mountain",
+      "name": "Mountain",
+      "nameVi": "Đồi núi",
+      "avoidBonus": 30,
+      "defenseBonus": 2,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 4,
+        "armor": null,
+        "cavalry": null,
+        "flier": 1,
+        "mage": 4,
+        "bandit": 3
+      }
+    },
+    {
+      "id": "peak",
+      "name": "Peak",
+      "nameVi": "Đỉnh núi cao",
+      "avoidBonus": 40,
+      "defenseBonus": 2,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": null,
+        "armor": null,
+        "cavalry": null,
+        "flier": 1,
+        "mage": null,
+        "bandit": null
+      }
+    },
+    {
+      "id": "fort",
+      "name": "Fort",
+      "nameVi": "Pháo đài",
+      "avoidBonus": 20,
+      "defenseBonus": 2,
+      "healPercent": 20,
+      "movementCosts": {
+        "foot": 2,
+        "armor": 2,
+        "cavalry": 2,
+        "flier": 1,
+        "mage": 2,
+        "bandit": 2
+      }
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "nameVi": "Cây cầu",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 1,
+        "armor": 1,
+        "cavalry": 1,
+        "flier": 1,
+        "mage": 1,
+        "bandit": 1
+      }
+    },
+    {
+      "id": "river",
+      "name": "River",
+      "nameVi": "Sông ngòi",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": null,
+        "armor": null,
+        "cavalry": null,
+        "flier": 1,
+        "mage": null,
+        "bandit": 2
+      }
+    },
+    {
+      "id": "sea",
+      "name": "Sea",
+      "nameVi": "Biển cả",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": null,
+        "armor": null,
+        "cavalry": null,
+        "flier": 1,
+        "mage": null,
+        "bandit": 2
+      }
+    },
+    {
+      "id": "gate",
+      "name": "Gate",
+      "nameVi": "Cổng thành",
+      "avoidBonus": 30,
+      "defenseBonus": 3,
+      "healPercent": 10,
+      "movementCosts": {
+        "foot": 1,
+        "armor": 1,
+        "cavalry": 1,
+        "flier": 1,
+        "mage": 1,
+        "bandit": 1
+      }
+    },
+    {
+      "id": "wall",
+      "name": "Wall",
+      "nameVi": "Tường đá",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "destructible": true,
+      "maxHp": 20,
+      "movementCosts": {
+        "foot": null,
+        "armor": null,
+        "cavalry": null,
+        "flier": null,
+        "mage": null,
+        "bandit": null
+      }
+    }
+  ]
+}

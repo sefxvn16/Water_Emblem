@@ -1,0 +1,26 @@
+{
+  "id": "test_map_01",
+  "name": "Bản đồ thử nghiệm 01",
+  "width": 8,
+  "height": 8,
+  "grid": [
+    ["plains", "plains", "forest", "forest", "mountain", "mountain", "peak", "peak"],
+    ["plains", "plains", "forest", "plains", "mountain", "plains", "plains", "plains"],
+    ["plains", "fort",   "plains", "plains", "plains",   "plains", "forest", "plains"],
+    ["river",  "river",  "bridge", "river",  "river",    "river",  "river",  "river"],
+    ["plains", "plains", "plains", "plains", "forest",   "plains", "plains", "plains"],
+    ["plains", "forest", "plains", "plains", "plains",   "fort",   "plains", "plains"],
+    ["plains", "plains", "plains", "forest", "plains",   "plains", "plains", "plains"],
+    ["plains", "plains", "plains", "plains", "gate",     "plains", "plains", "plains"]
+  ],
+  "elevations": [
+    [0, 0, 0, 0, 1, 1, 2, 2],
+    [0, 0, 0, 0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [-1, -1, 0, -1, -1, -1, -1, -1],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 0, 0, 0]
+  ]
+}
