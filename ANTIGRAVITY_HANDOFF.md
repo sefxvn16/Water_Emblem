@@ -1,0 +1,54 @@
+# Bàn giao Water Emblem cho phiên tiếp theo — cập nhật 2026-11-15
+
+## Đọc trước khi tiếp tục
+
+Chủ dự án yêu cầu kiểm nguồn FE3 cho chính xác để tránh sửa đi sửa lại, sau đó bàn giao chuyển phiên. Lượt 2026-11-15 **chỉ rà soát nguồn và cập nhật tài liệu**, không sửa dữ liệu/gameplay Chương 1–3. `PLAN.md` mục 5 đã PASS trên Chrome có GPU; mục 6–7 vẫn FAIL và không được đánh PASS từ unit test hoặc bản lưu gần thắng. Đọc bảng đối chiếu dưới đây trước khi thay JSON.
+
+## Phân công qua CLI
+
+Việc nhẹ giao cho Antigravity/Gemini 3.8 Flash High: đọc `data/chapters/`, `data/maps/`, `data/dialogues/` của Chương 1–3 và `Game_Design/campaign.md`, rồi lập bảng các điểm khớp/chưa khớp giữa dữ liệu hiện tại và tài liệu. Ghi rõ đường dẫn, ID, số lượng, tọa độ và nguồn FE3 nếu kiểm được; phần không có nguồn phải ghi “chưa xác minh”. Chỉ tạo báo cáo riêng trong `reports/`, không sửa gameplay, JSON, `PLAN.md`, `AGENTS.md`, không commit hoặc push. Codex sẽ kiểm kết luận trước khi đưa vào kế hoạch.
+
+Trạng thái gửi: **Antigravity đã hoàn thành một tác vụ kiểm kê chỉ đọc**, kết quả được kiểm lại và lưu ở `reports/antigravity-chapter-inventory-review-2026-11-14.md`. `agy models` xác nhận `gemini-3.8-flash-high`. Lần gọi script đầu trả `ok:false` vì xin quyền Bash trong headless; lần thứ hai cấm dùng Bash, chỉ dùng công cụ đọc file, trả `ok:true` sau khoảng 229 giây. Codex xác nhận số đếm chương và bác bỏ hai kết luận sai của Gemini về vật phẩm rơi từ Gomer/Hyman: chức năng này đã có trong `App.tsx`. Không lấy báo cáo Gemini làm luật hoặc bằng chứng chơi trọn chương. `claude plugin list` tại thời điểm kiểm vẫn báo plugin disabled và repo chưa có `.studio/project.json`, nên chỉ dùng script nghiên cứu riêng của plugin, chưa chạy full playbook.
+
+Kết quả đã kiểm từ JSON: Chương 1 là bản đồ 30×13, 7 quân ta, 14 địch, 2 làng; Chương 2 là 30×15, 11 quân ta, 17 địch, 1 làng, Caeda có thể thu phục Castor; Chương 3 là 30×20, 13 quân ta cố định, 16 địch, 1 làng, Caeda có thể thu phục Navarre. Castor có thể thành quân thứ 14 ở Chương 3 nếu đã thu phục. Chương 3 chưa có mô tả lực lượng và sự kiện riêng trong tài liệu chiến dịch. `reports/` bị Git bỏ qua, nên các phát hiện quan trọng được ghi tại đây.
+
+## Đối chiếu FE3 Book 1 đã kiểm chéo
+
+| Chương | Nguồn FE3 đã xác nhận | JSON/code hiện tại | Việc còn phải kiểm |
+|---|---|---|---|
+| 1 | 30×13; 7 quân ta; 11 Pirate (1 cấp 3), 1 Hunter, 1 Thief, Gazzak; làng phía đông 5.000G và phía tây Vulnerary. Gazzak cùng hai Pirate chuyển về Gate trong lượt đầu. | Số lượng quân và thưởng làng khớp; chưa phân biệt Pirate cấp 3. Gazzak được đặt sẵn trên Gate `(4,4)`, `mov:0`, `aiRole:stationary`; chưa có sự kiện mở màn tương ứng. | Đối chiếu vị trí bắt đầu và thời điểm di chuyển trên ảnh/trận FE3. |
+| 2 | 30×15; 9 Pirate thường (1 cấp 3), 2 Thief, 2 Hunter, 2 Social Knight Grust, Gomer và Castor = 17; Caeda thu phục Castor; làng 3.000G; Gomer rơi Steel Sword. | Tổng 17 địch nhưng thành phần là 12 Pirate, 1 Thief, 2 Hunter, Gomer và Castor; thiếu hai kỵ binh và một Thief. Hội thoại làng bỏ lời nhờ cứu Lena; cảnh báo Navarre bị chuyển từ kết chương sang làng. | Đối chiếu vị trí, trang bị từng quân; sửa diễn tiến lời thoại bằng văn bản tự viết, không chép bản dịch tham khảo. |
+| 3 | 30×20; **15 địch** gồm 8 Bandit, 3 Hunter, 2 Thief, Hyman và Navarre; Julian/Lena ở phe ta từ lượt 1, Caeda thu phục Navarre; làng cho Devil Axe, Hyman rơi Mend, một Bandit rơi Vulnerary, chiếm cổng nhận 10.000G. | JSON có 16 địch: 10 Fighter, 3 Hunter, 1 Thief, Hyman, Navarre. Julian/Lena đã ở phe ta từ đầu nhưng lời kết lại kể họ mới gia nhập. Lena chưa có Warp, Julian chưa có Door Key; chưa có thưởng 10.000G hay vật phẩm rơi từ Bandit. | Xác minh tọa độ/địa hình; ánh xạ Bandit FE3 vào class Water Emblem đã chọn, không tự tạo class mới; kiểm vật phẩm và sự kiện với gameplay hiện đại đã chốt. |
+
+Nguồn độc lập để kiểm số lượng/trang bị/sự kiện: [GCGX Ch1](https://gcgx.games/fe3/01_01.html), [Ch2](https://gcgx.games/fe3/01_02.html), [Ch3](https://gcgx.games/fe3/01_03.html); [Serenes Forest bảng địch Book 1](https://serenesforest.net/mystery-of-the-emblem/characters/enemy-data/book-1/); [Fire Emblem Wiki Ch1](https://fireemblemwiki.org/wiki/Marth_Embarks), [Ch2](https://fireemblemwiki.org/wiki/The_Pirates_of_Galder), [Ch3, đúng cột Mystery of the Emblem](https://fireemblemwiki.org/wiki/A_Brush_in_the_Teeth). Diễn tiến hội thoại kiểm theo [script Ch1](https://serenesforest.net/mystery-of-the-emblem/scripts/book-1-war-of-darkness/chapter-1-marths-journey/), [Ch2](https://serenesforest.net/mystery-of-the-emblem/scripts/book-1-war-of-darkness/chapter-2-pirates-of-garda/), [Ch3](https://serenesforest.net/mystery-of-the-emblem/scripts/book-1-war-of-darkness/chapter-3-devil-mountain/). Mỗi trang wiki có các cột FE1/FE3/FE11; chỉ lấy cột FE3 cho nội dung chiến dịch.
+
+**Giới hạn nguồn:** Các kết luận trên được hai hoặc ba nguồn cộng đồng độc lập xác nhận; chưa so trực tiếp ROM. Ba ảnh nền bản đồ được liệt kê ở [The Spriters Resource](https://www.spriters-resource.com/snes/fireemblemmysteryoftheemblem/) mục Backgrounds và có thể dùng **để đối chiếu**, không nhập ảnh vào game khi chưa kiểm quyền. Ảnh nền không chứng minh vị trí quân và hành vi lượt đầu. Hướng dẫn Nhật `chirimenzeyo` có sơ đồ quân nhưng ký hiệu có thể lệch ô; một hướng dẫn khác còn gọi nhầm Navarre là Ogma, nên không dùng riêng các hướng dẫn đó làm căn cứ tọa độ. [Video chơi FE3 Book 1 Ch1–7](https://www.youtube.com/watch?v=TszKTQOHwIk) có mốc Ch1 03:45, Ch2 10:33, Ch3 24:12 để đối chiếu vị trí/sự kiện trong phiên sau. Không ghi tọa độ nào là chính xác nếu chưa kiểm khung hình hoặc dữ liệu game.
+
+## Trạng thái đã kiểm
+
+- Mã game nằm trong `Water-Emblem/`; tài liệu thiết kế ở `Game_Design/`, tiến độ ở `PLAN.md`. Giữ toàn bộ thay đổi đang có trong working tree. Chưa commit hoặc push đợt này.
+- `npm test -- --run`: 82/82 test PASS, 13 file. `npm run build`: TypeScript và Vite PASS ngày 2026-11-15. `battle.spec.ts`: 12/12 PASS trên Chromium cùng ngày. Những test này kiểm chức năng hiện có, không xác nhận nội dung FE3 hoặc chơi trọn chương.
+- `App.tsx` đã nối lại EXP, hồi HP địa hình, dùng Vulnerary, promotion, xuống/lên ngựa, tầm đánh, và giữ đội hình/HP/trang bị/vàng/làng khi lưu và chuyển chương. `saveLoad.ts` dùng save v5, có di trú v2–v4. Chương 3 chỉ mang Castor theo nếu đã thu phục ở chương 2; có unit test.
+- `ThreeScene.tsx` ghi FPS, draw calls, triangles vào `canvas.dataset` mỗi giây. Chrome cửa sổ 1920×1080 với ANGLE/Intel Arc 140V Direct3D11 đo 12 mẫu trung bình 60,0 FPS, 223 draw calls, 171.612 triangles ngày 2026-11-15; đạt mốc PC 30 FPS. Ảnh thực tế ở `scratch/chrome-1080p-2026-11-15.png` và ảnh toàn cảnh ở `scratch/chrome-overview-1080p-2026-11-15.png`. Kéo trái/phải và lăn chuột đã kiểm trực tiếp; `battle.spec.ts` 12/12 PASS trên Chromium, build PASS. Headless vẫn chỉ khoảng 6,9 FPS nên không dùng làm mốc GPU.
+- Dữ liệu chương 1 có 14 địch, hai làng, bản đồ 30×13; chương 2 có 17 địch, bản đồ 30×15; chương 3 đã có bản đồ 30×20. Đây là dữ liệu hiện có, chưa đủ chứng minh độ chính xác từng ô hoặc chơi trọn chương.
+
+## Việc ưu tiên để người dùng chơi thử
+
+1. **Kiểm luồng Chương 1–2 trên Chromium từ mở màn.** Chạy `npm run test:e2e -- --workers=1`, sửa lỗi thật, rồi chơi tay các nhánh làng, thu phục Castor, rơi vật phẩm, lưu/tải, thắng/thua và chuyển chương. `tests/browser/fullChapter.spec.ts` là bot tự chơi đơn giản: bản đầu để Marth đứng yên nên chết lượt 6; bản hiện tại lùi về thành, sống tới lượt 31 nhưng không hạ hết địch. Đây chưa chứng minh game bất khả thắng. Sửa kịch bản chiến thuật và kiểm chơi tay; không thay bằng bản lưu gần thắng. Chỉ đánh PASS mục 6 trong `PLAN.md` khi có bằng chứng hoàn chỉnh.
+2. **Hoàn thiện mục 34 (reclass từ Chương 4).** `skill`, EXP/growth, cap 30/60, promotion, xuống/lên ngựa và save v5 thuộc mục 32 đã có. Reclass và giới hạn số class chưa có. FE11 cho reclass trong màn chuẩn bị từ chương 4, giữ level/EXP, đổi stat theo chênh base class, chia nhóm Male A/B/Female và giới hạn chỗ theo số quân đã chiêu mộ cùng class. Nguồn mã địa phương: `reports/_source_review/fe11-us/src/ov005/prep_job_select.cpp` (khoảng dòng 95–145); bảng tham chiếu: https://serenesforest.net/shadow-dragon/classes/reclassing/ . Phải đối chiếu mapping với 37 class Water Emblem trước khi code; không tự gán tùy ý cho class mới. Chương 4 chưa có nên cần kiểm lõi bằng unit test và thiết kế điểm kích hoạt hợp lý.
+3. **Giữ mốc 3D mục 5 khi thay asset hoặc renderer.** Mục 5 đã PASS trên Chrome PC 1080p với 60,0 FPS. Khi thêm model, bản đồ hoặc hiệu ứng mới, đo lại FPS/draw calls/triangles trên cùng điều kiện; số headless không thay thế phép đo GPU.
+
+## Công việc tiếp theo
+
+- **Chương 3 (mục 7):** validator save đã bổ sung map chương 3; bài Chromium save/nạp PASS. Dùng bảng đối chiếu trên để sửa số quân, sự kiện 10.000G và diễn tiến Julian/Lena sau khi xác minh vị trí từ bản đồ/gameplay FE3. Kiểm thắng/thua và chuyển chương thật trên trình duyệt. Castor đã được giữ nếu thu phục ở chương 2.
+- **AI Thief và làng:** Thief nay ưu tiên ô làng còn nguyên theo vai trò `pillage`, có unit test cho việc bỏ qua quân ta gần đó. Cần kiểm bằng trình duyệt trên bản đồ chương 1–3, kiểm làng đã thăm/đã phá và cảnh báo phù hợp.
+- **Đối chiếu nội dung FE3:** trước khi sửa, mở ảnh bản đồ FE3 và mốc video nêu trên để xác minh tọa độ từng ô/quân, ghi lại nguồn và độ chắc chắn. `Game_Design/campaign.md` còn thiếu chi tiết Chương 3. Không dùng FE11/FE1 thay cho FE3 ở phần nội dung; không ghi “chuẩn hoá toàn bộ” trước khi kiểm chơi trọn.
+- **Kiểm save cũ:** di trú v2–v4 mặc định vàng/làng và thêm địch mới ở trạng thái chết để tránh hồi sinh địch giữa trận. Cần kiểm bằng Chromium với save thật từ các phiên trước; map cũ thay đổi có thể làm vị trí quân không còn hợp lệ.
+- **Mục 8–9 trong `PLAN.md`:** chế độ mở rộng và phát hành cần quyết định riêng của chủ dự án; không tự triển khai/publish.
+
+## Quy tắc khi tiếp tục
+
+- Đọc `AGENTS.md`, `Game_Design/README.md` và file sở hữu luật trước khi sửa. Cơ chế, công thức, chỉ số dùng FE hiện đại theo quyết định đã chốt; hình ảnh, bản đồ, nhân vật theo FE3. Kiểm mã nguồn repo FE có sẵn trước khi viết chức năng tương tự, báo nguồn và phương án cho chủ dự án chốt theo `AGENTS.md`.
+- Giữ thay đổi đang có của người khác. Với file đã tồn tại, theo chế độ backup đã chọn trong phiên làm việc tương ứng. Không nhập asset/code tham khảo khi chưa kiểm quyền sử dụng.
+- `PLAN.md` chỉ đánh `[x]` khi tiêu chí thực sự PASS kèm bằng chứng. Unit test/build không chứng minh chơi trọn chương hoặc hiệu năng trên thiết bị.
+- Chromium qua Playwright đã chạy được trong lượt tiếp theo: `battle.spec.ts` 12/12 PASS; `fullChapter.spec.ts` chưa PASS vì bot tự chơi chưa thắng. Công cụ điều khiển trình duyệt máy từng dừng vì không xác định được URL an toàn trên Windows; không cần dùng công cụ đó khi Playwright đáp ứng việc kiểm game.

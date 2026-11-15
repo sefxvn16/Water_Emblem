@@ -1,52 +1,53 @@
 {
   "id": "chapter_01",
-  "name": "Chương 1: Bờ biển Talys (Marth Embarks)",
+  "name": "Chapter 1: Marth Embarks",
   "mapId": "chapter_01_talys",
   "objective": {
     "type": "seize",
     "seizeTargetTile": {
-      "x": 3,
-      "y": 9
+      "x": 4,
+      "y": 4
     },
-    "descriptionVi": "Marth chiếm cổng thành sau khi mở đường"
+    "description": "Seize the castle gate after defeating boss Gazzak",
+    "descriptionVi": "Marth chiếm cổng thành sau khi hạ boss Gazzak"
   },
   "units": [
     {
       "id": "marth",
       "faction": "player",
       "position": {
-        "x": 25,
-        "y": 9
+        "x": 24,
+        "y": 5
       },
       "weaponId": "rapier",
       "characterId": "marth"
-    },
-    {
-      "id": "jagen",
-      "faction": "player",
-      "position": {
-        "x": 24,
-        "y": 9
-      },
-      "weaponId": "silver_lance",
-      "characterId": "jagen"
     },
     {
       "id": "caeda",
       "faction": "player",
       "position": {
         "x": 25,
-        "y": 8
+        "y": 5
       },
       "weaponId": "slim_lance",
       "characterId": "caeda"
     },
     {
+      "id": "jagen",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 4
+      },
+      "weaponId": "silver_lance",
+      "characterId": "jagen"
+    },
+    {
       "id": "cain",
       "faction": "player",
       "position": {
-        "x": 24,
-        "y": 8
+        "x": 22,
+        "y": 7
       },
       "weaponId": "iron_sword",
       "characterId": "cain"
@@ -55,8 +56,8 @@
       "id": "abel",
       "faction": "player",
       "position": {
-        "x": 26,
-        "y": 9
+        "x": 23,
+        "y": 7
       },
       "weaponId": "iron_lance",
       "characterId": "abel"
@@ -65,8 +66,8 @@
       "id": "draug",
       "faction": "player",
       "position": {
-        "x": 25,
-        "y": 10
+        "x": 22,
+        "y": 3
       },
       "weaponId": "iron_lance",
       "characterId": "draug"
@@ -75,19 +76,19 @@
       "id": "gordin",
       "faction": "player",
       "position": {
-        "x": 26,
-        "y": 8
+        "x": 23,
+        "y": 3
       },
       "weaponId": "iron_bow",
       "characterId": "gordin"
     },
     {
       "id": "gazzak",
-      "name": "Gazzak (Boss)",
+      "name": "Gazzak",
       "faction": "enemy",
       "position": {
-        "x": 3,
-        "y": 9
+        "x": 4,
+        "y": 4
       },
       "mov": 0,
       "weaponId": "iron_axe",
@@ -96,11 +97,11 @@
     },
     {
       "id": "enemy_pirate_1",
-      "name": "Galder Pirate A",
+      "name": "Galder Pirate (North 1)",
       "faction": "enemy",
       "position": {
-        "x": 6,
-        "y": 9
+        "x": 4,
+        "y": 0
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue",
@@ -108,23 +109,83 @@
     },
     {
       "id": "enemy_pirate_2",
-      "name": "Galder Pirate B",
+      "name": "Galder Pirate (North 2)",
       "faction": "enemy",
       "position": {
-        "x": 11,
-        "y": 7
+        "x": 5,
+        "y": 0
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_3",
+      "name": "Galder Pirate (North 3)",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 0
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_4",
+      "name": "Galder Pirate (Lv 3)",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 1
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate_lv3"
+    },
+    {
+      "id": "enemy_pirate_5",
+      "name": "Galder Pirate (Coast 1)",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 4
       },
       "weaponId": "hand_axe",
       "aiRole": "pursue",
       "characterId": "galder_pirate"
     },
     {
-      "id": "enemy_pirate_3",
-      "name": "Galder Pirate C",
+      "id": "enemy_pirate_6",
+      "name": "Galder Pirate (West Gate)",
       "faction": "enemy",
       "position": {
-        "x": 17,
-        "y": 7
+        "x": 2,
+        "y": 5
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "stationary",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_7",
+      "name": "Galder Pirate (South Gate 1)",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 6
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_8",
+      "name": "Galder Pirate (South Gate 2)",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 6
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue",
@@ -132,26 +193,89 @@
     },
     {
       "id": "enemy_hunter",
+      "name": "Galder Hunter",
       "faction": "enemy",
       "position": {
-        "x": 12,
-        "y": 8
+        "x": 6,
+        "y": 7
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue",
       "characterId": "galder_hunter"
     },
     {
-      "id": "enemy_thief",
+      "id": "enemy_pirate_9",
+      "name": "Galder Pirate (South 1)",
       "faction": "enemy",
       "position": {
-        "x": 4,
-        "y": 3
+        "x": 11,
+        "y": 8
       },
-      "mov": 6,
-      "weaponId": "iron_sword",
+      "weaponId": "iron_axe",
       "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_10",
+      "name": "Galder Pirate (West Village)",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 9
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_pirate_11",
+      "name": "Galder Pirate (South 2)",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 9
+      },
+      "weaponId": "hand_axe",
+      "aiRole": "pursue",
+      "characterId": "galder_pirate"
+    },
+    {
+      "id": "enemy_thief",
+      "name": "Galder Thief",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 9
+      },
+      "weaponId": "iron_sword",
+      "aiRole": "pillage",
       "characterId": "galder_thief"
+    }
+  ],
+  "villages": [
+    {
+      "id": "village_west",
+      "name": "Western Village (Vulnerary)",
+      "position": {
+        "x": 3,
+        "y": 8
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "vulnerary"
+      }
+    },
+    {
+      "id": "village_east",
+      "name": "Eastern Village (5,000G)",
+      "position": {
+        "x": 25,
+        "y": 2
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 5000
+      }
     }
   ]
 }

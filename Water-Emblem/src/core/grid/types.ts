@@ -5,18 +5,23 @@ export interface Position {
 
 export type MoveType = 'foot' | 'armor' | 'cavalry' | 'flier' | 'mage' | 'bandit';
 
+export type ObstacleType = 'none' | 'difficult' | 'water' | 'fly_only' | 'impassable' | 'structure';
+
 export type UnitFaction = 'player' | 'enemy' | 'ally';
+export type WeaponRank = 'E' | 'D' | 'C' | 'B' | 'A';
 
 export interface TerrainDefinition {
   readonly id: string;
   readonly name: string;
-  readonly nameVi: string;
+  readonly nameVi?: string;
+  readonly obstacleType?: ObstacleType;
   readonly avoidBonus: number;
   readonly defenseBonus: number;
   readonly healPercent: number;
   readonly destructible?: boolean;
   readonly maxHp?: number;
   readonly movementCosts: Record<MoveType, number | null>;
+  readonly sourceClassCosts?: Readonly<Record<string, number | null>>;
 }
 
 export interface MapData {
@@ -33,8 +38,12 @@ export interface GridUnit {
   readonly name: string;
   readonly faction: UnitFaction;
   position: Position;
-  readonly mov: number;
-  readonly moveType: MoveType;
+  classId?: string;
+  mountedClassId?: string;
+  mov: number;
+  moveType: MoveType;
+  readonly weaponRanks?: Readonly<Record<string, WeaponRank>>;
+  supportPoints?: Readonly<Record<string, number>>;
   isDead?: boolean;
   hasActed?: boolean;
 }

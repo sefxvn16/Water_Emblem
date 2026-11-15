@@ -1,11 +1,11 @@
 {
   "id": "test_chapter_01",
-  "name": "Chương 1: Bờ biển Talys (Marth Embarks)",
+  "name": "Test Chapter: Talys Coast (8x8)",
   "mapId": "test_map_01",
   "objective": {
     "type": "defeat_boss",
     "bossUnitId": "gazzak",
-    "descriptionVi": "Hạ gục thủ lĩnh Gazzak (Boss) đang chiếm giữ cổng thành Talys"
+    "description": "Defeat boss Gazzak guarding the Talys gate"
   },
   "units": [
     {

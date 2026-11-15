@@ -21,20 +21,29 @@ interface ThreeSceneProps {
 
 const TERRAIN_3D_COLORS: Record<string, { color: number; heightScale: number }> = {
   plains: { color: 0x4caf50, heightScale: 0.3 },
+  road: { color: 0xc8b79b, heightScale: 0.28 },
   forest: { color: 0x2e7d32, heightScale: 0.6 },
   mountain: { color: 0x8d6e63, heightScale: 1.2 },
   peak: { color: 0x5d4037, heightScale: 1.8 },
+  cliff: { color: 0x4e342e, heightScale: 1.6 },
+  sand: { color: 0xd4a373, heightScale: 0.25 },
   fort: { color: 0x78909c, heightScale: 0.8 },
   bridge: { color: 0xa1887f, heightScale: 0.35 },
   river: { color: 0x1976d2, heightScale: 0.1 },
   sea: { color: 0x0d47a1, heightScale: 0.05 },
   gate: { color: 0xc62828, heightScale: 0.9 },
+  castle: { color: 0x90a4ae, heightScale: 1.0 },
   wall: { color: 0x424242, heightScale: 1.5 },
+  village: { color: 0xd97706, heightScale: 0.5 },
+  house: { color: 0xd7ccc8, heightScale: 0.45 },
+  shop: { color: 0x80cbc4, heightScale: 0.45 },
 };
 
-type CharacterModel = 'knight' | 'ranger' | 'mage' | 'barbarian';
+type CharacterModel = 'knight' | 'ranger' | 'mage' | 'barbarian' | 'rogue' | 'skeleton';
+type BuildingModel = 'fort' | 'gate' | 'castle';
 type ModelAssets = {
   characters: Record<CharacterModel, THREE.Group>;
+  buildings: Record<BuildingModel, THREE.Group>;
   pine: THREE.Group;
   rock: THREE.Group;
 };
@@ -86,20 +95,34 @@ async function loadNature(name: 'PineTree_1' | 'Rock_1', height: number, width: 
 
 async function loadModelAssets(): Promise<ModelAssets> {
   const loader = new GLTFLoader();
-  const names: CharacterModel[] = ['knight', 'ranger', 'mage', 'barbarian'];
-  const [characters, pine, rock] = await Promise.all([
+  const names: CharacterModel[] = ['knight', 'ranger', 'mage', 'barbarian', 'rogue', 'skeleton'];
+  const buildingNames: BuildingModel[] = ['fort', 'gate', 'castle'];
+  const [characters, buildings, pine, rock] = await Promise.all([
     Promise.all(names.map(async (name) => {
       const gltf = await loader.loadAsync(`/models/characters/${name}.glb`);
       setFlatShading(gltf.scene);
       return fitModel(gltf.scene, 0.9, 0.62);
     })),
+    Promise.all(buildingNames.map(async (name) => {
+      const gltf = await loader.loadAsync(`/models/buildings/${name}.glb`);
+      setFlatShading(gltf.scene);
+      return fitModel(gltf.scene, 1.1, 0.85);
+    })),
     loadNature('PineTree_1', 1.25, 0.8),
     loadNature('Rock_1', 0.65, 0.75),
   ]);
-  return { characters: Object.fromEntries(names.map((name, index) => [name, characters[index]])) as Record<CharacterModel, THREE.Group>, pine, rock };
+  return {
+    characters: Object.fromEntries(names.map((name, index) => [name, characters[index]])) as Record<CharacterModel, THREE.Group>,
+    buildings: Object.fromEntries(buildingNames.map((name, index) => [name, buildings[index]])) as Record<BuildingModel, THREE.Group>,
+    pine,
+    rock,
+  };
 }
 
 function characterModelFor(unit: ExtendedUnitState): CharacterModel {
+  const charId = (unit.unit.id || '').toLowerCase();
+  if (charId.includes('skeleton')) return 'skeleton';
+  if (charId.includes('thief') || charId.includes('mercenary') || charId === 'ogma' || charId === 'navarre' || charId === 'julian') return 'rogue';
   if (unit.weapon.type === 'bow') return 'ranger';
   if (unit.weapon.type === 'tome' || unit.weapon.type === 'staff' || unit.unit.moveType === 'mage') return 'mage';
   if (unit.weapon.type === 'axe' || unit.unit.moveType === 'bandit') return 'barbarian';
@@ -154,7 +177,7 @@ function MiniMap({ mapData, units, focus, selected }: {
   }
   return (
     <div style={{ width: 148, height: 148, borderRadius: '50%', overflow: 'hidden', border: '1px solid #b8c8bf', background: '#182023', boxShadow: '0 3px 12px rgba(0,0,0,0.32)' }}>
-      <svg role="img" aria-label={`Bản đồ nhỏ quanh ô ${focus.x + 1}, ${focus.y + 1}`} viewBox="0 0 110 110" width="148" height="148">
+      <svg role="img" aria-label={`Mini-map near tile ${focus.x + 1}, ${focus.y + 1}`} viewBox="0 0 110 110" width="148" height="148">
         {cells}
         {units.filter((entry) => !entry.unit.isDead).map(({ unit }) => {
           const x = (unit.position.x - focus.x + 5.5) * 10;
@@ -200,7 +223,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraStateRef = useRef<{ mapId: string; position: THREE.Vector3; target: THREE.Vector3 } | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const tileMeshesRef = useRef<Map<string, THREE.Mesh>>(new Map());
+  const tileHeightsRef = useRef<Map<string, number>>(new Map());
   const unitsGroupRef = useRef<THREE.Group | null>(null);
   const overlaysGroupRef = useRef<THREE.Group | null>(null);
   const unitMarkerRef = useRef<{
@@ -223,6 +246,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       loaded = assets;
       if (cancelled) {
         Object.values(assets.characters).forEach(disposeModel);
+        Object.values(assets.buildings).forEach(disposeModel);
         disposeModel(assets.pine);
         disposeModel(assets.rock);
       } else {
@@ -234,6 +258,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       // Templates are shared by every visible instance; dispose on component unmount.
       if (loaded) {
         Object.values(loaded.characters).forEach(disposeModel);
+        Object.values(loaded.buildings).forEach(disposeModel);
         disposeModel(loaded.pine);
         disposeModel(loaded.rock);
       }
@@ -271,13 +296,16 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     rendererRef.current = renderer;
-    renderer.domElement.title = 'Kéo chuột trái để di chuyển bản đồ; kéo chuột phải để xoay; lăn chuột để zoom';
+    renderer.domElement.title = 'Left drag to pan; right drag to rotate; wheel to zoom';
 
     container.appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableZoom = false;
     controls.enablePan = true;
+    controls.enableDamping = false;
+    controls.rotateSpeed = 0.85;
+    controls.panSpeed = 1.0;
     controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
     controls.mouseButtons.RIGHT = THREE.MOUSE.ROTATE;
     controls.minPolarAngle = 0.18;
@@ -334,31 +362,40 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     unitMarkerRef.current = { geometry: markerGeometry, materials: markerMaterials };
 
     // Tạo các ô địa hình 3D (Voxel-like tiles)
-    tileMeshesRef.current.clear();
+    tileHeightsRef.current.clear();
     const boxGeo = new THREE.BoxGeometry(0.96, 1, 0.96);
+    const terrainTiles = new Map<string, { position: Position; height: number }[]>();
 
     for (let y = 0; y < mapData.height; y++) {
       for (let x = 0; x < mapData.width; x++) {
         const terrainId = mapData.grid[y]?.[x] ?? 'plains';
         const elevation = mapData.elevations?.[y]?.[x] ?? 0;
         const config = TERRAIN_3D_COLORS[terrainId] || { color: 0x4caf50, heightScale: 0.3 };
-
         const totalHeight = Math.max(0.2, config.heightScale + elevation * 0.6);
-        const mat = new THREE.MeshLambertMaterial({
-          color: config.color,
-          flatShading: true,
-        });
-
-        const mesh = new THREE.Mesh(boxGeo, mat);
-        mesh.scale.set(1, totalHeight, 1);
-        mesh.position.set(x, totalHeight / 2 - 0.5, y);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-
-        mesh.userData = { x, y, terrainId, totalHeight };
-        tilesGroup.add(mesh);
-        tileMeshesRef.current.set(`${x},${y}`, mesh);
+        tileHeightsRef.current.set(`${x},${y}`, totalHeight);
+        const group = terrainTiles.get(terrainId) ?? [];
+        group.push({ position: { x, y }, height: totalHeight });
+        terrainTiles.set(terrainId, group);
       }
+    }
+    const tileInstances: THREE.InstancedMesh[] = [];
+    const transform = new THREE.Object3D();
+    for (const [terrainId, tiles] of terrainTiles) {
+      const color = TERRAIN_3D_COLORS[terrainId]?.color ?? 0x4caf50;
+      const mesh = new THREE.InstancedMesh(boxGeo,
+        new THREE.MeshLambertMaterial({ color, flatShading: true }), tiles.length);
+      tiles.forEach(({ position, height }, index) => {
+        transform.position.set(position.x, height / 2 - 0.5, position.y);
+        transform.scale.set(1, height, 1);
+        transform.updateMatrix();
+        mesh.setMatrixAt(index, transform.matrix);
+      });
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.userData.tilePositions = tiles.map(({ position }) => position);
+      tilesGroup.add(mesh);
+      tileInstances.push(mesh);
     }
 
     const natureGroup = new THREE.Group();
@@ -367,11 +404,15 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       for (let y = 0; y < mapData.height; y++) {
         for (let x = 0; x < mapData.width; x++) {
           const terrain = mapData.grid[y]?.[x];
-          const template = terrain === 'forest' ? models.pine : terrain === 'mountain' || terrain === 'peak' ? models.rock : null;
+          const template = terrain === 'forest' ? models.pine
+            : terrain === 'mountain' || terrain === 'peak' || terrain === 'cliff' ? models.rock
+            : terrain === 'fort' ? models.buildings.fort
+            : terrain === 'gate' ? models.buildings.gate
+            : terrain === 'village' || terrain === 'castle' || terrain === 'house' || terrain === 'shop' ? models.buildings.castle
+            : null;
           if (!template) continue;
-          const tile = tileMeshesRef.current.get(`${x},${y}`);
           const model = template.clone(true);
-          model.position.set(x, ((tile?.userData.totalHeight as number) ?? 0.5) - 0.5, y);
+          model.position.set(x, (tileHeightsRef.current.get(`${x},${y}`) ?? 0.5) - 0.5, y);
           natureGroup.add(model);
         }
       }
@@ -387,9 +428,9 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
-      const meshes = Array.from(tileMeshesRef.current.values());
-      const intersects = raycaster.intersectObjects(meshes, false);
-      return intersects[0]?.object.userData as { x: number; y: number } | undefined ?? null;
+      const hit = raycaster.intersectObjects(tileInstances, false)[0];
+      if (!hit || hit.instanceId === undefined) return null;
+      return (hit.object.userData.tilePositions as Position[])[hit.instanceId] ?? null;
     };
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -433,6 +474,8 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
 
     // Animation loop
     let animId = 0;
+    let sampleStart = performance.now();
+    let sampleFrames = 0;
     const animate = () => {
       animId = requestAnimationFrame(animate);
       if (desiredFocusRef.current) {
@@ -447,6 +490,15 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       }
       controls.update();
       renderer.render(scene, camera);
+      sampleFrames += 1;
+      const now = performance.now();
+      if (now - sampleStart >= 1000) {
+        renderer.domElement.dataset.fps = (sampleFrames * 1000 / (now - sampleStart)).toFixed(1);
+        renderer.domElement.dataset.drawCalls = String(renderer.info.render.calls);
+        renderer.domElement.dataset.triangles = String(renderer.info.render.triangles);
+        sampleStart = now;
+        sampleFrames = 0;
+      }
     };
     animate();
 
@@ -479,7 +531,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       unitMarkerRef.current = null;
       markerGeometry.dispose();
       Object.values(markerMaterials).forEach((material) => material.dispose());
-      tileMeshesRef.current.clear();
+      tileHeightsRef.current.clear();
       renderer.dispose();
       if (domElement.parentNode) {
         domElement.parentNode.removeChild(domElement);
@@ -532,8 +584,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       const [xStr, yStr] = key.split(',');
       const x = Number(xStr);
       const y = Number(yStr);
-      const tileMesh = tileMeshesRef.current.get(key);
-      const h = (tileMesh?.userData.totalHeight as number) ?? 0.5;
+      const h = tileHeightsRef.current.get(key) ?? 0.5;
 
       const p = new THREE.Mesh(planeGeo, redMat);
       p.position.set(x, h - 0.48, y);
@@ -545,8 +596,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       const [xStr, yStr] = key.split(',');
       const x = Number(xStr);
       const y = Number(yStr);
-      const tileMesh = tileMeshesRef.current.get(key);
-      const h = (tileMesh?.userData.totalHeight as number) ?? 0.5;
+      const h = tileHeightsRef.current.get(key) ?? 0.5;
 
       const p = new THREE.Mesh(planeGeo, blueMat);
       p.position.set(x, h - 0.48, y);
@@ -558,8 +608,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
       const [xStr, yStr] = key.split(',');
       const x = Number(xStr);
       const y = Number(yStr);
-      const tileMesh = tileMeshesRef.current.get(key);
-      const h = (tileMesh?.userData.totalHeight as number) ?? 0.5;
+      const h = tileHeightsRef.current.get(key) ?? 0.5;
 
       const p = new THREE.Mesh(planeGeo, targetRedMat);
       p.position.set(x, h - 0.47, y);
@@ -569,8 +618,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     // Vẽ selected indicator
     if (selectedPos) {
       const key = `${selectedPos.x},${selectedPos.y}`;
-      const tileMesh = tileMeshesRef.current.get(key);
-      const h = (tileMesh?.userData.totalHeight as number) ?? 0.5;
+      const h = tileHeightsRef.current.get(key) ?? 0.5;
 
       const p = new THREE.Mesh(planeGeo, yellowMat);
       p.position.set(selectedPos.x, h - 0.46, selectedPos.y);
@@ -599,8 +647,7 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
     for (const ext of aliveUnits) {
       const { unit } = ext;
       const key = `${unit.position.x},${unit.position.y}`;
-      const tileMesh = tileMeshesRef.current.get(key);
-      const groundH = (tileMesh?.userData.totalHeight as number) ?? 0.5;
+      const groundH = tileHeightsRef.current.get(key) ?? 0.5;
 
       const unitGroup = new THREE.Group();
       unitGroup.position.set(unit.position.x, groundH - 0.5, unit.position.y);
@@ -651,8 +698,8 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
         <MiniMap mapData={mapData} units={units} focus={minimapFocus} selected={selectedPos} />
         <div style={{ display: 'flex', gap: '8px' }}>
           {([
-            { label: '−', title: 'Thu nhỏ', factor: 1.22 },
-            { label: '+', title: 'Phóng to', factor: 1 / 1.22 },
+            { label: '−', title: 'Zoom Out', factor: 1.22 },
+            { label: '+', title: 'Zoom In', factor: 1 / 1.22 },
           ]).map(({ label, title, factor }) => (
             <button
               key={title}
@@ -661,15 +708,17 @@ export const ThreeScene: React.FC<ThreeSceneProps> = ({
               title={title}
               onClick={() => zoomBy(factor)}
               style={{
-                width: '34px', height: '34px', borderRadius: '50%',
-                border: '1px solid #9fb1a8', background: 'rgba(24,32,35,0.9)', color: '#f4f7f4',
-                fontSize: '21px', lineHeight: 1, cursor: 'pointer',
+                width: '40px', height: '40px', borderRadius: '50%',
+                border: '1px solid #9fb1a8', background: 'rgba(24,32,35,0.95)', color: '#f4f7f4',
+                fontSize: '22px', lineHeight: 1, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
               }}
             >{label}</button>
           ))}
         </div>
-        <div style={{ color: '#f4f7f4', background: 'rgba(24,32,35,0.88)', borderRadius: '5px', padding: '4px 7px', fontSize: '11px', lineHeight: 1.35, textAlign: 'center' }}>
-          Kéo để di chuyển<br />Chuột phải để xoay
+        <div style={{ color: '#f4f7f4', background: 'rgba(24,32,35,0.92)', borderRadius: '6px', padding: '5px 8px', fontSize: '12px', lineHeight: 1.4, textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)' }}>
+          Left drag to pan<br />Right drag to rotate
         </div>
       </div>
     </div>

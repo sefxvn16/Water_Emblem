@@ -91,7 +91,7 @@ export function calculateMovementRange(
         continue;
       }
 
-      const moveCost = terrains.getMovementCost(terrainId, unit.moveType);
+      const moveCost = terrains.getMovementCost(terrainId, unit.moveType, unit.classId);
       if (moveCost === null) {
         // Địa hình không thể vượt qua
         continue;

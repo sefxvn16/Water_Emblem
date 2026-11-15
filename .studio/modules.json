@@ -1,0 +1,41 @@
+{
+  "dependency_check": "warn",
+  "modules": {
+    "data": {
+      "paths": ["Water-Emblem/data/**"],
+      "depends_on": [],
+      "status": "open"
+    },
+    "core": {
+      "paths": ["Water-Emblem/src/core/**"],
+      "depends_on": ["data"],
+      "status": "open"
+    },
+    "storage": {
+      "paths": ["Water-Emblem/src/storage/**"],
+      "depends_on": ["core", "data"],
+      "status": "open"
+    },
+    "audio": {
+      "paths": ["Water-Emblem/src/audio/**"],
+      "depends_on": ["core"],
+      "status": "open"
+    },
+    "renderer": {
+      "paths": ["Water-Emblem/src/renderer/**"],
+      "depends_on": ["core"],
+      "status": "open"
+    },
+    "ui": {
+      "paths": ["Water-Emblem/src/ui/**"],
+      "depends_on": ["core", "storage", "audio", "data"],
+      "status": "open"
+    },
+    "app": {
+      "paths": ["Water-Emblem/src/App.tsx", "Water-Emblem/src/main.tsx"],
+      "public": ["Water-Emblem/src/main.tsx"],
+      "depends_on": ["core", "storage", "audio", "renderer", "ui", "data"],
+      "status": "open"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { GridUnit, MoveType } from '../grid/types';
 
-export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow' | 'tome' | 'staff';
+export type WeaponType = 'sword' | 'lance' | 'axe' | 'bow' | 'tome' | 'staff' | 'consumable';
 
 export interface ItemDefinition {
   readonly id: string;
@@ -14,6 +14,10 @@ export interface ItemDefinition {
   readonly minRange: number;
   readonly maxRange: number;
   readonly maxUses: number;
+  readonly requiredRank?: 'E' | 'D' | 'C' | 'B' | 'A';
+  readonly healBase?: number;
+  readonly healMagDivisor?: number;
+  readonly healAmount?: number;
   readonly effectiveAgainst: readonly MoveType[];
   readonly isMagic?: boolean;
 }
@@ -23,7 +27,7 @@ export interface UnitCombatStats {
   maxHp: number;
   str: number;
   mag: number;
-  dex: number;
+  skill: number;
   spd: number;
   lck: number;
   def: number;

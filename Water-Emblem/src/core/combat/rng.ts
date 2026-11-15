@@ -67,3 +67,11 @@ export class SeededRNG {
 }
 
 export const defaultRNG = new SeededRNG();
+
+export function hitProbability(rate: number, mode: '1RN' | '2RN'): number {
+  const value = Math.max(0, Math.min(100, Math.floor(rate)));
+  if (mode === '1RN') return value / 100;
+  if (value <= 50) return value * (2 * value + 1) / 10000;
+  const misses = (199 - 2 * value) * (200 - 2 * value) / 2;
+  return 1 - misses / 10000;
+}

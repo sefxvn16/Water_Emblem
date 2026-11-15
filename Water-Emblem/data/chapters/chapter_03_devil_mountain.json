@@ -1,0 +1,377 @@
+{
+  "id": "chapter_03",
+  "name": "Chapter 3: The Devil Mountain",
+  "mapId": "chapter_03_devil_mountain",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 1,
+      "y": 2
+    },
+    "description": "Seize the mountain bandit gate after defeating boss Hyman",
+    "descriptionVi": "Marth chiếm cổng thành sào huyệt sơn tặc sau khi hạ boss Hyman"
+  },
+  "seizeReward": {
+    "type": "gold",
+    "amount": 15000
+  },
+  "villages": [
+    {
+      "id": "village_devil_axe",
+      "name": "Devil Mountain Village (Devil Axe)",
+      "position": {
+        "x": 2,
+        "y": 16
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "devil_axe"
+      }
+    }
+  ],
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 18
+      },
+      "weaponId": "rapier"
+    },
+    {
+      "id": "jagen",
+      "characterId": "jagen",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 18
+      },
+      "weaponId": "silver_lance"
+    },
+    {
+      "id": "caeda",
+      "characterId": "caeda",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 17
+      },
+      "weaponId": "slim_lance"
+    },
+    {
+      "id": "cain",
+      "characterId": "cain",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 17
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "abel",
+      "characterId": "abel",
+      "faction": "player",
+      "position": {
+        "x": 26,
+        "y": 18
+      },
+      "weaponId": "iron_lance"
+    },
+    {
+      "id": "draug",
+      "characterId": "draug",
+      "faction": "player",
+      "position": {
+        "x": 26,
+        "y": 17
+      },
+      "weaponId": "iron_lance"
+    },
+    {
+      "id": "gordin",
+      "characterId": "gordin",
+      "faction": "player",
+      "position": {
+        "x": 27,
+        "y": 18
+      },
+      "weaponId": "iron_bow"
+    },
+    {
+      "id": "ogma",
+      "characterId": "ogma",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 18
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "barst",
+      "characterId": "barst",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 17
+      },
+      "weaponId": "hand_axe"
+    },
+    {
+      "id": "bord",
+      "characterId": "bord",
+      "faction": "player",
+      "position": {
+        "x": 22,
+        "y": 18
+      },
+      "weaponId": "hammer"
+    },
+    {
+      "id": "cord",
+      "characterId": "cord",
+      "faction": "player",
+      "position": {
+        "x": 22,
+        "y": 17
+      },
+      "weaponId": "iron_axe"
+    },
+    {
+      "id": "julian",
+      "characterId": "julian",
+      "faction": "player",
+      "position": {
+        "x": 6,
+        "y": 10
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "lena",
+      "characterId": "lena",
+      "faction": "player",
+      "position": {
+        "x": 7,
+        "y": 10
+      },
+      "weaponId": "mend_staff"
+    },
+    {
+      "id": "hyman",
+      "characterId": "hyman",
+      "name": "Hyman",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "weaponId": "hand_axe",
+      "dropItemId": "mend_staff",
+      "aiRole": "stationary",
+      "mov": 0
+    },
+    {
+      "id": "navarre",
+      "characterId": "navarre",
+      "name": "Navarre",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 6
+      },
+      "weaponId": "killing_edge",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_thief",
+      "characterId": "galder_thief",
+      "name": "Devil Mountain Thief 1",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 13
+      },
+      "weaponId": "iron_sword",
+      "aiRole": "pillage"
+    },
+    {
+      "id": "enemy_thief_2",
+      "characterId": "galder_thief",
+      "name": "Devil Mountain Thief 2",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 15
+      },
+      "weaponId": "iron_sword",
+      "aiRole": "pillage"
+    },
+    {
+      "id": "enemy_hunter_1",
+      "characterId": "galder_hunter",
+      "name": "Devil Mountain Hunter 1",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 3
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_hunter_2",
+      "characterId": "galder_hunter",
+      "name": "Devil Mountain Hunter 2",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 7
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_hunter_3",
+      "characterId": "galder_hunter",
+      "name": "Devil Mountain Hunter 3",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 10
+      },
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "samsoian_guard_1",
+      "characterId": "enemy_fighter",
+      "name": "Bandit Gate Guard 1",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "samsoian_guard_2",
+      "characterId": "enemy_fighter",
+      "name": "Bandit Gate Guard 2",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "samsoian_fighter_1",
+      "characterId": "enemy_fighter",
+      "name": "Fort Bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 5
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "samsoian_fighter_2",
+      "characterId": "enemy_fighter",
+      "name": "Ridge Bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 4
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "samsoian_fighter_3",
+      "characterId": "enemy_fighter",
+      "name": "Mountain Bandit 1",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 6
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "samsoian_fighter_4",
+      "characterId": "enemy_fighter",
+      "name": "Mountain Bandit 2",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "samsoian_fighter_5",
+      "characterId": "enemy_fighter",
+      "name": "Mountain Bandit 3",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "samsoian_fighter_6",
+      "characterId": "enemy_fighter",
+      "name": "Mountain Bandit 4",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 9
+      },
+      "weaponId": "iron_axe",
+      "dropItemId": "vulnerary",
+      "aiRole": "pursue"
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "castor",
+      "characterId": "castor",
+      "faction": "player",
+      "position": { "x": 27, "y": 17 },
+      "weaponId": "iron_bow"
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "jagen",
+    "caeda",
+    "cain",
+    "abel",
+    "draug",
+    "gordin",
+    "ogma",
+    "barst",
+    "bord",
+    "cord",
+    "castor"
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "caeda",
+      "targetUnitId": "navarre",
+      "maxDistance": 1
+    }
+  ]
+}

@@ -25,5 +25,6 @@
       "@data/*": ["data/*"]
     }
   },
-  "include": ["src", "tests", "data"]
+  "include": ["src", "tests", "data"],
+  "exclude": ["**/_backup/**"]
 }

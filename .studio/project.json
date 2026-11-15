@@ -1,0 +1,20 @@
+{
+  "level": "medium",
+  "setup": "npm --prefix Water-Emblem ci",
+  "commands": {
+    "lint": "",
+    "typecheck": "",
+    "test": "npm --prefix Water-Emblem test",
+    "build": "npm --prefix Water-Emblem run build",
+    "integration": "npm --prefix Water-Emblem run test:e2e"
+  },
+  "timeouts": { "default": 900 },
+  "protected_paths": ["tests/**", "**/__snapshots__/**", "Water-Emblem/tests/**"],
+  "gated_commands": [
+    "vercel deploy*", "vercel*--prod*", "npm publish*", "pnpm publish*", "yarn publish*", "yarn npm publish*",
+    "cargo publish*", "twine upload*", "gh release create*", "netlify deploy*", "firebase deploy*", "docker push*"
+  ],
+  "m2_triggers": ["new dependency", "public API change", "schema change"],
+  "rules": [],
+  "fail_output": {}
+}

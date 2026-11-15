@@ -6,7 +6,7 @@ import { GridUnit } from '../../src/core/grid/types';
 import { ItemDefinition, UnitCombatStats } from '../../src/core/combat/types';
 
 describe('Support Relationship System (N06)', () => {
-  it('Marth nhận bonus từ Caeda khi đứng trong phạm vi 3 ô', () => {
+  it('Marth starts below C and earns C after a shared chapter', () => {
     const marth: GridUnit = {
       id: 'marth',
       name: 'Marth',
@@ -27,9 +27,11 @@ describe('Support Relationship System (N06)', () => {
     };
 
     const bonus = calculateSupportBonus(marth, [marth, caeda]);
-    expect(bonus.hit).toBe(10);
-    expect(bonus.avoid).toBe(10);
-    expect(bonus.crit).toBe(5);
+    expect(bonus.hit).toBe(0);
+    const rankC = calculateSupportBonus({ ...marth, supportPoints: { caeda: 5 } }, [marth, caeda]);
+    expect(rankC.hit).toBe(5);
+    expect(rankC.avoid).toBe(5);
+    expect(rankC.crit).toBe(0);
   });
 
   it('không nhận bonus nếu đồng đội đứng ngoài phạm vi 3 ô', () => {
@@ -57,7 +59,7 @@ describe('Support Relationship System (N06)', () => {
     expect(bonus.avoid).toBe(0);
   });
 
-  it('cộng dồn bonus khi có nhiều đồng đội hỗ trợ cùng lúc (Caeda + Jagen)', () => {
+  it('uses the sourced support direction and A-rank bonus', () => {
     const marth: GridUnit = {
       id: 'marth',
       name: 'Marth',
@@ -66,12 +68,13 @@ describe('Support Relationship System (N06)', () => {
       mov: 7,
       moveType: 'foot',
       isDead: false,
+      supportPoints: { caeda: 13 },
     };
     const caeda: GridUnit = {
       id: 'caeda',
       name: 'Caeda',
       faction: 'player',
-      position: { x: 6, y: 5 }, // +10 Hit, +10 Avoid, +5 Crit
+      position: { x: 6, y: 5 },
       mov: 8,
       moveType: 'flier',
       isDead: false,
@@ -80,16 +83,18 @@ describe('Support Relationship System (N06)', () => {
       id: 'jagen',
       name: 'Jagen',
       faction: 'player',
-      position: { x: 4, y: 5 }, // +5 Hit, +5 Avoid
+      position: { x: 4, y: 5 },
       mov: 10,
       moveType: 'cavalry',
       isDead: false,
     };
 
     const bonus = calculateSupportBonus(marth, [marth, caeda, jagen]);
-    expect(bonus.hit).toBe(15);
-    expect(bonus.avoid).toBe(15);
+    expect(bonus.hit).toBe(10);
+    expect(bonus.avoid).toBe(10);
     expect(bonus.crit).toBe(5);
+    expect(calculateSupportBonus({ ...jagen, supportPoints: { marth: 5 } }, [marth, jagen]).hit).toBe(5);
+    expect(calculateSupportBonus({ ...marth, supportPoints: { jagen: 13 } }, [marth, jagen]).hit).toBe(0);
   });
 
   it('không nhận bonus nếu đồng đội hỗ trợ đã tử trận', () => {
@@ -101,6 +106,7 @@ describe('Support Relationship System (N06)', () => {
       mov: 7,
       moveType: 'foot',
       isDead: false,
+      supportPoints: { caeda: 13 },
     };
     const deadCaeda: GridUnit = {
       id: 'caeda',
@@ -129,6 +135,7 @@ describe('Support Relationship System (N06)', () => {
       mov: 7,
       moveType: 'foot',
       isDead: false,
+      supportPoints: { caeda: 13 },
     };
     const caeda: GridUnit = {
       id: 'caeda',
@@ -150,14 +157,14 @@ describe('Support Relationship System (N06)', () => {
     };
 
     const marthStats: UnitCombatStats = {
-      hp: 18, maxHp: 18, str: 5, mag: 0, dex: 3, spd: 7, lck: 7, def: 7, res: 0
+      hp: 18, maxHp: 18, str: 5, mag: 0, skill: 3, spd: 7, lck: 7, def: 7, res: 0
     };
     const rapier: ItemDefinition = {
       id: 'rapier', name: 'Rapier', nameVi: 'Kiếm Rapier', type: 'sword', might: 7, hit: 95, weight: 5, minRange: 1, maxRange: 1, crit: 10, maxUses: 40, isMagic: false, effectiveAgainst: ['cavalry', 'armor']
     };
 
     const pirateStats: UnitCombatStats = {
-      hp: 20, maxHp: 20, str: 6, mag: 0, dex: 3, spd: 5, lck: 1, def: 4, res: 0
+      hp: 20, maxHp: 20, str: 6, mag: 0, skill: 3, spd: 5, lck: 1, def: 4, res: 0
     };
     const ironAxe: ItemDefinition = {
       id: 'iron_axe', name: 'Iron Axe', nameVi: 'Rìu sắt', type: 'axe', might: 7, hit: 80, weight: 7, minRange: 1, maxRange: 1, crit: 0, maxUses: 45, isMagic: false, effectiveAgainst: []

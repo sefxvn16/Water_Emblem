@@ -8,10 +8,11 @@ import {
   UnitCombatStats,
   WeaponType,
 } from './types';
-import { GridUnit, Position } from '../grid/types';
+import { GridUnit, Position, WeaponRank } from '../grid/types';
 import { SeededRNG } from './rng';
 import { TerrainRegistry } from '../grid/terrain';
 import { calculateSupportBonus } from './support';
+import { getAttackRange, getClassDefinition } from '../class/classRules';
 
 export interface TriangleResult {
   readonly damage: number;
@@ -24,7 +25,9 @@ export function getManhattanDistance(posA: Position, posB: Position): number {
 
 export function getWeaponTriangleModifier(
   attackerType: WeaponType,
-  defenderType: WeaponType
+  defenderType: WeaponType,
+  attackerRank: WeaponRank = 'E',
+  defenderRank: WeaponRank = 'E'
 ): TriangleResult {
   const triangle = balanceConfig.weaponTriangle as Record<
     string,
@@ -37,13 +40,51 @@ export function getWeaponTriangleModifier(
   }
 
   if (attackerRules.strongAgainst === defenderType) {
-    return balanceConfig.triangleModifiers.advantage;
+    return {
+      damage: attackerRank === 'A' ? balanceConfig.triangleRankBonuses.aRankDamage : 0,
+      hit: ['C', 'B', 'A'].includes(attackerRank)
+        ? balanceConfig.triangleRankBonuses.highRankHit
+        : balanceConfig.triangleModifiers.advantage.hit,
+    };
   }
   if (attackerRules.weakAgainst === defenderType) {
-    return balanceConfig.triangleModifiers.disadvantage;
+    return {
+      damage: defenderRank === 'A' ? -balanceConfig.triangleRankBonuses.aRankDamage : 0,
+      hit: ['C', 'B', 'A'].includes(defenderRank)
+        ? -balanceConfig.triangleRankBonuses.highRankHit
+        : balanceConfig.triangleModifiers.disadvantage.hit,
+    };
   }
 
   return balanceConfig.triangleModifiers.neutral;
+}
+
+function getWeaponRankBonus(type: WeaponType, rank: WeaponRank): { might: number; hit: number } {
+  const typeBonuses = balanceConfig.weaponRankBonuses[type as keyof typeof balanceConfig.weaponRankBonuses];
+  if (!typeBonuses || rank === 'E' || rank === 'D') return { might: 0, hit: 0 };
+  return typeBonuses[rank];
+}
+
+export function calculateDisplayedCombatStats(
+  unit: GridUnit,
+  stats: UnitCombatStats,
+  weapon: ItemDefinition,
+  terrainId: string,
+  terrainRegistry: TerrainRegistry,
+  allUnits: readonly GridUnit[],
+): { atk: number; hit: number; avoid: number; crit: number; as: number } {
+  const rank = unit.weaponRanks?.[weapon.type] ?? 'E';
+  const rankBonus = getWeaponRankBonus(weapon.type, rank);
+  const support = calculateSupportBonus(unit, allUnits);
+  const classDefinition = getClassDefinition(unit.classId);
+  const as = calculateAttackSpeed(stats, weapon);
+  return {
+    atk: (weapon.isMagic ? stats.mag : stats.str) + weapon.might + rankBonus.might,
+    hit: weapon.hit + stats.skill + Math.floor(stats.lck / 2) + rankBonus.hit + support.hit + (classDefinition?.hitBonus ?? 0),
+    avoid: as + Math.floor(stats.lck / 2) + terrainRegistry.getAvoidBonus(terrainId, unit.moveType) + support.avoid,
+    crit: weapon.crit + Math.floor(stats.skill / 2) + support.crit + (classDefinition?.critBonus ?? 0),
+    as,
+  };
 }
 
 export function isWeaponEffective(weapon: ItemDefinition, defenderUnit: GridUnit): boolean {
@@ -52,8 +93,7 @@ export function isWeaponEffective(weapon: ItemDefinition, defenderUnit: GridUnit
 
 export function calculateAttackSpeed(stats: UnitCombatStats, weapon?: ItemDefinition): number {
   if (!weapon) return stats.spd;
-  const constitution = stats.bld ?? stats.str;
-  const speedPenalty = Math.max(0, weapon.weight - constitution);
+  const speedPenalty = Math.max(0, weapon.weight - stats.str);
   return Math.max(0, stats.spd - speedPenalty);
 }
 
@@ -84,7 +124,8 @@ export function calculateCombatSide(
     };
   }
 
-  const inRange = distance >= weapon.minRange && distance <= weapon.maxRange;
+  const range = getAttackRange(unit, weapon);
+  const inRange = distance >= range.min && distance <= range.max;
   if (!inRange) {
     return {
       unit,
@@ -99,13 +140,19 @@ export function calculateCombatSide(
     };
   }
 
+  const unitRank = unit.weaponRanks?.[weapon.type] ?? 'E';
+  const opponentRank = opponentWeapon ? opponentUnit.weaponRanks?.[opponentWeapon.type] ?? 'E' : 'E';
   const triangle = opponentWeapon
-    ? getWeaponTriangleModifier(weapon.type, opponentWeapon.type)
+    ? getWeaponTriangleModifier(weapon.type, opponentWeapon.type, unitRank, opponentRank)
     : balanceConfig.triangleModifiers.neutral;
+  const rankBonus = opponentWeapon && getWeaponTriangleModifier(opponentWeapon.type, weapon.type).hit > 0
+    ? { might: 0, hit: 0 }
+    : getWeaponRankBonus(weapon.type, unitRank);
 
   // Tính Support Bonuses
   const unitSupport = allUnits ? calculateSupportBonus(unit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
   const opponentSupport = allUnits ? calculateSupportBonus(opponentUnit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
+  const classDefinition = getClassDefinition(unit.classId);
 
   // Tính Effective Might
   const isEffective = isWeaponEffective(weapon, opponentUnit);
@@ -113,20 +160,20 @@ export function calculateCombatSide(
     ? weapon.might * balanceConfig.effectiveMultiplier
     : weapon.might;
 
-  const attackPower = (weapon.isMagic ? stats.mag : stats.str) + effectiveMight + triangle.damage;
+  const attackPower = (weapon.isMagic ? stats.mag : stats.str) + effectiveMight + triangle.damage + rankBonus.might;
 
-  const opponentTerrainDef = terrainRegistry.getDefenseBonus(opponentTerrainId);
+  const opponentTerrainDef = weapon.isMagic ? 0 : terrainRegistry.getDefenseBonus(opponentTerrainId, opponentUnit.moveType);
   const defense = (weapon.isMagic ? opponentStats.res : opponentStats.def) + opponentTerrainDef;
   const damage = Math.max(0, attackPower - defense);
 
   // Tính Hit
-  const accuracy = weapon.hit + 2 * stats.dex + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit;
+  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0);
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
-  const opponentAvoid = 2 * opponentAs + opponentStats.lck + terrainRegistry.getAvoidBonus(opponentTerrainId) + opponentSupport.avoid;
+  const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid;
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.dex / 2) + unitSupport.crit - (opponentStats.lck + opponentSupport.dodge);
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) - (opponentStats.lck + opponentSupport.dodge);
   const critRate = Math.min(100, Math.max(0, rawCrit));
 
   const as = calculateAttackSpeed(stats, weapon);
@@ -189,7 +236,8 @@ export function calculateCombatForecast(
   let attackerCount = attackerSide.attackCount;
   let defenderCount = defenderSide.attackCount;
 
-  if (attackerSide.attackSpeed - defenderSide.attackSpeed >= balanceConfig.doubleAttackSpeedThreshold) {
+  if (attackerSide.attackCount > 0
+    && attackerSide.attackSpeed - defenderSide.attackSpeed >= balanceConfig.doubleAttackSpeedThreshold) {
     attackerCount = 2;
   } else if (defenderSide.canCounter && defenderSide.attackSpeed - attackerSide.attackSpeed >= balanceConfig.doubleAttackSpeedThreshold) {
     defenderCount = 2;
@@ -213,6 +261,7 @@ export function executeCombat(
   let attackerHp = forecast.attacker.stats.hp;
   let defenderHp = forecast.defender.stats.hp;
   let unitDefeatedId: string | undefined;
+  if (forecast.attacker.attackCount === 0) return { forecast, events };
 
   const mode = balanceConfig.rngMode as '1RN' | '2RN';
 

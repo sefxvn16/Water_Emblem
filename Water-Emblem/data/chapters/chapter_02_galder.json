@@ -1,6 +1,6 @@
 {
   "id": "chapter_02",
-  "name": "Chương 2: Hải tặc xứ Galder (The Pirates of Galder)",
+  "name": "Chapter 2: The Pirates of Galder",
   "mapId": "chapter_02_galder",
   "objective": {
     "type": "seize",
@@ -8,8 +8,23 @@
       "x": 1,
       "y": 1
     },
-    "descriptionVi": "Marth chiếm cổng thành sau khi mở đường"
+    "description": "Seize the harbor gate after defeating boss Gomer",
+    "descriptionVi": "Marth chiếm cổng thành bến cảng sau khi đánh bại boss Gomer"
   },
+  "villages": [
+    {
+      "id": "village_galder",
+      "name": "Galder Harbor Village (3,000G)",
+      "position": {
+        "x": 20,
+        "y": 5
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 3000
+      }
+    }
+  ],
   "units": [
     {
       "id": "marth",
@@ -17,7 +32,7 @@
       "faction": "player",
       "position": {
         "x": 23,
-        "y": 9
+        "y": 10
       },
       "weaponId": "rapier"
     },
@@ -27,7 +42,7 @@
       "faction": "player",
       "position": {
         "x": 22,
-        "y": 9
+        "y": 10
       },
       "weaponId": "silver_lance"
     },
@@ -37,7 +52,7 @@
       "faction": "player",
       "position": {
         "x": 23,
-        "y": 8
+        "y": 9
       },
       "weaponId": "slim_lance"
     },
@@ -47,7 +62,7 @@
       "faction": "player",
       "position": {
         "x": 22,
-        "y": 8
+        "y": 9
       },
       "weaponId": "iron_sword"
     },
@@ -57,7 +72,7 @@
       "faction": "player",
       "position": {
         "x": 24,
-        "y": 9
+        "y": 10
       },
       "weaponId": "iron_lance"
     },
@@ -67,7 +82,7 @@
       "faction": "player",
       "position": {
         "x": 24,
-        "y": 8
+        "y": 9
       },
       "weaponId": "iron_lance"
     },
@@ -77,7 +92,7 @@
       "faction": "player",
       "position": {
         "x": 25,
-        "y": 9
+        "y": 10
       },
       "weaponId": "iron_bow"
     },
@@ -124,55 +139,45 @@
     {
       "id": "gomer",
       "characterId": "gomer",
-      "name": "Gomer (Boss)",
+      "name": "Gomer",
       "faction": "enemy",
       "position": {
         "x": 1,
         "y": 1
       },
       "weaponId": "hand_axe",
+      "dropItemId": "steel_sword",
+      "aiRole": "stationary",
+      "mov": 0
+    },
+    {
+      "id": "castor",
+      "characterId": "castor",
+      "name": "Castor",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 6
+      },
+      "weaponId": "iron_bow",
       "aiRole": "stationary"
     },
     {
-      "id": "galder_guard",
-      "characterId": "galder_pirate",
-      "name": "Cận vệ Galder",
+      "id": "enemy_thief",
+      "characterId": "galder_thief",
+      "name": "Galder Thief 1",
       "faction": "enemy",
       "position": {
-        "x": 2,
-        "y": 1
+        "x": 18,
+        "y": 6
       },
-      "weaponId": "hand_axe",
-      "aiRole": "stationary"
+      "weaponId": "iron_sword",
+      "aiRole": "pillage"
     },
     {
-      "id": "enemy_pirate_1",
-      "characterId": "galder_pirate",
-      "name": "Hải tặc cướp phá A",
-      "faction": "enemy",
-      "position": {
-        "x": 6,
-        "y": 2
-      },
-      "weaponId": "iron_axe",
-      "aiRole": "pursue"
-    },
-    {
-      "id": "enemy_pirate_2",
-      "characterId": "galder_pirate",
-      "name": "Hải tặc cướp phá B",
-      "faction": "enemy",
-      "position": {
-        "x": 8,
-        "y": 3
-      },
-      "weaponId": "iron_axe",
-      "aiRole": "pursue"
-    },
-    {
-      "id": "enemy_hunter",
+      "id": "enemy_hunter_1",
       "characterId": "galder_hunter",
-      "name": "Xạ thủ bến cảng",
+      "name": "Galder Hunter 1",
       "faction": "enemy",
       "position": {
         "x": 4,
@@ -182,16 +187,160 @@
       "aiRole": "pursue"
     },
     {
-      "id": "castor",
-      "characterId": "castor",
-      "name": "Castor (Thợ săn)",
+      "id": "enemy_hunter_2",
+      "characterId": "galder_hunter",
+      "name": "Galder Hunter 2",
       "faction": "enemy",
       "position": {
-        "x": 10,
+        "x": 12,
         "y": 6
       },
       "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_1",
+      "characterId": "galder_pirate_lv3",
+      "name": "Galder Pirate (Lv 3)",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "weaponId": "hand_axe",
       "aiRole": "stationary"
+    },
+    {
+      "id": "galder_pirate_2",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (Gate Guard)",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "stationary"
+    },
+    {
+      "id": "galder_pirate_3",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (West Bridge 1)",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 3
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_4",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (West Bridge 2)",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 4
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_5",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (North Coast 1)",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 1
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_6",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (North Coast 2)",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 2
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_7",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (North Coast 3)",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 1
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_8",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (Center Bridge 1)",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 7
+      },
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "galder_pirate_9",
+      "characterId": "galder_pirate",
+      "name": "Galder Pirate (Center Bridge 2)",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 7
+      },
+      "weaponId": "hand_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "enemy_thief_2",
+      "characterId": "galder_thief",
+      "name": "Galder Thief 2",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 7
+      },
+      "weaponId": "iron_sword",
+      "aiRole": "pillage"
+    },
+    {
+      "id": "grust_cavalier_1",
+      "characterId": "grust_cavalier",
+      "name": "Grust Cavalier 1",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 8
+      },
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "grust_cavalier_2",
+      "characterId": "grust_cavalier",
+      "name": "Grust Cavalier 2",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 8
+      },
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
     }
   ],
   "carryoverUnitIds": [

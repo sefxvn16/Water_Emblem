@@ -4,55 +4,94 @@
     {
       "speaker": "Ogma",
       "avatarUrl": "/avatars/ogma.png",
-      "text": "Điện hạ, tôi là Ogma. Vua Talys cử tôi cùng ba người trong đội tới giúp ngài. Galder đang bị hải tặc chiếm giữ."
-    },
-    {
-      "speaker": "Ogma",
-      "avatarUrl": "/avatars/ogma.png",
-      "text": "Quân Grust cũng đã tới đây để truy đuổi ngài. Xin mọi người cẩn trọng."
+      "text": "Prince Marth! I am Ogma, captain of the mercenaries sent by King Mostyn of Talys. Joining me are three skilled axe fighters: Barst, Bord, and Cord."
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "Ta hiểu. Hãy giữ đội hình và tiến vào cảng."
+      "text": "Having you and the Talys warriors at our side is worth ten thousand soldiers. What is the situation at the port of Galder, Ogma?"
+    },
+    {
+      "speaker": "Ogma",
+      "avatarUrl": "/avatars/ogma.png",
+      "text": "Galder has fallen into the hands of Gomer's pirate horde, dividing the terrain with deep waters and treacherous bridges. What is worse, Grustian cavaliers patrol the area searching for you. We must proceed with extreme caution!"
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.png",
+      "text": "Understood. Keep our formation tight across the narrow bridges and advance on Gomer's stronghold!"
     }
   ],
   "recruit_castor": [
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Castor? Sao chàng lại đi cùng hải tặc?"
+      "text": "Castor?! Is that you over there, Castor the hunter from Talys?!"
     },
     {
       "speaker": "Castor",
       "avatarUrl": "/avatars/castor.png",
-      "text": "Mẹ tôi đang bệnh. Tôi cần tiền mua thuốc nên mới theo họ. Xin công chúa tha thứ."
+      "text": "Ah... Princess Caeda?! Princess... please, do not look at me with such eyes..."
     },
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Ta có thể giúp chàng lo thuốc cho mẹ. Hãy rời toán hải tặc và đi cùng chúng ta."
+      "text": "Why is an honest man like you taking up a bow for these merciless pirates? Did something happen to you?"
+    },
+    {
+      "speaker": "Castor",
+      "avatarUrl": "/avatars/castor.png",
+      "text": "My mother... she is bedridden with a grave illness. We are desperately poor, and I had no money for her medicine, so I was driven to take their coin... I am ashamed to call myself a man!"
+    },
+    {
+      "speaker": "Caeda",
+      "avatarUrl": "/avatars/caeda.png",
+      "text": "It was out of devotion to your mother... Castor, take this gold to buy medicine and care for her. Never consort with thieves again. Join Prince Marth's ranks and fight with us for justice!"
+    },
+    {
+      "speaker": "Castor",
+      "avatarUrl": "/avatars/castor.png",
+      "text": "Princess... your mercy knows no bounds! You have saved my mother's life. From this moment onward, my bow and my life belong to you and Prince Marth!"
     }
   ],
+  "villages": {
+    "village_galder": [
+      {
+        "speaker": "Galder Elder",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Hail Prince Marth and the Altean army! You have liberated our port from the clutches of the pirates!"
+      },
+      {
+        "speaker": "Galder Elder",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Our village has gathered 3,000 gold as a gift for your army. A word of warning: the path ahead leads through the Devil Mountain, the dreaded stronghold of the Samsoian bandits."
+      },
+      {
+        "speaker": "Galder Elder",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Most perilous of all is the mercenary swordsman Navarre. His blade cuts with lethal precision, and no one has ever survived his strike. Please, my prince, take utmost care!"
+      }
+    ]
+  },
   "boss_gomer": {
-    "startCombat": "Đừng coi thường hải tặc Galder. Hãy đỡ chiếc rìu này!",
-    "death": "Không ngờ... ta lại thua..."
+    "startCombat": "You vermin dare meddle in Gomer's business? See how my throwing axe takes your heads one by one!",
+    "death": "Inconceivable... The master of Galder... felled here...!"
   },
   "ending": [
     {
-      "speaker": "Dân làng Galder",
-      "avatarUrl": "/avatars/village_man.png",
-      "text": "Cảm ơn điện hạ đã đuổi hải tặc. Chúng tôi lại có thể sống yên ổn."
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.png",
+      "text": "The port of Galder is liberated! I thank every warrior for their courage and sacrifice."
     },
     {
-      "speaker": "Dân làng Galder",
-      "avatarUrl": "/avatars/village_man.png",
-      "text": "Muốn tới Aurelis, đoàn quân phải vượt núi Devil. Bọn cướp ở đó thường phục kích người qua đường; trong bọn có kiếm sĩ Navarre rất nguy hiểm."
+      "speaker": "Jagen",
+      "avatarUrl": "/avatars/jagen.png",
+      "text": "Sire, this victory will inspire all who hear of it. But ahead lies the treacherous pass of Devil Mountain, teeming with ambushes before we can reach Duke Hardin in Aurelis."
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "Cảm ơn ông đã báo. Chúng ta sẽ đề phòng trên đường đi."
+      "text": "Though our path be perilous, we shall not waver. Form up our lines, everyone—we enter Devil Mountain!"
     }
   ]
 }

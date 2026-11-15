@@ -4,22 +4,50 @@ import talysChapterJson from '../../../data/chapters/chapter_01_talys.json';
 import talysMapJson from '../../../data/maps/chapter_01_talys.json';
 import galderChapterJson from '../../../data/chapters/chapter_02_galder.json';
 import galderMapJson from '../../../data/maps/chapter_02_galder.json';
+import devilMountainChapterJson from '../../../data/chapters/chapter_03_devil_mountain.json';
+import devilMountainMapJson from '../../../data/maps/chapter_03_devil_mountain.json';
 import itemsJson from '../../../data/items.json';
 import charactersJson from '../../../data/characters.json';
 import classesJson from '../../../data/classes.json';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
-import type { GridUnit, MapData, MoveType, UnitFaction } from '../grid/types';
+import type { GridUnit, MapData, MoveType, UnitFaction, WeaponRank } from '../grid/types';
+import { initialSupportPoints } from '../combat/support';
+
+export interface InventoryEntry {
+  itemId: string;
+  uses: number;
+}
 
 export interface ExtendedUnitState {
   unit: GridUnit;
   stats: UnitCombatStats;
   weapon: ItemDefinition;
+  inventory: InventoryEntry[];
+  level: number;
+  exp: number;
+  isBoss?: boolean;
   aiRole?: AIRole;
+  dropItemId?: string;
   title?: string;
   avatarUrl?: string;
   growths?: Record<string, number>;
+}
+
+export interface ChapterReward {
+  type: 'gold' | 'item';
+  amount?: number;
+  itemId?: string;
+}
+
+export type ChapterVillageReward = ChapterReward;
+
+export interface ChapterVillage {
+  id: string;
+  name: string;
+  position: { x: number; y: number };
+  reward: ChapterVillageReward;
 }
 
 export interface ChapterData {
@@ -31,6 +59,8 @@ export interface ChapterData {
   readonly optionalUnits: ExtendedUnitState[];
   readonly recruitments: readonly { speakerUnitId: string; targetUnitId: string; maxDistance: number }[];
   readonly carryoverUnitIds: readonly string[];
+  readonly villages?: readonly ChapterVillage[];
+  readonly seizeReward?: ChapterReward;
 }
 
 type RecordValue = Record<string, unknown>;
@@ -64,7 +94,9 @@ function requireInteger(value: unknown, label: string, min = 0): number {
 
 const MOVE_TYPES: readonly MoveType[] = ['foot', 'armor', 'cavalry', 'flier', 'mage', 'bandit'];
 const FACTIONS: readonly UnitFaction[] = ['player', 'enemy', 'ally'];
-const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue'];
+const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue', 'pillage'];
+const WEAPON_RANKS: readonly WeaponRank[] = ['E', 'D', 'C', 'B', 'A'];
+const WEAPON_TYPES = ['sword', 'lance', 'axe', 'bow', 'tome', 'staff'] as const;
 
 function requireChoice<T extends string>(value: unknown, choices: readonly T[], label: string): T {
   if (typeof value !== 'string' || !choices.includes(value as T)) {
@@ -88,7 +120,7 @@ function readStats(value: unknown, label: string): UnitCombatStats {
     maxHp: requireInteger(data.maxHp, `${label}.maxHp`, 1),
     str: requireInteger(data.str, `${label}.str`),
     mag: requireInteger(data.mag, `${label}.mag`),
-    dex: requireInteger(data.dex, `${label}.dex`),
+    skill: requireInteger(data.skill, `${label}.skill`),
     spd: requireInteger(data.spd, `${label}.spd`),
     lck: requireInteger(data.lck, `${label}.lck`),
     def: requireInteger(data.def, `${label}.def`),
@@ -102,12 +134,23 @@ function readStats(value: unknown, label: string): UnitCombatStats {
 function readGrowths(value: unknown, label: string): Record<string, number> {
   const data = requireRecord(value, label);
   const growths: Record<string, number> = {};
-  for (const key of ['hp', 'str', 'mag', 'dex', 'spd', 'lck', 'def', 'res']) {
+  for (const key of ['hp', 'str', 'mag', 'skill', 'spd', 'lck', 'def', 'res']) {
     const rate = requireInteger(data[key], `${label}.${key}`);
-    if (rate > 100) throw new Error(`${label}.${key} exceeds 100`);
+    if (rate > 255) throw new Error(`${label}.${key} exceeds 255`);
     growths[key] = rate;
   }
   return growths;
+}
+
+function readWeaponRanks(value: unknown, label: string): Record<string, WeaponRank> | undefined {
+  if (value === undefined) return undefined;
+  const data = requireRecord(value, label);
+  const ranks: Record<string, WeaponRank> = {};
+  for (const [type, rank] of Object.entries(data)) {
+    if (!WEAPON_TYPES.some((candidate) => candidate === type)) throw new Error(`${label}.${type} is not a weapon type`);
+    ranks[type] = requireChoice(rank, WEAPON_RANKS, `${label}.${type}`);
+  }
+  return ranks;
 }
 
 export function loadChapterData(
@@ -147,7 +190,8 @@ export function loadChapterData(
   const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize'], 'chapter.objective.type');
   const objective: ChapterObjective = {
     type: objectiveType,
-    descriptionVi: requireString(objectiveRaw.descriptionVi, 'chapter.objective.descriptionVi'),
+    ...(typeof objectiveRaw.description === 'string' ? { description: objectiveRaw.description } : {}),
+    ...(typeof objectiveRaw.descriptionVi === 'string' ? { descriptionVi: objectiveRaw.descriptionVi } : {}),
     ...(objectiveType === 'defeat_boss'
       ? { bossUnitId: requireString(objectiveRaw.bossUnitId, 'chapter.objective.bossUnitId') }
       : {}),
@@ -165,22 +209,52 @@ export function loadChapterData(
     const characterId = requireString(item.characterId, `${label}.characterId`);
     const character = characterById.get(characterId);
     if (!character) throw new Error(`${label} references unknown character ${characterId}`);
+    if (!Array.isArray(character.startingWeapons)) {
+      throw new Error(`Character ${characterId}.startingWeapons must be an array`);
+    }
+    const inventory: InventoryEntry[] = character.startingWeapons.map((rawId: unknown, index: number) => {
+      const itemId = requireString(rawId, `character ${characterId}.startingWeapons[${index}]`);
+      const startingItem = itemById.get(itemId);
+      if (!startingItem || !Number.isInteger(startingItem.maxUses) || startingItem.maxUses < 1) {
+        throw new Error(`Character ${characterId} references invalid starting item ${itemId}`);
+      }
+      return { itemId, uses: startingItem.maxUses };
+    });
+    if (!inventory.some((entry) => entry.itemId === weaponId)) {
+      inventory.push({ itemId: weaponId, uses: weapon.maxUses });
+    }
     const classId = requireString(character.classId, `character ${characterId}.classId`);
     const classData = classById.get(classId);
     if (!classData) throw new Error(`Character ${characterId} references unknown class ${classId}`);
+    if (character.isBoss !== undefined && typeof character.isBoss !== 'boolean') {
+      throw new Error(`Character ${characterId}.isBoss must be a boolean`);
+    }
     const baseStats = requireRecord(character.baseStats, `character ${characterId}.baseStats`);
     const hp = requireInteger(baseStats.hp, `character ${characterId}.baseStats.hp`, 1);
+    const weaponRanks = readWeaponRanks(character.weaponRanks, `character ${characterId}.weaponRanks`);
+    const rankOrder = ['E', 'D', 'C', 'B', 'A'];
+    if (weapon.requiredRank && rankOrder.indexOf(weaponRanks?.[weapon.type] ?? 'E') < rankOrder.indexOf(weapon.requiredRank)) {
+      throw new Error(`Character ${characterId} cannot equip ${weaponId} at weapon rank ${weapon.requiredRank}`);
+    }
+    const dropItemIdRaw = item.dropItemId ?? character.dropItemId;
+    const dropItemId = dropItemIdRaw === undefined ? undefined : requireString(dropItemIdRaw, `${label}.dropItemId`);
+    if (dropItemId && !itemById.has(dropItemId)) {
+      throw new Error(`${label} references unknown dropItemId ${dropItemId}`);
+    }
     const unit: GridUnit = {
       id: requireString(item.id, `${label}.id`),
       name: item.name === undefined
         ? requireString(character.name, `character ${characterId}.name`)
         : requireString(item.name, `${label}.name`),
       faction: requireChoice(item.faction, FACTIONS, `${label}.faction`),
+      classId,
       position: readPosition(item.position, map, `${label}.position`),
       mov: item.mov === undefined
         ? requireInteger(classData.baseMov, `class ${classId}.baseMov`)
         : requireInteger(item.mov, `${label}.mov`),
       moveType: requireChoice(classData.moveType, MOVE_TYPES, `class ${classId}.moveType`),
+      weaponRanks,
+      supportPoints: initialSupportPoints(requireString(item.id, `${label}.id`)),
       hasActed: false,
       isDead: false,
     };
@@ -188,7 +262,12 @@ export function loadChapterData(
       unit,
       stats: readStats({ ...baseStats, maxHp: hp }, `character ${characterId}.baseStats`),
       weapon,
+      inventory,
+      level: requireInteger(character.level, `character ${characterId}.level`, 1),
+      exp: 0,
+      ...(character.isBoss === undefined ? {} : { isBoss: character.isBoss === true }),
       ...(item.aiRole === undefined ? {} : { aiRole: requireChoice(item.aiRole, AI_ROLES, `${label}.aiRole`) }),
+      ...(dropItemId === undefined ? {} : { dropItemId }),
       title: requireString(character.title, `character ${characterId}.title`),
       avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),
       growths: readGrowths(character.growths, `character ${characterId}.growths`),
@@ -232,7 +311,62 @@ export function loadChapterData(
     throw new Error('Carryover unit ID must reference one player unit');
   }
 
-  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds };
+  const villageRows = data.villages ?? [];
+  if (!Array.isArray(villageRows)) throw new Error('chapter.villages must be an array');
+  const villages: ChapterVillage[] = villageRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.villages[${index}]`);
+    const villageId = requireString(item.id, `chapter.villages[${index}].id`);
+    const villageName = requireString(item.name, `chapter.villages[${index}].name`);
+    const position = readPosition(item.position, map, `chapter.villages[${index}].position`);
+    const tile = map.grid[position.y]?.[position.x];
+    if (tile !== 'village') {
+      throw new Error(`Village ${villageId} at (${position.x},${position.y}) must be on a village tile, found ${tile}`);
+    }
+    const rewardRaw = requireRecord(item.reward, `chapter.villages[${index}].reward`);
+    const rewardType = requireChoice(rewardRaw.type, ['gold', 'item'], `chapter.villages[${index}].reward.type`);
+    const reward: ChapterVillageReward = {
+      type: rewardType,
+      ...(rewardType === 'gold'
+        ? { amount: requireInteger(rewardRaw.amount, `chapter.villages[${index}].reward.amount`, 1) }
+        : {
+            itemId: (() => {
+              const itemId = requireString(rewardRaw.itemId, `chapter.villages[${index}].reward.itemId`);
+              if (!itemById.has(itemId)) {
+                throw new Error(`Village ${villageId} reward references unknown item ${itemId}`);
+              }
+              return itemId;
+            })(),
+          }),
+    };
+    return { id: villageId, name: villageName, position, reward };
+  });
+
+  const villageIds = villages.map((v) => v.id);
+  if (new Set(villageIds).size !== villageIds.length) throw new Error('Duplicate village ID');
+  const villagePositions = villages.map((v) => `${v.position.x},${v.position.y}`);
+  if (new Set(villagePositions).size !== villagePositions.length) throw new Error('Multiple villages occupy one tile');
+
+  let seizeReward: ChapterReward | undefined;
+  if (data.seizeReward !== undefined) {
+    const rewardRaw = requireRecord(data.seizeReward, 'chapter.seizeReward');
+    const rewardType = requireChoice(rewardRaw.type, ['gold', 'item'], 'chapter.seizeReward.type');
+    seizeReward = {
+      type: rewardType,
+      ...(rewardType === 'gold'
+        ? { amount: requireInteger(rewardRaw.amount, 'chapter.seizeReward.amount', 1) }
+        : {
+            itemId: (() => {
+              const itemId = requireString(rewardRaw.itemId, 'chapter.seizeReward.itemId');
+              if (!itemById.has(itemId)) {
+                throw new Error(`Chapter seize reward references unknown item ${itemId}`);
+              }
+              return itemId;
+            })(),
+          }),
+    };
+  }
+
+  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds, villages, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(
@@ -247,6 +381,12 @@ export const chapter02Data = loadChapterData(
   itemsJson.items as ItemDefinition[],
 );
 
+export const chapter03Data = loadChapterData(
+  devilMountainChapterJson,
+  devilMountainMapJson as MapData,
+  itemsJson.items as ItemDefinition[],
+);
+
 export const testChapter01Data = loadChapterData(
   testChapterJson,
   testMapJson as MapData,
@@ -256,6 +396,7 @@ export const testChapter01Data = loadChapterData(
 export const chapters: Record<string, ChapterData> = {
   chapter_01: chapter01Data,
   chapter_02: chapter02Data,
+  chapter_03: chapter03Data,
   test_chapter_01: testChapter01Data,
 };
 

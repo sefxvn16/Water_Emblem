@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Water Emblem terrain data",
+  "type": "object",
+  "required": ["version", "terrains"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string" },
+    "terrains": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "avoidBonus", "defenseBonus", "healPercent", "movementCosts"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "nameVi": { "type": "string" },
+          "obstacleType": {
+            "type": "string",
+            "enum": ["none", "difficult", "water", "fly_only", "impassable", "structure"]
+          },
+          "avoidBonus": { "type": "integer" },
+          "defenseBonus": { "type": "integer" },
+          "healPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "destructible": { "type": "boolean" },
+          "maxHp": { "type": "integer", "minimum": 1 },
+          "movementCosts": {
+            "type": "object",
+            "required": ["foot", "armor", "cavalry", "flier", "mage", "bandit"],
+            "additionalProperties": false,
+            "properties": {
+              "foot": { "$ref": "#/$defs/cost" },
+              "armor": { "$ref": "#/$defs/cost" },
+              "cavalry": { "$ref": "#/$defs/cost" },
+              "flier": { "$ref": "#/$defs/cost" },
+              "mage": { "$ref": "#/$defs/cost" },
+              "bandit": { "$ref": "#/$defs/cost" }
+            }
+          },
+          "sourceClassCosts": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/$defs/cost" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "$defs": {
+    "cost": { "type": ["integer", "null"], "minimum": 1 }
+  },
+  "additionalProperties": false
+}

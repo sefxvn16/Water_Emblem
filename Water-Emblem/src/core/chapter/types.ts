@@ -6,7 +6,8 @@ export interface ChapterObjective {
   readonly type: 'defeat_boss' | 'rout' | 'seize';
   readonly bossUnitId?: string;
   readonly seizeTargetTile?: { x: number; y: number };
-  readonly descriptionVi: string;
+  readonly description?: string;
+  readonly descriptionVi?: string;
 }
 
 export function evaluateChapterOutcome(

@@ -1,0 +1,144 @@
+{
+  "continent": "Archanea",
+  "title": "The Continent of Archanea",
+  "description": "An ancient land forged by dragonkind and human kingdoms. Following the War of Shadows, Prince Marth embarks on a campaign to liberate the realm from the Dolhr Empire.",
+  "regions": [
+    {
+      "id": "talys",
+      "name": "Kingdom of Talys",
+      "nameVi": "Vương quốc đảo Talys",
+      "coordinates": { "x": 86, "y": 74 },
+      "type": "island_kingdom",
+      "ruler": "King Mostyn",
+      "notableCharacters": ["Marth", "Caeda", "Ogma", "Barst", "Bord", "Cord"],
+      "description": "A tranquil island kingdom located off the southeastern coast of the Archanean mainland. It granted refuge to Prince Marth of Altea after his homeland fell to Dolhr.",
+      "chapters": ["chapter_01"],
+      "bannerColor": "#2563eb"
+    },
+    {
+      "id": "galder",
+      "name": "Port Town of Galder",
+      "nameVi": "Thị trấn cảng Galder",
+      "coordinates": { "x": 76, "y": 62 },
+      "type": "harbor",
+      "ruler": "Galder Pirates (formerly autonomous)",
+      "notableCharacters": ["Castor", "Gomer", "Darros"],
+      "description": "A busy port town on the northeastern coast of the Lefcandith Peninsula. Overrun by Galder pirates allied with Dolhr, it serves as Marth's first mainland battleground.",
+      "chapters": ["chapter_02"],
+      "bannerColor": "#0891b2"
+    },
+    {
+      "id": "devil_mountain",
+      "name": "Devil Mountain (Samsoian)",
+      "nameVi": "Núi Quỷ (Samsoian / Ghoul's Teeth)",
+      "coordinates": { "x": 68, "y": 48 },
+      "type": "mountain_range",
+      "ruler": "Hyman (Samsoian Bandits)",
+      "notableCharacters": ["Navarre", "Julian", "Lena"],
+      "description": "A treacherous, craggy mountain range infested with vicious bandits. The brave swordfighter Navarre and deserters Julian and Lena seek escape here.",
+      "chapters": ["chapter_03"],
+      "bannerColor": "#dc2626"
+    },
+    {
+      "id": "aurelis",
+      "name": "Kingdom of Aurelis",
+      "nameVi": "Vương quốc Aurelis",
+      "coordinates": { "x": 62, "y": 25 },
+      "type": "plains_kingdom",
+      "ruler": "King of Aurelis / Prince Hardin",
+      "notableCharacters": ["Hardin", "Wolf", "Sedgar", "Roshea", "Vyland", "Princess Nyna"],
+      "description": "A vast northern kingdom of boundless grasslands and noble cavalrymen. Prince Hardin leads the Wolfguard and protects Princess Nyna of Archanea against Macedon's forces.",
+      "chapters": ["chapter_04", "chapter_05"],
+      "bannerColor": "#d97706"
+    },
+    {
+      "id": "altea",
+      "name": "Kingdom of Altea",
+      "nameVi": "Vương quốc Altea",
+      "coordinates": { "x": 42, "y": 64 },
+      "type": "kingdom",
+      "ruler": "Prince Marth (heir) / Late King Cornelius",
+      "notableCharacters": ["Marth", "Elice", "Jagen", "Cain", "Abel", "Draug", "Gordin", "Frey"],
+      "description": "The homeland of the heroic Anri and Prince Marth. Famed for its valiant paladins, it was betrayed by neighboring Gra and overrun by the forces of Dolhr.",
+      "chapters": ["chapter_17"],
+      "bannerColor": "#3b82f6"
+    },
+    {
+      "id": "gra",
+      "name": "Kingdom of Gra",
+      "nameVi": "Vương quốc Gra",
+      "coordinates": { "x": 46, "y": 55 },
+      "type": "kingdom",
+      "ruler": "King Jiol",
+      "notableCharacters": ["Jiol", "Sheena"],
+      "description": "A kingdom born alongside Altea, which betrayed King Cornelius during the Battle of Menendi, resulting in Altea's catastrophic collapse.",
+      "chapters": ["chapter_14"],
+      "bannerColor": "#64748b"
+    },
+    {
+      "id": "grust",
+      "name": "Kingdom of Grust",
+      "nameVi": "Vương quốc Grust",
+      "coordinates": { "x": 22, "y": 56 },
+      "type": "military_kingdom",
+      "ruler": "King Ludwik / General Camus",
+      "notableCharacters": ["Camus", "Lorenz", "Yuliya", "Jubelo"],
+      "description": "A mighty military empire on the southwestern coast possessing the famed Sable Order. Reluctantly allied with Dolhr due to cowardice of its king.",
+      "chapters": ["chapter_20"],
+      "bannerColor": "#475569"
+    },
+    {
+      "id": "macedon",
+      "name": "Kingdom of Macedon",
+      "nameVi": "Vương quốc Macedon",
+      "coordinates": { "x": 68, "y": 82 },
+      "type": "draconic_kingdom",
+      "ruler": "King Michalis",
+      "notableCharacters": ["Michalis", "Minerva", "Maria", "Catria", "Palla", "Est"],
+      "description": "A rugged southern land of forests and volcanic peaks, home to the ferocious Dracoknights and the Whitewings pegasus knights.",
+      "chapters": ["chapter_10", "chapter_21"],
+      "bannerColor": "#15803d"
+    },
+    {
+      "id": "khadein",
+      "name": "City of Magic Khadein",
+      "nameVi": "Thành phố Pháp thuật Khadein",
+      "coordinates": { "x": 38, "y": 38 },
+      "type": "sorcery_state",
+      "ruler": "Pontifex Miloah / Gotoh",
+      "notableCharacters": ["Merric", "Wendell", "Arlen", "Gharnef"],
+      "description": "A mystical city of sorcery isolated deep in the western burning desert sands. The cradle of elemental magic and scholarly wisdom.",
+      "chapters": ["chapter_09", "chapter_11"],
+      "bannerColor": "#9333ea"
+    },
+    {
+      "id": "archanea",
+      "name": "Holy Kingdom of Archanea (Pales)",
+      "nameVi": "Thánh quốc Archanea (Kinh đô Pales)",
+      "coordinates": { "x": 55, "y": 48 },
+      "type": "holy_empire",
+      "ruler": "Princess Nyna / Emperor Hardin (Book 2)",
+      "notableCharacters": ["Princess Nyna", "Boah", "Midia", "Astram"],
+      "description": "The millennium-old heart and supreme monarchy of the continent. Its capital Pales was ransacked by Dolhr, forcing Princess Nyna into exile.",
+      "chapters": ["chapter_12", "chapter_13"],
+      "bannerColor": "#eab308"
+    },
+    {
+      "id": "dolhr",
+      "name": "Dolhr Dragon Empire",
+      "nameVi": "Đế quốc Rồng Dolhr",
+      "coordinates": { "x": 48, "y": 85 },
+      "type": "dragon_empire",
+      "ruler": "Shadow Dragon Medeus",
+      "notableCharacters": ["Medeus", "Morzas", "Khozen", "Gharnef"],
+      "description": "A dark, impenetrable domain of primal jungles and ancient dragon fortresses ruled by the revived Shadow Dragon Medeus.",
+      "chapters": ["chapter_24", "chapter_25"],
+      "bannerColor": "#4c0519"
+    }
+  ],
+  "routes": [
+    { "from": "talys", "to": "galder", "status": "completed", "name": "Voyage across the Talys Sea" },
+    { "from": "galder", "to": "devil_mountain", "status": "completed", "name": "March through Lefcandith" },
+    { "from": "devil_mountain", "to": "aurelis", "status": "active", "name": "Traversing the Ghoul's Teeth to Aurelis" }
+  ]
+}

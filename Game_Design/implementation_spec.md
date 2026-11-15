@@ -29,7 +29,7 @@ State cần lưu đơn vị, vị trí, pha/lượt, event đã kích hoạt, m�
 
 Đề án cũ gợi ý Blender → GLB → Three.js, InstancedMesh cho terrain, toon shading, model class dùng lại bộ phận/animation và texture atlas. Đây là hướng kỹ thuật để thử, không phải cam kết asset đã có. Tối ưu theo số đo FPS, draw calls, triangles, tải asset và bộ nhớ trên thiết bị mục tiêu. Camera, độ cao và cách hiển thị nằm ở `art_ui.md`; logic cao độ nằm ở `battle.md`.
 
-Không sao chép code từ các repository tham khảo bằng cách đổi tên biến. `lex-talionis` có thể tham khảo schema/flow; `fe11-us` là nguồn nghiên cứu FE11; `fireemblem8u` có thuật toán tham khảo; `Super-Lex-Talionis` là kho asset cần kiểm quyền từng phần. Các nhận định “dùng trực tiếp” trong báo cáo cũ chưa phải xác nhận license. Ghi nguồn, phiên bản, tác giả, điều kiện sử dụng và kết quả đối chiếu trước khi nhập tài sản hoặc dữ liệu.
+Không sao chép code từ các repository tham khảo bằng cách đổi tên biến. Mã `rainlash/lex-talionis` legacy cho thấy AI, đường đi, trigger và lưu game Python; dữ liệu legacy là XML/TXT, không phải schema JSON. Mã `fe11-us` cho thấy bảng nhân vật/class/item/map của FE11, có ích để tham khảo các chương chung với FE3 Book 1, nhưng repo công khai không chứa sẵn dữ liệu chương để nhập trực tiếp và mọi chi tiết FE3 vẫn phải kiểm riêng. `Super-Lex-Talionis` có mẫu cấu trúc event/level FE8; tài nguyên ảnh/âm thanh phải kiểm quyền từng file. Xem [đối chiếu file nguồn](../reports/doi_chieu_ma_nguon_ba_repo_2026-11-13.md). Ghi nguồn, phiên bản, tác giả, điều kiện sử dụng và kết quả đối chiếu trước khi nhập mã, tài sản hoặc dữ liệu.
 
 ## Kiểm thử và hoàn thành
 

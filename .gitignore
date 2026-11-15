@@ -51,3 +51,11 @@ test-results/
 playwright-report/
 tmp/
 temp/
+
+# Backups
+_backup/
+**/_backup/
+
+# coding-studio
+work/
+.claude/worktrees/

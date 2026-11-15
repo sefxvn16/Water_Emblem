@@ -2,50 +2,76 @@
   "chapterId": "chapter_01",
   "opening": [
     {
-      "speaker": "Jagen",
-      "avatarUrl": "/avatars/jagen.png",
-      "text": "Điện hạ, Caeda vừa từ lâu đài Talys tới."
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "Caeda, lâu đài xảy ra chuyện gì?"
-    },
-    {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Hải tặc Galder đã chiếm lâu đài và giết nhiều người. Marth, xin chàng cứu phụ vương ta."
+      "text": "Marth! You must save Talys Castle! Galder pirates launched a surprise assault on the castle! My father and his guards are besieged inside and in grave peril..."
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "Các kỵ sĩ Altea đang ở đây. Ta sẽ cùng nàng tới lâu đài Talys."
+      "text": "What?! The Galder pirates dare attack the castle?! King Mostyn and the people of Talys sheltered us in our darkest hour. I will not let harm befall them!"
+    },
+    {
+      "speaker": "Jagen",
+      "avatarUrl": "/avatars/jagen.png",
+      "text": "Sire, we Altean knights stand ready to draw our swords! However, our forces are few and our supplies limited. We should visit the villages for aid and acquire provisions from the armory."
+    },
+    {
+      "speaker": "Marth",
+      "avatarUrl": "/avatars/marth.png",
+      "text": "Right! Knights of Altea, move out! Our destination is Talys Castle. We must rescue the King and drive off the pirates!"
     }
   ],
+  "villages": {
+    "village_west": [
+      {
+        "speaker": "West Village Elder",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Ah, Prince Marth and the Altean knights! Cruel pirates are terrorizing the countryside, and we villagers could only pray for salvation."
+      },
+      {
+        "speaker": "West Village Elder",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "I have kept this Vulnerary in my home. Please take it, my prince, to tend to your soldiers' wounds in battle!"
+      }
+    ],
+    "village_east": [
+      {
+        "speaker": "Talys Royal Messenger",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Greetings, Prince Marth! I have come under secret orders from King Mostyn to bring war funds to support your army."
+      },
+      {
+        "speaker": "Talys Royal Messenger",
+        "avatarUrl": "/avatars/village_man.png",
+        "text": "Here is 5,000 gold from the Talys treasury. Please accept it to equip your troops and advance the liberation of your homeland!"
+      }
+    ]
+  },
   "boss_gazzak": {
-    "startCombat": "Quân Altea ư? Đừng mong vượt qua bọn ta!",
-    "death": "Không thể nào..."
+    "startCombat": "Gahahaha! Look at these Altean mice crawling out to play hero! Gazzak's axe will cleave you in two!",
+    "death": "Im... impossible... I was the terror of the seas... Cut down by mere greenhorns..."
   },
   "ending": [
     {
-      "speaker": "Quốc vương Mostyn (Talys)",
+      "speaker": "King Mostyn",
       "avatarUrl": "/avatars/talys_king.png",
-      "text": "Marth, ta mừng vì cháu bình an. Cảm ơn cháu đã cứu Talys."
+      "text": "Marth, my boy! Seeing you safe brings immense joy to an old man's heart. You and your brave knights have saved our kingdom from ruin."
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "Cháu chuẩn bị lên đường tới Aurelis."
+      "text": "It is our duty, Your Majesty. We could never repay the kindness and shelter you provided us. Now that Dolhr and Grust ravage the realm, we must set forth to the continent of Aurelis to join the liberation army."
     },
     {
-      "speaker": "Quốc vương Mostyn (Talys)",
+      "speaker": "King Mostyn",
       "avatarUrl": "/avatars/talys_king.png",
-      "text": "Ta sẽ cử Ogma cùng các chiến binh Talys theo giúp cháu. Trên đường đi, hãy tìm những người chống lại Dolhr; có người đang ẩn náu, cũng có người bị ép phục vụ quân địch."
+      "text": "Your courage honors your father King Cornelius! I have commanded the mercenary captain Ogma and his seasoned fighters to join your cause. Make for the port of Galder first to find a ship across the sea!"
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "Cháu hiểu. Xin cảm ơn bệ hạ."
+      "text": "Thank you from the bottom of my heart, Your Majesty. Knights of Altea, march forward to the port of Galder!"
     }
   ]
 }

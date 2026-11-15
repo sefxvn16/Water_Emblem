@@ -1,71 +1,96 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "sourceGame": "FE11",
+  "sourceUrl": "https://serenesforest.net/shadow-dragon/characters/support-bonus/",
   "activationRange": 3,
   "relationships": [
     {
       "supporterId": "caeda",
       "supportedId": "marth",
-      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 5 }
+      "startingPoints": 4,
+      "pointsC": 5,
+      "pointsB": 8,
+      "pointsA": 13
     },
     {
       "supporterId": "marth",
       "supportedId": "caeda",
-      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 5 }
+      "startingPoints": 4,
+      "pointsC": 5,
+      "pointsB": 8,
+      "pointsA": 13
     },
     {
       "supporterId": "cain",
       "supportedId": "abel",
-      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 10,
+      "pointsA": 16
     },
     {
       "supporterId": "abel",
       "supportedId": "cain",
-      "bonus": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 10,
+      "pointsA": 16
     },
     {
-      "supporterId": "jagen",
-      "supportedId": "marth",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 5 }
+      "supporterId": "marth",
+      "supportedId": "jagen",
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 9,
+      "pointsA": 14
     },
     {
       "supporterId": "draug",
       "supportedId": "gordin",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
-    },
-    {
-      "supporterId": "ogma",
-      "supportedId": "caeda",
-      "bonus": { "hit": 10, "avoid": 5, "crit": 5, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 10,
+      "pointsA": 16
     },
     {
       "supporterId": "caeda",
       "supportedId": "ogma",
-      "bonus": { "hit": 10, "avoid": 5, "crit": 5, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 9,
+      "pointsA": 14
     },
     {
       "supporterId": "ogma",
       "supportedId": "barst",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
-    },
-    {
-      "supporterId": "barst",
-      "supportedId": "ogma",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 10,
+      "pointsA": 16
     },
     {
       "supporterId": "bord",
       "supportedId": "barst",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 11,
+      "pointsA": 18
     },
     {
       "supporterId": "cord",
       "supportedId": "barst",
-      "bonus": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 11,
+      "pointsA": 18
     },
     {
       "supporterId": "caeda",
       "supportedId": "castor",
-      "bonus": { "hit": 10, "avoid": 10, "crit": 0, "dodge": 0 }
+      "startingPoints": 0,
+      "pointsC": 5,
+      "pointsB": 10,
+      "pointsA": 16
     }
   ]
 }

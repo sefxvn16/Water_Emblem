@@ -1,27 +1,38 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import talysMapRaw from '../data/maps/chapter_01_talys.json';
 import galderMapRaw from '../data/maps/chapter_02_galder.json';
+import devilMountainMapRaw from '../data/maps/chapter_03_devil_mountain.json';
 import testMapRaw from '../data/maps/test_map_01.json';
 import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json';
 import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json';
-import { defaultTerrainRegistry } from './core/grid/terrain';
+import ch03Dialogues from '../data/dialogues/chapter_03_dialogues.json';
+import itemsJson from '../data/items.json';
+import { defaultTerrainRegistry, healUnitsOnTerrain } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
-import { CombatForecast } from './core/combat/types';
-import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
+import { CombatForecast, type ItemDefinition } from './core/combat/types';
+import { calculateCombatForecast, calculateDisplayedCombatStats, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { calculateSupportBonus } from './core/combat/support';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter } from './core/chapter/transition';
-import { saveGameState, loadGameState } from './storage/saveLoad';
-import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
+import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
+import { chapters, chapter01Data, ExtendedUnitState, InventoryEntry } from './core/data/chapterData';
+import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
+import { applyCombatExperience, getEffectiveGrowthRates } from './core/progression/experience';
+import { soundManager } from './audio/soundManager';
+import { TitleScreen } from './ui/TitleScreen';
+import { BookSelectModal } from './ui/BookSelectModal';
+import { SaveSlotsModal } from './ui/SaveSlotsModal';
+import { WorldMapModal } from './ui/WorldMapModal';
 
 const chapterMaps: Record<string, MapData> = {
   chapter_01: talysMapRaw as MapData,
   chapter_02: galderMapRaw as MapData,
+  chapter_03: devilMountainMapRaw as MapData,
   test_chapter_01: testMapRaw as MapData,
 };
 
@@ -35,27 +46,347 @@ interface ChapterDialogueData {
   chapterId: string;
   opening: DialogueLine[];
   recruit_castor?: DialogueLine[];
+  recruit_navarre?: DialogueLine[];
+  villages?: Record<string, DialogueLine[]>;
   boss_gazzak?: { startCombat: string; death: string };
   boss_gomer?: { startCombat: string; death: string };
+  boss_hyman?: { startCombat: string; death: string };
   ending: DialogueLine[];
 }
 
 const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_01: ch01Dialogues as ChapterDialogueData,
   chapter_02: ch02Dialogues as ChapterDialogueData,
+  chapter_03: ch03Dialogues as ChapterDialogueData,
 };
 
 const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }> = {
-  plains: { bg: '#4a7c59', label: 'Đồng bằng', icon: '🌿' },
-  forest: { bg: '#2d5a3f', label: 'Rừng rậm', icon: '🌲' },
-  mountain: { bg: '#8b7355', label: 'Đồi núi', icon: '⛰️' },
-  peak: { bg: '#5c4d3c', label: 'Đỉnh núi', icon: '🏔️' },
-  fort: { bg: '#607d8b', label: 'Pháo đài', icon: '🏰' },
-  bridge: { bg: '#a08260', label: 'Cây cầu', icon: '🪵' },
-  river: { bg: '#2b5876', label: 'Sông ngòi', icon: '🌊' },
-  sea: { bg: '#1e3c72', label: 'Biển cả', icon: '🌊' },
-  gate: { bg: '#c0392b', label: 'Cổng thành', icon: '⛩️' },
-  wall: { bg: '#474747', label: 'Tường đá', icon: '🧱' },
+  plains: { bg: '#4a7c59', label: 'Plains', icon: '🌿' },
+  forest: { bg: '#2d5a3f', label: 'Forest', icon: '🌲' },
+  mountain: { bg: '#8b7355', label: 'Mountain', icon: '⛰️' },
+  peak: { bg: '#5c4d3c', label: 'Peak', icon: '🏔️' },
+  fort: { bg: '#607d8b', label: 'Fort', icon: '🏰' },
+  bridge: { bg: '#a08260', label: 'Bridge', icon: '🪵' },
+  river: { bg: '#2b5876', label: 'River', icon: '🌊' },
+  sea: { bg: '#1e3c72', label: 'Sea', icon: '🌊' },
+  gate: { bg: '#c0392b', label: 'Gate', icon: '⛩️' },
+  village: { bg: '#d97706', label: 'Village', icon: '🏡' },
+  wall: { bg: '#474747', label: 'Stone Wall', icon: '🧱' },
+};
+
+interface DialogueCutsceneModalProps {
+  dialogues: DialogueLine[];
+  title: string;
+  themeColor?: 'blue' | 'amber' | 'green';
+  actionButtonText: string;
+  summaryBox?: React.ReactNode;
+  onConfirm: () => void;
+}
+
+const DialogueCutsceneModal: React.FC<DialogueCutsceneModalProps> = ({
+  dialogues,
+  title,
+  themeColor = 'blue',
+  actionButtonText,
+  summaryBox,
+  onConfirm,
+}) => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [displayedLength, setDisplayedLength] = useState(0);
+
+  const safeDialogues = dialogues.length > 0 ? dialogues : [{ speaker: 'Narrator', text: '...', avatarUrl: '' }];
+  const currentLine = safeDialogues[Math.min(currentStep, safeDialogues.length - 1)]!;
+  const fullText = currentLine.text || '';
+  const isTyping = displayedLength < fullText.length;
+  const isLast = currentStep >= safeDialogues.length - 1;
+
+  useEffect(() => {
+    setDisplayedLength(0);
+    const timer = setInterval(() => {
+      setDisplayedLength((prev) => {
+        if (prev >= fullText.length) {
+          clearInterval(timer);
+          return prev;
+        }
+        return Math.min(prev + 4, fullText.length);
+      });
+    }, 15);
+    return () => clearInterval(timer);
+  }, [currentStep, fullText]);
+
+  const handleAdvance = () => {
+    if (isTyping) {
+      setDisplayedLength(fullText.length);
+    } else if (!isLast) {
+      soundManager.playSfx('cursor');
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      soundManager.playSfx('select');
+      onConfirm();
+    }
+  };
+
+  const theme = {
+    blue: {
+      border: '#3b82f6',
+      cardBg: '#0f172a',
+      balloonBg: '#1e293b',
+      balloonBorder: '#334155',
+      nameColor: '#60a5fa',
+      nameTagBg: '#1e3a8a',
+      btnBg: '#2563eb',
+      btnBorder: '#3b82f6',
+      btnShadow: 'rgba(37,99,235,0.4)',
+    },
+    amber: {
+      border: '#f59e0b',
+      cardBg: '#1c1917',
+      balloonBg: '#292524',
+      balloonBorder: '#44403c',
+      nameColor: '#fbbf24',
+      nameTagBg: '#78350f',
+      btnBg: '#d97706',
+      btnBorder: '#f59e0b',
+      btnShadow: 'rgba(217,119,6,0.4)',
+    },
+    green: {
+      border: '#22c55e',
+      cardBg: '#052e16',
+      balloonBg: '#064e3b',
+      balloonBorder: '#047857',
+      nameColor: '#86efac',
+      nameTagBg: '#022c22',
+      btnBg: '#16a34a',
+      btnBorder: '#22c55e',
+      btnShadow: 'rgba(22,163,74,0.4)',
+    },
+  }[themeColor];
+
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        backgroundColor: 'rgba(0,0,0,0.85)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1200,
+        padding: '16px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div
+        style={{
+          width: 'min(720px, 95vw)',
+          backgroundColor: theme.cardBg,
+          border: `2px solid ${theme.border}`,
+          borderRadius: '14px',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.85)',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {/* Header bar */}
+        <div
+          style={{
+            padding: '12px 18px',
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderBottom: `1px solid ${theme.border}44`,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2 style={{ margin: 0, color: theme.nameColor, fontSize: '17px', fontWeight: 'bold' }}>
+              {title}
+            </h2>
+            <span style={{ fontSize: '12px', color: '#94a3b8', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '12px' }}>
+              {currentStep + 1}/{safeDialogues.length}
+            </span>
+          </div>
+
+          {/* Quick Action / Confirm Button */}
+          <button
+            onClick={onConfirm}
+            title={actionButtonText}
+            style={{
+              padding: '7px 15px',
+              backgroundColor: theme.btnBg,
+              border: `1px solid ${theme.btnBorder}`,
+              borderRadius: '6px',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '13px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: `0 2px 8px ${theme.btnShadow}`,
+            }}
+          >
+            {actionButtonText}
+          </button>
+        </div>
+
+        {/* Dialogue Interaction Body (Fire Emblem visual novel style) */}
+        <div
+          onClick={handleAdvance}
+          style={{
+            padding: '20px',
+            cursor: 'pointer',
+            userSelect: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px',
+            position: 'relative',
+          }}
+        >
+          {/* Visually hidden full cutscene transcript for screen readers and accessibility */}
+          <div
+            style={{
+              position: 'absolute',
+              width: '1px',
+              height: '1px',
+              padding: 0,
+              margin: '-1px',
+              overflow: 'hidden',
+              clip: 'rect(0, 0, 0, 0)',
+              whiteSpace: 'nowrap',
+              border: 0,
+            }}
+          >
+            {safeDialogues.map((line, idx) => (
+              <p key={idx}>{line.speaker}: {line.text}</p>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+            {/* Character Portrait */}
+            {currentLine.avatarUrl ? (
+              <img
+                src={currentLine.avatarUrl}
+                alt={currentLine.speaker}
+                style={{
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '10px',
+                  border: `3px solid ${theme.border}`,
+                  objectFit: 'cover',
+                  objectPosition: 'top',
+                  backgroundColor: '#020617',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 14px rgba(0,0,0,0.6)',
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: '90px',
+                  height: '90px',
+                  borderRadius: '10px',
+                  border: `3px solid ${theme.border}`,
+                  backgroundColor: '#1e293b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '28px',
+                  flexShrink: 0,
+                }}
+              >
+                👤
+              </div>
+            )}
+
+            {/* Speaker Name Tag & Dialogue Balloon */}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div
+                style={{
+                  alignSelf: 'flex-start',
+                  backgroundColor: theme.nameTagBg,
+                  border: `1px solid ${theme.border}`,
+                  borderRadius: '6px',
+                  padding: '4px 12px',
+                  color: theme.nameColor,
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                }}
+              >
+                {currentLine.speaker}
+              </div>
+
+              <div
+                style={{
+                  backgroundColor: theme.balloonBg,
+                  border: `1px solid ${theme.balloonBorder}`,
+                  borderRadius: '10px',
+                  padding: '14px 18px',
+                  minHeight: '84px',
+                  boxSizing: 'border-box',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div style={{ fontSize: '15px', lineHeight: '1.65', color: '#f8fafc', position: 'relative' }}>
+                  {/* Visually hidden full text for screen readers and accessibility */}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      width: '1px',
+                      height: '1px',
+                      padding: 0,
+                      margin: '-1px',
+                      overflow: 'hidden',
+                      clip: 'rect(0, 0, 0, 0)',
+                      whiteSpace: 'nowrap',
+                      border: 0,
+                    }}
+                  >
+                    {fullText}
+                  </span>
+                  <span aria-hidden="true">
+                    "{fullText.slice(0, displayedLength)}"
+                    {isTyping && <span style={{ opacity: 0.7, marginLeft: '2px', color: theme.nameColor }}>▌</span>}
+                  </span>
+                </div>
+
+                {!isTyping && !isLast && (
+                  <div
+                    style={{
+                      alignSelf: 'flex-end',
+                      color: theme.nameColor,
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      marginTop: '6px',
+                    }}
+                  >
+                    ▼ Click to advance...
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Extra summary content (Objective info or reward text) */}
+          {summaryBox && (
+            <div style={{ marginTop: '4px' }}>
+              {summaryBox}
+            </div>
+          )}
+
+          <div style={{ fontSize: '12px', color: '#94a3b8', textAlign: 'center', fontStyle: 'italic' }}>
+            {isLast ? '✨ Dialogue complete. Click the button above to proceed.' : '💡 Click anywhere on the box to advance, or click the button above to skip.'}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const App: React.FC = () => {
@@ -83,17 +414,69 @@ export const App: React.FC = () => {
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
+  const [gold, setGold] = useState<number>(0);
+  const [villageStates, setVillageStates] = useState<Record<string, 'intact' | 'visited' | 'destroyed'>>({});
+  const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
+    villageName: string;
+    lines: DialogueLine[];
+    rewardText: string;
+  } | null>(null);
+
+  // Màn hình tổng thể & Bản lưu
+  const [activeScreen, setActiveScreen] = useState<'none' | 'title' | 'book_select' | 'save_slots' | 'world_map'>('none');
+  const [saveSlotsMode, setSaveSlotsMode] = useState<'load' | 'save'>('load');
 
   const syncState = () => {
     setTurnState({ ...turnManager.getState() });
   };
 
+  const [isMuted, setIsMuted] = useState(soundManager.isMuted);
+  const handleToggleMute = () => {
+    const next = soundManager.toggleMute();
+    setIsMuted(next);
+  };
+
+  useEffect(() => {
+    if (activeScreen === 'title' || activeScreen === 'world_map' || activeScreen === 'book_select') {
+      soundManager.playBgm('preparation');
+      return;
+    }
+    if (showStoryIntro || showPreparation) {
+      soundManager.playBgm('preparation');
+      return;
+    }
+    if (chapterOutcome === 'victory') {
+      soundManager.playBgm('victory', false);
+      return;
+    }
+    if (chapterOutcome === 'defeat') {
+      soundManager.playBgm('gameover', false);
+      return;
+    }
+    if (turnState.activePhase === 'player_phase') {
+      soundManager.playBgm('player_phase');
+    } else if (turnState.activePhase === 'enemy_phase') {
+      soundManager.playBgm('enemy_phase');
+    }
+  }, [activeScreen, showStoryIntro, showPreparation, chapterOutcome, turnState.activePhase]);
+
+  useEffect(() => {
+    (window as any).__WATER_EMBLEM_STATE__ = {
+      extendedUnits,
+      turnState,
+      currentChapterId,
+    };
+  }, [extendedUnits, turnState, currentChapterId]);
+
   const loadChapter = (chapterId: string, carryoverUnits?: readonly ExtendedUnitState[]) => {
     const targetChapter = chapters[chapterId];
     if (!targetChapter) return;
     setCurrentChapterId(chapterId);
+    const participatingIds = new Set(extendedUnits
+      .filter(({ unit }) => unit.faction === 'player' && !unit.isDead)
+      .map(({ unit }) => unit.id));
     const newUnits = carryoverUnits
-      ? carryUnitsToChapter(carryoverUnits, targetChapter)
+      ? carryUnitsToChapter(carryoverUnits, targetChapter, participatingIds)
       : structuredClone(targetChapter.units);
     setExtendedUnits(newUnits);
     setReserveUnits([]);
@@ -101,13 +484,16 @@ export const App: React.FC = () => {
     setTurnState(turnManager.getState());
     setChapterOutcome('ongoing');
     setShowStoryIntro(true);
-    setShowPreparation(chapterId === 'chapter_02');
+    setShowPreparation(chapterId === 'chapter_02' || chapterId === 'chapter_03');
+    if (!carryoverUnits) setGold(0);
+    setVillageStates({});
+    setActiveVillageDialogue(null);
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
-    setStatusNotice(`Đã chuyển sang ${targetChapter.name}`);
+    setStatusNotice(`Switched to ${targetChapter.name}`);
     setTimeout(() => setStatusNotice(null), 3000);
-    setCombatLog([`📜 Bắt đầu ${targetChapter.name}`]);
+    setCombatLog([`📜 Started ${targetChapter.name}`]);
   };
 
   const toggleDeployment = (unitId: string) => {
@@ -152,15 +538,17 @@ export const App: React.FC = () => {
         units: extendedUnits.map((u) => u.unit),
       });
 
-      for (const tile of range.values()) {
-        const minR = enemy.weapon.minRange;
-        const maxR = enemy.weapon.maxRange;
+      const candidateTiles = enemy.aiRole === 'stationary'
+        ? [enemy.unit.position]
+        : Array.from(range.values(), ({ position }) => position);
+      for (const tile of candidateTiles) {
+        const { min: minR, max: maxR } = getAttackRange(enemy.unit, enemy.weapon);
         for (let dx = -maxR; dx <= maxR; dx++) {
           for (let dy = -maxR; dy <= maxR; dy++) {
             const dist = Math.abs(dx) + Math.abs(dy);
             if (dist >= minR && dist <= maxR) {
-              const nx = tile.position.x + dx;
-              const ny = tile.position.y + dy;
+              const nx = tile.x + dx;
+              const ny = tile.y + dy;
               if (nx >= 0 && nx < mapData.width && ny >= 0 && ny < mapData.height) {
                 danger.add(`${nx},${ny}`);
               }
@@ -179,7 +567,8 @@ export const App: React.FC = () => {
     const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
     return enemies.filter((enemy) => {
       const dist = getManhattanDistance(pendingMovePos, enemy.unit.position);
-      return dist >= selectedExtUnit.weapon.minRange && dist <= selectedExtUnit.weapon.maxRange;
+      const range = getAttackRange(selectedExtUnit.unit, selectedExtUnit.weapon);
+      return dist >= range.min && dist <= range.max;
     });
   }, [selectedExtUnit, pendingMovePos, extendedUnits]);
 
@@ -195,6 +584,17 @@ export const App: React.FC = () => {
       && getManhattanDistance(pendingMovePos, unit.position) <= rule.maxDistance))
     : undefined;
 
+  const currentVillageAtPendingPos = useMemo(() => {
+    if (!pendingMovePos || !selectedExtUnit) return null;
+    if (selectedExtUnit.unit.id !== 'marth') return null;
+    const village = currentChapter.villages?.find(
+      (v) => v.position.x === pendingMovePos.x && v.position.y === pendingMovePos.y
+    );
+    if (!village) return null;
+    const state = villageStates[village.id] ?? 'intact';
+    return state === 'intact' ? village : null;
+  }, [pendingMovePos, selectedExtUnit, currentChapter.villages, villageStates]);
+
   // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
     if (turnState.activePhase !== 'player_phase' || isProcessingAI) {
@@ -209,6 +609,7 @@ export const App: React.FC = () => {
     if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy') {
       const isTargetValid = attackableTargets.some((t) => t.unit.id === clickedExt.unit.id);
       if (isTargetValid && selectedExtUnit) {
+        soundManager.playSfx('cursor');
         setSelectedTarget(clickedExt);
         const dist = getManhattanDistance(pendingMovePos, clickedExt.unit.position);
         const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
@@ -237,6 +638,7 @@ export const App: React.FC = () => {
       setOriginalPos({ ...selectedExtUnit.unit.position });
       const success = turnManager.moveSelectedUnit({ x, y });
       if (success) {
+        soundManager.playMoveStep(selectedExtUnit.unit.moveType);
         setPendingMovePos({ x, y });
         setExtendedUnits([...extendedUnits]);
         syncState();
@@ -247,6 +649,7 @@ export const App: React.FC = () => {
 
     // Chọn đơn vị quân ta chưa đi
     if (clickedExt && clickedExt.unit.faction === 'player' && !clickedExt.unit.hasActed && !pendingMovePos) {
+      soundManager.playSfx('select');
       const range = calculateMovementRange(clickedExt.unit, {
         map: mapData,
         terrains: defaultTerrainRegistry,
@@ -262,6 +665,7 @@ export const App: React.FC = () => {
 
     // Bỏ chọn
     if (!pendingMovePos) {
+      soundManager.playSfx('cancel');
       turnManager.cancelSelect();
       setSelectedTarget(null);
       setCombatForecast(null);
@@ -281,49 +685,83 @@ export const App: React.FC = () => {
       logs.push(`🗣️ Gazzak: "${currentDialogues.boss_gazzak.startCombat}"`);
     } else if (selectedTarget.unit.id === 'gomer' && currentDialogues.boss_gomer) {
       logs.push(`🗣️ Gomer: "${currentDialogues.boss_gomer.startCombat}"`);
+    } else if (selectedTarget.unit.id === 'hyman' && currentDialogues.boss_hyman) {
+      logs.push(`🗣️ Hyman: "${currentDialogues.boss_hyman.startCombat}"`);
     }
-    logs.push(`⚔️ GIAO TRANH: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
+    logs.push(`⚔️ ENGAGEMENT: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
     for (const ev of result.events) {
-      const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Ai đó';
-      const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Ai đó';
+      const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Unknown';
+      const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Unknown';
       if (!ev.isHit) {
-        logs.push(`${atk} tấn công ${def} nhưng bị TRƯỢT (Miss)!`);
+        soundManager.playSfx('miss');
+        logs.push(`${atk} attacked ${def} but MISSED!`);
       } else {
-        const critText = ev.isCrit ? ' [CHÍ MẠNG (CRIT)!]' : '';
-        logs.push(`${atk} đánh trúng ${def} gây ${ev.damageDealt} sát thương!${critText} (${def} còn ${ev.defenderHpAfter} HP)`);
+        if (ev.isCrit) {
+          soundManager.playSfx('crit');
+        } else if (ev.damageDealt === 0) {
+          soundManager.playSfx('nodamage');
+        } else {
+          const attackerUnit = extendedUnits.find((u) => u.unit.id === ev.attackerId);
+          soundManager.playWeaponHit(attackerUnit?.weapon.type ?? 'sword');
+        }
+        const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
+        logs.push(`${atk} hit ${def} for ${ev.damageDealt} damage!${critText} (${def} remaining HP: ${ev.defenderHpAfter})`);
       }
     }
 
+    let lootItemId: string | undefined;
+    let lootRecipientId: string | undefined;
     if (result.unitDefeatedId) {
-      const deadName = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
-      logs.push(`💀 ${deadName} đã bị hạ gục!`);
-      if (result.unitDefeatedId === 'gazzak' && currentDialogues.boss_gazzak) {
-        logs.push(`🗣️ Gazzak trăn trối: "${currentDialogues.boss_gazzak.death}"`);
-      } else if (result.unitDefeatedId === 'gomer' && currentDialogues.boss_gomer) {
-        logs.push(`🗣️ Gomer trăn trối: "${currentDialogues.boss_gomer.death}"`);
+      soundManager.playSfx('death');
+      const deadExt = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId);
+      const deadName = deadExt?.unit.name;
+      logs.push(`💀 ${deadName} was defeated!`);
+      const bossData = (currentDialogues as Record<string, any>)[`boss_${result.unitDefeatedId}`];
+      if (bossData?.death) {
+        logs.push(`🗣️ ${deadName}: "${bossData.death}"`);
+      }
+      if (deadExt?.dropItemId) {
+        lootItemId = deadExt.dropItemId;
+        const itemDef = itemsJson.items.find(({ id }) => id === lootItemId);
+        const itemName = itemDef?.name ?? lootItemId;
+        const killerExt = result.unitDefeatedId === selectedExtUnit.unit.id ? selectedTarget : selectedExtUnit;
+        if (killerExt && killerExt.unit.faction === 'player') {
+          lootRecipientId = killerExt.unit.id;
+          logs.push(`🎁 ${killerExt.unit.name} obtained loot: ${itemName} from ${deadName}!`);
+        }
       }
     }
-
-    setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
 
     // Cập nhật trạng thái sống/chết và HP
-    const updatedUnits = extendedUnits.map((item) => {
+    let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
         if (item.unit.id === selectedExtUnit.unit.id) {
+          const nextInventory: InventoryEntry[] = lootItemId && lootRecipientId === item.unit.id && combatForecast.attacker.stats.hp > 0
+            ? [...item.inventory, { itemId: lootItemId, uses: itemsJson.items.find(({ id }) => id === lootItemId)?.maxUses ?? 1 }]
+            : item.inventory;
           return {
             ...item,
             stats: { ...combatForecast.attacker.stats },
             unit: { ...item.unit, isDead: combatForecast.attacker.stats.hp <= 0 },
+            inventory: nextInventory,
           };
         }
         if (item.unit.id === selectedTarget.unit.id) {
+          const nextInventory: InventoryEntry[] = lootItemId && lootRecipientId === item.unit.id && combatForecast.defender.stats.hp > 0
+            ? [...item.inventory, { itemId: lootItemId, uses: itemsJson.items.find(({ id }) => id === lootItemId)?.maxUses ?? 1 }]
+            : item.inventory;
           return {
             ...item,
             stats: { ...combatForecast.defender.stats },
             unit: { ...item.unit, isDead: combatForecast.defender.stats.hp <= 0 },
+            inventory: nextInventory,
           };
         }
         return item;
       });
+    const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
+    updatedUnits = experience.entries;
+    logs.push(...experience.messages);
+    setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
     turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
     setExtendedUnits(updatedUnits);
 
@@ -341,6 +779,7 @@ export const App: React.FC = () => {
 
   // Xác nhận Chờ
   const handleConfirmWait = () => {
+    soundManager.playSfx('accept');
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
     setSelectedTarget(null);
@@ -348,10 +787,78 @@ export const App: React.FC = () => {
     syncState();
   };
 
+  const handleUseVulnerary = () => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    const item = itemsJson.items.find(({ id }) => id === 'vulnerary') as ItemDefinition | undefined;
+    if (!item) return;
+    const changed = useVulnerary(selectedExtUnit, item);
+    if (!changed) return;
+    soundManager.playSfx('heal');
+    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
+    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    turnManager.waitSelectedUnit();
+    setExtendedUnits(nextUnits);
+    setPendingMovePos(null);
+    setCombatLog((previous) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...previous].slice(0, 20));
+    syncState();
+  };
+
+  const handlePromote = (targetClassId: string) => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    const changed = promoteWithMasterSeal(selectedExtUnit, targetClassId);
+    if (!changed) return;
+    soundManager.playSfx('levelup');
+    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
+    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    turnManager.waitSelectedUnit();
+    setExtendedUnits(nextUnits);
+    setPendingMovePos(null);
+    setCombatLog((previous) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...previous].slice(0, 20));
+    syncState();
+  };
+
+  const handleToggleMounted = () => {
+    if (!selectedExtUnit || pendingMovePos || selectedExtUnit.unit.hasActed) return;
+    const changed = changeMountedState(selectedExtUnit, Boolean(selectedExtUnit.unit.mountedClassId));
+    if (!changed) return;
+    soundManager.playSfx('cursor');
+    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
+    setExtendedUnits(nextUnits);
+    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    const range = calculateMovementRange(changed.unit, {
+      map: mapData,
+      terrains: defaultTerrainRegistry,
+      units: nextUnits.map(({ unit }) => unit),
+    });
+    turnManager.selectUnit(changed.unit.id, range);
+    syncState();
+  };
+
   const handleSeize = () => {
     if (!selectedExtUnit || selectedExtUnit.unit.id !== 'marth' || !pendingMovePos) return;
     const outcome = evaluateChapterOutcome(extendedUnits.map(({ unit }) => unit), chapterObjective, true);
     if (outcome !== 'victory') return;
+    soundManager.playSfx('stage_clear');
+    if (currentChapter.seizeReward) {
+      if (currentChapter.seizeReward.type === 'gold' && currentChapter.seizeReward.amount) {
+        setGold((prev) => prev + currentChapter.seizeReward!.amount!);
+        setCombatLog((prev) => [
+          `💰 Seized castle gate! Received ${currentChapter.seizeReward!.amount!.toLocaleString()} Gold!`,
+          ...prev,
+        ]);
+      } else if (currentChapter.seizeReward.type === 'item' && currentChapter.seizeReward.itemId) {
+        const itemDef = itemsJson.items.find(({ id }) => id === currentChapter.seizeReward!.itemId);
+        if (itemDef) {
+          setExtendedUnits((prev) => prev.map((entry) => entry.unit.id === 'marth'
+            ? { ...entry, inventory: [...entry.inventory, { itemId: itemDef.id, uses: itemDef.maxUses }] }
+            : entry));
+          setCombatLog((prev) => [
+            `🎁 Seized castle gate! Marth obtained: ${itemDef.name}!`,
+            ...prev,
+          ]);
+        }
+      }
+    }
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
     setChapterOutcome('victory');
@@ -360,6 +867,7 @@ export const App: React.FC = () => {
 
   const handleTalk = () => {
     if (!talkTarget || !selectedExtUnit) return;
+    soundManager.playSfx('item_get');
     const nextUnits = extendedUnits.map((entry) => entry.unit.id === talkTarget.unit.id
       ? { ...entry, unit: { ...entry.unit, faction: 'player' as const }, aiRole: undefined }
       : entry);
@@ -367,15 +875,77 @@ export const App: React.FC = () => {
     turnManager.waitSelectedUnit();
     setExtendedUnits(nextUnits);
     setPendingMovePos(null);
+    const dialogueLines = talkTarget.unit.id === 'castor'
+      ? (currentDialogues.recruit_castor ?? [])
+      : talkTarget.unit.id === 'navarre'
+      ? (currentDialogues.recruit_navarre ?? [])
+      : [];
     setCombatLog((prev) => [
-      ...(currentDialogues.recruit_castor ?? []).map(({ speaker, text }) => `${speaker}: ${text}`),
+      ...dialogueLines.map(({ speaker, text }) => `${speaker}: ${text}`),
       ...prev,
     ]);
     syncState();
   };
 
+  const handleVisitVillage = () => {
+    if (!currentVillageAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
+    soundManager.playSfx('item_get');
+
+    const village = currentVillageAtPendingPos;
+    setVillageStates((prev) => ({ ...prev, [village.id]: 'visited' }));
+
+    let rewardText = '';
+    let rewardItem: { itemId: string; uses: number } | undefined;
+    if (village.reward.type === 'gold') {
+      const amount = village.reward.amount ?? 0;
+      setGold((prev) => prev + amount);
+      rewardText = `Received ${amount.toLocaleString()} Gold from the villagers!`;
+    } else if (village.reward.type === 'item') {
+      const itemId = village.reward.itemId;
+      const itemDef = itemsJson.items.find((it) => it.id === itemId);
+      if (!itemId || !itemDef) return;
+      const itemName = itemDef?.name ?? itemId;
+      rewardItem = { itemId, uses: itemDef.maxUses };
+      rewardText = `Received item: ${itemName}!`;
+    }
+
+    const lines = currentDialogues.villages?.[village.id] ?? [
+      {
+        speaker: 'Villager',
+        avatarUrl: '/avatars/village_man.png',
+        text: 'Thank you Prince Marth for protecting our village!',
+      },
+    ];
+
+    setActiveVillageDialogue({
+      villageName: village.name,
+      lines,
+      rewardText,
+    });
+
+    setCombatLog((prev) => [
+      `🏡 Marth visited ${village.name}: ${rewardText}`,
+      ...prev,
+    ]);
+
+    const nextUnits = rewardItem
+      ? extendedUnits.map((entry) => entry.unit.id === selectedExtUnit.unit.id
+        ? { ...entry, inventory: [...entry.inventory, rewardItem] }
+        : entry)
+      : extendedUnits;
+    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    turnManager.waitSelectedUnit();
+    setExtendedUnits(nextUnits);
+    setPendingMovePos(null);
+    setOriginalPos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
+    syncState();
+  };
+
   // Hủy bước di chuyển
   const handleCancelMove = () => {
+    soundManager.playSfx('cancel');
     if (selectedExtUnit && originalPos) {
       selectedExtUnit.unit.position = { ...originalPos };
     }
@@ -391,61 +961,108 @@ export const App: React.FC = () => {
   // Chạy AI Turn
   const runAITurn = () => {
     setIsProcessingAI(true);
-    const activeEnemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+    let phaseUnits = healUnitsOnTerrain(
+      extendedUnits.map((entry) => ({ ...entry, unit: { ...entry.unit }, stats: { ...entry.stats } })),
+      'enemy', mapData, defaultTerrainRegistry,
+    );
+    const activeEnemies = phaseUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+    const statsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.stats]));
+    const weaponsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.weapon]));
+    const nextVillageStates = { ...villageStates };
 
-    const statsMap = new Map(extendedUnits.map((u) => [u.unit.id, u.stats]));
-    const weaponsMap = new Map(extendedUnits.map((u) => [u.unit.id, u.weapon]));
-
-    const logs: string[] = [`🔴 BẮT ĐẦU ENEMY PHASE (Lượt ${turnState.turnNumber})`];
+    const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
 
     for (const enemy of activeEnemies) {
-      const decision = evaluateAITurn(enemy.unit, enemy.aiRole || 'pursue', {
+      const decision = evaluateAITurn(enemy.unit,
+        enemy.unit.classId === 'thief' ? 'pillage' : (enemy.aiRole || 'pursue'), {
         map: mapData,
         terrains: defaultTerrainRegistry,
-        units: extendedUnits.map((u) => u.unit),
+        units: phaseUnits.map((u) => u.unit),
         unitStatsMap: statsMap,
         unitWeaponsMap: weaponsMap,
+        villageTargets: currentChapter.villages?.filter(
+          (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
+        ).map((v) => v.position),
       });
 
       if (decision.type === 'attack') {
         enemy.unit.position = { ...decision.movePosition };
-        logs.push(`🔴 ${enemy.unit.name} di chuyển đến (${decision.movePosition.x},${decision.movePosition.y}) và tấn công ${decision.targetUnit.name}!`);
+        logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
         const result = executeCombat(decision.forecast, defaultRNG);
         for (const ev of result.events) {
-          const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
-          const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
+          const atk = phaseUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
+          const def = phaseUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
           if (!ev.isHit) {
-            logs.push(`  ${atk} đánh trượt ${def}!`);
+            soundManager.playSfx('miss');
+            logs.push(`  ${atk} missed ${def}!`);
           } else {
-            const critText = ev.isCrit ? ' [CHÍ MẠNG!]' : '';
-            logs.push(`  ${atk} đánh trúng ${def} gây ${ev.damageDealt} dame!${critText}`);
+            if (ev.isCrit) {
+              soundManager.playSfx('crit');
+            } else if (ev.damageDealt === 0) {
+              soundManager.playSfx('nodamage');
+            } else {
+              const attackerUnit = phaseUnits.find((u) => u.unit.id === ev.attackerId);
+              soundManager.playWeaponHit(attackerUnit?.weapon.type ?? 'axe');
+            }
+            const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
+            logs.push(`  ${atk} strikes ${def} for ${ev.damageDealt} damage!${critText}`);
           }
         }
         if (result.unitDefeatedId) {
-          const defeatedUnit = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId);
+          soundManager.playSfx('death');
+          const defeatedUnit = phaseUnits.find((u) => u.unit.id === result.unitDefeatedId);
           if (defeatedUnit) defeatedUnit.unit.isDead = true;
-          const defeated = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name;
-          logs.push(`  💀 ${defeated} đã ngã xuống!`);
+          const defeated = defeatedUnit?.unit.name;
+          logs.push(`  💀 ${defeated} has fallen!`);
+          const bossData = (currentDialogues as Record<string, any>)[`boss_${result.unitDefeatedId}`];
+          if (bossData?.death) {
+            logs.push(`  🗣️ ${defeated}: "${bossData.death}"`);
+          }
+          if (defeatedUnit?.dropItemId) {
+            const dropId = defeatedUnit.dropItemId;
+            const itemDef = itemsJson.items.find(({ id }) => id === dropId);
+            const itemName = itemDef?.name ?? dropId;
+            const killerUnit = phaseUnits.find((u) => u.unit.id === (result.unitDefeatedId === enemy.unit.id ? decision.targetUnit.id : enemy.unit.id));
+            if (killerUnit && killerUnit.unit.faction === 'player' && !killerUnit.unit.isDead) {
+              killerUnit.inventory = [...killerUnit.inventory, { itemId: dropId, uses: itemDef?.maxUses ?? 1 }];
+              logs.push(`  🎁 ${killerUnit.unit.name} obtained loot: ${itemName} from ${defeated}!`);
+            }
+          }
         }
+        const experience = applyCombatExperience(phaseUnits, result, defaultRNG);
+        phaseUnits = experience.entries;
+        for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
+        logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
         enemy.unit.position = { ...decision.movePosition };
-        logs.push(`🔴 ${enemy.unit.name} tiến về phía quân ta đến (${decision.movePosition.x},${decision.movePosition.y}).`);
+        logs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
       } else {
-        logs.push(`🔴 ${enemy.unit.name} giữ nguyên vị trí canh gác.`);
+        logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
+      }
+
+      if (decision.type === 'move_only' || decision.type === 'attack') {
+        const raidedVillage = currentChapter.villages?.find(
+          (v) => v.position.x === decision.movePosition.x && v.position.y === decision.movePosition.y
+        );
+        if (enemy.unit.classId === 'thief' && raidedVillage
+          && (nextVillageStates[raidedVillage.id] ?? 'intact') === 'intact') {
+          nextVillageStates[raidedVillage.id] = 'destroyed';
+          logs.push(`🔥 The thief raided ${raidedVillage.name.toUpperCase()}! The village was destroyed!`);
+        }
       }
 
       enemy.unit.hasActed = true;
-      if (evaluateChapterOutcome(extendedUnits.map((u) => u.unit), chapterObjective) !== 'ongoing') break;
+      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective) !== 'ongoing') break;
     }
 
-    setExtendedUnits([...extendedUnits]);
+    setVillageStates(nextVillageStates);
 
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
     // Kiểm tra kết quả chương sau lượt địch
     const outcome = evaluateChapterOutcome(
-      extendedUnits.map((u) => u.unit),
+      phaseUnits.map((u) => u.unit),
       chapterObjective
     );
     if (outcome !== 'ongoing') {
@@ -453,14 +1070,54 @@ export const App: React.FC = () => {
     }
 
     // Chuyển lại về Player Phase
-    if (outcome === 'ongoing') turnManager.switchPhase('player_phase');
+    if (outcome === 'ongoing') {
+      soundManager.playSfx('player_phase');
+      turnManager.switchPhase('player_phase');
+      phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
+      phaseUnits = phaseUnits.map((u) => {
+        if (u.unit.faction === 'player' && !u.unit.isDead) {
+          return {
+            ...u,
+            unit: {
+              ...u.unit,
+              hasActed: false,
+            },
+          };
+        }
+        return u;
+      });
+    }
+    turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
+    setExtendedUnits(phaseUnits);
     setIsProcessingAI(false);
     syncState();
   };
 
-  const handleSave = async () => {
+  const applyLoadedSnapshot = (data: SaveGameData) => {
+    if (data.chapterId !== currentChapterId) {
+      setCurrentChapterId(data.chapterId);
+    }
+    setExtendedUnits(data.extendedUnits);
+    setReserveUnits(data.reserveUnits ?? []);
+    setShowPreparation(false);
+    turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
+    defaultRNG.setSeed(data.rngSeed);
+    setChapterOutcome(data.chapterOutcome);
+    setShowStoryIntro(data.showStoryIntro);
+    setCombatLog(data.combatLog);
+    setGold(data.gold);
+    setVillageStates(data.villageStates);
+    setActiveVillageDialogue(null);
+    setPendingMovePos(null);
+    setOriginalPos(null);
+    setSelectedTarget(null);
+    setCombatForecast(null);
+    syncState();
+  };
+
+  const handleSave = async (slotId: string = 'slot1') => {
     if (pendingMovePos || combatForecast || isProcessingAI || turnState.activePhase !== 'player_phase') {
-      setStatusNotice('Hãy hoàn tất hành động trước khi lưu.');
+      setStatusNotice('Please complete your current action before saving.');
       return;
     }
     const ok = await saveGameState({
@@ -472,38 +1129,25 @@ export const App: React.FC = () => {
       chapterOutcome,
       showStoryIntro,
       combatLog,
-    });
+      gold,
+      villageStates,
+    }, slotId);
     if (ok) {
-      setStatusNotice('✓ Đã lưu tiến độ trận đánh thành công!');
+      setStatusNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
       setTimeout(() => setStatusNotice(null), 2500);
     } else {
-      setStatusNotice('Không thể lưu tiến độ.');
+      setStatusNotice('Failed to save progress.');
     }
   };
 
-  const handleLoad = async () => {
-    const data = await loadGameState();
+  const handleLoad = async (slotId: string = 'slot1') => {
+    const data = await loadGameState(slotId);
     if (data) {
-      if (data.chapterId !== currentChapterId) {
-        setCurrentChapterId(data.chapterId);
-      }
-      setExtendedUnits(data.extendedUnits);
-      setReserveUnits(data.reserveUnits ?? []);
-      setShowPreparation(false);
-      turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
-      defaultRNG.setSeed(data.rngSeed);
-      setChapterOutcome(data.chapterOutcome);
-      setShowStoryIntro(data.showStoryIntro);
-      setCombatLog(data.combatLog);
-      setPendingMovePos(null);
-      setOriginalPos(null);
-      setSelectedTarget(null);
-      setCombatForecast(null);
-      syncState();
-      setStatusNotice('✓ Đã nạp lại tiến độ từ file lưu!');
+      applyLoadedSnapshot(data);
+      setStatusNotice(`✓ Save file loaded from ${slotId.toUpperCase()}!`);
       setTimeout(() => setStatusNotice(null), 2500);
     } else {
-      alert('Không tìm thấy dữ liệu lưu hợp lệ.');
+      alert('No valid save data found.');
     }
   };
 
@@ -512,6 +1156,7 @@ export const App: React.FC = () => {
   };
 
   const handleEndTurn = () => {
+    soundManager.playSfx('enemy_phase');
     turnManager.switchPhase('enemy_phase');
     syncState();
   };
@@ -557,65 +1202,157 @@ export const App: React.FC = () => {
                 color: '#38bdf8',
                 border: '1px solid #0284c7',
                 borderRadius: '6px',
-                padding: '4px 10px',
-                fontSize: '12px',
+                padding: '6px 12px',
+                fontSize: '13px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
+                minHeight: '36px',
               }}
             >
-              <option value="chapter_01">🗺️ Chương 1: Bờ biển Talys (30x13)</option>
-              <option value="chapter_02">🗺️ Chương 2: Hải tặc xứ Galder (30x13)</option>
-              <option value="test_chapter_01">🧪 Bản đồ thử nghiệm (8x8)</option>
+              <option value="chapter_01">🗺️ Chapter 1: Marth Embarks (30x13)</option>
+              <option value="chapter_02">🗺️ Chapter 2: The Pirates of Galder (30x15)</option>
+              <option value="chapter_03">🗺️ Chapter 3: The Devil Mountain (30x20)</option>
+              <option value="test_chapter_01">🧪 Test Map (8x8)</option>
             </select>
           </div>
           <span style={{ fontSize: '13px', color: '#aaa', marginTop: '4px', display: 'block' }}>
-            {currentChapter.name} (Mục tiêu: {chapterObjective.descriptionVi})
+            {currentChapter.name} (Objective: {chapterObjective.description})
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Save / Load buttons */}
-          <button
-            onClick={handleSave}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div
             style={{
-              padding: '6px 12px',
+              padding: '7px 13px',
+              backgroundColor: '#451a03',
+              border: '1px solid #d97706',
+              borderRadius: '6px',
+              color: '#fef08a',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            💰 {gold.toLocaleString()} G
+          </div>
+
+          {/* Navigation to Title and World Map */}
+          <button
+            onClick={() => setActiveScreen('title')}
+            title="Title Screen & Main Menu"
+            style={{
+              padding: '7px 13px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #3b82f6',
+              borderRadius: '6px',
+              color: '#93c5fd',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            🏰 Title
+          </button>
+
+          <button
+            onClick={() => setActiveScreen('world_map')}
+            title="View Continent of Archanea World Map"
+            style={{
+              padding: '7px 13px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #0891b2',
+              borderRadius: '6px',
+              color: '#67e8f9',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            🗺️ World Map
+          </button>
+
+          <button
+            onClick={() => {
+              setSaveSlotsMode('load');
+              setActiveScreen('save_slots');
+            }}
+            title="Open Save Files Manager"
+            style={{
+              padding: '7px 13px',
+              backgroundColor: '#1e293b',
+              border: '1px solid #8b5cf6',
+              borderRadius: '6px',
+              color: '#c4b5fd',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            📁 Save Files
+          </button>
+
+          {/* Quick Save / Load buttons */}
+          <button
+            onClick={() => handleSave()}
+            style={{
+              padding: '7px 13px',
               backgroundColor: '#2e7d32',
               border: '1px solid #4caf50',
-              borderRadius: '4px',
+              borderRadius: '6px',
               color: '#fff',
-              fontSize: '12px',
+              fontSize: '13px',
               fontWeight: 'bold',
               cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
-            💾 Lưu Game
+            💾 Save Game
           </button>
           <button
-            onClick={handleLoad}
+            onClick={() => handleLoad()}
             style={{
-              padding: '6px 12px',
+              padding: '7px 13px',
               backgroundColor: '#1565c0',
               border: '1px solid #42a5f5',
-              borderRadius: '4px',
+              borderRadius: '6px',
               color: '#fff',
-              fontSize: '12px',
+              fontSize: '13px',
               fontWeight: 'bold',
               cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
-            📂 Nạp Game
+            📂 Load Game
           </button>
 
           {/* View mode toggle */}
-          <div style={{ display: 'flex', backgroundColor: '#1e1e1e', borderRadius: '6px', padding: '2px', border: '1px solid #444' }}>
+          <div style={{ display: 'flex', backgroundColor: '#1e1e1e', borderRadius: '6px', padding: '2px', border: '1px solid #444', minHeight: '36px' }}>
             <button
               onClick={() => setViewMode('3d')}
               style={{
-                padding: '6px 12px',
+                padding: '6px 13px',
                 border: 'none',
                 borderRadius: '4px',
                 backgroundColor: viewMode === '3d' ? '#1976D2' : 'transparent',
                 color: '#fff',
-                fontSize: '12px',
+                fontSize: '13px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
               }}
@@ -625,12 +1362,12 @@ export const App: React.FC = () => {
             <button
               onClick={() => setViewMode('2d')}
               style={{
-                padding: '6px 12px',
+                padding: '6px 13px',
                 border: 'none',
                 borderRadius: '4px',
                 backgroundColor: viewMode === '2d' ? '#1976D2' : 'transparent',
                 color: '#fff',
-                fontSize: '12px',
+                fontSize: '13px',
                 fontWeight: 'bold',
                 cursor: 'pointer',
               }}
@@ -639,14 +1376,39 @@ export const App: React.FC = () => {
             </button>
           </div>
 
+          {/* Sound Mute Toggle */}
+          <button
+            onClick={handleToggleMute}
+            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+            style={{
+              padding: '7px 12px',
+              border: '1px solid #444',
+              borderRadius: '6px',
+              backgroundColor: isMuted ? '#C62828' : '#263238',
+              color: '#fff',
+              fontSize: '13px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {isMuted ? '🔇 Muted' : '🔊 Sound: On'}
+          </button>
+
           <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
             Turn: <span style={{ color: '#FFD54F' }}>{turnState.turnNumber}</span>
           </div>
           <div
             style={{
-              padding: '6px 14px',
+              padding: '7px 15px',
               borderRadius: '20px',
               fontWeight: 'bold',
+              fontSize: '13px',
+              minHeight: '36px',
+              display: 'flex',
+              alignItems: 'center',
               backgroundColor: turnState.activePhase === 'player_phase' ? '#1976D2' : '#C62828',
             }}
           >
@@ -666,7 +1428,7 @@ export const App: React.FC = () => {
                 fontWeight: 'bold',
               }}
             >
-              Kết thúc lượt (End Turn)
+              End Turn
             </button>
           )}
         </div>
@@ -863,7 +1625,7 @@ export const App: React.FC = () => {
               }}
             >
               <div style={{ fontWeight: 'bold', color: '#90caf9', marginBottom: '8px', fontSize: '15px' }}>
-                ⚔️ DỰ BÁO CHIẾN ĐẤU (Combat Forecast)
+                ⚔️ COMBAT FORECAST
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', marginBottom: '12px' }}>
                 {/* Attacker */}
@@ -873,18 +1635,18 @@ export const App: React.FC = () => {
                       <img
                         src={selectedExtUnit.avatarUrl}
                         alt={selectedExtUnit.unit.name}
-                        style={{ width: '40px', height: '48px', borderRadius: '4px', border: '1px solid #90caf9', imageRendering: 'pixelated', objectFit: 'cover' }}
+                        style={{ width: '54px', height: '54px', borderRadius: '6px', border: '2px solid #90caf9', objectFit: 'cover', flexShrink: 0, backgroundColor: '#0f172a' }}
                       />
                     )}
                     <div>
                       <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedExtUnit.unit.name}</div>
-                      <div style={{ color: '#90caf9', fontSize: '11px' }}>{selectedExtUnit.weapon.nameVi}</div>
+                      <div style={{ color: '#90caf9', fontSize: '11px' }}>{selectedExtUnit.weapon.name}</div>
                     </div>
                   </div>
                   <div>HP: <strong>{selectedExtUnit.stats.hp}</strong></div>
-                  <div>Sát thương: <strong style={{ color: '#ffca28' }}>{combatForecast.attacker.damage} {combatForecast.attacker.attackCount > 1 ? `x${combatForecast.attacker.attackCount}` : ''}</strong></div>
-                  <div>Trúng (Hit): <strong>{combatForecast.attacker.hitRate}%</strong></div>
-                  <div>Chí mạng: <strong>{combatForecast.attacker.critRate}%</strong></div>
+                  <div>Damage: <strong style={{ color: '#ffca28' }}>{combatForecast.attacker.damage} {combatForecast.attacker.attackCount > 1 ? `x${combatForecast.attacker.attackCount}` : ''}</strong></div>
+                  <div>Hit: <strong>{combatForecast.attacker.hitRate}%</strong></div>
+                  <div>Crit: <strong>{combatForecast.attacker.critRate}%</strong></div>
                 </div>
 
                 {/* Defender */}
@@ -894,23 +1656,23 @@ export const App: React.FC = () => {
                       <img
                         src={selectedTarget.avatarUrl}
                         alt={selectedTarget.unit.name}
-                        style={{ width: '40px', height: '48px', borderRadius: '4px', border: '1px solid #ef9a9a', imageRendering: 'pixelated', objectFit: 'cover' }}
+                        style={{ width: '54px', height: '54px', borderRadius: '6px', border: '2px solid #ef9a9a', objectFit: 'cover', flexShrink: 0, backgroundColor: '#450a0a' }}
                       />
                     )}
                     <div>
                       <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedTarget.unit.name}</div>
-                      <div style={{ color: '#ef9a9a', fontSize: '11px' }}>{selectedTarget.weapon.nameVi}</div>
+                      <div style={{ color: '#ef9a9a', fontSize: '11px' }}>{selectedTarget.weapon.name}</div>
                     </div>
                   </div>
                   <div>HP: <strong>{selectedTarget.stats.hp}</strong></div>
                   {combatForecast.defender.canCounter ? (
                     <>
-                      <div>Sát thương: <strong style={{ color: '#ffca28' }}>{combatForecast.defender.damage} {combatForecast.defender.attackCount > 1 ? `x${combatForecast.defender.attackCount}` : ''}</strong></div>
-                      <div>Trúng (Hit): <strong>{combatForecast.defender.hitRate}%</strong></div>
-                      <div>Chí mạng: <strong>{combatForecast.defender.critRate}%</strong></div>
+                      <div>Damage: <strong style={{ color: '#ffca28' }}>{combatForecast.defender.damage} {combatForecast.defender.attackCount > 1 ? `x${combatForecast.defender.attackCount}` : ''}</strong></div>
+                      <div>Hit: <strong>{combatForecast.defender.hitRate}%</strong></div>
+                      <div>Crit: <strong>{combatForecast.defender.critRate}%</strong></div>
                     </>
                   ) : (
-                    <div style={{ color: '#aaa', fontStyle: 'italic', marginTop: '6px' }}>Không thể phản đòn</div>
+                    <div style={{ color: '#aaa', fontStyle: 'italic', marginTop: '6px' }}>Cannot counter</div>
                   )}
                 </div>
               </div>
@@ -929,7 +1691,7 @@ export const App: React.FC = () => {
                     cursor: 'pointer',
                   }}
                 >
-                  ⚔️ Tấn công!
+                  ⚔️ Attack!
                 </button>
                 <button
                   onClick={() => { setCombatForecast(null); setSelectedTarget(null); }}
@@ -942,64 +1704,213 @@ export const App: React.FC = () => {
                     cursor: 'pointer',
                   }}
                 >
-                  Hủy
+                  Cancel
                 </button>
               </div>
             </div>
           )}
 
           {/* Action Menu when unit moved */}
+          {selectedExtUnit && !pendingMovePos && !combatForecast
+            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground') && (
+              <button
+                onClick={handleToggleMounted}
+                title="Toggle mount status before moving"
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  backgroundColor: '#b45309',
+                  border: '1px solid #f59e0b',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                }}
+              >
+                <span aria-hidden="true">🏇 </span>
+                {selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount'}
+              </button>
+            )}
           {pendingMovePos && !combatForecast && (
             <div
               style={{
                 backgroundColor: '#2c3e50',
-                padding: '12px',
+                padding: '14px',
                 borderRadius: '8px',
                 border: '1px solid #3498db',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
               }}
             >
-              <div style={{ fontWeight: 'bold', marginBottom: '8px', color: '#64B5F6' }}>
-                Lựa chọn hành động ({selectedExtUnit?.unit.name})
+              <div style={{ fontWeight: 'bold', color: '#64B5F6', fontSize: '14px', marginBottom: '2px' }}>
+                Actions ({selectedExtUnit?.unit.name})
               </div>
               {chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === 'marth'
                 && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
                 && pendingMovePos.y === chapterObjective.seizeTargetTile?.y && (
-                  <button onClick={handleSeize}>Chiếm cổng thành (Seize)</button>
+                  <button
+                    onClick={handleSeize}
+                    style={{
+                      width: '100%',
+                      padding: '11px 16px',
+                      backgroundColor: '#d97706',
+                      border: '2px solid #fbbf24',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      fontSize: '15px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 3px 10px rgba(217,119,6,0.5)',
+                    }}
+                  >
+                    <span aria-hidden="true">👑 </span>Seize Gate
+                  </button>
                 )}
-              {talkTarget && <button onClick={handleTalk}>Nói chuyện: {talkTarget.unit.name}</button>}
+              {talkTarget && (
+                <button
+                  onClick={handleTalk}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    backgroundColor: '#0284c7',
+                    border: '1px solid #38bdf8',
+                    borderRadius: '6px',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    boxShadow: '0 2px 8px rgba(2,132,199,0.4)',
+                  }}
+                >
+                  <span aria-hidden="true">💬 </span>Talk: {talkTarget.unit.name}
+                </button>
+              )}
+              {selectedExtUnit && selectedExtUnit.inventory.some((item) => item.itemId === 'vulnerary' && item.uses > 0)
+                && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp && (
+                  <button
+                    onClick={handleUseVulnerary}
+                    title="Restores 10 HP, consumes one use"
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      backgroundColor: '#16a34a',
+                      border: '1px solid #4ade80',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 2px 8px rgba(22,163,74,0.4)',
+                    }}
+                  >
+                    <span aria-hidden="true">🧪 </span>Use Vulnerary
+                  </button>
+                )}
+              {selectedExtUnit && selectedExtUnit.level >= 10
+                && selectedExtUnit.inventory.some((item) => item.itemId === 'master_seal' && item.uses > 0)
+                && getClassDefinition(selectedExtUnit.unit.classId)?.promotions.map((classId) => (
+                  <button
+                    key={classId}
+                    onClick={() => handlePromote(classId)}
+                    title="Promote class using a Master Seal"
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      backgroundColor: '#7c3aed',
+                      border: '1px solid #a78bfa',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      fontSize: '14px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 2px 8px rgba(124,58,237,0.4)',
+                    }}
+                  >
+                    <span aria-hidden="true">🎖️ </span>Promote: {getClassDefinition(classId)?.name ?? classId}
+                  </button>
+                ))}
+              {currentVillageAtPendingPos && (
+                <button
+                  onClick={handleVisitVillage}
+                  style={{
+                    width: '100%',
+                    padding: '10px 14px',
+                    backgroundColor: '#d97706',
+                    border: '1px solid #fbbf24',
+                    borderRadius: '6px',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  <span aria-hidden="true">🏡 </span>Visit Village ({currentVillageAtPendingPos.name})
+                </button>
+              )}
               {attackableTargets.length > 0 && (
-                <div style={{ fontSize: '12px', color: '#FFD54F', marginBottom: '8px' }}>
-                  🎯 Click vào mục tiêu màu đỏ để xem dự báo trận đánh!
+                <div style={{ fontSize: '12px', color: '#FFD54F', padding: '4px 0' }}>
+                  🎯 Click red target tile to view combat forecast!
                 </div>
               )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
                 <button
                   onClick={handleConfirmWait}
                   style={{
-                    padding: '8px',
+                    padding: '10px',
                     backgroundColor: '#27ae60',
                     border: 'none',
-                    borderRadius: '4px',
+                    borderRadius: '6px',
                     color: '#fff',
                     fontWeight: 'bold',
+                    fontSize: '14px',
                     cursor: 'pointer',
+                    minHeight: '40px',
                   }}
                 >
-                  ✓ Chờ (Wait)
+                  ✓ Wait
                 </button>
                 <button
                   onClick={handleCancelMove}
                   style={{
-                    padding: '8px',
+                    padding: '10px',
                     backgroundColor: '#c0392b',
                     border: 'none',
-                    borderRadius: '4px',
+                    borderRadius: '6px',
                     color: '#fff',
                     fontWeight: 'bold',
+                    fontSize: '14px',
                     cursor: 'pointer',
+                    minHeight: '40px',
                   }}
                 >
-                  ✕ Hủy bước đi
+                  ✕ Cancel Move
                 </button>
               </div>
             </div>
@@ -1015,7 +1926,7 @@ export const App: React.FC = () => {
             }}
           >
             <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#FFD54F' }}>
-              👤 Thông tin đơn vị & Địa hình
+              👤 Unit & Terrain Info
             </h3>
             {hoveredUnit || selectedExtUnit ? (
               (() => {
@@ -1028,13 +1939,14 @@ export const App: React.FC = () => {
                           src={u.avatarUrl}
                           alt={u.unit.name}
                           style={{
-                            width: '46px',
-                            height: '56px',
-                            borderRadius: '4px',
+                            width: '72px',
+                            height: '72px',
+                            borderRadius: '8px',
                             border: `2px solid ${u.unit.faction === 'player' ? '#42a5f5' : '#ef5350'}`,
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                            imageRendering: 'pixelated',
+                            boxShadow: '0 3px 10px rgba(0,0,0,0.6)',
                             objectFit: 'cover',
+                            flexShrink: 0,
+                            backgroundColor: '#0f172a',
                           }}
                         />
                       )}
@@ -1042,31 +1954,37 @@ export const App: React.FC = () => {
                         <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff' }}>{u.unit.name}</div>
                         {u.title && <div style={{ fontSize: '11px', color: '#aaa' }}>{u.title}</div>}
                         <div style={{ fontSize: '11px', color: u.unit.faction === 'player' ? '#64b5f6' : '#ef9a9a' }}>
-                          {u.unit.faction === 'player' ? '🛡️ Phe Người chơi' : '⚔️ Phe Kẻ địch'}
+                          {u.unit.faction === 'player' ? '🛡️ Player Faction' : '⚔️ Enemy Faction'}
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ fontSize: '12px', lineHeight: '1.5' }}>
-                      <div><strong>Vũ khí:</strong> {u.weapon.nameVi} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
+                    <div style={{ fontSize: '13px', lineHeight: '1.55' }}>
+                      <div><strong>Weapon:</strong> {u.weapon.name} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
+                      {u.inventory.length > 0 && <div><strong>Inventory:</strong> {u.inventory.map((entry) => `${itemsJson.items.find((item) => item.id === entry.itemId)?.name ?? entry.itemId} ×${entry.uses}`).join(' · ')}</div>}
                       <div><strong>HP:</strong> {u.stats.hp} / {u.stats.maxHp} | <strong>Mov:</strong> {u.unit.mov} ({u.unit.moveType})</div>
-                      <div style={{ backgroundColor: '#1e1e1e', padding: '6px', borderRadius: '4px', margin: '4px 0', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', textAlign: 'center', fontSize: '11px' }}>
-                        <div>Str: <strong>{u.stats.str}</strong></div>
-                        <div>Mag: <strong>{u.stats.mag}</strong></div>
-                        <div>Dex: <strong>{u.stats.dex}</strong></div>
-                        <div>Spd: <strong>{u.stats.spd}</strong></div>
-                        <div>Lck: <strong>{u.stats.lck}</strong></div>
-                        <div>Def: <strong>{u.stats.def}</strong></div>
-                        <div>Res: <strong>{u.stats.res}</strong></div>
-                        <div>Mov: <strong>{u.unit.mov}</strong></div>
+                      <div><strong>Class:</strong> {getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—'} | <strong>Lv:</strong> {u.level} | <strong>EXP:</strong> {u.exp}/100</div>
+                      {(() => {
+                        const terrainId = mapData.grid[u.unit.position.y]?.[u.unit.position.x] ?? 'plains';
+                        const combat = calculateDisplayedCombatStats(u.unit, u.stats, u.weapon, terrainId, defaultTerrainRegistry, extendedUnits.map(({ unit }) => unit));
+                        return <div style={{ color: '#90caf9', fontWeight: 'bold' }}>Atk {combat.atk} · Hit {combat.hit} · Avo {combat.avoid} · Crit {combat.crit} · AS {combat.as}</div>;
+                      })()}
+                      <div style={{ backgroundColor: '#18181b', padding: '8px', borderRadius: '6px', margin: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', textAlign: 'center', fontSize: '12px', border: '1px solid #3f3f46' }}>
+                        <div>Str: <strong style={{ color: '#facc15' }}>{u.stats.str}</strong></div>
+                        <div>Mag: <strong style={{ color: '#facc15' }}>{u.stats.mag}</strong></div>
+                        <div>Skl: <strong style={{ color: '#facc15' }}>{u.stats.skill}</strong></div>
+                        <div>Spd: <strong style={{ color: '#facc15' }}>{u.stats.spd}</strong></div>
+                        <div>Lck: <strong style={{ color: '#facc15' }}>{u.stats.lck}</strong></div>
+                        <div>Def: <strong style={{ color: '#facc15' }}>{u.stats.def}</strong></div>
+                        <div>Res: <strong style={{ color: '#facc15' }}>{u.stats.res}</strong></div>
+                        <div>Mov: <strong style={{ color: '#facc15' }}>{u.unit.mov}</strong></div>
                       </div>
 
-                      {/* Growth rates are provisional until the source and rules are verified. */}
                       {u.growths && (
-                        <div style={{ fontSize: '11px', color: '#90caf9', marginTop: '4px' }}>
-                          <strong>Tăng trưởng tham khảo:</strong>
-                          <div style={{ color: '#ccc' }}>
-                            HP {u.growths.hp}% | Str {u.growths.str}% | Skl {u.growths.dex}% | Spd {u.growths.spd}% | Def {u.growths.def}%
+                        <div style={{ fontSize: '12px', color: '#90caf9', marginTop: '6px' }}>
+                          <strong>Effective Growths:</strong>
+                          <div style={{ color: '#cbd5e1' }}>
+                            HP {getEffectiveGrowthRates(u).hp}% | Str {getEffectiveGrowthRates(u).str}% | Skill {getEffectiveGrowthRates(u).skill}% | Spd {getEffectiveGrowthRates(u).spd}% | Def {getEffectiveGrowthRates(u).def}%
                           </div>
                         </div>
                       )}
@@ -1076,9 +1994,9 @@ export const App: React.FC = () => {
                         const sup = calculateSupportBonus(u.unit, extendedUnits.map((item) => item.unit));
                         if (sup.hit > 0 || sup.avoid > 0 || sup.crit > 0) {
                           return (
-                            <div style={{ backgroundColor: '#1e3a8a', padding: '6px 8px', borderRadius: '4px', marginTop: '6px', fontSize: '11px', color: '#bfdbfe', border: '1px solid #3b82f6' }}>
-                              💙 <strong>Chi viện đồng đội (Support):</strong>
-                              <div style={{ marginTop: '2px' }}>+{sup.hit}% Hit | +{sup.avoid}% Né | +{sup.crit}% Bạo kích</div>
+                            <div style={{ backgroundColor: '#1e3a8a', padding: '6px 10px', borderRadius: '6px', marginTop: '6px', fontSize: '12px', color: '#bfdbfe', border: '1px solid #3b82f6' }}>
+                              💙 <strong>Support Bonus:</strong>
+                              <div style={{ marginTop: '2px' }}>+{sup.hit}% Hit | +{sup.avoid}% Avo | +{sup.crit}% Crit</div>
                             </div>
                           );
                         }
@@ -1089,14 +2007,14 @@ export const App: React.FC = () => {
                 );
               })()
             ) : (
-              <div style={{ fontSize: '12px', color: '#888' }}>
-                Di chuột vào đơn vị để xem chi tiết
+              <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+                Hover over a unit or tile to inspect
               </div>
             )}
             {hoveredTerrain && hoveredTile && (
-              <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #333', fontSize: '12px', color: '#81C784' }}>
-                <div><strong>Ô ({hoveredTile.x}, {hoveredTile.y}):</strong> {hoveredTerrain.nameVi}</div>
-                <div>Né tránh: +{hoveredTerrain.avoidBonus}% | Phòng thủ: +{hoveredTerrain.defenseBonus}</div>
+              <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #444', fontSize: '13px', color: '#86efac' }}>
+                <div><strong>Tile ({hoveredTile.x}, {hoveredTile.y}):</strong> {hoveredTerrain.name}</div>
+                <div>Avoid: +{hoveredTerrain.avoidBonus}% | Defense: +{hoveredTerrain.defenseBonus}</div>
               </div>
             )}
           </div>
@@ -1114,14 +2032,14 @@ export const App: React.FC = () => {
               minHeight: '120px',
             }}
           >
-            <div style={{ fontWeight: 'bold', fontSize: '13px', color: '#90caf9', marginBottom: '6px' }}>
-              📜 Nhật ký trận đấu
+            <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#90caf9', marginBottom: '8px' }}>
+              📜 Combat Log
             </div>
-            <div style={{ overflowY: 'auto', flex: 1, fontSize: '11px', lineHeight: '1.4', color: '#ddd' }}>
+            <div style={{ overflowY: 'auto', flex: 1, fontSize: '12px', lineHeight: '1.5', color: '#e2e8f0' }}>
               {combatLog.length === 0 ? (
-                <span style={{ color: '#777' }}>Chưa có giao tranh nào diễn ra.</span>
+                <span style={{ color: '#777' }}>No battle engagements yet.</span>
               ) : (
-                combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '3px' }}>{log}</div>)
+                combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '4px' }}>{log}</div>)
               )}
             </div>
           </div>
@@ -1149,165 +2067,123 @@ export const App: React.FC = () => {
       )}
 
       {showPreparation && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1100, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
-          <section style={{ width: 'min(680px, 90vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '10px' }}>
-            <h2>Chuẩn bị xuất trận: {currentChapter.name}</h2>
-            <p>Chọn quân xuất trận. Marth bắt buộc tham chiến; quân không chọn ở lại đội dự bị.</p>
-            <p>Đang chọn {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}</p>
-            {[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player').map((entry) => (
-              <label key={entry.unit.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', borderBottom: '1px solid #334155' }}>
-                <input
-                  type="checkbox"
-                  checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
-                  disabled={entry.unit.id === 'marth' || entry.unit.isDead}
-                  onChange={() => toggleDeployment(entry.unit.id)}
-                />
-                <span>{entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.nameVi}{entry.unit.isDead ? ' (đã ngã xuống)' : ''}</span>
-              </label>
-            ))}
-            <button onClick={() => setShowPreparation(false)} style={{ marginTop: '20px', padding: '10px 20px' }}>Bắt đầu chương</button>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1300, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
+          <section style={{ width: 'min(680px, 92vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #334155', boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
+            <h2 style={{ margin: '0 0 10px 0', color: '#60a5fa', fontSize: '20px' }}>⚔️ Battle Preparation: {currentChapter.name}</h2>
+            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>Select units for deployment. Marth is required commander; unselected units remain in reserve.</p>
+            <div style={{ backgroundColor: '#0f172a', padding: '8px 12px', borderRadius: '6px', marginBottom: '14px', fontSize: '13px', fontWeight: 'bold', color: '#38bdf8' }}>
+              Deployed: {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length} units
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player').map((entry) => (
+                <label
+                  key={entry.unit.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '10px 12px',
+                    borderRadius: '6px',
+                    backgroundColor: '#1e293b',
+                    border: '1px solid #334155',
+                    cursor: entry.unit.id === 'marth' || entry.unit.isDead ? 'default' : 'pointer',
+                    fontSize: '13px',
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
+                    disabled={entry.unit.id === 'marth' || entry.unit.isDead}
+                    onChange={() => toggleDeployment(entry.unit.id)}
+                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  />
+                  <span style={{ color: entry.unit.isDead ? '#94a3b8' : '#f8fafc', fontWeight: entry.unit.id === 'marth' ? 'bold' : 'normal' }}>
+                    {entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.name}
+                    {entry.unit.id === 'marth' ? ' (Commander - Required)' : ''}
+                    {entry.unit.isDead ? ' (Fallen)' : ''}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowPreparation(false)}
+              style={{
+                marginTop: '20px',
+                width: '100%',
+                padding: '12px 24px',
+                backgroundColor: '#2563eb',
+                border: 'none',
+                borderRadius: '8px',
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(37,99,235,0.4)',
+              }}
+            >
+              Start Chapter ➔
+            </button>
           </section>
         </div>
       )}
 
-      {/* Opening Story Dialogue Cutscene Modal */}
+      {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
       {showStoryIntro && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#1e293b',
-              border: '2px solid #3b82f6',
-              borderRadius: '12px',
-              padding: '24px',
-              maxWidth: '540px',
-              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 16px 0', color: '#60a5fa' }}>
-              📜 {currentChapter.name}
-            </h2>
-            <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#e2e8f0', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '340px', overflowY: 'auto' }}>
-              {currentDialogues.opening.map((line, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#0f172a', padding: '10px', borderRadius: '8px' }}>
-                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '54px', borderRadius: '4px', border: '2px solid #3b82f6', flexShrink: 0, imageRendering: 'pixelated', objectFit: 'cover' }} />
-                  <div>
-                    <strong style={{ color: '#60a5fa' }}>{line.speaker}:</strong>
-                    <div>"{line.text}"</div>
-                  </div>
-                </div>
-              ))}
-
-              <div style={{ backgroundColor: '#1e293b', padding: '10px', borderRadius: '6px', borderLeft: '4px solid #f59e0b' }}>
-                <strong style={{ color: '#fbbf24' }}>Mục tiêu chiến thắng:</strong> {chapterObjective.descriptionVi}.
-                <br />
-                <span style={{ color: '#ef4444' }}>Thất bại nếu Marth tử trận.</span>
-              </div>
+        <DialogueCutsceneModal
+          dialogues={currentDialogues.opening}
+          title={`📜 ${currentChapter.name}`}
+          themeColor="blue"
+          actionButtonText="⚔️ Start Battle"
+          summaryBox={
+            <div style={{ backgroundColor: '#1e293b', padding: '10px 14px', borderRadius: '8px', borderLeft: '4px solid #f59e0b', fontSize: '13px' }}>
+              <strong style={{ color: '#fbbf24' }}>Victory Objective:</strong> {chapterObjective.description}.
+              <br />
+              <span style={{ color: '#ef4444' }}>Defeat if Marth falls in battle.</span>
             </div>
-            <button
-              onClick={() => setShowStoryIntro(false)}
-              style={{
-                width: '100%',
-                padding: '10px',
-                backgroundColor: '#2563eb',
-                border: 'none',
-                borderRadius: '6px',
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
-            >
-              ⚔️ Vào trận đánh (Start Battle)
-            </button>
-          </div>
-        </div>
+          }
+          onConfirm={() => setShowStoryIntro(false)}
+        />
       )}
 
-      {/* Victory Modal with Ending Story Cutscene */}
-      {chapterOutcome === 'victory' && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.88)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#0f291e',
-              border: '2px solid #22c55e',
-              borderRadius: '12px',
-              padding: '24px',
-              maxWidth: '560px',
-              textAlign: 'left',
-              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 12px 0', color: '#86efac', fontSize: '22px', textAlign: 'center' }}>
-              🏆 CHIẾN THẮNG KHẢI HOÀN! (STAGE CLEAR)
-            </h2>
-            <div style={{ maxHeight: '360px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
-              {currentDialogues.ending.map((line, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', backgroundColor: '#052e16', padding: '10px', borderRadius: '8px' }}>
-                  <img src={line.avatarUrl} alt={line.speaker} style={{ width: '44px', height: '54px', borderRadius: '4px', border: '2px solid #22c55e', flexShrink: 0, imageRendering: 'pixelated', objectFit: 'cover' }} />
-                  <div>
-                    <strong style={{ color: '#86efac' }}>{line.speaker}:</strong>
-                    <div style={{ color: '#ecfdf5', fontSize: '13px' }}>"{line.text}"</div>
-                  </div>
-                </div>
-              ))}
+      {/* Village Dialogue Modal (Fire Emblem Visual Novel Style) */}
+      {activeVillageDialogue && (
+        <DialogueCutsceneModal
+          dialogues={activeVillageDialogue.lines}
+          title={`🏡 ${activeVillageDialogue.villageName.toUpperCase()}`}
+          themeColor="amber"
+          actionButtonText="Continue ➔"
+          summaryBox={
+            <div style={{ padding: '10px 14px', backgroundColor: '#451a03', border: '1px solid #d97706', borderRadius: '8px', color: '#fef08a', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>
+              🎁 {activeVillageDialogue.rewardText}
             </div>
-            {currentChapterId === 'chapter_01' ? (
-              <button
-                onClick={() => loadChapter('chapter_02', [...extendedUnits, ...reserveUnits])}
-                style={{
-                  width: '100%',
-                  padding: '12px 24px',
-                  backgroundColor: '#22c55e',
-                  border: 'none',
-                  borderRadius: '6px',
-                  color: '#052e16',
-                  fontWeight: 'bold',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                }}
-              >
-                ⚔️ Tiến quân sang Chương 2: Hải tặc xứ Galder ➔
-              </button>
-            ) : (
-              <button
-                onClick={handleRestartChapter}
-                style={{
-                  width: '100%',
-                  padding: '12px 24px',
-                  backgroundColor: '#22c55e',
-                  border: 'none',
-                  borderRadius: '6px',
-                  color: '#052e16',
-                  fontWeight: 'bold',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                }}
-              >
-                🔄 Tiếp tục / Chơi lại chương
-              </button>
-            )}
-          </div>
-        </div>
+          }
+          onConfirm={() => setActiveVillageDialogue(null)}
+        />
+      )}
+
+      {/* Victory Modal with Ending Story Cutscene (Fire Emblem Visual Novel Style) */}
+      {chapterOutcome === 'victory' && (
+        <DialogueCutsceneModal
+          dialogues={currentDialogues.ending}
+          title="🏆 STAGE CLEAR!"
+          themeColor="green"
+          actionButtonText={
+            currentChapterId === 'chapter_01'
+              ? '⚔️ Advance to Chapter 2: The Pirates of Galder ➔'
+              : currentChapterId === 'chapter_02'
+              ? '⚔️ Advance to Chapter 3: The Devil Mountain ➔'
+              : '🔄 Continue / Restart Chapter ➔'
+          }
+          onConfirm={() => {
+            if (currentChapterId === 'chapter_01') {
+              loadChapter('chapter_02', [...extendedUnits, ...reserveUnits]);
+            } else if (currentChapterId === 'chapter_02') {
+              loadChapter('chapter_03', [...extendedUnits, ...reserveUnits]);
+            } else {
+              handleRestartChapter();
+            }
+          }}
+        />
       )}
 
       {/* Defeat Modal */}
@@ -1335,16 +2211,16 @@ export const App: React.FC = () => {
             }}
           >
             <h2 style={{ margin: '0 0 10px 0', color: '#fca5a5', fontSize: '24px' }}>
-              💀 THẤT BẠI (GAME OVER)
+              💀 GAME OVER
             </h2>
             <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#fee2e2', marginBottom: '20px' }}>
-              Marth đã ngã xuống trong trận chiến...
+              Prince Marth has fallen in battle...
               <br />
-              Hy vọng của vương quốc Altea đã vụt tắt.
+              The kingdom of Altea has lost all hope.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
               <button
-                onClick={handleLoad}
+                onClick={() => handleLoad()}
                 style={{
                   padding: '10px 20px',
                   backgroundColor: '#3b82f6',
@@ -1355,7 +2231,7 @@ export const App: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                📂 Nạp lại điểm lưu
+                📂 Load Last Save
               </button>
               <button
                 onClick={handleRestartChapter}
@@ -1369,11 +2245,75 @@ export const App: React.FC = () => {
                   cursor: 'pointer',
                 }}
               >
-                🔄 Chơi lại từ đầu
+                🔄 Restart Chapter
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Title Screen Overlay */}
+      {activeScreen === 'title' && (
+        <TitleScreen
+          onStartNewGame={() => setActiveScreen('book_select')}
+          onOpenSaveSlots={() => {
+            setSaveSlotsMode('load');
+            setActiveScreen('save_slots');
+          }}
+          onOpenWorldMap={() => setActiveScreen('world_map')}
+          onContinueGame={() => setActiveScreen('none')}
+          isMuted={isMuted}
+          onToggleMute={handleToggleMute}
+        />
+      )}
+
+      {/* Book Select Modal */}
+      {activeScreen === 'book_select' && (
+        <BookSelectModal
+          onSelectBook={(bookId) => {
+            if (bookId === 'book1') {
+              loadChapter('chapter_01');
+              setActiveScreen('world_map');
+            } else {
+              alert('Book 2: The Mystery of the Emblem (Hardin Chronicles) is currently in development!');
+            }
+          }}
+          onClose={() => setActiveScreen('none')}
+        />
+      )}
+
+      {/* Save Slots Modal */}
+      {activeScreen === 'save_slots' && (
+        <SaveSlotsModal
+          mode={saveSlotsMode}
+          onSelectLoad={(data) => {
+            applyLoadedSnapshot(data);
+            setActiveScreen('none');
+          }}
+          onConfirmSave={async (slotId) => {
+            await handleSave(slotId);
+            setActiveScreen('none');
+          }}
+          onNewGameAtSlot={(slotId) => {
+            loadChapter('chapter_01');
+            handleSave(slotId);
+            setActiveScreen('world_map');
+          }}
+          onClose={() => setActiveScreen('none')}
+        />
+      )}
+
+      {/* World Map Modal */}
+      {activeScreen === 'world_map' && (
+        <WorldMapModal
+          currentChapterId={currentChapterId}
+          onSelectChapter={(chapterId) => {
+            loadChapter(chapterId);
+            setActiveScreen('none');
+          }}
+          onDeployBattle={() => setActiveScreen('none')}
+          onClose={() => setActiveScreen('none')}
+        />
       )}
     </div>
   );

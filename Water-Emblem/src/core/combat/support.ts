@@ -1,5 +1,5 @@
 import supportsData from '../../../data/supports.json';
-import { GridUnit } from '../grid/types';
+import type { GridUnit } from '../grid/types';
 
 export interface SupportBonus {
   readonly hit: number;
@@ -11,44 +11,55 @@ export interface SupportBonus {
 export interface SupportRelationship {
   readonly supporterId: string;
   readonly supportedId: string;
-  readonly bonus: SupportBonus;
+  readonly startingPoints: number;
+  readonly pointsC: number;
+  readonly pointsB: number;
+  readonly pointsA: number;
 }
 
-export function calculateSupportBonus(
-  unit: GridUnit,
-  allUnits: readonly GridUnit[]
-): SupportBonus {
-  let totalHit = 0;
-  let totalAvoid = 0;
-  let totalCrit = 0;
-  let totalDodge = 0;
+const relationships: readonly SupportRelationship[] = supportsData.relationships;
 
-  const activationRange = supportsData.activationRange;
-  const relationships = supportsData.relationships as SupportRelationship[];
+export function initialSupportPoints(unitId: string): Record<string, number> {
+  return Object.fromEntries(relationships
+    .filter(({ supportedId }) => supportedId === unitId)
+    .map(({ supporterId, startingPoints }) => [supporterId, startingPoints]));
+}
 
+export function advanceSupportPoints(unit: GridUnit, participatingIds: ReadonlySet<string>): Record<string, number> {
+  const points = { ...initialSupportPoints(unit.id), ...unit.supportPoints };
+  if (!participatingIds.has(unit.id) || unit.isDead) return points;
+  for (const relation of relationships) {
+    if (relation.supportedId !== unit.id || !participatingIds.has(relation.supporterId)) continue;
+    points[relation.supporterId] = Math.min(
+      relation.pointsA,
+      (points[relation.supporterId] ?? relation.startingPoints) + 1,
+    );
+  }
+  return points;
+}
+
+export function calculateSupportBonus(unit: GridUnit, allUnits: readonly GridUnit[]): SupportBonus {
+  const total = { hit: 0, avoid: 0, crit: 0, dodge: 0 };
   for (const ally of allUnits) {
-    if (ally.id === unit.id || ally.isDead || ally.faction !== unit.faction) {
-      continue;
-    }
-
-    const dist = Math.abs(unit.position.x - ally.position.x) + Math.abs(unit.position.y - ally.position.y);
-    if (dist <= activationRange) {
-      const rel = relationships.find(
-        (r) => r.supporterId === ally.id && r.supportedId === unit.id
-      );
-      if (rel) {
-        totalHit += rel.bonus.hit;
-        totalAvoid += rel.bonus.avoid;
-        totalCrit += rel.bonus.crit;
-        totalDodge += rel.bonus.dodge;
-      }
+    if (ally.id === unit.id || ally.isDead || ally.faction !== unit.faction) continue;
+    const distance = Math.abs(unit.position.x - ally.position.x) + Math.abs(unit.position.y - ally.position.y);
+    if (distance > supportsData.activationRange) continue;
+    const relation = relationships.find(({ supporterId, supportedId }) =>
+      supporterId === ally.id && supportedId === unit.id);
+    if (!relation) continue;
+    const points = unit.supportPoints?.[ally.id] ?? relation.startingPoints;
+    if (points >= relation.pointsA) {
+      total.hit += 10;
+      total.avoid += 10;
+      total.crit += 5;
+      total.dodge += 5;
+    } else if (points >= relation.pointsB) {
+      total.hit += 10;
+      total.avoid += 10;
+    } else if (points >= relation.pointsC) {
+      total.hit += 5;
+      total.avoid += 5;
     }
   }
-
-  return {
-    hit: totalHit,
-    avoid: totalAvoid,
-    crit: totalCrit,
-    dodge: totalDodge,
-  };
+  return total;
 }

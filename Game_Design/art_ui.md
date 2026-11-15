@@ -16,6 +16,8 @@ Giao diện theo hướng tối giản, ưu tiên tinh thần thiết kế Bắc
 
 Ưu tiên biểu tượng thay chữ ở những thao tác có thể nhận biết rõ bằng hình. Khi di chuột hoặc chạm vào biểu tượng, hiện popup nhỏ giải thích chức năng; biểu tượng vẫn phải có tên cho công nghệ hỗ trợ. Những thông tin hoặc hành động dễ hiểu sai phải giữ nhãn chữ. Tất cả chữ hiển thị phải đọc được trên nền thực tế của game, với cỡ chữ, độ tương phản và khoảng cách phù hợp; không hy sinh độ đọc để thu gọn giao diện.
 
+Ngôn ngữ hiển thị mặc định của toàn bộ trò chơi là **tiếng Anh (English)** cho tất cả nhãn UI, menu, thông báo chiến thuật, tên nhân vật, class, vũ khí, vật phẩm, địa hình và hội thoại; không tự ý dịch sang tiếng Việt trong game.
+
 ## Camera và hoạt cảnh
 
 Góc nhìn chính bắt đầu ở góc 3/4 để đọc bản đồ, nhưng camera xoay tự do và liên tục quanh điểm quan sát, không khóa ở bốn hướng 90°. Kéo chuột trái hoặc một ngón để di chuyển bản đồ; kéo chuột phải để xoay camera. Chỉ dẫn thao tác phải hiện rõ trong khung chơi. Camera phải giúp nhìn rõ ô, cao độ V07, cover C12 và bẫy V08; không che ô mục tiêu khi dự báo.

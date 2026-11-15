@@ -4,7 +4,7 @@
 
 Water Emblem - Mystery of Nothing là game chiến thuật theo lượt 3D low-poly chạy trực tiếp trên trình duyệt, không giả lập ROM. Chiến dịch tái hiện đúng Book/chương của Fire Emblem 3: Mystery of the Emblem về bố cục bản đồ, nhân vật xuất hiện, thứ tự chương, mục tiêu và sự kiện, trừ khi chủ dự án yêu cầu khác. Chỉ số, công thức, AI và nhiều cơ chế chiến đấu được thiết kế lại. Quyền sử dụng dữ liệu và asset phải được kiểm riêng trước khi đưa vào bản phát hành.
 
-Trận đánh cần cho người chơi đọc được nguy cơ, chọn vị trí, phối hợp đơn vị và giải quyết mục tiêu của chương. Những cơ chế chủ dự án đã chọn được ghi tại `decisions.md`; việc chọn cơ chế chưa ấn định mọi giá trị số, ngoại lệ hay quy mô nội dung.
+Trận đánh cần cho người chơi đọc được nguy cơ, chọn vị trí, phối hợp đơn vị và giải quyết mục tiêu của chương. Những cơ chế chủ dự án đã chọn được ghi tại `decisions.md`; việc chọn cơ chế chưa ấn định mọi giá trị số, ngoại lệ hay quy mô nội dung. Ngôn ngữ mặc định của game là **tiếng Anh (English)** cho toàn bộ dữ liệu, giao diện và hội thoại.
 
 ## Ranh giới thiết kế
 

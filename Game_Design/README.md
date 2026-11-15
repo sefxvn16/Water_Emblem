@@ -9,7 +9,7 @@ Thư mục này ghi thiết kế của **Water Emblem - Mystery of Nothing**. Đ
 3. `AGENTS.md` ở thư mục gốc quy định cách agent làm việc và ranh giới kỹ thuật. `implementation_spec.md` giữ đặc tả kỹ thuật đã được phê duyệt hoặc đang chờ duyệt.
 4. `reports/` và `github.txt` là nguồn tham khảo. Nhận định về lịch sử game, dữ liệu, license hoặc khả năng dùng lại asset cần được kiểm trực tiếp trước khi dùng.
 
-Các nhãn trong thư mục: **Đã chọn** = chủ dự án muốn có cơ chế, chưa đồng nghĩa đã chốt công thức hoặc cách triển khai; **Đã chốt** = quy tắc chi tiết đã được chủ dự án duyệt; **Chờ chốt** = chưa được phép tự chọn; **Đề xuất cũ** = ghi lại để đối chiếu, không đưa vào phạm vi hiện hành. Trước khi code một phần có nhãn Chờ chốt, hỏi gộp các quyết định ảnh hưởng phần đó.
+Các nhãn trong thư mục: **Đã chọn** = chủ dự án muốn có cơ chế, chưa đồng nghĩa đã chốt công thức hoặc cách triển khai; **Tạm chốt** = phần chủ dự án không sửa trong đề xuất đã báo, hoặc hướng đang được ghi nhận để chuẩn bị, vẫn phải kiểm nguồn và giải quyết điểm mơ hồ trước khi code phần phụ thuộc; **Đã chốt** = quy tắc chi tiết đã được chủ dự án duyệt; **Chờ chốt** = chưa được phép tự chọn; **Đề xuất cũ** = ghi lại để đối chiếu, không đưa vào phạm vi hiện hành. Trước khi code một phần có nhãn Chờ chốt, hỏi gộp các quyết định ảnh hưởng phần đó.
 
 ## Đọc theo nhiệm vụ
 

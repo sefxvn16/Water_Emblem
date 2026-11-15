@@ -7,8 +7,10 @@ import {
   getManhattanDistance,
 } from '../combat/calculator';
 import { CombatForecast, ItemDefinition, UnitCombatStats } from '../combat/types';
+import { hitProbability } from '../combat/rng';
+import { getAttackRange } from '../class/classRules';
 
-export type AIRole = 'stationary' | 'pursue';
+export type AIRole = 'stationary' | 'pursue' | 'pillage';
 
 export interface AIActionAttack {
   readonly type: 'attack';
@@ -36,6 +38,7 @@ export interface AIContext {
   readonly units: readonly GridUnit[];
   readonly unitStatsMap: Map<string, UnitCombatStats>;
   readonly unitWeaponsMap: Map<string, ItemDefinition>;
+  readonly villageTargets?: readonly Position[];
 }
 
 export function evaluateAITurn(
@@ -59,6 +62,17 @@ export function evaluateAITurn(
     units,
   });
 
+  // FE3 thieves head for unvisited villages before seeking combat.
+  if (role === 'pillage' && context.villageTargets?.length) {
+    const target = context.villageTargets.reduce((best, village) =>
+      getManhattanDistance(enemyUnit.position, village) < getManhattanDistance(enemyUnit.position, best)
+        ? village : best);
+    const destination = Array.from(reachableTiles.values())
+      .map(({ position }) => position)
+      .sort((a, b) => getManhattanDistance(a, target) - getManhattanDistance(b, target))[0];
+    return destination ? { type: 'move_only', movePosition: destination } : { type: 'wait' };
+  }
+
   // Tìm danh sách mục tiêu người chơi còn sống
   const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead);
   if (playerUnits.length === 0) {
@@ -75,11 +89,14 @@ export function evaluateAITurn(
 
   for (const tile of candidateTiles) {
     const attackerTerrainId = map.grid[tile.y]?.[tile.x] ?? 'plains';
+    const projectedAttacker = { ...enemyUnit, position: tile };
+    const projectedUnits = units.map((unit) => unit.id === enemyUnit.id ? projectedAttacker : unit);
 
     for (const target of playerUnits) {
       const distance = getManhattanDistance(tile, target.position);
       // Kiểm tra xem khoảng cách có nằm trong tầm bắn của vũ khí không
-      if (distance >= enemyWeapon.minRange && distance <= enemyWeapon.maxRange) {
+      const attackRange = getAttackRange(enemyUnit, enemyWeapon);
+      if (distance >= attackRange.min && distance <= attackRange.max) {
         const targetStats = unitStatsMap.get(target.id);
         const targetWeapon = unitWeaponsMap.get(target.id);
         if (!targetStats) continue;
@@ -87,7 +104,7 @@ export function evaluateAITurn(
         const defenderTerrainId = map.grid[target.position.y]?.[target.position.x] ?? 'plains';
 
         const forecast = calculateCombatForecast(
-          enemyUnit,
+          projectedAttacker,
           enemyStats,
           enemyWeapon,
           target,
@@ -97,7 +114,7 @@ export function evaluateAITurn(
           terrains,
           attackerTerrainId,
           defenderTerrainId,
-          units
+          projectedUnits
         );
 
         // Chấm điểm theo trọng số cấu hình trong data/balance.json
@@ -105,17 +122,21 @@ export function evaluateAITurn(
         let score = 0;
 
         // Dự tính sát thương gây ra
-        const expectedDamage = forecast.attacker.damage * forecast.attacker.attackCount;
+        const rngMode = balanceConfig.rngMode as '1RN' | '2RN';
+        const hitChance = hitProbability(forecast.attacker.hitRate, rngMode);
+        const possibleDamage = forecast.attacker.damage * forecast.attacker.attackCount;
+        const expectedDamage = possibleDamage * hitChance;
         score += expectedDamage * weights.damageMultiplier;
 
         // Điểm thưởng kết liễu
-        if (expectedDamage >= targetStats.hp) {
-          score += weights.killBonus;
+        if (possibleDamage >= targetStats.hp) {
+          score += weights.killBonus * hitChance;
         }
 
         // Điểm trừ sát thương phản lại
         if (forecast.defender.canCounter) {
-          const counterDamage = forecast.defender.damage * forecast.defender.attackCount;
+          const counterDamage = forecast.defender.damage * forecast.defender.attackCount
+            * hitProbability(forecast.defender.hitRate, rngMode);
           score -= counterDamage * weights.counterDamagePenalty;
         }
 

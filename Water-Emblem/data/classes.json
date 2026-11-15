@@ -4,122 +4,1637 @@
     {
       "id": "lord",
       "name": "Lord",
-      "nameVi": "Lãnh Chúa",
-      "usableWeapons": ["sword"],
+      "nameVi": "Lãnh chúa",
+      "usableWeapons": [
+        "sword"
+      ],
       "moveType": "foot",
       "baseMov": 7,
-      "baseStats": { "hp": 18, "str": 5, "mag": 0, "dex": 3, "spd": 7, "lck": 7, "def": 7, "res": 0 },
-      "maxStats": { "hp": 60, "str": 25, "mag": 20, "dex": 25, "spd": 25, "lck": 30, "def": 25, "res": 20 }
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 3,
+        "spd": 7,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "warlord"
+      ],
+      "sourceClass": "FE11 Lord",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": -10,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": 5,
+        "res": -5
+      }
+    },
+    {
+      "id": "warlord",
+      "name": "Warlord",
+      "nameVi": "Chiến vương",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "cavalry",
+      "baseMov": 10,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 8,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Paladin",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": -10,
+        "skill": 25,
+        "spd": 10,
+        "lck": 0,
+        "def": 15,
+        "res": -5
+      }
     },
     {
       "id": "cavalier",
-      "name": "Cavalier",
-      "nameVi": "Kỵ Binh",
-      "usableWeapons": ["sword", "lance"],
+      "name": "Social Knight",
+      "nameVi": "Kỵ sĩ",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
       "moveType": "cavalry",
-      "baseMov": 7,
-      "baseStats": { "hp": 20, "str": 6, "mag": 0, "dex": 5, "spd": 6, "lck": 2, "def": 7, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseMov": 9,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 2,
+        "spd": 6,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "cataphract",
+        "outrider"
+      ],
+      "sourceClass": "FE11 Cavalier",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": -10,
+        "skill": 25,
+        "spd": 10,
+        "lck": 0,
+        "def": 15,
+        "res": -5
+      }
+    },
+    {
+      "id": "cataphract",
+      "name": "Cataphract",
+      "nameVi": "Thiết kỵ",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
+      "moveType": "cavalry",
+      "baseMov": 10,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 8,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Paladin",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": -10,
+        "skill": 25,
+        "spd": 10,
+        "lck": 0,
+        "def": 15,
+        "res": -5
+      }
+    },
+    {
+      "id": "outrider",
+      "name": "Outrider",
+      "nameVi": "Kỵ binh tiên phong",
+      "usableWeapons": [
+        "sword",
+        "bow"
+      ],
+      "moveType": "cavalry",
+      "baseMov": 9,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 1,
+        "skill": 6,
+        "spd": 8,
+        "lck": 0,
+        "def": 6,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Horseman",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 20,
+        "mag": -15,
+        "skill": 15,
+        "spd": 25,
+        "lck": 0,
+        "def": 5,
+        "res": -15
+      }
     },
     {
       "id": "paladin",
       "name": "Paladin",
-      "nameVi": "Kỵ Sĩ Thánh",
-      "usableWeapons": ["sword", "lance"],
-      "moveType": "cavalry",
-      "baseMov": 10,
-      "baseStats": { "hp": 22, "str": 7, "mag": 0, "dex": 10, "spd": 8, "lck": 3, "def": 9, "res": 3 },
-      "maxStats": { "hp": 60, "str": 25, "mag": 20, "dex": 26, "spd": 25, "lck": 30, "def": 25, "res": 25 }
+      "nameVi": "Kỵ sĩ xuống ngựa",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
+      "moveType": "foot",
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 2,
+        "spd": 6,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "dismounted",
+      "promotions": [],
+      "sourceClass": "FE11 Dismounted Knight",
+      "growths": {
+        "hp": 40,
+        "str": 5,
+        "mag": -10,
+        "skill": 25,
+        "spd": 10,
+        "lck": 0,
+        "def": 15,
+        "res": -5
+      }
     },
     {
       "id": "knight",
-      "name": "Knight",
-      "nameVi": "Thiết Vệ",
-      "usableWeapons": ["lance"],
+      "name": "Armour Knight",
+      "nameVi": "Thiết vệ",
+      "usableWeapons": [
+        "lance"
+      ],
       "moveType": "armor",
       "baseMov": 5,
-      "baseStats": { "hp": 20, "str": 7, "mag": 0, "dex": 3, "spd": 3, "lck": 1, "def": 11, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseStats": {
+        "hp": 18,
+        "str": 6,
+        "mag": 0,
+        "skill": 2,
+        "spd": 0,
+        "lck": 0,
+        "def": 11,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "cataphract",
+        "general"
+      ],
+      "sourceClass": "FE11 Knight",
+      "growths": {
+        "hp": 60,
+        "str": 15,
+        "mag": -15,
+        "skill": 20,
+        "spd": 0,
+        "lck": 0,
+        "def": 30,
+        "res": -10
+      }
+    },
+    {
+      "id": "general",
+      "name": "General",
+      "nameVi": "Tướng giáp",
+      "usableWeapons": [
+        "lance",
+        "bow"
+      ],
+      "moveType": "armor",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 28,
+        "str": 8,
+        "mag": 1,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 15,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 General",
+      "growths": {
+        "hp": 60,
+        "str": 15,
+        "mag": -15,
+        "skill": 20,
+        "spd": 0,
+        "lck": 0,
+        "def": 30,
+        "res": -10
+      }
     },
     {
       "id": "pegasus_knight",
       "name": "Pegasus Knight",
-      "nameVi": "Thiên Mã Kỵ Sĩ",
-      "usableWeapons": ["lance"],
+      "nameVi": "Thiên mã kỵ sĩ",
+      "usableWeapons": [
+        "lance"
+      ],
       "moveType": "flier",
       "baseMov": 8,
-      "baseStats": { "hp": 16, "str": 4, "mag": 0, "dex": 6, "spd": 10, "lck": 7, "def": 6, "res": 3 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseStats": {
+        "hp": 16,
+        "str": 4,
+        "mag": 2,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 5,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "seraph_knight",
+        "dragon_knight"
+      ],
+      "sourceClass": "FE11 Pegasus Knight",
+      "mountKind": "flying",
+      "growths": {
+        "hp": 30,
+        "str": 10,
+        "mag": -15,
+        "skill": 20,
+        "spd": 25,
+        "lck": 0,
+        "def": 10,
+        "res": 0
+      }
+    },
+    {
+      "id": "seraph_knight",
+      "name": "Seraph Knight",
+      "nameVi": "Kỵ sĩ thiên mã",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
+      "moveType": "flier",
+      "baseMov": 10,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 7,
+        "res": 8
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Falcon Knight",
+      "mountKind": "flying",
+      "growths": {
+        "hp": 30,
+        "str": 10,
+        "mag": -15,
+        "skill": 20,
+        "spd": 25,
+        "lck": 0,
+        "def": 10,
+        "res": 0
+      }
+    },
+    {
+      "id": "dragon_knight",
+      "name": "Dragon Knight",
+      "nameVi": "Long kỵ sĩ",
+      "usableWeapons": [
+        "lance",
+        "axe"
+      ],
+      "moveType": "flier",
+      "baseMov": 10,
+      "baseStats": {
+        "hp": 20,
+        "str": 8,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 10,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Dracoknight",
+      "mountKind": "flying",
+      "growths": {
+        "hp": 40,
+        "str": 10,
+        "mag": -15,
+        "skill": 20,
+        "spd": 25,
+        "lck": 0,
+        "def": 10,
+        "res": 0
+      }
     },
     {
       "id": "archer",
       "name": "Archer",
-      "nameVi": "Cung Thủ",
-      "usableWeapons": ["bow"],
+      "nameVi": "Cung thủ",
+      "usableWeapons": [
+        "bow"
+      ],
       "moveType": "foot",
       "baseMov": 5,
-      "baseStats": { "hp": 18, "str": 5, "mag": 0, "dex": 5, "spd": 4, "lck": 4, "def": 6, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseStats": {
+        "hp": 16,
+        "str": 5,
+        "mag": 0,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 6,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "sniper"
+      ],
+      "sourceClass": "FE11 Archer",
+      "growths": {
+        "hp": 40,
+        "str": 10,
+        "mag": -10,
+        "skill": 20,
+        "spd": 30,
+        "lck": 0,
+        "def": 10,
+        "res": -10
+      }
     },
     {
-      "id": "curate",
-      "name": "Curate",
-      "nameVi": "Tu Sĩ",
-      "usableWeapons": ["staff"],
+      "id": "sniper",
+      "name": "Sniper",
+      "nameVi": "Thiện xạ",
+      "usableWeapons": [
+        "bow"
+      ],
       "moveType": "foot",
-      "baseMov": 5,
-      "baseStats": { "hp": 16, "str": 1, "mag": 2, "dex": 5, "spd": 6, "lck": 2, "def": 3, "res": 6 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
-    },
-    {
-      "id": "pirate",
-      "name": "Pirate",
-      "nameVi": "Hải Tặc",
-      "usableWeapons": ["axe"],
-      "moveType": "bandit",
-      "baseMov": 5,
-      "baseStats": { "hp": 20, "str": 6, "mag": 0, "dex": 3, "spd": 5, "lck": 1, "def": 4, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 1,
+        "skill": 8,
+        "spd": 9,
+        "lck": 0,
+        "def": 7,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Sniper",
+      "hitBonus": 5,
+      "critBonus": 5,
+      "growths": {
+        "hp": 40,
+        "str": 10,
+        "mag": -10,
+        "skill": 20,
+        "spd": 30,
+        "lck": 0,
+        "def": 10,
+        "res": -10
+      }
     },
     {
       "id": "hunter",
       "name": "Hunter",
-      "nameVi": "Thợ Săn",
-      "usableWeapons": ["bow"],
+      "nameVi": "Thợ săn",
+      "usableWeapons": [
+        "bow"
+      ],
       "moveType": "foot",
       "baseMov": 6,
-      "baseStats": { "hp": 18, "str": 6, "mag": 0, "dex": 4, "spd": 6, "lck": 2, "def": 4, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseStats": {
+        "hp": 18,
+        "str": 6,
+        "mag": 0,
+        "skill": 4,
+        "spd": 6,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "mangudai"
+      ],
+      "sourceClass": "FE11 Hunter",
+      "growths": {
+        "hp": 40,
+        "str": 20,
+        "mag": -15,
+        "skill": 15,
+        "spd": 25,
+        "lck": 0,
+        "def": 5,
+        "res": -15
+      }
     },
     {
-      "id": "thief",
-      "name": "Thief",
-      "nameVi": "Đạo Tặc",
-      "usableWeapons": ["sword"],
-      "moveType": "foot",
-      "baseMov": 7,
-      "baseStats": { "hp": 16, "str": 4, "mag": 0, "dex": 4, "spd": 9, "lck": 3, "def": 3, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "id": "mangudai",
+      "name": "Mangudai",
+      "nameVi": "Cung kỵ",
+      "usableWeapons": [
+        "bow"
+      ],
+      "moveType": "cavalry",
+      "baseMov": 9,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 1,
+        "skill": 6,
+        "spd": 8,
+        "lck": 0,
+        "def": 6,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Horseman",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 20,
+        "mag": -15,
+        "skill": 15,
+        "spd": 25,
+        "lck": 0,
+        "def": 5,
+        "res": -15
+      }
     },
     {
       "id": "mercenary",
       "name": "Mercenary",
-      "nameVi": "Kiếm Sĩ / Lính Đánh Thuê",
-      "usableWeapons": ["sword"],
+      "nameVi": "Lính đánh thuê",
+      "usableWeapons": [
+        "sword"
+      ],
       "moveType": "foot",
-      "baseMov": 5,
-      "baseStats": { "hp": 20, "str": 6, "mag": 0, "dex": 8, "spd": 10, "lck": 2, "def": 6, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 16,
+        "str": 4,
+        "mag": 0,
+        "skill": 8,
+        "spd": 10,
+        "lck": 0,
+        "def": 5,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "hero",
+        "blade_dancer"
+      ],
+      "sourceClass": "FE11 Mercenary",
+      "growths": {
+        "hp": 60,
+        "str": 20,
+        "mag": -20,
+        "skill": 25,
+        "spd": 20,
+        "lck": 0,
+        "def": 5,
+        "res": -10
+      }
+    },
+    {
+      "id": "hero",
+      "name": "Hero",
+      "nameVi": "Dũng sĩ",
+      "usableWeapons": [
+        "sword",
+        "axe"
+      ],
+      "moveType": "foot",
+      "baseMov": 8,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 1,
+        "skill": 10,
+        "spd": 12,
+        "lck": 0,
+        "def": 7,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Hero",
+      "growths": {
+        "hp": 60,
+        "str": 20,
+        "mag": -20,
+        "skill": 25,
+        "spd": 20,
+        "lck": 0,
+        "def": 5,
+        "res": -10
+      }
+    },
+    {
+      "id": "blade_dancer",
+      "name": "Blade Dancer",
+      "nameVi": "Vũ kiếm sĩ",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 8,
+      "baseStats": {
+        "hp": 22,
+        "str": 5,
+        "mag": 1,
+        "skill": 11,
+        "spd": 13,
+        "lck": 0,
+        "def": 6,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Swordmaster",
+      "hitBonus": 10,
+      "growths": {
+        "hp": 50,
+        "str": 10,
+        "mag": -10,
+        "skill": 20,
+        "spd": 25,
+        "lck": 0,
+        "def": 5,
+        "res": -5
+      }
+    },
+    {
+      "id": "thief",
+      "name": "Thief",
+      "nameVi": "Đạo tặc",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 16,
+        "str": 2,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 1,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "trickster"
+      ],
+      "sourceClass": "FE11 Thief",
+      "growths": {
+        "hp": 30,
+        "str": 10,
+        "mag": -20,
+        "skill": 30,
+        "spd": 40,
+        "lck": 0,
+        "def": 5,
+        "res": -10
+      }
+    },
+    {
+      "id": "trickster",
+      "name": "Trickster",
+      "nameVi": "Ảo thuật đạo tặc",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 16,
+        "str": 2,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 1,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Thief (class analogue)",
+      "growths": {
+        "hp": 30,
+        "str": 10,
+        "mag": -20,
+        "skill": 30,
+        "spd": 40,
+        "lck": 0,
+        "def": 5,
+        "res": -10
+      }
     },
     {
       "id": "fighter",
       "name": "Fighter",
-      "nameVi": "Chiến Binh Rìu",
-      "usableWeapons": ["axe"],
+      "nameVi": "Chiến binh rìu",
+      "usableWeapons": [
+        "axe"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "marauder",
+        "axe_knight"
+      ],
+      "sourceClass": "FE11 Fighter",
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": -20,
+        "skill": 15,
+        "spd": 10,
+        "lck": 0,
+        "def": 0,
+        "res": -15
+      }
+    },
+    {
+      "id": "marauder",
+      "name": "Marauder",
+      "nameVi": "Cuồng chiến binh",
+      "usableWeapons": [
+        "axe"
+      ],
+      "moveType": "foot",
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 0,
+        "skill": 2,
+        "spd": 7,
+        "lck": 0,
+        "def": 6,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Berserker",
+      "critBonus": 10,
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": -20,
+        "skill": 15,
+        "spd": 10,
+        "lck": 0,
+        "def": 0,
+        "res": -15
+      }
+    },
+    {
+      "id": "axe_knight",
+      "name": "Axe Knight",
+      "nameVi": "Kỵ sĩ rìu",
+      "usableWeapons": [
+        "axe"
+      ],
+      "moveType": "cavalry",
+      "baseMov": 10,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 8,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Paladin (class analogue)",
+      "mountKind": "ground",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": -10,
+        "skill": 25,
+        "spd": 10,
+        "lck": 0,
+        "def": 15,
+        "res": -5
+      }
+    },
+    {
+      "id": "pirate",
+      "name": "Pirate",
+      "nameVi": "Hải tặc",
+      "usableWeapons": [
+        "axe"
+      ],
+      "moveType": "bandit",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 6,
+        "lck": 0,
+        "def": 4,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "berserker"
+      ],
+      "sourceClass": "FE11 Pirate",
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": -20,
+        "skill": 15,
+        "spd": 10,
+        "lck": 0,
+        "def": 0,
+        "res": -15
+      }
+    },
+    {
+      "id": "berserker",
+      "name": "Berserker",
+      "nameVi": "Cuồng binh",
+      "usableWeapons": [
+        "axe"
+      ],
+      "moveType": "foot",
+      "baseMov": 7,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 0,
+        "skill": 2,
+        "spd": 7,
+        "lck": 0,
+        "def": 6,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Berserker",
+      "critBonus": 10,
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": -20,
+        "skill": 15,
+        "spd": 10,
+        "lck": 0,
+        "def": 0,
+        "res": -15
+      }
+    },
+    {
+      "id": "curate",
+      "name": "Curate",
+      "nameVi": "Thầy tu",
+      "usableWeapons": [
+        "staff"
+      ],
       "moveType": "foot",
       "baseMov": 5,
-      "baseStats": { "hp": 22, "str": 7, "mag": 0, "dex": 4, "spd": 7, "lck": 2, "def": 5, "res": 0 },
-      "maxStats": { "hp": 60, "str": 20, "mag": 20, "dex": 20, "spd": 20, "lck": 30, "def": 20, "res": 20 }
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 1,
+        "skill": 1,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "bishop"
+      ],
+      "sourceClass": "FE11 Curate",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 20,
+        "lck": 0,
+        "def": -10,
+        "res": 30
+      }
+    },
+    {
+      "id": "bishop",
+      "name": "Bishop",
+      "nameVi": "Giám mục",
+      "usableWeapons": [
+        "tome",
+        "staff"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 22,
+        "str": 1,
+        "mag": 3,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 8
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Bishop",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "mage_m",
+      "name": "Mage (M)",
+      "nameVi": "Pháp sư nam",
+      "usableWeapons": [
+        "tome"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 3,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 2,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "sage"
+      ],
+      "sourceClass": "FE11 Mage",
+      "growths": {
+        "hp": 20,
+        "str": -10,
+        "mag": 30,
+        "skill": 20,
+        "spd": 15,
+        "lck": 0,
+        "def": -15,
+        "res": 10
+      }
+    },
+    {
+      "id": "sage",
+      "name": "Sage",
+      "nameVi": "Hiền giả",
+      "usableWeapons": [
+        "tome",
+        "staff"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 22,
+        "str": 3,
+        "mag": 4,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 5
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Sage",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "dark_mage",
+      "name": "Dark Mage",
+      "nameVi": "Pháp sư hắc ám",
+      "usableWeapons": [
+        "tome"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 4,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "warlock"
+      ],
+      "sourceClass": "FE11 Dark Mage",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "warlock",
+      "name": "Warlock",
+      "nameVi": "Đại pháp sư hắc ám",
+      "usableWeapons": [
+        "tome",
+        "staff"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 22,
+        "str": 2,
+        "mag": 3,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 4,
+        "res": 6
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Sorcerer",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "mage_f",
+      "name": "Mage (F)",
+      "nameVi": "Pháp sư nữ",
+      "usableWeapons": [
+        "tome"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 3,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 2,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "sorceress"
+      ],
+      "sourceClass": "FE11 Mage",
+      "growths": {
+        "hp": 20,
+        "str": -10,
+        "mag": 30,
+        "skill": 20,
+        "spd": 15,
+        "lck": 0,
+        "def": -15,
+        "res": 10
+      }
+    },
+    {
+      "id": "sorceress",
+      "name": "Sorceress",
+      "nameVi": "Nữ pháp sư",
+      "usableWeapons": [
+        "tome",
+        "staff"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 22,
+        "str": 3,
+        "mag": 4,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 5
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Sage",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "sister",
+      "name": "Sister",
+      "nameVi": "Nữ tu",
+      "usableWeapons": [
+        "staff"
+      ],
+      "moveType": "foot",
+      "baseMov": 5,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 1,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 1,
+        "res": 8
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "oracle"
+      ],
+      "sourceClass": "FE11 Cleric",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 20,
+        "lck": 0,
+        "def": -10,
+        "res": 30
+      }
+    },
+    {
+      "id": "oracle",
+      "name": "Oracle",
+      "nameVi": "Nhà tiên tri",
+      "usableWeapons": [
+        "tome",
+        "staff"
+      ],
+      "moveType": "mage",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 22,
+        "str": 1,
+        "mag": 3,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 8
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE11 Bishop",
+      "growths": {
+        "hp": 20,
+        "str": -15,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": -15,
+        "res": 20
+      }
+    },
+    {
+      "id": "dancer",
+      "name": "Dancer",
+      "nameVi": "Vũ công",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 16,
+        "str": 1,
+        "mag": 0,
+        "skill": 1,
+        "spd": 8,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [
+        "enchantress"
+      ],
+      "sourceClass": "FE12 Dancer"
+    },
+    {
+      "id": "enchantress",
+      "name": "Enchantress",
+      "nameVi": "Phù vũ",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 16,
+        "str": 1,
+        "mag": 0,
+        "skill": 1,
+        "spd": 8,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "promoted",
+      "promotions": [],
+      "sourceClass": "FE12 Dancer (class analogue)"
     }
   ]
 }

@@ -9,9 +9,17 @@
     "staff": { "strongAgainst": null, "weakAgainst": null }
   },
   "triangleModifiers": {
-    "advantage": { "damage": 1, "hit": 15 },
-    "disadvantage": { "damage": -1, "hit": -15 },
+    "advantage": { "damage": 0, "hit": 5 },
+    "disadvantage": { "damage": 0, "hit": -5 },
     "neutral": { "damage": 0, "hit": 0 }
+  },
+  "triangleRankBonuses": { "highRankHit": 10, "aRankDamage": 1 },
+  "weaponRankBonuses": {
+    "sword": { "C": { "might": 1, "hit": 0 }, "B": { "might": 2, "hit": 0 }, "A": { "might": 3, "hit": 0 } },
+    "lance": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } },
+    "axe": { "C": { "might": 0, "hit": 5 }, "B": { "might": 0, "hit": 10 }, "A": { "might": 0, "hit": 15 } },
+    "bow": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } },
+    "tome": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } }
   },
   "effectiveMultiplier": 3,
   "effectiveMultipliesOnlyMight": true,
