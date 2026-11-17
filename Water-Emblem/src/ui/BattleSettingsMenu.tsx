@@ -18,6 +18,8 @@ interface BattleSettingsMenuProps {
   onLoad: () => void;
   onViewMode: (mode: '3d' | '2d') => void;
   onToggleMute: () => void;
+  /** Primary battle action shown left of the gear in the bottom-right cluster (End Turn). */
+  leading?: React.ReactNode;
 }
 
 const buttonStyle = (backgroundColor: string, border: string, color = '#fff'): React.CSSProperties => ({
@@ -45,6 +47,11 @@ const viewButtonStyle = (active: boolean): React.CSSProperties => ({
   fontWeight: 'bold',
   cursor: 'pointer',
 });
+
+// HUD cluster metrics (px): 28 clears the map scrollbars; 48 keeps a 44px+ touch target.
+export const HUD_EDGE = 28;
+export const HUD_SIZE = 48;
+const HUD_GAP = 8;
 
 export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => {
   const [open, setOpen] = useState(false);
@@ -74,38 +81,53 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
 
   return (
     <div ref={rootRef}>
-      <button
-        onClick={() => setOpen((value) => !value)}
-        aria-label="Settings"
-        title="Settings"
-        aria-expanded={open}
+      {/* Bottom-right HUD cluster: primary action, then the Settings gear. */}
+      <div
         style={{
           position: 'fixed',
-          top: '12px',
-          right: '28px',
+          right: `${HUD_EDGE}px`,
+          bottom: `${HUD_EDGE}px`,
           zIndex: 1000,
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          border: '1px solid #64748b',
-          backgroundColor: 'rgba(15,23,42,0.9)',
-          color: '#fff',
-          fontSize: '20px',
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: `${HUD_GAP}px`,
         }}
       >
-        <span aria-hidden="true">⚙</span>
-      </button>
+        {props.leading}
+        <button
+          onClick={() => setOpen((value) => !value)}
+          aria-label="Settings"
+          title="Settings"
+          aria-expanded={open}
+          style={{
+            width: `${HUD_SIZE}px`,
+            height: `${HUD_SIZE}px`,
+            padding: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '50%',
+            border: `1px solid ${open ? '#94a3b8' : '#64748b'}`,
+            backgroundColor: open ? 'rgba(30,41,59,0.95)' : 'rgba(15,23,42,0.85)',
+            color: '#fff',
+            fontSize: '26px',
+            lineHeight: 1,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+          }}
+        >
+          <span aria-hidden="true">⚙</span>
+        </button>
+      </div>
       {open && (
         <div
           style={{
             position: 'fixed',
-            top: '60px',
-            right: '28px',
+            right: `${HUD_EDGE}px`,
+            bottom: `${HUD_EDGE + HUD_SIZE + HUD_GAP}px`,
             zIndex: 1000,
             width: '340px',
-            maxHeight: 'calc(100vh - 76px)',
+            maxHeight: `calc(100vh - ${HUD_EDGE + HUD_SIZE + HUD_GAP + 16}px)`,
             overflowY: 'auto',
             boxSizing: 'border-box',
             padding: '14px',

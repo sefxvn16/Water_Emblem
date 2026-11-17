@@ -59,7 +59,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     <div
       style={{
         position: 'fixed',
-        top: '72px',
+        top: '16px',
         right: '28px',
         width: '240px',
         maxHeight: 'calc(100vh - 160px)',

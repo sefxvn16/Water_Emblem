@@ -41,7 +41,7 @@ import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
 import { SaveSlotsModal } from './ui/SaveSlotsModal';
 import { WorldMapModal } from './ui/WorldMapModal';
-import { BattleSettingsMenu } from './ui/BattleSettingsMenu';
+import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
@@ -1149,30 +1149,28 @@ export const App: React.FC = () => {
         onLoad={() => handleLoad()}
         onViewMode={setViewMode}
         onToggleMute={handleToggleMute}
+        leading={turnState.activePhase === 'player_phase' && (
+          <button
+            onClick={handleEndTurn}
+            disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
+            style={{
+              height: `${HUD_SIZE}px`,
+              padding: '0 20px',
+              backgroundColor: '#1d4ed8',
+              border: '1px solid #60a5fa',
+              borderRadius: '8px',
+              color: '#fff',
+              fontSize: '15px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+              opacity: (isProcessingAI || pendingMovePos !== null || combatForecast !== null) ? 0.5 : 1,
+            }}
+          >
+            End Turn
+          </button>
+        )}
       />
-
-      {turnState.activePhase === 'player_phase' && (
-        <button
-          onClick={handleEndTurn}
-          disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
-          style={{
-            position: 'fixed',
-            bottom: '24px',
-            right: '28px',
-            zIndex: 900,
-            padding: '8px 16px',
-            backgroundColor: '#37474F',
-            border: '1px solid #607D8B',
-            borderRadius: '6px',
-            color: '#fff',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
-          }}
-        >
-          End Turn
-        </button>
-      )}
 
       {combatForecast && selectedExtUnit && selectedTarget && (
         <CombatForecastWindow
