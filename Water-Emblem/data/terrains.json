@@ -71,23 +71,6 @@
       }
     },
     {
-      "id": "rock",
-      "name": "Rock",
-      "nameVi": "Đá",
-      "obstacleType": "difficult",
-      "avoidBonus": 15,
-      "defenseBonus": 1,
-      "healPercent": 20,
-      "movementCosts": {
-        "foot": 2,
-        "armor": 2,
-        "cavalry": 2,
-        "flier": 1,
-        "mage": 2,
-        "bandit": 2
-      }
-    },
-    {
       "id": "forest",
       "name": "Forest",
       "nameVi": "Rừng rậm",
