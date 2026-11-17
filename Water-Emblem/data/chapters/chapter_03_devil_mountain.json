@@ -2,6 +2,7 @@
   "id": "chapter_03",
   "name": "Chapter 3: The Devil Mountain",
   "mapId": "chapter_03_devil_mountain",
+  "lordUnitId": "marth",
   "objective": {
     "type": "seize",
     "seizeTargetTile": {

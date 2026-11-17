@@ -54,6 +54,7 @@ export interface ChapterData {
   readonly id: string;
   readonly name: string;
   readonly mapId: string;
+  readonly lordUnitId: string;
   readonly objective: ChapterObjective;
   readonly units: ExtendedUnitState[];
   readonly optionalUnits: ExtendedUnitState[];
@@ -165,6 +166,7 @@ export function loadChapterData(
   const id = requireString(data.id, 'chapter.id');
   const name = requireString(data.name, 'chapter.name');
   const mapId = requireString(data.mapId, 'chapter.mapId');
+  const lordUnitId = requireString(data.lordUnitId, 'chapter.lordUnitId');
   if (map.id !== mapId) throw new Error(`Chapter ${id} references unknown map ${mapId}`);
 
   const itemById = new Map(items.map((item) => [item.id, item]));
@@ -307,7 +309,9 @@ export function loadChapterData(
   if (new Set(ids).size !== ids.length) throw new Error('Duplicate unit ID');
   const positions = units.map(({ unit }) => `${unit.position.x},${unit.position.y}`);
   if (new Set(positions).size !== positions.length) throw new Error('Multiple units occupy one tile');
-  if (!ids.includes('marth')) throw new Error('Chapter is missing Marth');
+  if (!units.some(({ unit }) => unit.id === lordUnitId && unit.faction === 'player')) {
+    throw new Error('Chapter lordUnitId does not reference a player unit');
+  }
   if (objective.type === 'defeat_boss' && !ids.includes(objective.bossUnitId ?? '')) {
     throw new Error('Chapter boss ID does not reference a unit');
   }
@@ -377,7 +381,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, seizeReward };
+  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

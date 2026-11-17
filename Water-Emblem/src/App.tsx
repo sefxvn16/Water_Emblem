@@ -17,10 +17,24 @@ import { calculateSupportBonus } from './core/combat/support';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
+import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
+import { buildBoardView } from './core/grid/boardView';
+import {
+  bossStartEvent,
+  pillageVillage,
+  recruit,
+  resolveDefeat,
+  seize,
+  visitVillage,
+  type ChapterState,
+  type DialogueLine,
+  type VillageState,
+} from './core/chapter/events';
+import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
-import { chapters, chapter01Data, ExtendedUnitState, InventoryEntry } from './core/data/chapterData';
+import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience, getEffectiveGrowthRates } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
@@ -36,21 +50,10 @@ const chapterMaps: Record<string, MapData> = {
   test_chapter_01: testMapRaw as MapData,
 };
 
-interface DialogueLine {
-  speaker: string;
-  avatarUrl: string;
-  text: string;
-}
-
 interface ChapterDialogueData {
   chapterId: string;
   opening: DialogueLine[];
-  recruit_castor?: DialogueLine[];
-  recruit_navarre?: DialogueLine[];
   villages?: Record<string, DialogueLine[]>;
-  boss_gazzak?: { startCombat: string; death: string };
-  boss_gomer?: { startCombat: string; death: string };
-  boss_hyman?: { startCombat: string; death: string };
   ending: DialogueLine[];
 }
 
@@ -60,28 +63,8 @@ const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_03: ch03Dialogues as ChapterDialogueData,
 };
 
-const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }> = {
-  plains: { bg: '#4a7c59', label: 'Plains', icon: '🌿' },
-  forest: { bg: '#2d5a3f', label: 'Forest', icon: '🌲' },
-  mountain: { bg: '#8b7355', label: 'Mountain', icon: '⛰️' },
-  peak: { bg: '#5c4d3c', label: 'Peak', icon: '🏔️' },
-  fort: { bg: '#607d8b', label: 'Fort', icon: '🏰' },
-  bridge: { bg: '#a08260', label: 'Bridge', icon: '🪵' },
-  river: { bg: '#2b5876', label: 'River', icon: '🌊' },
-  sea: { bg: '#1e3c72', label: 'Sea', icon: '🌊' },
-  gate: { bg: '#c0392b', label: 'Gate', icon: '⛩️' },
-  village: { bg: '#d97706', label: 'Village', icon: '🏡' },
-  wall: { bg: '#474747', label: 'Stone Wall', icon: '🧱' },
-  rock: { bg: '#6b5847', label: 'Rock', icon: '🪨' },
-  rubble: { bg: '#545454', label: 'Rubble', icon: '🧱' },
-  road: { bg: '#b89f78', label: 'Road', icon: '🛤️' },
-  castle: { bg: '#4a5568', label: 'Castle', icon: '🏯' },
-  house: { bg: '#b45309', label: 'House', icon: '🏠' },
-  shop: { bg: '#047857', label: 'Shop', icon: '🏪' },
-};
-
 interface DialogueCutsceneModalProps {
-  dialogues: DialogueLine[];
+  dialogues: readonly DialogueLine[];
   title: string;
   themeColor?: 'blue' | 'amber' | 'green';
   actionButtonText: string;
@@ -401,6 +384,7 @@ export const App: React.FC = () => {
   const mapData = chapterMaps[currentChapterId] ?? (talysMapRaw as MapData);
   const currentDialogues = chapterDialogues[currentChapterId] ?? (ch01Dialogues as ChapterDialogueData);
   const chapterObjective = currentChapter.objective;
+  const lordName = currentChapter.units.find(({ unit }) => unit.id === currentChapter.lordUnitId)?.unit.name ?? 'The lord';
 
   const [extendedUnits, setExtendedUnits] = useState<ExtendedUnitState[]>(() => structuredClone(currentChapter.units));
   const [reserveUnits, setReserveUnits] = useState<ExtendedUnitState[]>([]);
@@ -432,10 +416,10 @@ export const App: React.FC = () => {
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [gold, setGold] = useState<number>(0);
-  const [villageStates, setVillageStates] = useState<Record<string, 'intact' | 'visited' | 'destroyed'>>({});
+  const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
   const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
     villageName: string;
-    lines: DialogueLine[];
+    lines: readonly DialogueLine[];
     rewardText: string;
   } | null>(null);
 
@@ -513,7 +497,7 @@ export const App: React.FC = () => {
   };
 
   const toggleDeployment = (unitId: string) => {
-    if (unitId === 'marth') return;
+    if (unitId === currentChapter.lordUnitId) return;
     const active = extendedUnits.find(({ unit }) => unit.id === unitId && unit.faction === 'player');
     if (active) {
       const nextActive = placeDeployedUnits(extendedUnits.filter(({ unit }) => unit.id !== unitId), currentChapter);
@@ -592,6 +576,25 @@ export const App: React.FC = () => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
 
+  const boardView = buildBoardView({
+    map: mapData,
+    units: extendedUnits.map(({ unit }) => unit),
+    reachableKeys,
+    dangerZoneKeys,
+    attackTargetKeys,
+    selected: selectedUnit?.position ?? null,
+  });
+
+  const getUnitDisplay = (unitId: string): UnitDisplay | undefined => {
+    const entry = extendedUnits.find(({ unit }) => unit.id === unitId);
+    return entry && {
+      name: entry.unit.name,
+      hp: entry.stats.hp,
+      faction: entry.unit.faction,
+      hasActed: Boolean(entry.unit.hasActed),
+    };
+  };
+
   const talkTarget = selectedExtUnit && pendingMovePos
     ? extendedUnits.find(({ unit }) => currentChapter.recruitments.some((rule) =>
       rule.speakerUnitId === selectedExtUnit.unit.id
@@ -602,7 +605,7 @@ export const App: React.FC = () => {
 
   const currentVillageAtPendingPos = useMemo(() => {
     if (!pendingMovePos || !selectedExtUnit) return null;
-    if (selectedExtUnit.unit.id !== 'marth') return null;
+    if (selectedExtUnit.unit.id !== currentChapter.lordUnitId) return null;
     const village = currentChapter.villages?.find(
       (v) => v.position.x === pendingMovePos.x && v.position.y === pendingMovePos.y
     );
@@ -697,13 +700,8 @@ export const App: React.FC = () => {
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
-    if (selectedTarget.unit.id === 'gazzak' && currentDialogues.boss_gazzak) {
-      logs.push(`🗣️ Gazzak: "${currentDialogues.boss_gazzak.startCombat}"`);
-    } else if (selectedTarget.unit.id === 'gomer' && currentDialogues.boss_gomer) {
-      logs.push(`🗣️ Gomer: "${currentDialogues.boss_gomer.startCombat}"`);
-    } else if (selectedTarget.unit.id === 'hyman' && currentDialogues.boss_hyman) {
-      logs.push(`🗣️ Hyman: "${currentDialogues.boss_hyman.startCombat}"`);
-    }
+    const startEvent = bossStartEvent(currentDialogues, selectedTarget.unit.id, selectedTarget.unit.name);
+    if (startEvent) logs.push(...eventLogLines([startEvent]));
     logs.push(`⚔️ ENGAGEMENT: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
     for (const ev of result.events) {
       const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Unknown';
@@ -725,55 +723,32 @@ export const App: React.FC = () => {
       }
     }
 
-    let lootItemId: string | undefined;
-    let lootRecipientId: string | undefined;
-    if (result.unitDefeatedId) {
-      soundManager.playSfx('death');
-      const deadExt = extendedUnits.find((u) => u.unit.id === result.unitDefeatedId);
-      const deadName = deadExt?.unit.name;
-      logs.push(`💀 ${deadName} was defeated!`);
-      const bossData = (currentDialogues as Record<string, any>)[`boss_${result.unitDefeatedId}`];
-      if (bossData?.death) {
-        logs.push(`🗣️ ${deadName}: "${bossData.death}"`);
-      }
-      if (deadExt?.dropItemId) {
-        lootItemId = deadExt.dropItemId;
-        const itemDef = itemsJson.items.find(({ id }) => id === lootItemId);
-        const itemName = itemDef?.name ?? lootItemId;
-        const killerExt = result.unitDefeatedId === selectedExtUnit.unit.id ? selectedTarget : selectedExtUnit;
-        if (killerExt && killerExt.unit.faction === 'player') {
-          lootRecipientId = killerExt.unit.id;
-          logs.push(`🎁 ${killerExt.unit.name} obtained loot: ${itemName} from ${deadName}!`);
-        }
-      }
-    }
-
-    // Cập nhật trạng thái sống/chết và HP
+    // Update HP and alive state
     let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
         if (item.unit.id === selectedExtUnit.unit.id) {
-          const nextInventory: InventoryEntry[] = lootItemId && lootRecipientId === item.unit.id && combatForecast.attacker.stats.hp > 0
-            ? [...item.inventory, { itemId: lootItemId, uses: itemsJson.items.find(({ id }) => id === lootItemId)?.maxUses ?? 1 }]
-            : item.inventory;
           return {
             ...item,
             stats: { ...combatForecast.attacker.stats },
             unit: { ...item.unit, isDead: combatForecast.attacker.stats.hp <= 0 },
-            inventory: nextInventory,
           };
         }
         if (item.unit.id === selectedTarget.unit.id) {
-          const nextInventory: InventoryEntry[] = lootItemId && lootRecipientId === item.unit.id && combatForecast.defender.stats.hp > 0
-            ? [...item.inventory, { itemId: lootItemId, uses: itemsJson.items.find(({ id }) => id === lootItemId)?.maxUses ?? 1 }]
-            : item.inventory;
           return {
             ...item,
             stats: { ...combatForecast.defender.stats },
             unit: { ...item.unit, isDead: combatForecast.defender.stats.hp <= 0 },
-            inventory: nextInventory,
           };
         }
         return item;
       });
+    if (result.unitDefeatedId) {
+      soundManager.playSfx('death');
+      logs.push(`💀 ${updatedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name} was defeated!`);
+      const killerId = result.unitDefeatedId === selectedExtUnit.unit.id ? selectedTarget.unit.id : selectedExtUnit.unit.id;
+      const defeat = resolveDefeat(chapterState(updatedUnits), result.unitDefeatedId, killerId, itemsJson.items, currentDialogues);
+      logs.push(...eventLogLines(defeat.events));
+      updatedUnits = [...defeat.state.units];
+    }
     const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
     updatedUnits = experience.entries;
     logs.push(...experience.messages);
@@ -782,7 +757,7 @@ export const App: React.FC = () => {
     setExtendedUnits(updatedUnits);
 
     // Kiểm tra kết quả chương
-    const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective);
+    const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
     if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
     // Đánh dấu hành động hoàn thành
@@ -850,31 +825,22 @@ export const App: React.FC = () => {
     syncState();
   };
 
+  const chapterState = (units: readonly ExtendedUnitState[] = extendedUnits): ChapterState => ({ units, gold, villageStates });
+
+  const commitChapterState = (next: ChapterState) => {
+    setExtendedUnits([...next.units]);
+    setGold(next.gold);
+    setVillageStates({ ...next.villageStates });
+    turnManager.replaceUnits(next.units.map(({ unit }) => unit));
+  };
+
   const handleSeize = () => {
-    if (!selectedExtUnit || selectedExtUnit.unit.id !== 'marth' || !pendingMovePos) return;
-    const outcome = evaluateChapterOutcome(extendedUnits.map(({ unit }) => unit), chapterObjective, true);
-    if (outcome !== 'victory') return;
+    if (!selectedExtUnit || !pendingMovePos) return;
+    const result = seize(chapterState(), selectedExtUnit.unit.id, currentChapter, itemsJson.items);
+    if (!result.events.some(({ type }) => type === 'chapter_seized')) return;
     soundManager.playSfx('stage_clear');
-    if (currentChapter.seizeReward) {
-      if (currentChapter.seizeReward.type === 'gold' && currentChapter.seizeReward.amount) {
-        setGold((prev) => prev + currentChapter.seizeReward!.amount!);
-        setCombatLog((prev) => [
-          `💰 Seized castle gate! Received ${currentChapter.seizeReward!.amount!.toLocaleString()} Gold!`,
-          ...prev,
-        ]);
-      } else if (currentChapter.seizeReward.type === 'item' && currentChapter.seizeReward.itemId) {
-        const itemDef = itemsJson.items.find(({ id }) => id === currentChapter.seizeReward!.itemId);
-        if (itemDef) {
-          setExtendedUnits((prev) => prev.map((entry) => entry.unit.id === 'marth'
-            ? { ...entry, inventory: [...entry.inventory, { itemId: itemDef.id, uses: itemDef.maxUses }] }
-            : entry));
-          setCombatLog((prev) => [
-            `🎁 Seized castle gate! Marth obtained: ${itemDef.name}!`,
-            ...prev,
-          ]);
-        }
-      }
-    }
+    commitChapterState(result.state);
+    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
     turnManager.waitSelectedUnit();
     setPendingMovePos(null);
     setChapterOutcome('victory');
@@ -883,75 +849,31 @@ export const App: React.FC = () => {
 
   const handleTalk = () => {
     if (!talkTarget || !selectedExtUnit) return;
+    const result = recruit(chapterState(), selectedExtUnit.unit.id, talkTarget.unit.id, currentChapter, currentDialogues);
+    if (result.events.length === 0) return;
     soundManager.playSfx('item_get');
-    const nextUnits = extendedUnits.map((entry) => entry.unit.id === talkTarget.unit.id
-      ? { ...entry, unit: { ...entry.unit, faction: 'player' as const }, aiRole: undefined }
-      : entry);
-    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    commitChapterState(result.state);
     turnManager.waitSelectedUnit();
-    setExtendedUnits(nextUnits);
     setPendingMovePos(null);
-    const dialogueLines = talkTarget.unit.id === 'castor'
-      ? (currentDialogues.recruit_castor ?? [])
-      : talkTarget.unit.id === 'navarre'
-      ? (currentDialogues.recruit_navarre ?? [])
-      : [];
-    setCombatLog((prev) => [
-      ...dialogueLines.map(({ speaker, text }) => `${speaker}: ${text}`),
-      ...prev,
-    ]);
+    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
     syncState();
   };
 
   const handleVisitVillage = () => {
     if (!currentVillageAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
-    soundManager.playSfx('item_get');
-
     const village = currentVillageAtPendingPos;
-    setVillageStates((prev) => ({ ...prev, [village.id]: 'visited' }));
-
-    let rewardText = '';
-    let rewardItem: { itemId: string; uses: number } | undefined;
-    if (village.reward.type === 'gold') {
-      const amount = village.reward.amount ?? 0;
-      setGold((prev) => prev + amount);
-      rewardText = `Received ${amount.toLocaleString()} Gold from the villagers!`;
-    } else if (village.reward.type === 'item') {
-      const itemId = village.reward.itemId;
-      const itemDef = itemsJson.items.find((it) => it.id === itemId);
-      if (!itemId || !itemDef) return;
-      const itemName = itemDef?.name ?? itemId;
-      rewardItem = { itemId, uses: itemDef.maxUses };
-      rewardText = `Received item: ${itemName}!`;
-    }
-
-    const lines = currentDialogues.villages?.[village.id] ?? [
-      {
-        speaker: 'Villager',
-        avatarUrl: '/avatars/village_man.png',
-        text: 'Thank you Prince Marth for protecting our village!',
-      },
-    ];
-
+    const result = visitVillage(chapterState(), selectedExtUnit.unit.id, village, itemsJson.items, currentDialogues);
+    if (result.events.length === 0) return;
+    soundManager.playSfx('item_get');
+    const dialogue = result.events.find((event) => event.type === 'dialogue');
     setActiveVillageDialogue({
       villageName: village.name,
-      lines,
-      rewardText,
+      lines: dialogue?.type === 'dialogue' ? dialogue.lines : [],
+      rewardText: villageRewardText(result.events),
     });
-
-    setCombatLog((prev) => [
-      `🏡 Marth visited ${village.name}: ${rewardText}`,
-      ...prev,
-    ]);
-
-    const nextUnits = rewardItem
-      ? extendedUnits.map((entry) => entry.unit.id === selectedExtUnit.unit.id
-        ? { ...entry, inventory: [...entry.inventory, rewardItem] }
-        : entry)
-      : extendedUnits;
-    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+    commitChapterState(result.state);
     turnManager.waitSelectedUnit();
-    setExtendedUnits(nextUnits);
     setPendingMovePos(null);
     setOriginalPos(null);
     setSelectedTarget(null);
@@ -984,13 +906,12 @@ export const App: React.FC = () => {
     const activeEnemies = phaseUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
     const statsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.stats]));
     const weaponsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.weapon]));
-    const nextVillageStates = { ...villageStates };
+    let nextVillageStates: Record<string, VillageState> = { ...villageStates };
 
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
 
     for (const enemy of activeEnemies) {
-      const decision = evaluateAITurn(enemy.unit,
-        enemy.unit.classId === 'thief' ? 'pillage' : (enemy.aiRole || 'pursue'), {
+      const decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
         map: mapData,
         terrains: defaultTerrainRegistry,
         units: phaseUnits.map((u) => u.unit),
@@ -1029,22 +950,14 @@ export const App: React.FC = () => {
           soundManager.playSfx('death');
           const defeatedUnit = phaseUnits.find((u) => u.unit.id === result.unitDefeatedId);
           if (defeatedUnit) defeatedUnit.unit.isDead = true;
-          const defeated = defeatedUnit?.unit.name;
-          logs.push(`  💀 ${defeated} has fallen!`);
-          const bossData = (currentDialogues as Record<string, any>)[`boss_${result.unitDefeatedId}`];
-          if (bossData?.death) {
-            logs.push(`  🗣️ ${defeated}: "${bossData.death}"`);
-          }
-          if (defeatedUnit?.dropItemId) {
-            const dropId = defeatedUnit.dropItemId;
-            const itemDef = itemsJson.items.find(({ id }) => id === dropId);
-            const itemName = itemDef?.name ?? dropId;
-            const killerUnit = phaseUnits.find((u) => u.unit.id === (result.unitDefeatedId === enemy.unit.id ? decision.targetUnit.id : enemy.unit.id));
-            if (killerUnit && killerUnit.unit.faction === 'player' && !killerUnit.unit.isDead) {
-              killerUnit.inventory = [...killerUnit.inventory, { itemId: dropId, uses: itemDef?.maxUses ?? 1 }];
-              logs.push(`  🎁 ${killerUnit.unit.name} obtained loot: ${itemName} from ${defeated}!`);
-            }
-          }
+          logs.push(`  💀 ${defeatedUnit?.unit.name} has fallen!`);
+          const killerId = result.unitDefeatedId === enemy.unit.id ? decision.targetUnit.id : enemy.unit.id;
+          const defeat = resolveDefeat(
+            { units: phaseUnits, gold, villageStates: nextVillageStates },
+            result.unitDefeatedId, killerId, itemsJson.items, currentDialogues,
+          );
+          logs.push(...eventLogLines(defeat.events, '  '));
+          phaseUnits = [...defeat.state.units];
         }
         const experience = applyCombatExperience(phaseUnits, result, defaultRNG);
         phaseUnits = experience.entries;
@@ -1058,18 +971,13 @@ export const App: React.FC = () => {
       }
 
       if (decision.type === 'move_only' || decision.type === 'attack') {
-        const raidedVillage = currentChapter.villages?.find(
-          (v) => v.position.x === decision.movePosition.x && v.position.y === decision.movePosition.y
-        );
-        if (enemy.unit.classId === 'thief' && raidedVillage
-          && (nextVillageStates[raidedVillage.id] ?? 'intact') === 'intact') {
-          nextVillageStates[raidedVillage.id] = 'destroyed';
-          logs.push(`🔥 The thief raided ${raidedVillage.name.toUpperCase()}! The village was destroyed!`);
-        }
+        const raid = pillageVillage({ units: phaseUnits, gold, villageStates: nextVillageStates }, enemy.unit.id, currentChapter);
+        nextVillageStates = { ...raid.state.villageStates };
+        logs.push(...eventLogLines(raid.events));
       }
 
       enemy.unit.hasActed = true;
-      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective) !== 'ongoing') break;
+      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId) !== 'ongoing') break;
     }
 
     setVillageStates(nextVillageStates);
@@ -1079,7 +987,7 @@ export const App: React.FC = () => {
     // Kiểm tra kết quả chương sau lượt địch
     const outcome = evaluateChapterOutcome(
       phaseUnits.map((u) => u.unit),
-      chapterObjective
+      chapterObjective, false, currentChapter.lordUnitId
     );
     if (outcome !== 'ongoing') {
       setChapterOutcome(outcome);
@@ -1475,144 +1383,12 @@ export const App: React.FC = () => {
               onTileHover={(x, y) => setHoveredTile({ x, y })}
             />
           ) : (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${mapData.width}, 64px)`,
-                gridTemplateRows: `repeat(${mapData.height}, 64px)`,
-                gap: '2px',
-                backgroundColor: '#000',
-                padding: '4px',
-                borderRadius: '4px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-                maxWidth: '100%',
-                maxHeight: 'calc(100vh - 120px)',
-                overflow: 'auto',
-              }}
-            >
-              {mapData.grid.map((row, y) =>
-                row.map((terrainId, x) => {
-                  const key = `${x},${y}`;
-                  const terrain = TERRAIN_COLORS[terrainId] || { bg: '#333', label: terrainId, icon: '' };
-                  const isReachable = reachableKeys.has(key);
-                  const isDanger = dangerZoneKeys.has(key);
-                  const extUnit = extendedUnits.find(
-                    (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
-                  );
-                  const isSelected = selectedUnit && selectedUnit.position.x === x && selectedUnit.position.y === y;
-                  const isAttackTarget = attackableTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y);
-
-                  return (
-                    <div
-                      key={key}
-                      onClick={() => handleTileClick(x, y)}
-                      onMouseEnter={() => setHoveredTile({ x, y })}
-                      style={{
-                        position: 'relative',
-                        width: '64px',
-                        height: '64px',
-                        backgroundColor: terrain.bg,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        border: isSelected
-                          ? '2px solid #FFEB3B'
-                          : isAttackTarget
-                          ? '2px solid #FF1744'
-                          : '1px solid rgba(255,255,255,0.05)',
-                        boxSizing: 'border-box',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      {/* Danger zone overlay */}
-                      {isDanger && !isReachable && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(239, 83, 80, 0.25)',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      {/* Reachable tile overlay */}
-                      {isReachable && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(33, 150, 243, 0.45)',
-                            border: '1px dashed #90CAF9',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      {/* Attack target indicator */}
-                      {isAttackTarget && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(255, 23, 68, 0.35)',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
-
-                      {/* Unit display */}
-                      {extUnit && (
-                        <div
-                          style={{
-                            zIndex: 2,
-                            width: '46px',
-                            height: '46px',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: '11px',
-                            fontWeight: 'bold',
-                            color: '#fff',
-                            backgroundColor: extUnit.unit.hasActed
-                              ? '#616161'
-                              : extUnit.unit.faction === 'player'
-                              ? '#1E88E5'
-                              : '#E53935',
-                            border: isSelected ? '2px solid #FFEB3B' : '2px solid rgba(0,0,0,0.4)',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                          }}
-                        >
-                          <div>{extUnit.unit.name.substring(0, 3)}</div>
-                          <div style={{ fontSize: '9px', opacity: 0.9 }}>
-                            HP:{extUnit.stats.hp}
-                          </div>
-                        </div>
-                      )}
-
-                      <span
-                        style={{
-                          position: 'absolute',
-                          bottom: '2px',
-                          right: '3px',
-                          fontSize: '9px',
-                          color: 'rgba(255,255,255,0.4)',
-                          zIndex: 1,
-                        }}
-                      >
-                        {x},{y}
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+            <Grid2D
+              board={boardView}
+              getUnitDisplay={getUnitDisplay}
+              onTileClick={handleTileClick}
+              onTileHover={(x, y) => setHoveredTile({ x, y })}
+            />
           )}
         </div>
 
@@ -1769,7 +1545,7 @@ export const App: React.FC = () => {
               <div style={{ fontWeight: 'bold', color: '#64B5F6', fontSize: '14px', marginBottom: '2px' }}>
                 Actions ({selectedExtUnit?.unit.name})
               </div>
-              {chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === 'marth'
+              {chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
                 && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
                 && pendingMovePos.y === chapterObjective.seizeTargetTile?.y && (
                   <button
@@ -2087,7 +1863,7 @@ export const App: React.FC = () => {
         <div style={{ position: 'fixed', inset: 0, zIndex: 1300, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
           <section style={{ width: 'min(680px, 92vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #334155', boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
             <h2 style={{ margin: '0 0 10px 0', color: '#60a5fa', fontSize: '20px' }}>⚔️ Battle Preparation: {currentChapter.name}</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>Select units for deployment. Marth is required commander; unselected units remain in reserve.</p>
+            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>Select units for deployment. {lordName} is required commander; unselected units remain in reserve.</p>
             <div style={{ backgroundColor: '#0f172a', padding: '8px 12px', borderRadius: '6px', marginBottom: '14px', fontSize: '13px', fontWeight: 'bold', color: '#38bdf8' }}>
               Deployed: {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length} units
             </div>
@@ -2103,20 +1879,20 @@ export const App: React.FC = () => {
                     borderRadius: '6px',
                     backgroundColor: '#1e293b',
                     border: '1px solid #334155',
-                    cursor: entry.unit.id === 'marth' || entry.unit.isDead ? 'default' : 'pointer',
+                    cursor: entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead ? 'default' : 'pointer',
                     fontSize: '13px',
                   }}
                 >
                   <input
                     type="checkbox"
                     checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
-                    disabled={entry.unit.id === 'marth' || entry.unit.isDead}
+                    disabled={entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead}
                     onChange={() => toggleDeployment(entry.unit.id)}
                     style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                   />
-                  <span style={{ color: entry.unit.isDead ? '#94a3b8' : '#f8fafc', fontWeight: entry.unit.id === 'marth' ? 'bold' : 'normal' }}>
+                  <span style={{ color: entry.unit.isDead ? '#94a3b8' : '#f8fafc', fontWeight: entry.unit.id === currentChapter.lordUnitId ? 'bold' : 'normal' }}>
                     {entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.name}
-                    {entry.unit.id === 'marth' ? ' (Commander - Required)' : ''}
+                    {entry.unit.id === currentChapter.lordUnitId ? ' (Commander - Required)' : ''}
                     {entry.unit.isDead ? ' (Fallen)' : ''}
                   </span>
                 </label>
@@ -2155,7 +1931,7 @@ export const App: React.FC = () => {
             <div style={{ backgroundColor: '#1e293b', padding: '10px 14px', borderRadius: '8px', borderLeft: '4px solid #f59e0b', fontSize: '13px' }}>
               <strong style={{ color: '#fbbf24' }}>Victory Objective:</strong> {chapterObjective.description}.
               <br />
-              <span style={{ color: '#ef4444' }}>Defeat if Marth falls in battle.</span>
+              <span style={{ color: '#ef4444' }}>Defeat if {lordName} falls in battle.</span>
             </div>
           }
           onConfirm={() => setShowStoryIntro(false)}
