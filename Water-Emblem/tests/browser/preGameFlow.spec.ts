@@ -61,6 +61,7 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
     await expect(page.getByRole('heading', { name: /FILE SELECT/i })).not.toBeVisible();
 
     // 5. Open Title Screen -> New Game -> Book Select
+    await openSettings(page);
     await titleBtn.click();
     await page.getByRole('button', { name: /START NEW GAME/i }).click();
     await expect(page.getByRole('heading', { name: /SELECT CAMPAIGN/i })).toBeVisible();

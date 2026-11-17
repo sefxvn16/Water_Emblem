@@ -262,11 +262,15 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
   await clickTile(24, 5);
   await expect(page.getByRole('button', { name: /(?:Use Vulnerary|Dùng thuốc hồi máu)/i })).toBeVisible();
   await page.getByRole('button', { name: /(?:Use Vulnerary|Dùng thuốc hồi máu)/i }).click();
+  await openSettings(page);
   await expect(page.getByText(/Marth (?:used Vulnerary|dùng Thuốc hồi máu): HP 18\/18/i)).toBeVisible();
+  await closeSettings(page);
   await clickTile(23, 3);
   await clickTile(23, 3);
   await page.getByRole('button', { name: /(?:Promote: Sniper|Thăng cấp: Thiện xạ)/i }).click();
+  await openSettings(page);
   await expect(page.getByText(/Gordin (?:promoted to Sniper|thăng cấp thành Thiện xạ)/i)).toBeVisible();
+  await closeSettings(page);
   await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();

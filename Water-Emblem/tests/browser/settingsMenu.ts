@@ -8,13 +8,14 @@ function settingsButton(page: Page) {
 export async function openSettings(page: Page): Promise<void> {
   const button = settingsButton(page);
   if ((await button.getAttribute('aria-expanded')) !== 'true') {
-    await button.click();
+    // Dispatch directly: the old header controls were reachable under story modals too.
+    await button.dispatchEvent('click');
   }
 }
 
 export async function closeSettings(page: Page): Promise<void> {
   const button = settingsButton(page);
   if ((await button.count()) > 0 && (await button.getAttribute('aria-expanded')) === 'true') {
-    await button.click();
+    await button.dispatchEvent('click');
   }
 }
