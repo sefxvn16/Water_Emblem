@@ -27,7 +27,7 @@ Nguồn đã mở và dùng để đối chiếu:
 | [Sơ đồ Book 2 chương 1–12](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_2_1.html), [13–Endgame](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_2_2.html) | Điểm bắt đầu tra chương Book 2 về sau. | Chưa kiểm trực tiếp từng ảnh; không suy URL ảnh hoặc độ chính xác từ ba chương Book 1. |
 | [Bảng địch FE3 Book 1](https://serenesforest.net/mystery-of-the-emblem/characters/enemy-data/book-1/), trang chương tương ứng trên Fire Emblem Wiki | Kiểm số lượng, class, nhân vật xuất hiện, sự kiện và mục tiêu. | Không thay thế được tọa độ từng ô. |
 
-Các bước khi thêm hoặc sửa một chương:
+Các bước khi thêm hoặc sửa một chương (quy trình có script, bắt buộc dùng: `Water-Emblem/tools/fe3_map_reference/README.md`; lưới tham chiếu lưu ở `Water-Emblem/data/reference/fe3/`):
 
 1. Xác nhận đúng **FE3, Book và chương**. Mở ảnh `Original/01_Maps/` và sơ đồ chương tương ứng; ghi URL, ngày kiểm, kích thước ảnh, kích thước lưới và quy ước tọa độ `x=0` bên trái, `y=0` phía trên vào hồ sơ đối chiếu của chương.
 2. Đếm cột/hàng theo **vạch lưới của sơ đồ**. Ba sơ đồ đầu có bước cột 17 px, bước hàng 15 px (kể cả nét lưới), bắt đầu tại `(8,29)`, `(4,30)`, `(4,29)`; hàng và cột cuối là nét viền, không phải ô chơi. Lưới thực là 30×13, 30×15, 30×20. Ảnh chương 1–3 trong repo tương ứng 32×15, 32×17, 32×22 khối 16 px; chênh lệch này chưa được phép tự động cắt một ô mỗi mép, phải đối chiếu điểm gốc bằng cổng, làng, đường bờ và vị trí quân.

@@ -1,0 +1,52 @@
+{
+  "mapId": "chapter_03_devil_mountain",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 3,
+  "width": 30,
+  "height": 20,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "terrainDiagram": "https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/MAP/map1_03.png",
+    "diagramPage": "https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_1_1.html",
+    "originalImage": "Original/01_Maps/Book_1/Cm_fe03_b1_3.png",
+    "checkedOn": "2026-11-17",
+    "method": "Water-Emblem/tools/fe3_map_reference/README.md"
+  },
+  "legend": {
+    ".": "plains",
+    "=": "road",
+    "F": "forest",
+    "m": "mountain",
+    "M": "peak",
+    "W": "wall",
+    "C": "castle",
+    "G": "gate",
+    "T": "fort",
+    "H": "house",
+    "S": "shop",
+    "V": "village"
+  },
+  "rows": [
+    ".==mMMMMMMMMMMMMMMMmmMMMMMMMMM",
+    "..==mMMMMMMMMMMMMmM..mmmmmmMMM",
+    "m.S==mMMMMMF.F....FT......mmMM",
+    "m..===.M..F.F.FMM.M..MM...mmMM",
+    "mF..=mm..MMMMM.MMMm...mM...mMM",
+    "F.F.==..mMMMMMMMMm.....mM..mMM",
+    "F...==mMMMMMMMMMmm..T...M...mM",
+    ".WWW.=FmMMMMMMMMmmm....FMM..mM",
+    ".CGC.==FmMMMMMMMMMmmFFFFMMM.mM",
+    "F...===..MMMMMMMMMMM.FFMMMM.mM",
+    "...===FmmMMMMMMMMMMMMMMMMMM.mM",
+    "F.===FmMMMMMMM.W.HMMMMMMMM...M",
+    "mF===mMMMMMmm..V..HMMMMMM..T.M",
+    ".m===mMMMm.H.....==.mmmm..===M",
+    "MF==mMMmm.m.....====..===.===m",
+    "MMMTMMm..H......T=.=========..",
+    "MM.===.........==...==..=====.",
+    "MM..===...==..==F.F.....F..===",
+    "MMM..==.=======..F.......F..==",
+    "MMMM..====..==....mMMMM....==."
+  ]
+}
