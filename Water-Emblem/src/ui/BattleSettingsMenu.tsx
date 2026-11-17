@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface BattleSettingsMenuProps {
+  /** Changes whenever the chapter changes or a full-screen modal opens or closes; the menu closes. */
+  forceCloseKey: string;
   chapterId: string;
   chapterName: string;
   objectiveText: string;
@@ -56,6 +58,10 @@ const HUD_GAP = 8;
 export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [props.forceCloseKey]);
 
   useEffect(() => {
     if (!open) return;

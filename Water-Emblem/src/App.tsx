@@ -1149,6 +1149,7 @@ export const App: React.FC = () => {
       </div>
 
       <BattleSettingsMenu
+        forceCloseKey={[currentChapterId, showPreparation, showStoryIntro, activeVillageDialogue !== null, chapterOutcome, activeScreen].join('|')}
         chapterId={currentChapterId}
         chapterName={currentChapter.name}
         objectiveText={chapterObjective.description ?? ''}
