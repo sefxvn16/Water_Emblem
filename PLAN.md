@@ -144,7 +144,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 
 - [ ] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
   - Tiêu chí xong: Antigravity làm theo `Water-Emblem/tools/fe3_map_reference/README.md` trên nhánh `agy/fe3-ch4-map`: có `data/reference/fe3/<map-id>.json` và `data/maps/<map-id>.json`; `compare.mjs` MATCH; test, build PASS; không sửa file ngoài phạm vi. Claude kiểm độc lập: tự trích lại lưới từ sơ đồ và so từng ô, đối chiếu kích thước/công trình với ảnh gốc, kiểm định dạng và phạm vi file; báo chủ dự án chất lượng.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Giao Antigravity (`agy`, model gemini-3.8-flash-high) ngày 2026-11-17; prompt ở `work/plan-phase0/agy-ch4-prompt.md`.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Antigravity đã làm xong, chờ Claude kiểm. Bằng chứng: commit 381bd30, kích thước 30×20 (khớp ảnh gốc 512×352 trừ viền 1 ô), bảng màu BASE_COLORS + cfbda5 (橋/bridge) + 00b0f0 (川/river) không có unknown, compare.mjs MATCH, Vitest 119/119 PASS, build PASS, gate Result: PASS, ô chưa chắc: 0 ô mâu thuẫn giữa sơ đồ và ảnh gốc (elevations gán theo quy ước địa hình do FE3 là 2D phẳng).
   - Kiểm bởi: tôi
 
 - [ ] 34. Triển khai reclass và giới hạn class từ Chương 4.
