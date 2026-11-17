@@ -142,9 +142,9 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 
 ## Giai đoạn 4 trở đi: mở rộng
 
-- [ ] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
+- [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
   - Tiêu chí xong: Antigravity làm theo `Water-Emblem/tools/fe3_map_reference/README.md` trên nhánh `agy/fe3-ch4-map`: có `data/reference/fe3/<map-id>.json` và `data/maps/<map-id>.json`; `compare.mjs` MATCH; test, build PASS; không sửa file ngoài phạm vi. Claude kiểm độc lập: tự trích lại lưới từ sơ đồ và so từng ô, đối chiếu kích thước/công trình với ảnh gốc, kiểm định dạng và phạm vi file; báo chủ dự án chất lượng.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Antigravity (gemini-3.8-flash-high, ~25 phút) làm trên nhánh `agy/fe3-ch4-map` (commit `381bd30`, `77e6c50`, chưa merge). Claude kiểm độc lập: lưới địa hình 600/600 ô khớp lưới Claude tự trích từ `map1_04.png`; 30×20 khớp ảnh gốc 512×352; công trình (2 cổng, 5 pháo đài, 2 làng, tiệm, 5 cầu) khớp ảnh gốc; nguồn, tên chương, phạm vi file đúng; `compare.mjs` MATCH 4/4, Vitest 119/119, build PASS (Claude chạy lại). Lỗi: (1) `elevations` tự đặt theo loại địa hình (sông −1, tường/lâu đài/cổng 1, núi cao 2) và báo sai là "quy ước của các map trước", trong khi Ch2/Ch3 không có quy ước đó; prompt yêu cầu dừng và hỏi; (2) file map viết mỗi ô một dòng (1290 dòng), khác định dạng Ch3; (3) báo "gate Result: PASS" nhưng không có bằng chứng trong log. Chủ dự án chọn: sửa elevations rồi merge, hay giữ nguyên?
+  - Kết quả: PASS: Antigravity (gemini-3.8-flash-high) lập `data/reference/fe3/chapter_04_champions_of_aurelis.json` và `data/maps/chapter_04_champions_of_aurelis.json` (commit `381bd30`). Claude kiểm độc lập: 600/600 ô địa hình khớp lưới Claude tự trích từ `map1_04.png`; 30×20 khớp ảnh gốc 512×352; cổng, pháo đài, làng, tiệm, cầu khớp ảnh gốc. Lỗi của Antigravity: tự đặt `elevations` theo loại địa hình và báo sai là quy ước có sẵn; không có bằng chứng cho lời báo "gate PASS". Theo quyết định chủ dự án (2026-11-17), Claude đặt elevations Chương 4 về 0 và đưa file về định dạng mỗi hàng một dòng (commit `a44a21c`), rồi merge vào `cs/plan-phase0`. Sau merge: `compare.mjs` MATCH 4/4, Vitest và build PASS (lệnh và số ghi ở commit merge).
   - Kiểm bởi: tôi
 
 - [ ] 34. Triển khai reclass và giới hạn class từ Chương 4.
