@@ -47,7 +47,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({ fore
           </div>
         </div>
         <div>HP: <strong>{attacker.stats.hp}</strong></div>
-        <div>Damage: <strong style={{ color: '#ffca28' }}>{forecast.attacker.damage} {forecast.attacker.attackCount > 1 ? `x${forecast.attacker.attackCount}` : ''}</strong></div>
+        <div>Damage: <strong style={{ color: '#ffca28' }}>{forecast.attacker.damage} {forecast.attacker.attackCount > 1 ? `×${forecast.attacker.attackCount}` : ''}</strong></div>
         <div>Hit: <strong>{forecast.attacker.hitRate}%</strong></div>
         <div>Crit: <strong>{forecast.attacker.critRate}%</strong></div>
       </div>
@@ -69,7 +69,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({ fore
         <div>HP: <strong>{defender.stats.hp}</strong></div>
         {forecast.defender.canCounter ? (
           <>
-            <div>Damage: <strong style={{ color: '#ffca28' }}>{forecast.defender.damage} {forecast.defender.attackCount > 1 ? `x${forecast.defender.attackCount}` : ''}</strong></div>
+            <div>Damage: <strong style={{ color: '#ffca28' }}>{forecast.defender.damage} {forecast.defender.attackCount > 1 ? `×${forecast.defender.attackCount}` : ''}</strong></div>
             <div>Hit: <strong>{forecast.defender.hitRate}%</strong></div>
             <div>Crit: <strong>{forecast.defender.critRate}%</strong></div>
           </>
