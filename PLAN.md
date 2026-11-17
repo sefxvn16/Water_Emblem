@@ -152,6 +152,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: Playwright 18/20 trên nhánh `cs/battle-fullscreen-ui`. Fail `battle.spec.ts:296` (Jagen dismount) và `:339` (enemy phase auto), 6/6 lần chạy lặp: `canvas.boundingBox()` trả `null`. Nguyên nhân: `ThreeScene.tsx:269` dựng lại canvas khi model tải xong (deps `[mapData, models]`), có khoảng canvas không hiển thị; BASE cũng có khoảng này (đo 1324–2037ms sau khi bật 3D) nhưng hai test PASS 4/4 vì đo trước nó. 3D đang đóng băng. Câu hỏi: cho thêm vào `enterBattle` bước chờ `[data-models-ready="true"]` sau khi bật 3D (như test 3D đầu file đã làm), hay mở khóa sửa `ThreeScene.tsx` để không dựng lại canvas?
   - Kiểm bởi: subagent
 
+- [ ] 72. Rà soát và sửa các popup màn trận 2D theo FE3 (thông tin quân, dự báo giao tranh, kết quả giao tranh, menu hành động, chuẩn bị trận, hội thoại).
+  - Tiêu chí xong: mỗi phát hiện trong `work/battle-fullscreen-ui/review/` (ảnh 01–09, chụp 1366x768, seed replay Chương 1) được sửa hoặc chủ dự án chọn giữ; đối chiếu ảnh FE3 trong `Original/04_Battle_Backgrounds/`; gate PASS.
+  - Phát hiện (2026-11-18): P1 sau khi đánh không còn thấy kết quả (Combat Log nằm trong ⚙); P1 dự báo thiếu đánh hai lần dù core có `attackCount` (Q05 yêu cầu); P2 cửa sổ thông tin quân hiện growth rate (FE3 không hiện), cỡ 300x400 che mép trái, trùng thông tin khi đang xem dự báo; P2 menu hành động ở góc phải trên, xa quân; P2 menu ⚙ vẫn mở phía sau màn chuẩn bị khi đổi chương; P3 màn chuẩn bị là danh sách checkbox (FE3: lưới tên quân + panel thông tin, `Ss_fe03_unit_select.png`); P3 hội thoại là modal giữa màn (FE3: khung chữ mép dưới/trên).
+  - Kết quả: CHỜ NGƯỜI DÙNG: chọn hướng cho các phát hiện (xem câu hỏi trong chat 2026-11-18).
+  - Kiểm bởi: subagent
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
