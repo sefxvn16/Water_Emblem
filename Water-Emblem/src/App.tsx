@@ -12,8 +12,7 @@ import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
 import { CombatForecast, type ItemDefinition } from './core/combat/types';
-import { calculateCombatForecast, calculateDisplayedCombatStats, executeCombat, getManhattanDistance } from './core/combat/calculator';
-import { calculateSupportBonus } from './core/combat/support';
+import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
@@ -36,12 +35,16 @@ import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transiti
 import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
-import { applyCombatExperience, getEffectiveGrowthRates } from './core/progression/experience';
+import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
 import { SaveSlotsModal } from './ui/SaveSlotsModal';
 import { WorldMapModal } from './ui/WorldMapModal';
+import { BattleSettingsMenu } from './ui/BattleSettingsMenu';
+import { CombatForecastWindow } from './ui/CombatForecastWindow';
+import { ActionMenuWindow } from './ui/ActionMenuWindow';
+import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
 
 const chapterMaps: Record<string, MapData> = {
   chapter_01: talysMapRaw as MapData,
@@ -1090,7 +1093,6 @@ export const App: React.FC = () => {
   }, [turnState.activePhase, chapterOutcome]);
 
   const hoveredTerrainId = hoveredTile ? mapData.grid[hoveredTile.y]?.[hoveredTile.x] : null;
-  const hoveredTerrain = hoveredTerrainId ? defaultTerrainRegistry.get(hoveredTerrainId) : null;
   const hoveredUnit = hoveredTile
     ? extendedUnits.find(
         (u) => !u.unit.isDead && u.unit.position.x === hoveredTile.x && u.unit.position.y === hoveredTile.y
@@ -1098,280 +1100,11 @@ export const App: React.FC = () => {
     : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: '16px', boxSizing: 'border-box' }}>
-      {/* Header bar */}
-      <header
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '12px 20px',
-          backgroundColor: '#262626',
-          borderRadius: '8px',
-          marginBottom: '16px',
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h1 style={{ margin: 0, fontSize: '20px', color: '#64B5F6' }}>
-              Water Emblem - Mystery of Nothing
-            </h1>
-            <select
-              value={currentChapterId}
-              onChange={(e) => loadChapter(e.target.value)}
-              style={{
-                backgroundColor: '#1e293b',
-                color: '#38bdf8',
-                border: '1px solid #0284c7',
-                borderRadius: '6px',
-                padding: '6px 12px',
-                fontSize: '13px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                minHeight: '36px',
-              }}
-            >
-              <option value="chapter_01">🗺️ Chapter 1: Marth Embarks (30x13)</option>
-              <option value="chapter_02">🗺️ Chapter 2: The Pirates of Galder (30x15)</option>
-              <option value="chapter_03">🗺️ Chapter 3: The Devil Mountain (30x20)</option>
-              <option value="test_chapter_01">🧪 Test Map (8x8)</option>
-            </select>
-          </div>
-          <span style={{ fontSize: '13px', color: '#aaa', marginTop: '4px', display: 'block' }}>
-            {currentChapter.name} (Objective: {chapterObjective.description})
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <div
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#451a03',
-              border: '1px solid #d97706',
-              borderRadius: '6px',
-              color: '#fef08a',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            💰 {gold.toLocaleString()} G
-          </div>
-
-          {/* Navigation to Title and World Map */}
-          <button
-            onClick={() => setActiveScreen('title')}
-            title="Title Screen & Main Menu"
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#1e293b',
-              border: '1px solid #3b82f6',
-              borderRadius: '6px',
-              color: '#93c5fd',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            🏰 Title
-          </button>
-
-          <button
-            onClick={() => setActiveScreen('world_map')}
-            title="View Continent of Archanea World Map"
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#1e293b',
-              border: '1px solid #0891b2',
-              borderRadius: '6px',
-              color: '#67e8f9',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            🗺️ World Map
-          </button>
-
-          <button
-            onClick={() => {
-              setSaveSlotsMode('load');
-              setActiveScreen('save_slots');
-            }}
-            title="Open Save Files Manager"
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#1e293b',
-              border: '1px solid #8b5cf6',
-              borderRadius: '6px',
-              color: '#c4b5fd',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            📁 Save Files
-          </button>
-
-          {/* Quick Save / Load buttons */}
-          <button
-            onClick={() => handleSave()}
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#2e7d32',
-              border: '1px solid #4caf50',
-              borderRadius: '6px',
-              color: '#fff',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            💾 Save Game
-          </button>
-          <button
-            onClick={() => handleLoad()}
-            style={{
-              padding: '7px 13px',
-              backgroundColor: '#1565c0',
-              border: '1px solid #42a5f5',
-              borderRadius: '6px',
-              color: '#fff',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            📂 Load Game
-          </button>
-
-          {/* View mode toggle */}
-          <div style={{ display: 'flex', backgroundColor: '#1e1e1e', borderRadius: '6px', padding: '2px', border: '1px solid #444', minHeight: '36px' }}>
-            <button
-              onClick={() => setViewMode('3d')}
-              style={{
-                padding: '6px 13px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: viewMode === '3d' ? '#1976D2' : 'transparent',
-                color: '#fff',
-                fontSize: '13px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
-            >
-              🎮 3D View
-            </button>
-            <button
-              onClick={() => setViewMode('2d')}
-              style={{
-                padding: '6px 13px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: viewMode === '2d' ? '#1976D2' : 'transparent',
-                color: '#fff',
-                fontSize: '13px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-              }}
-            >
-              🗺️ 2D Grid
-            </button>
-          </div>
-
-          {/* Sound Mute Toggle */}
-          <button
-            onClick={handleToggleMute}
-            title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-            style={{
-              padding: '7px 12px',
-              border: '1px solid #444',
-              borderRadius: '6px',
-              backgroundColor: isMuted ? '#C62828' : '#263238',
-              color: '#fff',
-              fontSize: '13px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            {isMuted ? '🔇 Muted' : '🔊 Sound: On'}
-          </button>
-
-          <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
-            Turn: <span style={{ color: '#FFD54F' }}>{turnState.turnNumber}</span>
-          </div>
-          <div
-            style={{
-              padding: '7px 15px',
-              borderRadius: '20px',
-              fontWeight: 'bold',
-              fontSize: '13px',
-              minHeight: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: turnState.activePhase === 'player_phase' ? '#1976D2' : '#C62828',
-            }}
-          >
-            {turnState.activePhase === 'player_phase' ? '🛡️ PLAYER PHASE' : '⚔️ ENEMY PHASE'}
-          </div>
-          {turnState.activePhase === 'player_phase' && (
-            <button
-              onClick={handleEndTurn}
-              disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#37474F',
-                border: '1px solid #607D8B',
-                borderRadius: '6px',
-                color: '#fff',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-              }}
-            >
-              End Turn
-            </button>
-          )}
-        </div>
-      </header>
-
-      {/* Main workspace: Map + Side panel */}
-      <div style={{ display: 'flex', gap: '20px', flex: 1, minHeight: 0 }}>
-        {/* Map Grid Container */}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#111',
-            borderRadius: '8px',
-            overflow: 'hidden',
-            position: 'relative',
-          }}
-        >
-          {viewMode === '3d' ? (
+    <div>
+      {/* Map fills the whole viewport; this is the only scroll container */}
+      <div style={{ position: 'fixed', inset: 0, overflow: 'auto', backgroundColor: '#111' }}>
+        {viewMode === '3d' ? (
+          <div style={{ width: '100%', height: '100%' }}>
             <ThreeScene
               mapData={mapData}
               units={extendedUnits}
@@ -1382,462 +1115,115 @@ export const App: React.FC = () => {
               onTileClick={handleTileClick}
               onTileHover={(x, y) => setHoveredTile({ x, y })}
             />
-          ) : (
+          </div>
+        ) : (
+          <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: '8px' }}>
             <Grid2D
               board={boardView}
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
               onTileHover={(x, y) => setHoveredTile({ x, y })}
             />
-          )}
-        </div>
+          </div>
+        )}
+      </div>
 
-        {/* Side Panel: Combat Forecast, Actions & Inspector */}
-        <div
+      <BattleSettingsMenu
+        chapterId={currentChapterId}
+        chapterName={currentChapter.name}
+        objectiveText={chapterObjective.description ?? ''}
+        gold={gold}
+        turnNumber={turnState.turnNumber}
+        activePhase={turnState.activePhase}
+        viewMode={viewMode}
+        isMuted={isMuted}
+        combatLog={combatLog}
+        onChapterChange={loadChapter}
+        onTitle={() => setActiveScreen('title')}
+        onWorldMap={() => setActiveScreen('world_map')}
+        onSaveFiles={() => {
+          setSaveSlotsMode('load');
+          setActiveScreen('save_slots');
+        }}
+        onSave={() => handleSave()}
+        onLoad={() => handleLoad()}
+        onViewMode={setViewMode}
+        onToggleMute={handleToggleMute}
+      />
+
+      {turnState.activePhase === 'player_phase' && (
+        <button
+          onClick={handleEndTurn}
+          disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
           style={{
-            width: '320px',
-            backgroundColor: '#212121',
-            borderRadius: '8px',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '14px',
-            border: '1px solid #333',
-            overflowY: 'auto',
+            position: 'fixed',
+            bottom: '24px',
+            right: '28px',
+            zIndex: 900,
+            padding: '8px 16px',
+            backgroundColor: '#37474F',
+            border: '1px solid #607D8B',
+            borderRadius: '6px',
+            color: '#fff',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
           }}
         >
-          {/* Combat Forecast Window (Q05) */}
-          {combatForecast && selectedExtUnit && selectedTarget && (
-            <div
-              style={{
-                backgroundColor: '#1b2a47',
-                padding: '14px',
-                borderRadius: '8px',
-                border: '2px solid #42a5f5',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
-              }}
-            >
-              <div style={{ fontWeight: 'bold', color: '#90caf9', marginBottom: '8px', fontSize: '15px' }}>
-                ⚔️ COMBAT FORECAST
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px', marginBottom: '12px' }}>
-                {/* Attacker */}
-                <div style={{ backgroundColor: '#0d47a1', padding: '8px', borderRadius: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    {selectedExtUnit.avatarUrl && (
-                      <img
-                        src={selectedExtUnit.avatarUrl}
-                        alt={selectedExtUnit.unit.name}
-                        style={{ width: '54px', height: '54px', borderRadius: '6px', border: '2px solid #90caf9', objectFit: 'cover', flexShrink: 0, backgroundColor: '#0f172a' }}
-                      />
-                    )}
-                    <div>
-                      <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedExtUnit.unit.name}</div>
-                      <div style={{ color: '#90caf9', fontSize: '11px' }}>{selectedExtUnit.weapon.name}</div>
-                    </div>
-                  </div>
-                  <div>HP: <strong>{selectedExtUnit.stats.hp}</strong></div>
-                  <div>Damage: <strong style={{ color: '#ffca28' }}>{combatForecast.attacker.damage} {combatForecast.attacker.attackCount > 1 ? `x${combatForecast.attacker.attackCount}` : ''}</strong></div>
-                  <div>Hit: <strong>{combatForecast.attacker.hitRate}%</strong></div>
-                  <div>Crit: <strong>{combatForecast.attacker.critRate}%</strong></div>
-                </div>
+          End Turn
+        </button>
+      )}
 
-                {/* Defender */}
-                <div style={{ backgroundColor: '#b71c1c', padding: '8px', borderRadius: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    {selectedTarget.avatarUrl && (
-                      <img
-                        src={selectedTarget.avatarUrl}
-                        alt={selectedTarget.unit.name}
-                        style={{ width: '54px', height: '54px', borderRadius: '6px', border: '2px solid #ef9a9a', objectFit: 'cover', flexShrink: 0, backgroundColor: '#450a0a' }}
-                      />
-                    )}
-                    <div>
-                      <div style={{ fontWeight: 'bold', color: '#fff' }}>{selectedTarget.unit.name}</div>
-                      <div style={{ color: '#ef9a9a', fontSize: '11px' }}>{selectedTarget.weapon.name}</div>
-                    </div>
-                  </div>
-                  <div>HP: <strong>{selectedTarget.stats.hp}</strong></div>
-                  {combatForecast.defender.canCounter ? (
-                    <>
-                      <div>Damage: <strong style={{ color: '#ffca28' }}>{combatForecast.defender.damage} {combatForecast.defender.attackCount > 1 ? `x${combatForecast.defender.attackCount}` : ''}</strong></div>
-                      <div>Hit: <strong>{combatForecast.defender.hitRate}%</strong></div>
-                      <div>Crit: <strong>{combatForecast.defender.critRate}%</strong></div>
-                    </>
-                  ) : (
-                    <div style={{ color: '#aaa', fontStyle: 'italic', marginTop: '6px' }}>Cannot counter</div>
-                  )}
-                </div>
-              </div>
+      {combatForecast && selectedExtUnit && selectedTarget && (
+        <CombatForecastWindow
+          forecast={combatForecast}
+          attacker={selectedExtUnit}
+          defender={selectedTarget}
+          onConfirm={handleConfirmAttack}
+          onCancel={() => { setCombatForecast(null); setSelectedTarget(null); }}
+        />
+      )}
 
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={handleConfirmAttack}
-                  style={{
-                    flex: 1,
-                    padding: '8px',
-                    backgroundColor: '#e53935',
-                    border: 'none',
-                    borderRadius: '4px',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                  }}
-                >
-                  ⚔️ Attack!
-                </button>
-                <button
-                  onClick={() => { setCombatForecast(null); setSelectedTarget(null); }}
-                  style={{
-                    padding: '8px 12px',
-                    backgroundColor: '#555',
-                    border: 'none',
-                    borderRadius: '4px',
-                    color: '#fff',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+      <ActionMenuWindow
+        mountLabel={
+          selectedExtUnit && !pendingMovePos && !combatForecast
+            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
+            ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
+            : null
+        }
+        actions={pendingMovePos && !combatForecast ? {
+          unitName: selectedExtUnit?.unit.name,
+          canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
+            && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
+            && pendingMovePos.y === chapterObjective.seizeTargetTile?.y,
+          talkTargetName: talkTarget?.unit.name ?? null,
+          canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.inventory.some((item) => item.itemId === 'vulnerary' && item.uses > 0)
+            && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp),
+          promotions: selectedExtUnit && selectedExtUnit.level >= 10
+            && selectedExtUnit.inventory.some((item) => item.itemId === 'master_seal' && item.uses > 0)
+            ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id }))
+            : [],
+          villageName: currentVillageAtPendingPos?.name ?? null,
+          hasAttackTargets: attackableTargets.length > 0,
+        } : null}
+        onToggleMount={handleToggleMounted}
+        onSeize={handleSeize}
+        onTalk={handleTalk}
+        onUseVulnerary={handleUseVulnerary}
+        onPromote={handlePromote}
+        onVisitVillage={handleVisitVillage}
+        onWait={handleConfirmWait}
+        onCancelMove={handleCancelMove}
+      />
 
-          {/* Action Menu when unit moved */}
-          {selectedExtUnit && !pendingMovePos && !combatForecast
-            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground') && (
-              <button
-                onClick={handleToggleMounted}
-                title="Toggle mount status before moving"
-                style={{
-                  width: '100%',
-                  padding: '10px 14px',
-                  backgroundColor: '#b45309',
-                  border: '1px solid #f59e0b',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-                }}
-              >
-                <span aria-hidden="true">🏇 </span>
-                {selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount'}
-              </button>
-            )}
-          {pendingMovePos && !combatForecast && (
-            <div
-              style={{
-                backgroundColor: '#2c3e50',
-                padding: '14px',
-                borderRadius: '8px',
-                border: '1px solid #3498db',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-              }}
-            >
-              <div style={{ fontWeight: 'bold', color: '#64B5F6', fontSize: '14px', marginBottom: '2px' }}>
-                Actions ({selectedExtUnit?.unit.name})
-              </div>
-              {chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
-                && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
-                && pendingMovePos.y === chapterObjective.seizeTargetTile?.y && (
-                  <button
-                    onClick={handleSeize}
-                    style={{
-                      width: '100%',
-                      padding: '11px 16px',
-                      backgroundColor: '#d97706',
-                      border: '2px solid #fbbf24',
-                      borderRadius: '6px',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      fontSize: '15px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      boxShadow: '0 3px 10px rgba(217,119,6,0.5)',
-                    }}
-                  >
-                    <span aria-hidden="true">👑 </span>Seize Gate
-                  </button>
-                )}
-              {talkTarget && (
-                <button
-                  onClick={handleTalk}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    backgroundColor: '#0284c7',
-                    border: '1px solid #38bdf8',
-                    borderRadius: '6px',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    boxShadow: '0 2px 8px rgba(2,132,199,0.4)',
-                  }}
-                >
-                  <span aria-hidden="true">💬 </span>Talk: {talkTarget.unit.name}
-                </button>
-              )}
-              {selectedExtUnit && selectedExtUnit.inventory.some((item) => item.itemId === 'vulnerary' && item.uses > 0)
-                && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp && (
-                  <button
-                    onClick={handleUseVulnerary}
-                    title="Restores 10 HP, consumes one use"
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      backgroundColor: '#16a34a',
-                      border: '1px solid #4ade80',
-                      borderRadius: '6px',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      boxShadow: '0 2px 8px rgba(22,163,74,0.4)',
-                    }}
-                  >
-                    <span aria-hidden="true">🧪 </span>Use Vulnerary
-                  </button>
-                )}
-              {selectedExtUnit && selectedExtUnit.level >= 10
-                && selectedExtUnit.inventory.some((item) => item.itemId === 'master_seal' && item.uses > 0)
-                && getClassDefinition(selectedExtUnit.unit.classId)?.promotions.map((classId) => (
-                  <button
-                    key={classId}
-                    onClick={() => handlePromote(classId)}
-                    title="Promote class using a Master Seal"
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      backgroundColor: '#7c3aed',
-                      border: '1px solid #a78bfa',
-                      borderRadius: '6px',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '8px',
-                      boxShadow: '0 2px 8px rgba(124,58,237,0.4)',
-                    }}
-                  >
-                    <span aria-hidden="true">🎖️ </span>Promote: {getClassDefinition(classId)?.name ?? classId}
-                  </button>
-                ))}
-              {currentVillageAtPendingPos && (
-                <button
-                  onClick={handleVisitVillage}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    backgroundColor: '#d97706',
-                    border: '1px solid #fbbf24',
-                    borderRadius: '6px',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                  }}
-                >
-                  <span aria-hidden="true">🏡 </span>Visit Village ({currentVillageAtPendingPos.name})
-                </button>
-              )}
-              {attackableTargets.length > 0 && (
-                <div style={{ fontSize: '12px', color: '#FFD54F', padding: '4px 0' }}>
-                  🎯 Click red target tile to view combat forecast!
-                </div>
-              )}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                <button
-                  onClick={handleConfirmWait}
-                  style={{
-                    padding: '10px',
-                    backgroundColor: '#27ae60',
-                    border: 'none',
-                    borderRadius: '6px',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    minHeight: '40px',
-                  }}
-                >
-                  ✓ Wait
-                </button>
-                <button
-                  onClick={handleCancelMove}
-                  style={{
-                    padding: '10px',
-                    backgroundColor: '#c0392b',
-                    border: 'none',
-                    borderRadius: '6px',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    minHeight: '40px',
-                  }}
-                >
-                  ✕ Cancel Move
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Unit & Terrain Inspector */}
-          <div
-            style={{
-              backgroundColor: '#2a2a2a',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid #444',
-            }}
-          >
-            <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#FFD54F' }}>
-              👤 Unit & Terrain Info
-            </h3>
-            {hoveredUnit || selectedExtUnit ? (
-              (() => {
-                const u = (hoveredUnit || selectedExtUnit)!;
-                return (
-                  <div>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
-                      {u.avatarUrl && (
-                        <img
-                          src={u.avatarUrl}
-                          alt={u.unit.name}
-                          style={{
-                            width: '72px',
-                            height: '72px',
-                            borderRadius: '8px',
-                            border: `2px solid ${u.unit.faction === 'player' ? '#42a5f5' : '#ef5350'}`,
-                            boxShadow: '0 3px 10px rgba(0,0,0,0.6)',
-                            objectFit: 'cover',
-                            flexShrink: 0,
-                            backgroundColor: '#0f172a',
-                          }}
-                        />
-                      )}
-                      <div>
-                        <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff' }}>{u.unit.name}</div>
-                        {u.title && <div style={{ fontSize: '11px', color: '#aaa' }}>{u.title}</div>}
-                        <div style={{ fontSize: '11px', color: u.unit.faction === 'player' ? '#64b5f6' : '#ef9a9a' }}>
-                          {u.unit.faction === 'player' ? '🛡️ Player Faction' : '⚔️ Enemy Faction'}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '13px', lineHeight: '1.55' }}>
-                      <div><strong>Weapon:</strong> {u.weapon.name} ({u.weapon.type.toUpperCase()}, Mt:{u.weapon.might}, Wt:{u.weapon.weight})</div>
-                      {u.inventory.length > 0 && <div><strong>Inventory:</strong> {u.inventory.map((entry) => `${itemsJson.items.find((item) => item.id === entry.itemId)?.name ?? entry.itemId} ×${entry.uses}`).join(' · ')}</div>}
-                      <div><strong>HP:</strong> {u.stats.hp} / {u.stats.maxHp} | <strong>Mov:</strong> {u.unit.mov} ({u.unit.moveType})</div>
-                      <div><strong>Class:</strong> {getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—'} | <strong>Lv:</strong> {u.level} | <strong>EXP:</strong> {u.exp}/100</div>
-                      {(() => {
-                        const terrainId = mapData.grid[u.unit.position.y]?.[u.unit.position.x] ?? 'plains';
-                        const combat = calculateDisplayedCombatStats(u.unit, u.stats, u.weapon, terrainId, defaultTerrainRegistry, extendedUnits.map(({ unit }) => unit));
-                        return <div style={{ color: '#90caf9', fontWeight: 'bold' }}>Atk {combat.atk} · Hit {combat.hit} · Avo {combat.avoid} · Crit {combat.crit} · AS {combat.as}</div>;
-                      })()}
-                      <div style={{ backgroundColor: '#18181b', padding: '8px', borderRadius: '6px', margin: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', textAlign: 'center', fontSize: '12px', border: '1px solid #3f3f46' }}>
-                        <div>Str: <strong style={{ color: '#facc15' }}>{u.stats.str}</strong></div>
-                        <div>Mag: <strong style={{ color: '#facc15' }}>{u.stats.mag}</strong></div>
-                        <div>Skl: <strong style={{ color: '#facc15' }}>{u.stats.skill}</strong></div>
-                        <div>Spd: <strong style={{ color: '#facc15' }}>{u.stats.spd}</strong></div>
-                        <div>Lck: <strong style={{ color: '#facc15' }}>{u.stats.lck}</strong></div>
-                        <div>Def: <strong style={{ color: '#facc15' }}>{u.stats.def}</strong></div>
-                        <div>Res: <strong style={{ color: '#facc15' }}>{u.stats.res}</strong></div>
-                        <div>Mov: <strong style={{ color: '#facc15' }}>{u.unit.mov}</strong></div>
-                      </div>
-
-                      {u.growths && (
-                        <div style={{ fontSize: '12px', color: '#90caf9', marginTop: '6px' }}>
-                          <strong>Effective Growths:</strong>
-                          <div style={{ color: '#cbd5e1' }}>
-                            HP {getEffectiveGrowthRates(u).hp}% | Str {getEffectiveGrowthRates(u).str}% | Skill {getEffectiveGrowthRates(u).skill}% | Spd {getEffectiveGrowthRates(u).spd}% | Def {getEffectiveGrowthRates(u).def}%
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Support Relationship Bonus */}
-                      {u.unit.faction === 'player' && (() => {
-                        const sup = calculateSupportBonus(u.unit, extendedUnits.map((item) => item.unit));
-                        if (sup.hit > 0 || sup.avoid > 0 || sup.crit > 0) {
-                          return (
-                            <div style={{ backgroundColor: '#1e3a8a', padding: '6px 10px', borderRadius: '6px', marginTop: '6px', fontSize: '12px', color: '#bfdbfe', border: '1px solid #3b82f6' }}>
-                              💙 <strong>Support Bonus:</strong>
-                              <div style={{ marginTop: '2px' }}>+{sup.hit}% Hit | +{sup.avoid}% Avo | +{sup.crit}% Crit</div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })()}
-                    </div>
-                  </div>
-                );
-              })()
-            ) : (
-              <div style={{ fontSize: '13px', color: '#94a3b8' }}>
-                Hover over a unit or tile to inspect
-              </div>
-            )}
-            {hoveredTerrain && hoveredTile && (
-              <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #444', fontSize: '13px', color: '#86efac' }}>
-                <div><strong>Tile ({hoveredTile.x}, {hoveredTile.y}):</strong> {hoveredTerrain.name}</div>
-                <div>Avoid: +{hoveredTerrain.avoidBonus}% | Defense: +{hoveredTerrain.defenseBonus}</div>
-              </div>
-            )}
-          </div>
-
-          {/* Combat Battle Log */}
-          <div
-            style={{
-              backgroundColor: '#1e1e1e',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid #333',
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: '120px',
-            }}
-          >
-            <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#90caf9', marginBottom: '8px' }}>
-              📜 Combat Log
-            </div>
-            <div style={{ overflowY: 'auto', flex: 1, fontSize: '12px', lineHeight: '1.5', color: '#e2e8f0' }}>
-              {combatLog.length === 0 ? (
-                <span style={{ color: '#777' }}>No battle engagements yet.</span>
-              ) : (
-                combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '4px' }}>{log}</div>)
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {hoveredUnit && hoveredTile && (
+        <UnitInspectorWindow
+          unit={hoveredUnit}
+          allUnits={extendedUnits}
+          terrainId={hoveredTerrainId ?? 'plains'}
+          tile={hoveredTile}
+        />
+      )}
 
       {/* Status Notification Toast */}
       {statusNotice && (
@@ -1845,7 +1231,8 @@ export const App: React.FC = () => {
           style={{
             position: 'fixed',
             top: '20px',
-            right: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
             backgroundColor: '#2e7d32',
             color: '#fff',
             padding: '12px 20px',
