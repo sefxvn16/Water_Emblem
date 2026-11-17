@@ -87,9 +87,15 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
             {unit && (
               <div
                 style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
                   zIndex: 2,
                   width: '46px',
                   height: '46px',
+                  flexShrink: 0,
+                  boxSizing: 'border-box',
                   borderRadius: '50%',
                   display: 'flex',
                   flexDirection: 'column',
