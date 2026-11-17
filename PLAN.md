@@ -78,7 +78,7 @@ Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sa
 
 - [ ] 56. Tách sự kiện chương và bỏ hard-code ID.
   - Tiêu chí xong: Thăm làng, chiếm thành, chiêu mộ, thoại boss và loot nằm trong `src/core/chapter/`; người được chiếm thành, cặp chiêu mộ và thoại khai báo trong JSON chương; `grep` các ID nhân vật (`'marth'`, `'castor'`, `'navarre'`, `'gazzak'`, `'gomer'`, `'hyman'`, `'caeda'`) trong `src/` không còn kết quả ngoài file test.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Việc này đổi schema JSON chương (thêm trường như `seizeUnitIds`, `talkEvents`). Duyệt đổi schema không?
+  - Kết quả: CHỜ NGƯỜI DÙNG: Đã làm trên nhánh `cs/plan-phase0` (commit `27e3750`, sửa thêm `bdff589`): thăm làng, chiếm thành, chiêu mộ, loot, thoại boss nằm trong `src/core/chapter/events.ts` (hàm thuần, 15 unit test); JSON chương có `lordUnitId`; `saveLoad.ts` dùng `chapter.lordUnitId`; cướp làng theo `aiRole: "pillage"`. Verify 3 trên `bdff589`: Vitest 119/119, build PASS, Playwright 20/20 (PASS-FLAGGED, cờ là test mới); review vòng 2 PASS WITH NOTES. Grep ID còn đúng 1 chỗ: `src/renderer/ThreeScene.tsx:125` (`'navarre'` chọn model 3D, 3D đang đóng băng). Chấp nhận ngoại lệ này đến lúc port 3D (mục 41) không?
   - Kiểm bởi: subagent
 
 - [ ] 57. Tách lưới 2D thành renderer và thu gọn `App.tsx`.
@@ -86,9 +86,9 @@ Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sa
   - Kết quả: CHỜ NGƯỜI DÙNG: Làm sau mục 54–56.
   - Kiểm bởi: tôi
 
-- [ ] 67. Dựng khung lưới 2D dùng chung làm cơ sở cho 3D.
+- [x] 67. Dựng khung lưới 2D dùng chung làm cơ sở cho 3D.
   - Tiêu chí xong: `src/core/grid/boardView.ts` dựng mô hình bàn cờ thuần (địa hình, cao độ, quân, lớp phủ) có unit test; `src/renderer/Grid2D.tsx` vẽ mô hình đó, mỗi ô có `data-testid="tile-x-y"`; `App.tsx` không còn lưới vẽ inline; giao diện 2D như cũ; gate PASS. 3D sẽ đọc cùng mô hình khi port (mục 41).
-  - Kết quả: CHỜ NGƯỜI DÙNG: Chủ dự án yêu cầu ngày 2026-11-17; đang giao builder (handoff `work/plan-phase0/04-handoff-1.md`).
+  - Kết quả: PASS: `src/core/grid/boardView.ts` (hàm thuần `buildBoardView`, 4 unit test) và `src/renderer/Grid2D.tsx` (mỗi ô `data-testid="tile-x-y"`, bảng màu ở `terrainStyle2d.ts`); `App.tsx` không còn lưới inline (2339 → 2115 dòng). Review vòng 1 so từng phần với lưới cũ: giữ nguyên viền và lớp phủ. Verify 3 trên `bdff589`: Vitest 119/119, build PASS, Playwright 20/20. Commit `5522b8a`.
   - Kiểm bởi: subagent
 
 - [ ] 58. Làm sạch kiểu và kiểm dữ liệu khi nạp.
@@ -101,9 +101,9 @@ Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sa
   - Kết quả: CHỜ NGƯỜI DÙNG: Đề xuất dùng XState cho vòng phase (chọn quân → di chuyển → hành động → lượt địch), vì đúng stack đã chốt và chặn được lỗi kẹt phase. Đồng ý không?
   - Kiểm bởi: người dùng
 
-- [ ] 60. Thay bot e2e bằng kịch bản cố định.
+- [x] 60. Thay bot e2e bằng kịch bản cố định.
   - Tiêu chí xong: Mỗi chương có một spec Playwright 2D với seed RNG cố định và chuỗi nước đi cố định, kiểm Title → chuẩn bị → hành động → lưu/tải → thắng; luật được kiểm bằng unit test ở mục 54–56; bot heuristic bị gỡ sau khi spec mới PASS.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Việc này sửa `tests/**` (vùng bảo vệ). Duyệt thay thế các spec `fullChapter*.spec.ts` không?
+  - Kết quả: PASS: `tests/browser/chapterReplay.spec.ts` phát lại chuỗi thao tác cố định (`tests/browser/fixtures/chapter{1,2,3}.replay.json`, seed 20261117, 268/353/460 bước) qua `data-testid` ô và tên nút; kiểm lưu→tải khi trận đầu bắt đầu, màn chuẩn bị sau mỗi lần chuyển chương, PLAYER PHASE khi vào trận, STAGE CLEAR sau mỗi lần chiếm thành. Chạy riêng 2 lần liên tiếp 3/3 PASS; verify 3 trên `bdff589` Playwright 20/20. Bot heuristic chuyển sang `tools/e2e_record/` làm công cụ ghi (không chạy trong gate), kèm README. Chiêu mộ qua giao diện vẫn do `battle.spec.ts:455` kiểm; replay không có bước chiêu mộ/thăm làng (ghi trong README). Commit `064e735`, `bdff589`.
   - Kiểm bởi: subagent
 
 ## Giai đoạn 3: Cơ chế đã chọn còn thiếu (2D)
@@ -135,7 +135,17 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: Có bao nhiêu mức độ khó, và mỗi mức đổi những gì?
   - Kiểm bởi: tôi
 
+- [ ] 69. Nợ kỹ thuật từ review plan-phase0 (2026-11-17).
+  - Tiêu chí xong: (a) `evaluateChapterOutcome` bắt buộc tham số `lordUnitId`, bỏ fallback "quân ta đầu tiên" (`src/core/chapter/types.ts:17-23`), `tests/core/chapter.test.ts` truyền id rõ ràng; (b) unit test cho `bossStartEvent`, phần thưởng item không tồn tại (làng, chiếm thành), quân `aiRole: "pillage"` đứng trên làng đã phá; (c) unit test kiểm `saveLoad` với lord khác `marth` và khi thiếu lord; (d) cờ chỉ quân cướp làng: giữ `aiRole` hay thêm cờ ở class. Tất cả PASS trong gate.
+  - Kết quả: CHỜ NGƯỜI DÙNG: (a) và (c) sửa test có sẵn/đổi chữ ký hàm, cần chủ dự án duyệt; (d) cần quyết định.
+  - Kiểm bởi: subagent
+
 ## Giai đoạn 4 trở đi: mở rộng
+
+- [ ] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
+  - Tiêu chí xong: Antigravity làm theo `Water-Emblem/tools/fe3_map_reference/README.md` trên nhánh `agy/fe3-ch4-map`: có `data/reference/fe3/<map-id>.json` và `data/maps/<map-id>.json`; `compare.mjs` MATCH; test, build PASS; không sửa file ngoài phạm vi. Claude kiểm độc lập: tự trích lại lưới từ sơ đồ và so từng ô, đối chiếu kích thước/công trình với ảnh gốc, kiểm định dạng và phạm vi file; báo chủ dự án chất lượng.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Giao Antigravity (`agy`, model gemini-3.8-flash-high) ngày 2026-11-17; prompt ở `work/plan-phase0/agy-ch4-prompt.md`.
+  - Kiểm bởi: tôi
 
 - [ ] 34. Triển khai reclass và giới hạn class từ Chương 4.
   - Tiêu chí xong: Đối chiếu nhóm class FE11 với class Water Emblem; cho reclass tại màn chuẩn bị từ Chương 4, giữ level/EXP/rank theo luật đã chốt; test core, save và trình duyệt PASS khi Chương 4 có dữ liệu.
