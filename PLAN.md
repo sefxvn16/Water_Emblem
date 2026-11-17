@@ -52,9 +52,9 @@ Quy tắc làm việc, kiến trúc và định dạng mục: theo `AGENTS.md`. 
   - Kết quả: PASS: Lưới tham chiếu lập độc lập từ sơ đồ chirimenzeyo (đọc màu từng ô bằng canvas trên trình duyệt, ánh xạ theo chú giải từng chương) và kiểm chéo kích thước/công trình với ảnh `Original/01_Maps/Book_1/Cm_fe03_b1_{1,2,3}.png` (16px/ô, viền 1 ô): `Water-Emblem/data/reference/fe3/chapter_0{1,2,3}_*.json`, 30×13, 30×15, 30×20, không còn màu chưa xác định. Quy trình và script: `Water-Emblem/tools/fe3_map_reference/` (README, `extract_diagram.js`, `compare.mjs`). Commit `9a4b437`.
   - Kiểm bởi: subagent
 
-- [ ] 52. So khớp JSON bản đồ với bảng tham chiếu bằng test.
+- [x] 52. So khớp JSON bản đồ với bảng tham chiếu bằng test.
   - Tiêu chí xong: Unit test so từng ô `data/maps/<map-id>.json` với bảng của mục 51; số ô lệch bằng 0, hoặc mỗi ô lệch có lý do được chủ dự án duyệt và ghi tại đây; ô lệch nào sửa được thì sửa trong JSON.
-  - Kết quả: CHỜ NGƯỜI DÙNG: `node tools/fe3_map_reference/compare.mjs` tìm ra 11 ô lệch cùng một lỗi (pháo đài 砦 ghi thành `rock`), đã sửa thành `fort`, nay báo MATCH cả 3 chương (commit `9a4b437`). Còn thiếu unit test Vitest chạy phép so này trong gate. Terrain `rock` trong `data/terrains.json` không còn ô nào dùng: giữ hay xóa?
+  - Kết quả: PASS: `Water-Emblem/tests/core/fe3MapReference.test.ts` so từng ô của mọi `data/maps/<id>.json` với `data/reference/fe3/<id>.json` (4 bản đồ) và kiểm chính file tham chiếu hợp lệ (đủ hàng, đủ cột, mọi ký tự có trong legend); terrain `rock` đã xóa khỏi `terrains.json` và `terrainStyle2d.ts` vì 11 ô cũ là pháo đài theo chú giải FE3 và không bản đồ FE3 nào (atlas 44 bản đồ) có loại đá. Save cũ không bị ảnh hưởng (save không lưu địa hình). Commit `a391391`, `86f3a9f`; Vitest 132/132, build PASS, Playwright 20/20 (verify 1 trên `86f3a9f`).
   - Kiểm bởi: tôi
 
 - [ ] 53. Đối chiếu quân, vật thể và sự kiện Chương 1–3 với FE3.
@@ -135,10 +135,15 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: Có bao nhiêu mức độ khó, và mỗi mức đổi những gì?
   - Kiểm bởi: tôi
 
-- [ ] 69. Nợ kỹ thuật từ review plan-phase0 (2026-11-17).
+- [x] 69. Nợ kỹ thuật từ review plan-phase0 (2026-11-17).
   - Tiêu chí xong: (a) `evaluateChapterOutcome` bắt buộc tham số `lordUnitId`, bỏ fallback "quân ta đầu tiên" (`src/core/chapter/types.ts:17-23`), `tests/core/chapter.test.ts` truyền id rõ ràng; (b) unit test cho `bossStartEvent`, phần thưởng item không tồn tại (làng, chiếm thành), quân `aiRole: "pillage"` đứng trên làng đã phá; (c) unit test kiểm `saveLoad` với lord khác `marth` và khi thiếu lord; (d) cờ chỉ quân cướp làng: giữ `aiRole` hay thêm cờ ở class. Tất cả PASS trong gate.
-  - Kết quả: CHỜ NGƯỜI DÙNG: (a) và (c) sửa test có sẵn/đổi chữ ký hàm, cần chủ dự án duyệt; (d) cần quyết định.
+  - Kết quả: PASS: (a) `evaluateChapterOutcome` bắt buộc `seizeCommandUsed` và `lordUnitId`, bỏ fallback; `tests/core/chapter.test.ts` chỉ thêm tham số `'marth'` (chủ dự án duyệt 2026-11-17), không đổi assertion; (b) `tests/core/chapterEventsExtra.test.ts` 6 test (bossStartEvent, item thưởng không tồn tại, cướp làng đã phá, quân không cướp đứng trên làng); (c) `tests/core/saveLoadLord.test.ts` 2 test lord khác `marth`; (d) giữ cướp làng theo `aiRole`, ghi trong `Game_Design/battle.md`. Commit `735d112`, `86f3a9f`; Vitest 132/132, build PASS, Playwright 20/20; review PASS WITH NOTES.
   - Kiểm bởi: subagent
+
+- [ ] 70. Thiết kế cao độ cho cơ chế lợi thế cao độ (V07) sau khi đặt cao độ FE3 về 0.
+  - Tiêu chí xong: Ngày 2026-11-17 cao độ Chương 1–4 được đặt về 0 vì FE3 không có dữ liệu cao độ (luật chơi không đọc cao độ; `boardView` chép sang mô hình, 3D dùng để dựng độ cao ô nên đồi Ch1 nay phẳng trong 3D). Cần: chốt luật V07 trong `battle.md`, quy tắc gán cao độ (ví dụ theo loại địa hình hoặc thiết kế tay) và ghi rõ đây là dữ liệu tự thiết kế, không phải FE3; sửa `Game_Design/art_ui.md` dòng 7 và `overview.md` dòng 18 đang mô tả "cao độ 0–2" cho khớp.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Gắn với mục 61 (chốt luật nhóm vị trí). Cao độ lấy theo loại địa hình hay thiết kế từng bản đồ?
+  - Kiểm bởi: tôi
 
 ## Giai đoạn 4 trở đi: mở rộng
 

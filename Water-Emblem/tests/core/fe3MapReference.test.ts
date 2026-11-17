@@ -30,6 +30,12 @@ describe('game maps match FE3 reference grids', () => {
     const map = readJson<GameMap>(join(dataDir, 'maps', `${ref.mapId}.json`));
     expect([map.width, map.height]).toEqual([ref.width, ref.height]);
     expect(map.grid.length).toBe(ref.height);
+    // The reference itself must be well-formed, or a broken file could pass silently.
+    expect(ref.rows.length).toBe(ref.height);
+    for (const row of ref.rows) {
+      expect(row.length).toBe(ref.width);
+      for (const code of row) expect(ref.legend[code], `legend has no entry for '${code}'`).toBeDefined();
+    }
     const diffs: string[] = [];
     for (let y = 0; y < ref.height; y++) {
       for (let x = 0; x < ref.width; x++) {

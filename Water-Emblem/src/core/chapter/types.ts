@@ -13,7 +13,7 @@ export interface ChapterObjective {
 export function evaluateChapterOutcome(
   units: readonly GridUnit[],
   objective: ChapterObjective,
-  seizeCommandUsed = false,
+  seizeCommandUsed: boolean,
   lordUnitId: string,
 ): ChapterOutcome {
   // Defeat when the lord falls.
