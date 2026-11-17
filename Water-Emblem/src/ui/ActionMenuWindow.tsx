@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import type { Position } from '../core/grid/types';
+import { HUD_CLEAR_BOTTOM, getTileRect } from './tileAnchor';
 
 export interface PendingActions {
   unitName: string | undefined;
@@ -11,6 +13,8 @@ export interface PendingActions {
 }
 
 interface ActionMenuWindowProps {
+  /** Tile of the acting unit; the menu opens beside it. Null or not on screen (3D view) uses the top-right corner. */
+  anchorTile: Position | null;
   mountLabel: string | null;
   actions: PendingActions | null;
   onToggleMount: () => void;
@@ -52,16 +56,39 @@ const endStyle = (backgroundColor: string): React.CSSProperties => ({
   minHeight: '40px',
 });
 
+const MENU_WIDTH = 240;
+const MENU_GAP = 8;
+const HUD_CLUSTER_WIDTH = 200;
+
 export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
   const { mountLabel, actions } = props;
-  if (mountLabel === null && actions === null) return null;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const anchor = getTileRect(props.anchorTile);
+  const hidden = mountLabel === null && actions === null;
+  useLayoutEffect(() => {
+    const box = rootRef.current;
+    let next: { left: number; top: number } | null = null;
+    if (box && anchor) {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      let left = anchor.right + MENU_GAP;
+      if (left + MENU_WIDTH > vw - MENU_GAP) left = anchor.left - MENU_GAP - MENU_WIDTH;
+      left = Math.max(MENU_GAP, left);
+      const bottomLimit = left + MENU_WIDTH > vw - HUD_CLUSTER_WIDTH ? vh - HUD_CLEAR_BOTTOM : vh - MENU_GAP;
+      const top = Math.max(MENU_GAP, Math.min(anchor.top, bottomLimit - box.offsetHeight));
+      next = { left, top };
+    }
+    setPos((prev) => (prev?.left === next?.left && prev?.top === next?.top ? prev : next));
+  });
+  if (hidden) return null;
   return (
     <div
+      ref={rootRef}
       style={{
         position: 'fixed',
-        top: '16px',
-        right: '28px',
-        width: '240px',
+        ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { top: '16px', right: '28px' }),
+        width: `${MENU_WIDTH}px`,
         maxHeight: 'calc(100vh - 160px)',
         overflowY: 'auto',
         boxSizing: 'border-box',

@@ -1203,6 +1203,7 @@ export const App: React.FC = () => {
       )}
 
       <ActionMenuWindow
+        anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
           selectedExtUnit && !pendingMovePos && !combatForecast
             && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
