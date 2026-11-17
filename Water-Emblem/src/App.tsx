@@ -45,6 +45,11 @@ import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
+import { DialogueBox } from './ui/DialogueBox';
+import { BattlePreparationModal } from './ui/BattlePreparationModal';
+import { UnitHoverWindow } from './ui/UnitHoverWindow';
+import { CombatResultPopup } from './ui/CombatResultPopup';
+import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
 
 const chapterMaps: Record<string, MapData> = {
   chapter_01: talysMapRaw as MapData,
@@ -64,321 +69,6 @@ const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_01: ch01Dialogues as ChapterDialogueData,
   chapter_02: ch02Dialogues as ChapterDialogueData,
   chapter_03: ch03Dialogues as ChapterDialogueData,
-};
-
-interface DialogueCutsceneModalProps {
-  dialogues: readonly DialogueLine[];
-  title: string;
-  themeColor?: 'blue' | 'amber' | 'green';
-  actionButtonText: string;
-  summaryBox?: React.ReactNode;
-  onConfirm: () => void;
-}
-
-const DialogueCutsceneModal: React.FC<DialogueCutsceneModalProps> = ({
-  dialogues,
-  title,
-  themeColor = 'blue',
-  actionButtonText,
-  summaryBox,
-  onConfirm,
-}) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [displayedLength, setDisplayedLength] = useState(0);
-
-  const safeDialogues = dialogues.length > 0 ? dialogues : [{ speaker: 'Narrator', text: '...', avatarUrl: '' }];
-  const currentLine = safeDialogues[Math.min(currentStep, safeDialogues.length - 1)]!;
-  const fullText = currentLine.text || '';
-  const isTyping = displayedLength < fullText.length;
-  const isLast = currentStep >= safeDialogues.length - 1;
-
-  useEffect(() => {
-    setDisplayedLength(0);
-    const timer = setInterval(() => {
-      setDisplayedLength((prev) => {
-        if (prev >= fullText.length) {
-          clearInterval(timer);
-          return prev;
-        }
-        return Math.min(prev + 4, fullText.length);
-      });
-    }, 15);
-    return () => clearInterval(timer);
-  }, [currentStep, fullText]);
-
-  const handleAdvance = () => {
-    if (isTyping) {
-      setDisplayedLength(fullText.length);
-    } else if (!isLast) {
-      soundManager.playSfx('cursor');
-      setCurrentStep((prev) => prev + 1);
-    } else {
-      soundManager.playSfx('select');
-      onConfirm();
-    }
-  };
-
-  const theme = {
-    blue: {
-      border: '#3b82f6',
-      cardBg: '#0f172a',
-      balloonBg: '#1e293b',
-      balloonBorder: '#334155',
-      nameColor: '#60a5fa',
-      nameTagBg: '#1e3a8a',
-      btnBg: '#2563eb',
-      btnBorder: '#3b82f6',
-      btnShadow: 'rgba(37,99,235,0.4)',
-    },
-    amber: {
-      border: '#f59e0b',
-      cardBg: '#1c1917',
-      balloonBg: '#292524',
-      balloonBorder: '#44403c',
-      nameColor: '#fbbf24',
-      nameTagBg: '#78350f',
-      btnBg: '#d97706',
-      btnBorder: '#f59e0b',
-      btnShadow: 'rgba(217,119,6,0.4)',
-    },
-    green: {
-      border: '#22c55e',
-      cardBg: '#052e16',
-      balloonBg: '#064e3b',
-      balloonBorder: '#047857',
-      nameColor: '#86efac',
-      nameTagBg: '#022c22',
-      btnBg: '#16a34a',
-      btnBorder: '#22c55e',
-      btnShadow: 'rgba(22,163,74,0.4)',
-    },
-  }[themeColor];
-
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(0,0,0,0.85)',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1200,
-        padding: '16px',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div
-        style={{
-          width: 'min(720px, 95vw)',
-          backgroundColor: theme.cardBg,
-          border: `2px solid ${theme.border}`,
-          borderRadius: '14px',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.85)',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {/* Header bar */}
-        <div
-          style={{
-            padding: '12px 18px',
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            borderBottom: `1px solid ${theme.border}44`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            gap: '12px',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <h2 style={{ margin: 0, color: theme.nameColor, fontSize: '17px', fontWeight: 'bold' }}>
-              {title}
-            </h2>
-            <span style={{ fontSize: '12px', color: '#94a3b8', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '12px' }}>
-              {currentStep + 1}/{safeDialogues.length}
-            </span>
-          </div>
-
-          {/* Quick Action / Confirm Button */}
-          <button
-            onClick={onConfirm}
-            title={actionButtonText}
-            style={{
-              padding: '7px 15px',
-              backgroundColor: theme.btnBg,
-              border: `1px solid ${theme.btnBorder}`,
-              borderRadius: '6px',
-              color: '#fff',
-              fontWeight: 'bold',
-              fontSize: '13px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: `0 2px 8px ${theme.btnShadow}`,
-            }}
-          >
-            {actionButtonText}
-          </button>
-        </div>
-
-        {/* Dialogue Interaction Body (Fire Emblem visual novel style) */}
-        <div
-          onClick={handleAdvance}
-          style={{
-            padding: '20px',
-            cursor: 'pointer',
-            userSelect: 'none',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '14px',
-            position: 'relative',
-          }}
-        >
-          {/* Visually hidden full cutscene transcript for screen readers and accessibility */}
-          <div
-            style={{
-              position: 'absolute',
-              width: '1px',
-              height: '1px',
-              padding: 0,
-              margin: '-1px',
-              overflow: 'hidden',
-              clip: 'rect(0, 0, 0, 0)',
-              whiteSpace: 'nowrap',
-              border: 0,
-            }}
-          >
-            {safeDialogues.map((line, idx) => (
-              <p key={idx}>{line.speaker}: {line.text}</p>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-            {/* Character Portrait */}
-            {currentLine.avatarUrl ? (
-              <img
-                src={currentLine.avatarUrl}
-                alt={currentLine.speaker}
-                style={{
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: '10px',
-                  border: `3px solid ${theme.border}`,
-                  objectFit: 'cover',
-                  objectPosition: 'top',
-                  backgroundColor: '#020617',
-                  flexShrink: 0,
-                  boxShadow: '0 4px 14px rgba(0,0,0,0.6)',
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: '90px',
-                  height: '90px',
-                  borderRadius: '10px',
-                  border: `3px solid ${theme.border}`,
-                  backgroundColor: '#1e293b',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '28px',
-                  flexShrink: 0,
-                }}
-              >
-                👤
-              </div>
-            )}
-
-            {/* Speaker Name Tag & Dialogue Balloon */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <div
-                style={{
-                  alignSelf: 'flex-start',
-                  backgroundColor: theme.nameTagBg,
-                  border: `1px solid ${theme.border}`,
-                  borderRadius: '6px',
-                  padding: '4px 12px',
-                  color: theme.nameColor,
-                  fontWeight: 'bold',
-                  fontSize: '15px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
-                }}
-              >
-                {currentLine.speaker}
-              </div>
-
-              <div
-                style={{
-                  backgroundColor: theme.balloonBg,
-                  border: `1px solid ${theme.balloonBorder}`,
-                  borderRadius: '10px',
-                  padding: '14px 18px',
-                  minHeight: '84px',
-                  boxSizing: 'border-box',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <div style={{ fontSize: '15px', lineHeight: '1.65', color: '#f8fafc', position: 'relative' }}>
-                  {/* Visually hidden full text for screen readers and accessibility */}
-                  <span
-                    style={{
-                      position: 'absolute',
-                      width: '1px',
-                      height: '1px',
-                      padding: 0,
-                      margin: '-1px',
-                      overflow: 'hidden',
-                      clip: 'rect(0, 0, 0, 0)',
-                      whiteSpace: 'nowrap',
-                      border: 0,
-                    }}
-                  >
-                    {fullText}
-                  </span>
-                  <span aria-hidden="true">
-                    "{fullText.slice(0, displayedLength)}"
-                    {isTyping && <span style={{ opacity: 0.7, marginLeft: '2px', color: theme.nameColor }}>▌</span>}
-                  </span>
-                </div>
-
-                {!isTyping && !isLast && (
-                  <div
-                    style={{
-                      alignSelf: 'flex-end',
-                      color: theme.nameColor,
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      marginTop: '6px',
-                    }}
-                  >
-                    ▼ Click to advance...
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Extra summary content (Objective info or reward text) */}
-          {summaryBox && (
-            <div style={{ marginTop: '4px' }}>
-              {summaryBox}
-            </div>
-          )}
-
-          <div style={{ fontSize: '12px', color: '#94a3b8', textAlign: 'center', fontStyle: 'italic' }}>
-            {isLast ? '✨ Dialogue complete. Click the button above to proceed.' : '💡 Click anywhere on the box to advance, or click the button above to skip.'}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 export const App: React.FC = () => {
@@ -414,9 +104,12 @@ export const App: React.FC = () => {
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [originalPos, setOriginalPos] = useState<Position | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
+  const [inspectedTile, setInspectedTile] = useState<Position | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
   const [combatLog, setCombatLog] = useState<string[]>([]);
+  const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
+  const popupIdRef = useRef(0);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [gold, setGold] = useState<number>(0);
   const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
@@ -699,7 +392,10 @@ export const App: React.FC = () => {
   const handleConfirmAttack = () => {
     if (!combatForecast || !selectedExtUnit || !selectedTarget) return;
 
+    const hpBefore = { attacker: selectedExtUnit.stats.hp, defender: selectedTarget.stats.hp };
     const result = executeCombat(combatForecast, defaultRNG);
+    const popup = buildCombatPopup(++popupIdRef.current, selectedExtUnit, selectedTarget, hpBefore, result);
+    setPopupQueue((queue) => [...queue, popup]);
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
@@ -929,7 +625,13 @@ export const App: React.FC = () => {
         enemy.unit.position = { ...decision.movePosition };
         logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
+        const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
+        const hpBefore = { attacker: enemy.stats.hp, defender: targetEntry?.stats.hp ?? 0 };
         const result = executeCombat(decision.forecast, defaultRNG);
+        if (targetEntry) {
+          const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, hpBefore, result);
+          setPopupQueue((queue) => [...queue, popup]);
+        }
         for (const ev of result.events) {
           const atk = phaseUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
           const def = phaseUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
@@ -1099,6 +801,10 @@ export const App: React.FC = () => {
       )
     : null;
 
+  const inspectedUnit = inspectedTile
+    ? extendedUnits.find((u) => !u.unit.isDead && u.unit.position.x === inspectedTile.x && u.unit.position.y === inspectedTile.y)
+    : undefined;
+
   return (
     <div>
       {/* Map fills the whole viewport; this is the only scroll container */}
@@ -1123,12 +829,14 @@ export const App: React.FC = () => {
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
               onTileHover={(x, y) => setHoveredTile({ x, y })}
+              onTileInspect={(x, y) => setInspectedTile({ x, y })}
             />
           </div>
         )}
       </div>
 
       <BattleSettingsMenu
+        forceCloseKey={[currentChapterId, showPreparation, showStoryIntro, activeVillageDialogue !== null, chapterOutcome, activeScreen].join('|')}
         chapterId={currentChapterId}
         chapterName={currentChapter.name}
         objectiveText={chapterObjective.description ?? ''}
@@ -1183,6 +891,7 @@ export const App: React.FC = () => {
       )}
 
       <ActionMenuWindow
+        anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
           selectedExtUnit && !pendingMovePos && !combatForecast
             && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
@@ -1214,12 +923,23 @@ export const App: React.FC = () => {
         onCancelMove={handleCancelMove}
       />
 
-      {hoveredUnit && hoveredTile && (
-        <UnitInspectorWindow
+      <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
+
+      {hoveredUnit && hoveredTile && !combatForecast && !inspectedUnit && (
+        <UnitHoverWindow
           unit={hoveredUnit}
-          allUnits={extendedUnits}
           terrainId={hoveredTerrainId ?? 'plains'}
           tile={hoveredTile}
+        />
+      )}
+
+      {inspectedUnit && inspectedTile && (
+        <UnitInspectorWindow
+          unit={inspectedUnit}
+          allUnits={extendedUnits}
+          terrainId={mapData.grid[inspectedTile.y]?.[inspectedTile.x] ?? 'plains'}
+          tile={inspectedTile}
+          onClose={() => setInspectedTile(null)}
         />
       )}
 
@@ -1245,69 +965,22 @@ export const App: React.FC = () => {
       )}
 
       {showPreparation && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1300, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
-          <section style={{ width: 'min(680px, 92vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #334155', boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
-            <h2 style={{ margin: '0 0 10px 0', color: '#60a5fa', fontSize: '20px' }}>⚔️ Battle Preparation: {currentChapter.name}</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>Select units for deployment. {lordName} is required commander; unselected units remain in reserve.</p>
-            <div style={{ backgroundColor: '#0f172a', padding: '8px 12px', borderRadius: '6px', marginBottom: '14px', fontSize: '13px', fontWeight: 'bold', color: '#38bdf8' }}>
-              Deployed: {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length} units
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player').map((entry) => (
-                <label
-                  key={entry.unit.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    cursor: entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead ? 'default' : 'pointer',
-                    fontSize: '13px',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
-                    disabled={entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead}
-                    onChange={() => toggleDeployment(entry.unit.id)}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <span style={{ color: entry.unit.isDead ? '#94a3b8' : '#f8fafc', fontWeight: entry.unit.id === currentChapter.lordUnitId ? 'bold' : 'normal' }}>
-                    {entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.name}
-                    {entry.unit.id === currentChapter.lordUnitId ? ' (Commander - Required)' : ''}
-                    {entry.unit.isDead ? ' (Fallen)' : ''}
-                  </span>
-                </label>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowPreparation(false)}
-              style={{
-                marginTop: '20px',
-                width: '100%',
-                padding: '12px 24px',
-                backgroundColor: '#2563eb',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(37,99,235,0.4)',
-              }}
-            >
-              Start Chapter ➔
-            </button>
-          </section>
-        </div>
+        <BattlePreparationModal
+          chapterName={currentChapter.name}
+          lordName={lordName}
+          lordUnitId={currentChapter.lordUnitId}
+          units={[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player')}
+          deployedIds={new Set(extendedUnits.map(({ unit }) => unit.id))}
+          deployedCount={extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}
+          deploymentLimit={currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}
+          onToggle={toggleDeployment}
+          onStart={() => setShowPreparation(false)}
+        />
       )}
 
       {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
       {showStoryIntro && activeScreen === 'none' && (
-        <DialogueCutsceneModal
+        <DialogueBox
           dialogues={currentDialogues.opening}
           title={`📜 ${currentChapter.name}`}
           themeColor="blue"
@@ -1325,7 +998,7 @@ export const App: React.FC = () => {
 
       {/* Village Dialogue Modal (Fire Emblem Visual Novel Style) */}
       {activeVillageDialogue && (
-        <DialogueCutsceneModal
+        <DialogueBox
           dialogues={activeVillageDialogue.lines}
           title={`🏡 ${activeVillageDialogue.villageName.toUpperCase()}`}
           themeColor="amber"
@@ -1341,7 +1014,7 @@ export const App: React.FC = () => {
 
       {/* Victory Modal with Ending Story Cutscene (Fire Emblem Visual Novel Style) */}
       {chapterOutcome === 'victory' && (
-        <DialogueCutsceneModal
+        <DialogueBox
           dialogues={currentDialogues.ending}
           title="🏆 STAGE CLEAR!"
           themeColor="green"

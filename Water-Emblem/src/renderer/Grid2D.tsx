@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import type { BoardView } from '../core/grid/boardView';
 import type { UnitFaction } from '../core/grid/types';
 import { TERRAIN_COLORS } from './terrainStyle2d';
@@ -15,11 +15,22 @@ interface Grid2DProps {
   getUnitDisplay: (unitId: string) => UnitDisplay | undefined;
   onTileClick: (x: number, y: number) => void;
   onTileHover: (x: number, y: number) => void;
+  /** Right-click or ~500 ms touch hold on a tile. */
+  onTileInspect?: (x: number, y: number) => void;
 }
+
+const LONG_PRESS_MS = 500;
 
 const FALLBACK_TERRAIN = { bg: '#333', icon: '' };
 
-export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileClick, onTileHover }) => (
+export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileClick, onTileHover, onTileInspect }) => {
+  const pressTimer = useRef<number | null>(null);
+  const longPressed = useRef(false);
+  const cancelPress = () => {
+    if (pressTimer.current !== null) window.clearTimeout(pressTimer.current);
+    pressTimer.current = null;
+  };
+  return (
   <div
     style={{
       display: 'grid',
@@ -43,7 +54,32 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
           <div
             key={key}
             data-testid={`tile-${x}-${y}`}
-            onClick={() => onTileClick(x, y)}
+            onClick={() => {
+              if (longPressed.current) {
+                longPressed.current = false;
+                return;
+              }
+              onTileClick(x, y);
+            }}
+            onContextMenu={(event) => {
+              event.preventDefault();
+              onTileInspect?.(x, y);
+            }}
+            onTouchStart={() => {
+              longPressed.current = false;
+              cancelPress();
+              pressTimer.current = window.setTimeout(() => {
+                pressTimer.current = null;
+                longPressed.current = true;
+                onTileInspect?.(x, y);
+              }, LONG_PRESS_MS);
+            }}
+            onTouchMove={cancelPress}
+            onTouchEnd={(event) => {
+              cancelPress();
+              if (longPressed.current && event.cancelable) event.preventDefault();
+            }}
+            onTouchCancel={cancelPress}
             onMouseEnter={() => onTileHover(x, y)}
             style={{
               position: 'relative',
@@ -131,4 +167,5 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
       }),
     )}
   </div>
-);
+  );
+};
