@@ -45,6 +45,8 @@ import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
+import { CombatResultPopup } from './ui/CombatResultPopup';
+import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
 
 const chapterMaps: Record<string, MapData> = {
   chapter_01: talysMapRaw as MapData,
@@ -417,6 +419,8 @@ export const App: React.FC = () => {
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
   const [combatLog, setCombatLog] = useState<string[]>([]);
+  const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
+  const popupIdRef = useRef(0);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [gold, setGold] = useState<number>(0);
   const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
@@ -699,7 +703,10 @@ export const App: React.FC = () => {
   const handleConfirmAttack = () => {
     if (!combatForecast || !selectedExtUnit || !selectedTarget) return;
 
+    const hpBefore = { attacker: selectedExtUnit.stats.hp, defender: selectedTarget.stats.hp };
     const result = executeCombat(combatForecast, defaultRNG);
+    const popup = buildCombatPopup(++popupIdRef.current, selectedExtUnit, selectedTarget, hpBefore, result);
+    setPopupQueue((queue) => [...queue, popup]);
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
@@ -929,7 +936,13 @@ export const App: React.FC = () => {
         enemy.unit.position = { ...decision.movePosition };
         logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
+        const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
+        const hpBefore = { attacker: enemy.stats.hp, defender: targetEntry?.stats.hp ?? 0 };
         const result = executeCombat(decision.forecast, defaultRNG);
+        if (targetEntry) {
+          const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, hpBefore, result);
+          setPopupQueue((queue) => [...queue, popup]);
+        }
         for (const ev of result.events) {
           const atk = phaseUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
           const def = phaseUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
@@ -1213,6 +1226,8 @@ export const App: React.FC = () => {
         onWait={handleConfirmWait}
         onCancelMove={handleCancelMove}
       />
+
+      <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
 
       {hoveredUnit && hoveredTile && (
         <UnitInspectorWindow
