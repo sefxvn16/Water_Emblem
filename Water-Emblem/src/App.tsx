@@ -45,6 +45,7 @@ import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
+import { UnitHoverWindow } from './ui/UnitHoverWindow';
 import { CombatResultPopup } from './ui/CombatResultPopup';
 import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
 
@@ -416,6 +417,7 @@ export const App: React.FC = () => {
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [originalPos, setOriginalPos] = useState<Position | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
+  const [inspectedTile, setInspectedTile] = useState<Position | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
   const [combatLog, setCombatLog] = useState<string[]>([]);
@@ -1112,6 +1114,10 @@ export const App: React.FC = () => {
       )
     : null;
 
+  const inspectedUnit = inspectedTile
+    ? extendedUnits.find((u) => !u.unit.isDead && u.unit.position.x === inspectedTile.x && u.unit.position.y === inspectedTile.y)
+    : undefined;
+
   return (
     <div>
       {/* Map fills the whole viewport; this is the only scroll container */}
@@ -1136,6 +1142,7 @@ export const App: React.FC = () => {
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
               onTileHover={(x, y) => setHoveredTile({ x, y })}
+              onTileInspect={(x, y) => setInspectedTile({ x, y })}
             />
           </div>
         )}
@@ -1229,12 +1236,21 @@ export const App: React.FC = () => {
 
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
 
-      {hoveredUnit && hoveredTile && (
-        <UnitInspectorWindow
+      {hoveredUnit && hoveredTile && !combatForecast && !inspectedUnit && (
+        <UnitHoverWindow
           unit={hoveredUnit}
-          allUnits={extendedUnits}
           terrainId={hoveredTerrainId ?? 'plains'}
           tile={hoveredTile}
+        />
+      )}
+
+      {inspectedUnit && inspectedTile && (
+        <UnitInspectorWindow
+          unit={inspectedUnit}
+          allUnits={extendedUnits}
+          terrainId={mapData.grid[inspectedTile.y]?.[inspectedTile.x] ?? 'plains'}
+          tile={inspectedTile}
+          onClose={() => setInspectedTile(null)}
         />
       )}
 

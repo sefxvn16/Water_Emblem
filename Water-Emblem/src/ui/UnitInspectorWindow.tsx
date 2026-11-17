@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import itemsJson from '../../data/items.json';
 import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
@@ -6,33 +6,52 @@ import { getClassDefinition } from '../core/class/classRules';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
-import { getEffectiveGrowthRates } from '../core/progression/experience';
 
 interface UnitInspectorWindowProps {
   unit: ExtendedUnitState;
   allUnits: readonly ExtendedUnitState[];
   terrainId: string;
   tile: Position;
+  onClose: () => void;
 }
 
-export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({ unit: u, allUnits, terrainId, tile }) => {
+export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({ unit: u, allUnits, terrainId, tile, onClose }) => {
+  const rootRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const shownAt = performance.now();
+    const onMouseDown = (event: MouseEvent) => {
+      if (event.timeStamp < shownAt) return;
+      if (event.target instanceof Node && rootRef.current && !rootRef.current.contains(event.target)) onClose();
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onClose]);
   const units = allUnits.map((item) => item.unit);
   const combat = calculateDisplayedCombatStats(u.unit, u.stats, u.weapon, terrainId, defaultTerrainRegistry, units);
   const hoveredTerrain = defaultTerrainRegistry.get(terrainId);
-  const growths = u.growths ? getEffectiveGrowthRates(u) : null;
   const sup = u.unit.faction === 'player' ? calculateSupportBonus(u.unit, units) : null;
   return (
     <div
+      ref={rootRef}
+      role="dialog"
+      aria-label={`${u.unit.name} details`}
       style={{
         position: 'fixed',
-        bottom: '16px',
-        left: '16px',
-        width: '300px',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '320px',
         maxHeight: 'calc(100vh - 32px)',
         overflowY: 'auto',
         boxSizing: 'border-box',
-        zIndex: 800,
-        pointerEvents: 'none',
+        zIndex: 960,
         backgroundColor: '#2a2a2a',
         padding: '12px',
         borderRadius: '8px',
@@ -40,9 +59,16 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({ unit: 
         boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
       }}
     >
-      <h3 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#FFD54F' }}>
-        👤 Unit & Terrain Info
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 8px 0' }}>
+        <h3 style={{ margin: 0, fontSize: '14px', color: '#FFD54F' }}>👤 Unit Details</h3>
+        <button
+          onClick={onClose}
+          aria-label="Close unit details"
+          style={{ width: '28px', height: '28px', padding: 0, backgroundColor: '#444', border: 'none', borderRadius: '4px', color: '#fff', fontSize: '16px', cursor: 'pointer' }}
+        >
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
       <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '8px' }}>
         {u.avatarUrl && (
           <img
@@ -85,15 +111,6 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({ unit: 
           <div>Res: <strong style={{ color: '#facc15' }}>{u.stats.res}</strong></div>
           <div>Mov: <strong style={{ color: '#facc15' }}>{u.unit.mov}</strong></div>
         </div>
-
-        {growths && (
-          <div style={{ fontSize: '12px', color: '#90caf9', marginTop: '6px' }}>
-            <strong>Effective Growths:</strong>
-            <div style={{ color: '#cbd5e1' }}>
-              HP {growths.hp}% | Str {growths.str}% | Skill {growths.skill}% | Spd {growths.spd}% | Def {growths.def}%
-            </div>
-          </div>
-        )}
 
         {sup && (sup.hit > 0 || sup.avoid > 0 || sup.crit > 0) && (
           <div style={{ backgroundColor: '#1e3a8a', padding: '6px 10px', borderRadius: '6px', marginTop: '6px', fontSize: '12px', color: '#bfdbfe', border: '1px solid #3b82f6' }}>
