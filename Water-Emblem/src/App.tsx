@@ -17,6 +17,8 @@ import { calculateSupportBonus } from './core/combat/support';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
+import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
+import { buildBoardView } from './core/grid/boardView';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
@@ -58,26 +60,6 @@ const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_01: ch01Dialogues as ChapterDialogueData,
   chapter_02: ch02Dialogues as ChapterDialogueData,
   chapter_03: ch03Dialogues as ChapterDialogueData,
-};
-
-const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }> = {
-  plains: { bg: '#4a7c59', label: 'Plains', icon: '🌿' },
-  forest: { bg: '#2d5a3f', label: 'Forest', icon: '🌲' },
-  mountain: { bg: '#8b7355', label: 'Mountain', icon: '⛰️' },
-  peak: { bg: '#5c4d3c', label: 'Peak', icon: '🏔️' },
-  fort: { bg: '#607d8b', label: 'Fort', icon: '🏰' },
-  bridge: { bg: '#a08260', label: 'Bridge', icon: '🪵' },
-  river: { bg: '#2b5876', label: 'River', icon: '🌊' },
-  sea: { bg: '#1e3c72', label: 'Sea', icon: '🌊' },
-  gate: { bg: '#c0392b', label: 'Gate', icon: '⛩️' },
-  village: { bg: '#d97706', label: 'Village', icon: '🏡' },
-  wall: { bg: '#474747', label: 'Stone Wall', icon: '🧱' },
-  rock: { bg: '#6b5847', label: 'Rock', icon: '🪨' },
-  rubble: { bg: '#545454', label: 'Rubble', icon: '🧱' },
-  road: { bg: '#b89f78', label: 'Road', icon: '🛤️' },
-  castle: { bg: '#4a5568', label: 'Castle', icon: '🏯' },
-  house: { bg: '#b45309', label: 'House', icon: '🏠' },
-  shop: { bg: '#047857', label: 'Shop', icon: '🏪' },
 };
 
 interface DialogueCutsceneModalProps {
@@ -591,6 +573,25 @@ export const App: React.FC = () => {
   const attackTargetKeys = useMemo(() => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
+
+  const boardView = buildBoardView({
+    map: mapData,
+    units: extendedUnits.map(({ unit }) => unit),
+    reachableKeys,
+    dangerZoneKeys,
+    attackTargetKeys,
+    selected: selectedUnit?.position ?? null,
+  });
+
+  const getUnitDisplay = (unitId: string): UnitDisplay | undefined => {
+    const entry = extendedUnits.find(({ unit }) => unit.id === unitId);
+    return entry && {
+      name: entry.unit.name,
+      hp: entry.stats.hp,
+      faction: entry.unit.faction,
+      hasActed: Boolean(entry.unit.hasActed),
+    };
+  };
 
   const talkTarget = selectedExtUnit && pendingMovePos
     ? extendedUnits.find(({ unit }) => currentChapter.recruitments.some((rule) =>
@@ -1475,144 +1476,12 @@ export const App: React.FC = () => {
               onTileHover={(x, y) => setHoveredTile({ x, y })}
             />
           ) : (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${mapData.width}, 64px)`,
-                gridTemplateRows: `repeat(${mapData.height}, 64px)`,
-                gap: '2px',
-                backgroundColor: '#000',
-                padding: '4px',
-                borderRadius: '4px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-                maxWidth: '100%',
-                maxHeight: 'calc(100vh - 120px)',
-                overflow: 'auto',
-              }}
-            >
-              {mapData.grid.map((row, y) =>
-                row.map((terrainId, x) => {
-                  const key = `${x},${y}`;
-                  const terrain = TERRAIN_COLORS[terrainId] || { bg: '#333', label: terrainId, icon: '' };
-                  const isReachable = reachableKeys.has(key);
-                  const isDanger = dangerZoneKeys.has(key);
-                  const extUnit = extendedUnits.find(
-                    (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
-                  );
-                  const isSelected = selectedUnit && selectedUnit.position.x === x && selectedUnit.position.y === y;
-                  const isAttackTarget = attackableTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y);
-
-                  return (
-                    <div
-                      key={key}
-                      onClick={() => handleTileClick(x, y)}
-                      onMouseEnter={() => setHoveredTile({ x, y })}
-                      style={{
-                        position: 'relative',
-                        width: '64px',
-                        height: '64px',
-                        backgroundColor: terrain.bg,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        border: isSelected
-                          ? '2px solid #FFEB3B'
-                          : isAttackTarget
-                          ? '2px solid #FF1744'
-                          : '1px solid rgba(255,255,255,0.05)',
-                        boxSizing: 'border-box',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      {/* Danger zone overlay */}
-                      {isDanger && !isReachable && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(239, 83, 80, 0.25)',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      {/* Reachable tile overlay */}
-                      {isReachable && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(33, 150, 243, 0.45)',
-                            border: '1px dashed #90CAF9',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      {/* Attack target indicator */}
-                      {isAttackTarget && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            backgroundColor: 'rgba(255, 23, 68, 0.35)',
-                            pointerEvents: 'none',
-                          }}
-                        />
-                      )}
-
-                      <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
-
-                      {/* Unit display */}
-                      {extUnit && (
-                        <div
-                          style={{
-                            zIndex: 2,
-                            width: '46px',
-                            height: '46px',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            fontSize: '11px',
-                            fontWeight: 'bold',
-                            color: '#fff',
-                            backgroundColor: extUnit.unit.hasActed
-                              ? '#616161'
-                              : extUnit.unit.faction === 'player'
-                              ? '#1E88E5'
-                              : '#E53935',
-                            border: isSelected ? '2px solid #FFEB3B' : '2px solid rgba(0,0,0,0.4)',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.5)',
-                          }}
-                        >
-                          <div>{extUnit.unit.name.substring(0, 3)}</div>
-                          <div style={{ fontSize: '9px', opacity: 0.9 }}>
-                            HP:{extUnit.stats.hp}
-                          </div>
-                        </div>
-                      )}
-
-                      <span
-                        style={{
-                          position: 'absolute',
-                          bottom: '2px',
-                          right: '3px',
-                          fontSize: '9px',
-                          color: 'rgba(255,255,255,0.4)',
-                          zIndex: 1,
-                        }}
-                      >
-                        {x},{y}
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+            <Grid2D
+              board={boardView}
+              getUnitDisplay={getUnitDisplay}
+              onTileClick={handleTileClick}
+              onTileHover={(x, y) => setHoveredTile({ x, y })}
+            />
           )}
         </div>
 
