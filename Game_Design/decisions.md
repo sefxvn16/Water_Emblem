@@ -37,6 +37,10 @@ Chủ dự án chọn giao diện tối giản theo hướng Bắc Âu, ưu tiê
 
 Chủ dự án bổ sung minimap tròn ở góc trên trái theo khu vực ô chọn. Sau khi xem bản chạy, chủ dự án bỏ ba nấc zoom, chọn zoom liên tục bằng lăn chuột hoặc nút cộng/trừ dưới minimap, mặc định ở góc nhìn khu vực; mức thu nhỏ nhất vẫn phải để toàn bộ bản đồ vừa và chiếm phần lớn khung. Chi tiết thuộc `art_ui.md`.
 
+## Quyết định bố cục màn trận ngày 2026-11-17
+
+Màn trận 2D tái hiện bố cục FE3: bản đồ chiếm toàn khung hình, gần như không có gì khác. Thông tin quân, dự báo giao tranh và menu hành động là cửa sổ popup đè lên bản đồ, chỉ hiện khi cần. Các điều khiển ngoài FE3 (chọn chương, lưu/tải, World Map, Title, 2D/3D, âm thanh, Combat Log, lượt/phase) gom vào một nút Settings ở góc phải trên; riêng End Turn luôn hiện ngoài. Không thêm thành phần giao diện không có trong FE3 khi chủ dự án chưa yêu cầu. Nguồn: ảnh chụp FE3 trong `Original/04_Battle_Backgrounds/`. Quyết định này thay phần bố cục màn trận của hướng "tối giản Bắc Âu" ngày 2026-11-13; chi tiết ở `art_ui.md`.
+
 ## Quyết định về ngôn ngữ nội dung và giao diện ngày 2026-11-15
 
 Ngôn ngữ mặc định của toàn bộ trò chơi là **tiếng Anh (English)**. Không tự dịch nội dung game, tên nhân vật, class, vũ khí, vật phẩm, kỹ năng, địa hình/vật thể, mục tiêu và lời thoại sang tiếng Việt khi chủ dự án không yêu cầu. Mọi nhãn hiển thị, văn bản giao diện và dữ liệu gameplay sử dụng tiếng Anh chuẩn theo các bản Fire Emblem tham chiếu (FE3 / FE11 / FE12).

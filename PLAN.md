@@ -145,6 +145,13 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: Gắn với mục 61 (chốt luật nhóm vị trí). Cao độ lấy theo loại địa hình hay thiết kế từng bản đồ?
   - Kiểm bởi: tôi
 
+- [ ] 71. Màn trận 2D toàn màn hình theo bố cục FE3 (chủ dự án yêu cầu 2026-11-17).
+  - Tiêu chí xong: (1) Ở viewport 1366x768, Chương 1–3: bản đồ chiếm toàn khung, không còn thanh trên và cột phải; cuộn tới được ô (0,0) và ô góc dưới phải (kiểm trên trình duyệt thật). (2) Góc phải trên chỉ còn nút ⚙; menu chứa chọn chương, mục tiêu, vàng, Turn/Phase, Save/Load Game, Save Files, World Map, Title, 2D/3D, âm thanh, Combat Log. (3) Nút End Turn luôn hiện ngoài menu. (4) Dự báo giao tranh là cửa sổ đè mép trái bản đồ; menu hành động chỉ hiện sau khi di chuyển; thông tin quân/địa hình chỉ hiện khi rê lên quân. (5) Không thêm tính năng ngoài danh sách trên; `App.tsx` không dài thêm. (6) Gate PASS.
+  - Nguồn bố cục: ảnh FE3 trong `Original/04_Battle_Backgrounds/` (`UI_and_Menus/Ss_fe03_combat_forecast*.png`, `InGame_Screenshots/Ss_fe03_lower_left_corner_of_chapter_2_final.png`, `Ss_fe03_fan_translation_ch6.png`, `Ss_fe03_trade.png`).
+  - Sửa test (chủ dự án duyệt 2026-11-17): các test bấm nút đã chuyển vào menu ⚙ được thêm bước mở menu trước thao tác; không đổi điều test kiểm.
+  - Kết quả: CHƯA XONG: đang làm trên nhánh `cs/battle-fullscreen-ui` (BASE `243e2057d0a04cb93b58916ad65d6fce8a4335b2`).
+  - Kiểm bởi: subagent
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).

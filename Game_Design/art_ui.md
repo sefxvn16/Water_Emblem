@@ -18,6 +18,19 @@ Giao diện theo hướng tối giản, ưu tiên tinh thần thiết kế Bắc
 
 Ngôn ngữ hiển thị mặc định của toàn bộ trò chơi là **tiếng Anh (English)** cho tất cả nhãn UI, menu, thông báo chiến thuật, tên nhân vật, class, vũ khí, vật phẩm, địa hình và hội thoại; không tự ý dịch sang tiếng Việt trong game.
 
+## Bố cục màn trận 2D (2026-11-17)
+
+Theo `decisions.md` ngày 2026-11-17: bản đồ chiếm toàn khung và cuộn được tới mọi ô; không có thanh trên hay cột bên cố định. Đối chiếu ảnh FE3 trong `Original/04_Battle_Backgrounds/`:
+
+| Thành phần | Bố cục | Nguồn FE3 |
+|---|---|---|
+| Bản đồ | Toàn khung, không HUD thường trực | `InGame_Screenshots/Ss_fe03_lower_left_corner_of_chapter_2_final.png`, `Ss_fe03_earth_dragon_movement.png` |
+| Dự báo giao tranh | Cửa sổ đè mép trái bản đồ, chỉ số xếp dọc | `UI_and_Menus/Ss_fe03_combat_forecast.png`, `Ss_fe03_combat_forecast_01.png` |
+| Hội thoại | Khung chữ kèm chân dung đè mép trên/dưới bản đồ | `InGame_Screenshots/Ss_fe03_fan_translation_ch6.png`, `Ss_fe03_fan_translation_ch2-18.png` |
+| Trao đổi đồ | Hai cửa sổ đè lên bản đồ | `InGame_Screenshots/Ss_fe03_trade.png` |
+
+Menu hành động và thông tin quân/địa hình là popup chỉ hiện khi cần. Điều khiển không có trong FE3 nằm trong nút Settings góc phải trên; End Turn hiện ngoài. Vị trí chính xác của menu hành động và cửa sổ thông tin quân trong FE3 chưa có ảnh đối chiếu trong kho.
+
 ## Camera và hoạt cảnh
 
 Góc nhìn chính bắt đầu ở góc 3/4 để đọc bản đồ, nhưng camera xoay tự do và liên tục quanh điểm quan sát, không khóa ở bốn hướng 90°. Kéo chuột trái hoặc một ngón để di chuyển bản đồ; kéo chuột phải để xoay camera. Chỉ dẫn thao tác phải hiện rõ trong khung chơi. Camera phải giúp nhìn rõ ô, cao độ V07, cover C12 và bẫy V08; không che ô mục tiêu khi dự báo.
