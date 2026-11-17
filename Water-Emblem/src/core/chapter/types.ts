@@ -14,10 +14,13 @@ export function evaluateChapterOutcome(
   units: readonly GridUnit[],
   objective: ChapterObjective,
   seizeCommandUsed = false,
+  lordUnitId?: string,
 ): ChapterOutcome {
-  // Kiểm tra điều kiện thua: Nhân vật chính (Marth) tử trận
-  const marth = units.find((u) => u.id === 'marth');
-  if (!marth || marth.isDead) {
+  // Defeat when the lord falls. Without an explicit lord id the first player unit is the lord.
+  const lord = lordUnitId === undefined
+    ? units.find((u) => u.faction === 'player')
+    : units.find((u) => u.id === lordUnitId);
+  if (!lord || lord.isDead) {
     return 'defeat';
   }
 
@@ -33,8 +36,8 @@ export function evaluateChapterOutcome(
       return 'victory';
     }
   } else if (objective.type === 'seize' && seizeCommandUsed && objective.seizeTargetTile
-    && marth.position.x === objective.seizeTargetTile.x
-    && marth.position.y === objective.seizeTargetTile.y) {
+    && lord.position.x === objective.seizeTargetTile.x
+    && lord.position.y === objective.seizeTargetTile.y) {
     return 'victory';
   }
 

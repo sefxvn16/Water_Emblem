@@ -2,6 +2,7 @@
   "id": "test_chapter_01",
   "name": "Test Chapter: Talys Coast (8x8)",
   "mapId": "test_map_01",
+  "lordUnitId": "marth",
   "objective": {
     "type": "defeat_boss",
     "bossUnitId": "gazzak",

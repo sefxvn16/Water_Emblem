@@ -2,6 +2,7 @@
   "id": "chapter_02",
   "name": "Chapter 2: The Pirates of Galder",
   "mapId": "chapter_02_galder",
+  "lordUnitId": "marth",
   "objective": {
     "type": "seize",
     "seizeTargetTile": {

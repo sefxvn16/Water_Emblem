@@ -2,6 +2,7 @@
   "id": "chapter_01",
   "name": "Chapter 1: Marth Embarks",
   "mapId": "chapter_01_talys",
+  "lordUnitId": "marth",
   "objective": {
     "type": "seize",
     "seizeTargetTile": {
