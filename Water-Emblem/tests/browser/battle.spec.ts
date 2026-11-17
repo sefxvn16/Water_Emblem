@@ -180,6 +180,8 @@ test('3D move and wait, two turns, and IndexedDB save/load', async ({ page }) =>
   await page.goto('/');
   await enterBattle(page);
   await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+  // 2D is the default view (PLAN.md item 47); switch to 3D explicitly for this 3D test.
+  await page.getByRole('button', { name: /3D View/i }).click();
   await expect(page.locator('canvas')).toBeVisible();
 
   const canvas = page.locator('canvas');
