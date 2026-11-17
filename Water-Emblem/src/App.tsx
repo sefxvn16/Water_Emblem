@@ -45,6 +45,7 @@ import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
+import { BattlePreparationModal } from './ui/BattlePreparationModal';
 import { UnitHoverWindow } from './ui/UnitHoverWindow';
 import { CombatResultPopup } from './ui/CombatResultPopup';
 import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
@@ -1278,64 +1279,17 @@ export const App: React.FC = () => {
       )}
 
       {showPreparation && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 1300, background: 'rgba(0,0,0,0.85)', display: 'grid', placeItems: 'center' }}>
-          <section style={{ width: 'min(680px, 92vw)', maxHeight: '85vh', overflowY: 'auto', background: '#172033', color: '#fff', padding: '24px', borderRadius: '12px', border: '1px solid #334155', boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
-            <h2 style={{ margin: '0 0 10px 0', color: '#60a5fa', fontSize: '20px' }}>⚔️ Battle Preparation: {currentChapter.name}</h2>
-            <p style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 8px 0' }}>Select units for deployment. {lordName} is required commander; unselected units remain in reserve.</p>
-            <div style={{ backgroundColor: '#0f172a', padding: '8px 12px', borderRadius: '6px', marginBottom: '14px', fontSize: '13px', fontWeight: 'bold', color: '#38bdf8' }}>
-              Deployed: {extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}/{currentChapter.units.filter(({ unit }) => unit.faction === 'player').length} units
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player').map((entry) => (
-                <label
-                  key={entry.unit.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 12px',
-                    borderRadius: '6px',
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    cursor: entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead ? 'default' : 'pointer',
-                    fontSize: '13px',
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={extendedUnits.some(({ unit }) => unit.id === entry.unit.id)}
-                    disabled={entry.unit.id === currentChapter.lordUnitId || entry.unit.isDead}
-                    onChange={() => toggleDeployment(entry.unit.id)}
-                    style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                  />
-                  <span style={{ color: entry.unit.isDead ? '#94a3b8' : '#f8fafc', fontWeight: entry.unit.id === currentChapter.lordUnitId ? 'bold' : 'normal' }}>
-                    {entry.unit.name} — HP {entry.stats.hp}/{entry.stats.maxHp} — {entry.weapon.name}
-                    {entry.unit.id === currentChapter.lordUnitId ? ' (Commander - Required)' : ''}
-                    {entry.unit.isDead ? ' (Fallen)' : ''}
-                  </span>
-                </label>
-              ))}
-            </div>
-            <button
-              onClick={() => setShowPreparation(false)}
-              style={{
-                marginTop: '20px',
-                width: '100%',
-                padding: '12px 24px',
-                backgroundColor: '#2563eb',
-                border: 'none',
-                borderRadius: '8px',
-                color: '#fff',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                cursor: 'pointer',
-                boxShadow: '0 4px 14px rgba(37,99,235,0.4)',
-              }}
-            >
-              Start Chapter ➔
-            </button>
-          </section>
-        </div>
+        <BattlePreparationModal
+          chapterName={currentChapter.name}
+          lordName={lordName}
+          lordUnitId={currentChapter.lordUnitId}
+          units={[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player')}
+          deployedIds={new Set(extendedUnits.map(({ unit }) => unit.id))}
+          deployedCount={extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}
+          deploymentLimit={currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}
+          onToggle={toggleDeployment}
+          onStart={() => setShowPreparation(false)}
+        />
       )}
 
       {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
