@@ -36,6 +36,26 @@ Các bước khi thêm hoặc sửa một chương (quy trình có script, bắt
 5. Kiểm từng vị trí nằm trong lưới, không chồng sai, loại địa hình cho phép class đó đứng/di chuyển, cổng/làng/cầu nằm ở đúng ô, và đường đi tới mục tiêu thực sự chơi được. Đối chiếu số quân và sự kiện theo nguồn FE3; chạy test logic, build, rồi mở từng map trong Chromium để so ảnh ở trạng thái bắt đầu trận.
 6. Hồ sơ đối chiếu phải ghi **tọa độ hoặc ô chưa chắc, nguồn nào xác nhận, kết quả test và ảnh kiểm thực tế**. Chỉ ghi PASS khi mọi ô và vị trí thuộc phạm vi chương đã được xác nhận; test/build PASS riêng không chứng minh map khớp FE3. Ảnh tham khảo bên ngoài và asset FE3 chưa rõ quyền không được tự động thêm vào bản phát hành.
 
+### Atlas bản đồ FE3 và bảng tra nguồn (2026-11-17)
+
+Khi làm chương mới, mở atlas trước; chỉ quay lại nguồn gốc khi atlas thiếu hoặc nghi sai.
+
+- **Atlas:** `D:\OneDrive\AI Relax\projects\FE3_map_atlas\` (git riêng, ngoài repo này). Mỗi bản đồ một file văn bản: lưới ký tự, quân ta/địch/NPC kèm tọa độ bắt đầu, boss, nhân vật gia nhập và điều kiện, tiệm, làng, rương. Đọc `README.md` của atlas để hiểu mã ký tự; `INDEX.md` liệt kê mọi bản đồ. File: `book1/b1cNN.md`, `book2/b2cNN.md`, Endgame `b2c22a/b/c`.
+- **Trạng thái kiểm:** `b1c01` do Claude lập và kiểm. Các file còn lại do Antigravity lập theo cùng script; Claude kiểm theo mẫu (so lưới với tham chiếu, đếm quân), xem ghi chú trong `INDEX.md` của atlas. Atlas là bản tra cứu: khi đưa một chương vào game, lưới vẫn phải đi qua quy trình ở `Water-Emblem/tools/fe3_map_reference/README.md` và lưu tham chiếu trong `Water-Emblem/data/reference/fe3/`.
+- **Sơ đồ ô (địa hình + ký hiệu quân):** `https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/MAP/` với `map1_01.png`…`map1_20.png` (Book 1), `map2_01.png`…`map2_21.png` (Book 2), `map2_22_1/2/3.png` (Endgame 3 đoạn).
+- **Dữ kiện chữ theo chương** (nhân vật gia nhập, boss, tiệm, làng): trang `kouryaku_1_1.html` (Book 1 ch1–10), `kouryaku_1_2.html` (ch11–20), `kouryaku_2_1.html` (Book 2 ch1–12), `kouryaku_2_2.html` (ch13–Endgame) cùng thư mục trên.
+- **Tên tiếng Anh, mục tiêu, boss:** Fire Emblem Wiki, "List of chapters in Fire Emblem: Mystery of the Emblem".
+- **Ảnh gốc:** `Original/01_Maps/Book_1/Cm_fe03_b1_<N>.png` và `Book_2/` (gốc repo, gitignore).
+
+Đặc điểm nguồn đã kiểm, không cần dò lại:
+
+- Lưới trên sơ đồ đúng bằng vùng chơi, không có viền. Ảnh gốc 16 px/ô có viền 1 ô mỗi phía: kích thước chơi = (rộng/16 − 2) × (cao/16 − 2); ô `(x,y)` nằm ở pixel `((x+1)*16, (y+1)*16)`.
+- Màu ô theo chú giải từng sơ đồ; phần lớn màu giống nhau giữa các chương, nhưng có màu đổi nghĩa: `cfbda5` là がれき (rubble) ở Book 1 Ch1, là 橋 (bridge) ở Ch2 và Ch4. Luôn đọc chú giải của chính sơ đồ đó.
+- Ký hiệu quân là chữ kana/kanji trong ô: xanh `0070c0` là quân ta; đỏ `963634` và đỏ sẫm `632523` là địch (Ch1 dùng đỏ sẫm cho 3 Pirate hàng trên cùng, chú giải không nói ý nghĩa); đen là nhãn bản đồ (武 tiệm, A/B làng). Hai chữ chỉ khác dấu dakuten (シ/ジ) dễ bị gộp nhầm khi so ảnh.
+- Chữ trên sơ đồ được khử răng cưa: so khớp ký hiệu phải lấy điểm gần màu chữ, không lấy mọi điểm khác nền.
+- Tọa độ quân là vị trí bắt đầu. Viện binh và di chuyển theo kịch bản chỉ có trong phần chữ của trang hướng dẫn, nằm trong đoạn chiến thuật; atlas không chép đoạn đó.
+- Book 1 Ch1 đã đối chiếu đầy đủ: 7 quân ta, 14 địch (11 Pirate, Hunter, Thief, Gazzak ở 6,4), cổng 4,4, làng 25,3 (5000G) và 3,8 (Vulnerary), tiệm 24,1.
+
 ### Chi tiết các chương đã chuẩn hóa (2026-11-15)
 
 Ngôn ngữ mặc định cho tên chương, mục tiêu, thoại và phần thưởng là **tiếng Anh (English)**:

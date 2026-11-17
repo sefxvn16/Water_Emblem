@@ -80,6 +80,7 @@ Dữ liệu nhân vật, class, vật phẩm, kỹ năng, bản đồ, chương 
 | Vật phẩm và vũ khí | `data/items.json` |
 | Địa hình và tham số cân bằng | `data/terrains.json`, `data/balance.json` |
 | Lưới ô và cao độ | `data/maps/<map-id>.json` |
+| Atlas tra cứu mọi bản đồ FE3 (lưới, quân, công trình) và bảng nguồn | `Game_Design/campaign.md` mục "Atlas bản đồ FE3 và bảng tra nguồn"; atlas ở `D:\OneDrive\AI Relax\projects\FE3_map_atlas\` |
 | Lưới tham chiếu FE3 (lập độc lập, chỉ dùng để đối chiếu và test) | `data/reference/fe3/<map-id>.json`; quy trình và script ở `tools/fe3_map_reference/` |
 | Mục tiêu, vị trí và phe của quân, ô triển khai, vũ khí trang bị, làng, sự kiện, ngoại lệ riêng của chương | `data/chapters/<chapter-id>.json` |
 | Hội thoại từng chương | `data/dialogues/<chapter-id>_dialogues.json` |
