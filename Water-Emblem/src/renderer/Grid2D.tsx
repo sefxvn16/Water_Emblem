@@ -30,9 +30,8 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
       padding: '4px',
       borderRadius: '4px',
       boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-      maxWidth: '100%',
-      maxHeight: 'calc(100vh - 120px)',
-      overflow: 'auto',
+      margin: 'auto',
+      flexShrink: 0,
     }}
   >
     {board.tiles.map((row) =>
