@@ -47,7 +47,7 @@ export const WorldMapModal: React.FC<WorldMapModalProps> = ({
   };
 
   // Primary FE3 in-game map (upscaled 4x pixel-sharp with original fallback)
-  const pixelMapUrl = '/models/Original/01_Maps/Upscaled_PixelSharp/4x/World_Maps/FEMN_Archanea_In-Game_4x.png';
+  const pixelMapUrl = '/maps/world_map_archanea_4x.png';
   const illustratedMapUrl = '/maps/world_map_archanea_illustrated.jpg';
 
   return (

@@ -10,6 +10,8 @@ Toàn bộ asset gốc đã kiểm tra bản quyền (CC0 / Free) được lưu 
 * **Đường dẫn tuyệt đối:** `D:\OneDrive\AI Relax\projects\Asset`
 * **Trạng thái lưu trữ:** Tất cả các gói nằm dưới dạng file nén `.zip` nguyên bản.
 
+Kho hình ảnh gốc FE3 (bản đồ chương, World Map, sprite, chân dung, artwork) nằm ở `Original/` tại gốc repo (`D:\OneDrive\AI Relax\projects\FE_to_web\Original`), được gitignore và không nằm trong `Water-Emblem/`. Ảnh bản đồ chương FE3: `Original/01_Maps/Book_1/Cm_fe03_b1_<chương>.png`. Game không nạp file từ kho này lúc chạy; file nào game dùng thì copy đơn lẻ vào `Water-Emblem/public/` (ví dụ World Map: `public/maps/world_map_archanea_4x.png`, giống hệt `Original/01_Maps/Upscaled_PixelSharp/4x/World_Maps/FEMN_Archanea_In-Game_4x.png`, kiểm bằng md5 ngày 2026-11-17).
+
 ---
 
 ## 2. Quy tắc thao tác bắt buộc cho AI (Critical Rules)
