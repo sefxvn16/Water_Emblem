@@ -155,7 +155,8 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 - [ ] 72. Rà soát và sửa các popup màn trận 2D theo FE3 (thông tin quân, dự báo giao tranh, kết quả giao tranh, menu hành động, chuẩn bị trận, hội thoại).
   - Tiêu chí xong: mỗi phát hiện trong `work/battle-fullscreen-ui/review/` (ảnh 01–09, chụp 1366x768, seed replay Chương 1) được sửa hoặc chủ dự án chọn giữ; đối chiếu ảnh FE3 trong `Original/04_Battle_Backgrounds/`; gate PASS.
   - Phát hiện (2026-11-18): P1 sau khi đánh không còn thấy kết quả (Combat Log nằm trong ⚙); P1 dự báo thiếu đánh hai lần dù core có `attackCount` (Q05 yêu cầu); P2 cửa sổ thông tin quân hiện growth rate (FE3 không hiện), cỡ 300x400 che mép trái, trùng thông tin khi đang xem dự báo; P2 menu hành động ở góc phải trên, xa quân; P2 menu ⚙ vẫn mở phía sau màn chuẩn bị khi đổi chương; P3 màn chuẩn bị là danh sách checkbox (FE3: lưới tên quân + panel thông tin, `Ss_fe03_unit_select.png`); P3 hội thoại là modal giữa màn (FE3: khung chữ mép dưới/trên).
-  - Kết quả: CHỜ NGƯỜI DÙNG: chọn hướng cho các phát hiện (xem câu hỏi trong chat 2026-11-18).
+  - Quyết định chủ dự án (2026-11-18): popup kết quả giao tranh kiểu FE3 (2 panel, không hoạt cảnh); thông tin quân gọn khi rê, đầy đủ khi chuột phải/nhấn giữ, bỏ growth rate; làm lại màn chuẩn bị (lưới tên + panel thông tin) và hội thoại (khung chữ mép dưới) theo FE3; các phát hiện còn lại tự xử lý. Brief: `work/battle-fullscreen-ui/04-handoff-2.md`.
+  - Kết quả: CHƯA XONG: đang giao builder trên nhánh `cs/battle-fullscreen-ui-2`.
   - Kiểm bởi: subagent
 
 ## Giai đoạn 4 trở đi: mở rộng
