@@ -5,8 +5,8 @@
   "objective": {
     "type": "seize",
     "seizeTargetTile": {
-      "x": 1,
-      "y": 2
+      "x": 2,
+      "y": 8
     },
     "description": "Seize the mountain bandit gate after defeating boss Hyman",
     "descriptionVi": "Marth chiếm cổng thành sào huyệt sơn tặc sau khi hạ boss Hyman"
@@ -20,8 +20,8 @@
       "id": "village_devil_axe",
       "name": "Devil Mountain Village (Devil Axe)",
       "position": {
-        "x": 2,
-        "y": 16
+        "x": 15,
+        "y": 12
       },
       "reward": {
         "type": "item",
@@ -36,7 +36,7 @@
       "faction": "player",
       "position": {
         "x": 25,
-        "y": 18
+        "y": 16
       },
       "weaponId": "rapier"
     },
@@ -45,8 +45,8 @@
       "characterId": "jagen",
       "faction": "player",
       "position": {
-        "x": 24,
-        "y": 18
+        "x": 27,
+        "y": 17
       },
       "weaponId": "silver_lance"
     },
@@ -55,8 +55,8 @@
       "characterId": "caeda",
       "faction": "player",
       "position": {
-        "x": 25,
-        "y": 17
+        "x": 28,
+        "y": 15
       },
       "weaponId": "slim_lance"
     },
@@ -65,8 +65,8 @@
       "characterId": "cain",
       "faction": "player",
       "position": {
-        "x": 24,
-        "y": 17
+        "x": 26,
+        "y": 15
       },
       "weaponId": "iron_sword"
     },
@@ -75,8 +75,8 @@
       "characterId": "abel",
       "faction": "player",
       "position": {
-        "x": 26,
-        "y": 18
+        "x": 25,
+        "y": 15
       },
       "weaponId": "iron_lance"
     },
@@ -85,8 +85,8 @@
       "characterId": "draug",
       "faction": "player",
       "position": {
-        "x": 26,
-        "y": 17
+        "x": 24,
+        "y": 15
       },
       "weaponId": "iron_lance"
     },
@@ -95,8 +95,8 @@
       "characterId": "gordin",
       "faction": "player",
       "position": {
-        "x": 27,
-        "y": 18
+        "x": 25,
+        "y": 14
       },
       "weaponId": "iron_bow"
     },
@@ -106,7 +106,7 @@
       "faction": "player",
       "position": {
         "x": 23,
-        "y": 18
+        "y": 14
       },
       "weaponId": "iron_sword"
     },
@@ -116,7 +116,7 @@
       "faction": "player",
       "position": {
         "x": 23,
-        "y": 17
+        "y": 15
       },
       "weaponId": "hand_axe"
     },
@@ -125,8 +125,8 @@
       "characterId": "bord",
       "faction": "player",
       "position": {
-        "x": 22,
-        "y": 18
+        "x": 23,
+        "y": 16
       },
       "weaponId": "hammer"
     },
@@ -145,8 +145,8 @@
       "characterId": "julian",
       "faction": "player",
       "position": {
-        "x": 6,
-        "y": 10
+        "x": 23,
+        "y": 3
       },
       "weaponId": "iron_sword"
     },
@@ -155,8 +155,8 @@
       "characterId": "lena",
       "faction": "player",
       "position": {
-        "x": 7,
-        "y": 10
+        "x": 24,
+        "y": 4
       },
       "weaponId": "mend_staff"
     },
@@ -166,8 +166,8 @@
       "name": "Hyman",
       "faction": "enemy",
       "position": {
-        "x": 1,
-        "y": 2
+        "x": 2,
+        "y": 9
       },
       "weaponId": "hand_axe",
       "dropItemId": "mend_staff",
@@ -180,8 +180,8 @@
       "name": "Navarre",
       "faction": "enemy",
       "position": {
-        "x": 14,
-        "y": 6
+        "x": 20,
+        "y": 5
       },
       "weaponId": "killing_edge",
       "aiRole": "pursue"
@@ -192,8 +192,8 @@
       "name": "Devil Mountain Thief 1",
       "faction": "enemy",
       "position": {
-        "x": 5,
-        "y": 13
+        "x": 19,
+        "y": 4
       },
       "weaponId": "iron_sword",
       "aiRole": "pillage"
@@ -204,8 +204,8 @@
       "name": "Devil Mountain Thief 2",
       "faction": "enemy",
       "position": {
-        "x": 3,
-        "y": 15
+        "x": 20,
+        "y": 4
       },
       "weaponId": "iron_sword",
       "aiRole": "pillage"
@@ -216,8 +216,8 @@
       "name": "Devil Mountain Hunter 1",
       "faction": "enemy",
       "position": {
-        "x": 11,
-        "y": 3
+        "x": 23,
+        "y": 6
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue"
@@ -228,8 +228,8 @@
       "name": "Devil Mountain Hunter 2",
       "faction": "enemy",
       "position": {
-        "x": 15,
-        "y": 7
+        "x": 4,
+        "y": 12
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue"
@@ -240,8 +240,8 @@
       "name": "Devil Mountain Hunter 3",
       "faction": "enemy",
       "position": {
-        "x": 17,
-        "y": 10
+        "x": 3,
+        "y": 13
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue"
@@ -253,7 +253,7 @@
       "faction": "enemy",
       "position": {
         "x": 2,
-        "y": 3
+        "y": 6
       },
       "weaponId": "iron_axe",
       "aiRole": "stationary"
@@ -264,8 +264,8 @@
       "name": "Bandit Gate Guard 2",
       "faction": "enemy",
       "position": {
-        "x": 1,
-        "y": 3
+        "x": 3,
+        "y": 6
       },
       "weaponId": "iron_axe",
       "aiRole": "stationary"
@@ -276,7 +276,7 @@
       "name": "Fort Bandit",
       "faction": "enemy",
       "position": {
-        "x": 15,
+        "x": 19,
         "y": 5
       },
       "weaponId": "iron_axe",
@@ -288,8 +288,8 @@
       "name": "Ridge Bandit",
       "faction": "enemy",
       "position": {
-        "x": 13,
-        "y": 4
+        "x": 21,
+        "y": 5
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -300,7 +300,7 @@
       "name": "Mountain Bandit 1",
       "faction": "enemy",
       "position": {
-        "x": 13,
+        "x": 19,
         "y": 6
       },
       "weaponId": "iron_axe",
@@ -312,8 +312,8 @@
       "name": "Mountain Bandit 2",
       "faction": "enemy",
       "position": {
-        "x": 15,
-        "y": 6
+        "x": 0,
+        "y": 7
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -324,8 +324,8 @@
       "name": "Mountain Bandit 3",
       "faction": "enemy",
       "position": {
-        "x": 8,
-        "y": 8
+        "x": 4,
+        "y": 9
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -336,8 +336,8 @@
       "name": "Mountain Bandit 4",
       "faction": "enemy",
       "position": {
-        "x": 9,
-        "y": 9
+        "x": 3,
+        "y": 10
       },
       "weaponId": "iron_axe",
       "dropItemId": "vulnerary",
@@ -349,7 +349,10 @@
       "id": "castor",
       "characterId": "castor",
       "faction": "player",
-      "position": { "x": 27, "y": 17 },
+      "position": {
+        "x": 24,
+        "y": 16
+      },
       "weaponId": "iron_bow"
     }
   ],
@@ -372,6 +375,56 @@
       "speakerUnitId": "caeda",
       "targetUnitId": "navarre",
       "maxDistance": 1
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 25,
+      "y": 16
+    },
+    {
+      "x": 27,
+      "y": 17
+    },
+    {
+      "x": 28,
+      "y": 15
+    },
+    {
+      "x": 26,
+      "y": 15
+    },
+    {
+      "x": 25,
+      "y": 15
+    },
+    {
+      "x": 24,
+      "y": 15
+    },
+    {
+      "x": 25,
+      "y": 14
+    },
+    {
+      "x": 23,
+      "y": 14
+    },
+    {
+      "x": 23,
+      "y": 15
+    },
+    {
+      "x": 23,
+      "y": 16
+    },
+    {
+      "x": 22,
+      "y": 17
+    },
+    {
+      "x": 24,
+      "y": 16
     }
   ]
 }

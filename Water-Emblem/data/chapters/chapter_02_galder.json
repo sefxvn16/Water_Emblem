@@ -5,8 +5,8 @@
   "objective": {
     "type": "seize",
     "seizeTargetTile": {
-      "x": 1,
-      "y": 1
+      "x": 2,
+      "y": 2
     },
     "description": "Seize the harbor gate after defeating boss Gomer",
     "descriptionVi": "Marth chiếm cổng thành bến cảng sau khi đánh bại boss Gomer"
@@ -16,8 +16,8 @@
       "id": "village_galder",
       "name": "Galder Harbor Village (3,000G)",
       "position": {
-        "x": 20,
-        "y": 5
+        "x": 8,
+        "y": 2
       },
       "reward": {
         "type": "gold",
@@ -31,8 +31,8 @@
       "characterId": "marth",
       "faction": "player",
       "position": {
-        "x": 23,
-        "y": 10
+        "x": 18,
+        "y": 9
       },
       "weaponId": "rapier"
     },
@@ -41,8 +41,8 @@
       "characterId": "jagen",
       "faction": "player",
       "position": {
-        "x": 22,
-        "y": 10
+        "x": 19,
+        "y": 9
       },
       "weaponId": "silver_lance"
     },
@@ -51,8 +51,8 @@
       "characterId": "caeda",
       "faction": "player",
       "position": {
-        "x": 23,
-        "y": 9
+        "x": 19,
+        "y": 10
       },
       "weaponId": "slim_lance"
     },
@@ -61,7 +61,7 @@
       "characterId": "cain",
       "faction": "player",
       "position": {
-        "x": 22,
+        "x": 20,
         "y": 9
       },
       "weaponId": "iron_sword"
@@ -71,8 +71,8 @@
       "characterId": "abel",
       "faction": "player",
       "position": {
-        "x": 24,
-        "y": 10
+        "x": 21,
+        "y": 9
       },
       "weaponId": "iron_lance"
     },
@@ -81,7 +81,7 @@
       "characterId": "draug",
       "faction": "player",
       "position": {
-        "x": 24,
+        "x": 22,
         "y": 9
       },
       "weaponId": "iron_lance"
@@ -91,8 +91,8 @@
       "characterId": "gordin",
       "faction": "player",
       "position": {
-        "x": 25,
-        "y": 10
+        "x": 21,
+        "y": 8
       },
       "weaponId": "iron_bow"
     },
@@ -101,8 +101,8 @@
       "characterId": "ogma",
       "faction": "player",
       "position": {
-        "x": 14,
-        "y": 2
+        "x": 20,
+        "y": 6
       },
       "weaponId": "iron_sword"
     },
@@ -111,8 +111,8 @@
       "characterId": "barst",
       "faction": "player",
       "position": {
-        "x": 13,
-        "y": 3
+        "x": 22,
+        "y": 7
       },
       "weaponId": "hand_axe"
     },
@@ -121,8 +121,8 @@
       "characterId": "bord",
       "faction": "player",
       "position": {
-        "x": 14,
-        "y": 3
+        "x": 21,
+        "y": 6
       },
       "weaponId": "hammer"
     },
@@ -131,8 +131,8 @@
       "characterId": "cord",
       "faction": "player",
       "position": {
-        "x": 12,
-        "y": 3
+        "x": 20,
+        "y": 7
       },
       "weaponId": "iron_axe"
     },
@@ -142,8 +142,8 @@
       "name": "Gomer",
       "faction": "enemy",
       "position": {
-        "x": 1,
-        "y": 1
+        "x": 2,
+        "y": 4
       },
       "weaponId": "hand_axe",
       "dropItemId": "steel_sword",
@@ -156,8 +156,8 @@
       "name": "Castor",
       "faction": "enemy",
       "position": {
-        "x": 10,
-        "y": 6
+        "x": 5,
+        "y": 4
       },
       "weaponId": "iron_bow",
       "aiRole": "stationary"
@@ -168,8 +168,8 @@
       "name": "Galder Thief 1",
       "faction": "enemy",
       "position": {
-        "x": 18,
-        "y": 6
+        "x": 22,
+        "y": 1
       },
       "weaponId": "iron_sword",
       "aiRole": "pillage"
@@ -180,8 +180,8 @@
       "name": "Galder Hunter 1",
       "faction": "enemy",
       "position": {
-        "x": 4,
-        "y": 2
+        "x": 25,
+        "y": 1
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue"
@@ -192,8 +192,8 @@
       "name": "Galder Hunter 2",
       "faction": "enemy",
       "position": {
-        "x": 12,
-        "y": 6
+        "x": 5,
+        "y": 3
       },
       "weaponId": "iron_bow",
       "aiRole": "pursue"
@@ -204,7 +204,7 @@
       "name": "Galder Pirate (Lv 3)",
       "faction": "enemy",
       "position": {
-        "x": 2,
+        "x": 21,
         "y": 1
       },
       "weaponId": "hand_axe",
@@ -216,7 +216,7 @@
       "name": "Galder Pirate (Gate Guard)",
       "faction": "enemy",
       "position": {
-        "x": 1,
+        "x": 21,
         "y": 2
       },
       "weaponId": "iron_axe",
@@ -228,8 +228,8 @@
       "name": "Galder Pirate (West Bridge 1)",
       "faction": "enemy",
       "position": {
-        "x": 4,
-        "y": 3
+        "x": 22,
+        "y": 2
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -240,8 +240,8 @@
       "name": "Galder Pirate (West Bridge 2)",
       "faction": "enemy",
       "position": {
-        "x": 5,
-        "y": 4
+        "x": 23,
+        "y": 2
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -252,8 +252,8 @@
       "name": "Galder Pirate (North Coast 1)",
       "faction": "enemy",
       "position": {
-        "x": 7,
-        "y": 1
+        "x": 1,
+        "y": 3
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -264,8 +264,8 @@
       "name": "Galder Pirate (North Coast 2)",
       "faction": "enemy",
       "position": {
-        "x": 8,
-        "y": 2
+        "x": 24,
+        "y": 3
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -276,8 +276,8 @@
       "name": "Galder Pirate (North Coast 3)",
       "faction": "enemy",
       "position": {
-        "x": 11,
-        "y": 1
+        "x": 3,
+        "y": 4
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -288,8 +288,8 @@
       "name": "Galder Pirate (Center Bridge 1)",
       "faction": "enemy",
       "position": {
-        "x": 12,
-        "y": 7
+        "x": 3,
+        "y": 5
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue"
@@ -300,8 +300,8 @@
       "name": "Galder Pirate (Center Bridge 2)",
       "faction": "enemy",
       "position": {
-        "x": 14,
-        "y": 7
+        "x": 4,
+        "y": 5
       },
       "weaponId": "hand_axe",
       "aiRole": "pursue"
@@ -312,8 +312,8 @@
       "name": "Galder Thief 2",
       "faction": "enemy",
       "position": {
-        "x": 16,
-        "y": 7
+        "x": 24,
+        "y": 1
       },
       "weaponId": "iron_sword",
       "aiRole": "pillage"
@@ -324,8 +324,8 @@
       "name": "Grust Cavalier 1",
       "faction": "enemy",
       "position": {
-        "x": 21,
-        "y": 8
+        "x": 0,
+        "y": 4
       },
       "weaponId": "iron_lance",
       "aiRole": "pursue"
@@ -336,8 +336,8 @@
       "name": "Grust Cavalier 2",
       "faction": "enemy",
       "position": {
-        "x": 24,
-        "y": 8
+        "x": 0,
+        "y": 5
       },
       "weaponId": "iron_lance",
       "aiRole": "pursue"
@@ -357,6 +357,36 @@
       "speakerUnitId": "caeda",
       "targetUnitId": "castor",
       "maxDistance": 1
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 18,
+      "y": 9
+    },
+    {
+      "x": 19,
+      "y": 9
+    },
+    {
+      "x": 19,
+      "y": 10
+    },
+    {
+      "x": 20,
+      "y": 9
+    },
+    {
+      "x": 21,
+      "y": 9
+    },
+    {
+      "x": 22,
+      "y": 9
+    },
+    {
+      "x": 21,
+      "y": 8
     }
   ]
 }

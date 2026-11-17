@@ -87,7 +87,7 @@
       "name": "Gazzak",
       "faction": "enemy",
       "position": {
-        "x": 4,
+        "x": 6,
         "y": 4
       },
       "mov": 0,
@@ -270,7 +270,7 @@
       "name": "Eastern Village (5,000G)",
       "position": {
         "x": 25,
-        "y": 2
+        "y": 3
       },
       "reward": {
         "type": "gold",
