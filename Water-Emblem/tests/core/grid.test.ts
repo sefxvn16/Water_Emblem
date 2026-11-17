@@ -135,10 +135,9 @@ describe('TerrainRegistry', () => {
     expect(obs1.structures).toEqual(expect.arrayContaining([
       { position: { x: 4, y: 4 }, terrainId: 'gate' },
       { position: { x: 3, y: 8 }, terrainId: 'village' },
-      { position: { x: 25, y: 2 }, terrainId: 'village' },
-      { position: { x: 3, y: 2 }, terrainId: 'fort' },
-      { position: { x: 23, y: 9 }, terrainId: 'fort' },
-      { position: { x: 3, y: 10 }, terrainId: 'fort' },
+      { position: { x: 25, y: 3 }, terrainId: 'village' },
+      { position: { x: 3, y: 4 }, terrainId: 'castle' },
+      { position: { x: 5, y: 4 }, terrainId: 'castle' },
     ]));
     expect(obs1.waterTiles.length).toBeGreaterThan(0);
     expect(obs1.difficultTiles.length).toBeGreaterThan(0);
@@ -149,11 +148,10 @@ describe('TerrainRegistry', () => {
     expect(map2.height).toBe(15);
     const obs2 = analyzeMapObstacles(map2, registry);
     expect(obs2.structures).toEqual(expect.arrayContaining([
-      { position: { x: 1, y: 1 }, terrainId: 'gate' },
-      { position: { x: 20, y: 5 }, terrainId: 'village' },
-      { position: { x: 2, y: 1 }, terrainId: 'fort' },
-      { position: { x: 10, y: 6 }, terrainId: 'fort' },
-      { position: { x: 24, y: 7 }, terrainId: 'fort' },
+      { position: { x: 2, y: 2 }, terrainId: 'gate' },
+      { position: { x: 8, y: 2 }, terrainId: 'village' },
+      { position: { x: 1, y: 2 }, terrainId: 'castle' },
+      { position: { x: 3, y: 2 }, terrainId: 'castle' },
     ]));
 
     // Chapter 3: 30x20
@@ -162,12 +160,11 @@ describe('TerrainRegistry', () => {
     expect(map3.height).toBe(20);
     const obs3 = analyzeMapObstacles(map3, registry);
     expect(obs3.structures).toEqual(expect.arrayContaining([
-      { position: { x: 1, y: 2 }, terrainId: 'gate' },
-      { position: { x: 2, y: 16 }, terrainId: 'village' },
-      { position: { x: 2, y: 2 }, terrainId: 'fort' },
-      { position: { x: 1, y: 3 }, terrainId: 'fort' },
-      { position: { x: 15, y: 5 }, terrainId: 'fort' },
-      { position: { x: 19, y: 11 }, terrainId: 'fort' },
+      { position: { x: 2, y: 8 }, terrainId: 'gate' },
+      { position: { x: 15, y: 12 }, terrainId: 'village' },
+      { position: { x: 1, y: 8 }, terrainId: 'castle' },
+      { position: { x: 3, y: 8 }, terrainId: 'castle' },
+      { position: { x: 2, y: 2 }, terrainId: 'shop' },
     ]));
     expect(obs3.difficultTiles.length).toBeGreaterThan(0);
     expect(obs3.flyOnlyTiles.length).toBeGreaterThan(0);

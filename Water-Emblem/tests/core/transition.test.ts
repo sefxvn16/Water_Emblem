@@ -14,7 +14,7 @@ describe('chapter transition', () => {
     const carriedMarth = next.find(({ unit }) => unit.id === 'marth')!;
     expect(carriedMarth.stats.hp).toBe(7);
     expect(carriedMarth.weapon.id).toBe('iron_sword');
-    expect(carriedMarth.unit.position).toEqual({ x: 23, y: 10 });
+    expect(carriedMarth.unit.position).toEqual({ x: 18, y: 9 });
     expect(carriedMarth.unit.supportPoints?.caeda).toBe(5);
     expect(next.some(({ unit }) => unit.id === 'wrys')).toBe(false);
     expect(next.some(({ unit }) => unit.id === 'ogma')).toBe(true);
@@ -59,6 +59,6 @@ describe('chapter transition', () => {
     const withRecruit = carryUnitsToChapter(chapterTwo, chapter03Data);
     const carried = withRecruit.find(({ unit }) => unit.id === 'castor');
     expect(carried?.stats.hp).toBe(7);
-    expect(carried?.unit.position).toEqual({ x: 27, y: 17 });
+    expect(carried?.unit.position).toEqual({ x: 24, y: 16 });
   });
 });

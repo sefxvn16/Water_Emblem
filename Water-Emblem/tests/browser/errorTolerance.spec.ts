@@ -10,6 +10,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     });
 
     await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
     await page.getByRole('button', { name: /2D Grid/ }).click();
 
@@ -35,6 +37,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   test('preserves audio mute state across page reload', async ({ page }) => {
     test.setTimeout(60_000);
     await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
 
     // Sound button starts as "🔊 Sound: On"
@@ -51,7 +55,10 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Reload page
     await page.reload();
-    await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
+    const resumeAfterReload = page.getByRole('button', { name: /RESUME BATTLE/i });
+    if (await resumeAfterReload.isVisible()) await resumeAfterReload.click();
+    const startBtnAfterReload = page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i });
+    if (await startBtnAfterReload.isVisible()) await startBtnAfterReload.click();
 
     // Should stay muted
     await expect(page.getByText(/(?:Muted|Tắt)/i)).toBeVisible();
@@ -68,6 +75,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
     await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
 
     // Toggle 2D and 3D back and forth 4 times
@@ -85,6 +94,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   test('recovers safely from a corrupted save file in IndexedDB without white screen', async ({ page }) => {
     test.setTimeout(60_000);
     await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
     await expect(page.getByText('PLAYER PHASE')).toBeVisible();
 

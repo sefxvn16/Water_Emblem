@@ -62,7 +62,7 @@ describe('chapter data', () => {
     const marth = talysChapter.units.find((u) => u.unit.id === 'marth');
     expect(marth?.unit.position).toEqual({ x: 24, y: 5 });
     const gazzak = talysChapter.units.find((u) => u.unit.id === 'gazzak');
-    expect(gazzak?.unit.position).toEqual({ x: 4, y: 4 });
+    expect(gazzak?.unit.position).toEqual({ x: 6, y: 4 });
     const pirateLv3 = talysChapter.units.find((u) => u.unit.id === 'enemy_pirate_4');
     expect(pirateLv3?.level).toBe(3);
     expect(pirateLv3?.unit.position).toEqual({ x: 4, y: 1 });
@@ -70,7 +70,7 @@ describe('chapter data', () => {
 
   it('has traversable foot routes from Marth to both chapter gates', () => {
     expect(hasFootRoute(talysMapJson as MapData, { x: 24, y: 5 }, { x: 4, y: 4 })).toBe(true);
-    expect(hasFootRoute(galderMapJson as MapData, { x: 23, y: 9 }, { x: 1, y: 1 })).toBe(true);
+    expect(hasFootRoute(galderMapJson as MapData, { x: 18, y: 9 }, { x: 2, y: 2 })).toBe(true);
   });
 
   it('loads prototype Chapter 2 Galder 30x13 map, Ogma group and Gomer boss', () => {
@@ -83,13 +83,13 @@ describe('chapter data', () => {
     expect(galderChapter.mapId).toBe('chapter_02_galder');
     expect(galderChapter.units.length).toBeGreaterThanOrEqual(15);
     const ogma = galderChapter.units.find((u) => u.unit.id === 'ogma');
-    expect(ogma?.unit.position).toEqual({ x: 14, y: 2 });
+    expect(ogma?.unit.position).toEqual({ x: 20, y: 6 });
     expect(ogma?.weapon.id).toBe('iron_sword');
     expect(ogma?.unit.moveType).toBe('foot');
     const gomer = galderChapter.units.find((u) => u.unit.id === 'gomer');
-    expect(gomer?.unit.position).toEqual({ x: 1, y: 1 });
+    expect(gomer?.unit.position).toEqual({ x: 2, y: 4 });
     expect(gomer?.weapon.id).toBe('hand_axe');
-    expect(galderChapter.objective.seizeTargetTile).toEqual({ x: 1, y: 1 });
+    expect(galderChapter.objective.seizeTargetTile).toEqual({ x: 2, y: 2 });
   });
 
   it('loads referenced units, weapons and objective', () => {
@@ -201,14 +201,14 @@ describe('chapter data', () => {
 
     // Boss Gomer
     const gomer = galderChapter.units.find((u) => u.unit.id === 'gomer');
-    expect(gomer?.unit.position).toEqual({ x: 1, y: 1 });
+    expect(gomer?.unit.position).toEqual({ x: 2, y: 4 });
     expect(gomer?.isBoss).toBe(true);
     expect(gomer?.weapon.id).toBe('hand_axe');
     expect(gomer?.dropItemId).toBe('steel_sword');
 
     // Recruitable Castor
     const castor = galderChapter.units.find((u) => u.unit.id === 'castor');
-    expect(castor?.unit.position).toEqual({ x: 10, y: 6 });
+    expect(castor?.unit.position).toEqual({ x: 5, y: 4 });
     expect(galderChapter.recruitments).toEqual([
       { speakerUnitId: 'caeda', targetUnitId: 'castor', maxDistance: 1 }
     ]);
@@ -218,8 +218,8 @@ describe('chapter data', () => {
     expect(galderChapter.villages?.[0]?.reward).toEqual({ type: 'gold', amount: 3000 });
 
     // Route from Marth (23, 10) to Gate (1, 1) and Village (20, 5)
-    expect(hasFootRoute(galderMapJson as MapData, { x: 23, y: 10 }, { x: 1, y: 1 })).toBe(true);
-    expect(hasFootRoute(galderMapJson as MapData, { x: 23, y: 10 }, { x: 20, y: 5 })).toBe(true);
+    expect(hasFootRoute(galderMapJson as MapData, { x: 18, y: 9 }, { x: 2, y: 2 })).toBe(true);
+    expect(hasFootRoute(galderMapJson as MapData, { x: 18, y: 9 }, { x: 8, y: 2 })).toBe(true);
   });
 
   it('validates Chapter 1 villages configuration', () => {
@@ -251,16 +251,16 @@ describe('chapter data', () => {
 
     // Julian and Lena
     const julian = ch3.units.find((u) => u.unit.id === 'julian');
-    expect(julian?.unit.position).toEqual({ x: 6, y: 10 });
+    expect(julian?.unit.position).toEqual({ x: 23, y: 3 });
     expect(julian?.unit.classId).toBe('thief');
 
     const lena = ch3.units.find((u) => u.unit.id === 'lena');
-    expect(lena?.unit.position).toEqual({ x: 7, y: 10 });
+    expect(lena?.unit.position).toEqual({ x: 24, y: 4 });
     expect(lena?.unit.classId).toBe('sister');
 
     // Boss Hyman
     const hyman = ch3.units.find((u) => u.unit.id === 'hyman');
-    expect(hyman?.unit.position).toEqual({ x: 1, y: 2 });
+    expect(hyman?.unit.position).toEqual({ x: 2, y: 9 });
     expect(hyman?.isBoss).toBe(true);
     expect(hyman?.dropItemId).toBe('mend_staff');
     expect(ch3.units.find((u) => u.unit.id === 'samsoian_fighter_6')?.dropItemId).toBe('vulnerary');
@@ -282,7 +282,7 @@ describe('chapter data', () => {
 
     // Navarre
     const navarre = ch3.units.find((u) => u.unit.id === 'navarre');
-    expect(navarre?.unit.position).toEqual({ x: 14, y: 6 });
+    expect(navarre?.unit.position).toEqual({ x: 20, y: 5 });
     expect(navarre?.weapon.id).toBe('killing_edge');
     expect(ch3.recruitments).toEqual([
       { speakerUnitId: 'caeda', targetUnitId: 'navarre', maxDistance: 1 }
@@ -293,9 +293,9 @@ describe('chapter data', () => {
     expect(ch3.villages?.[0]?.reward).toEqual({ type: 'item', itemId: 'devil_axe' });
 
     // Route connectivity
-    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 18 }, { x: 1, y: 2 })).toBe(true);
-    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 18 }, { x: 2, y: 16 })).toBe(true);
-    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 18 }, { x: 6, y: 10 })).toBe(true);
+    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 16 }, { x: 2, y: 8 })).toBe(true);
+    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 16 }, { x: 15, y: 12 })).toBe(true);
+    expect(hasFootRoute(devilMountainMapJson as MapData, { x: 25, y: 16 }, { x: 23, y: 3 })).toBe(true);
   });
 
   it('rejects an invalid dropItemId or unknown dropItem', () => {

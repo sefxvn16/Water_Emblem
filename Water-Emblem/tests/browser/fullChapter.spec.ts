@@ -71,6 +71,8 @@ function routeDistance(start: Position, goal: Position, moveType: ExtendedUnitSt
 test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', async ({ page }) => {
   test.setTimeout(300_000);
   await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
   await expect(page.getByText(/save Talys Castle|cứu lấy thành Talys/i).first()).toBeVisible();
   await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
   await page.getByRole('button', { name: /2D Grid/ }).click();

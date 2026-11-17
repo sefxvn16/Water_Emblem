@@ -6,7 +6,7 @@ import { TerrainRegistry } from '../../src/core/grid/terrain';
 import { calculateMovementRange } from '../../src/core/grid/pathfinding';
 
 const map = mapJson as MapData;
-const gate = { x: 1, y: 2 };
+const gate = { x: 2, y: 8 };
 const terrains = new TerrainRegistry();
 
 function movementRange(actor: ExtendedUnitState, units: ExtendedUnitState[]): Position[] {
@@ -71,6 +71,8 @@ function routeDistance(start: Position, goal: Position, moveType: ExtendedUnitSt
 test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and seize gate', async ({ page }) => {
   test.setTimeout(360_000);
   await page.goto('/');
+  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
+  if (await resumeBtn.isVisible()) await resumeBtn.click();
 
   // Switch to Chapter 3
   await page.locator('select').first().selectOption('chapter_03');
@@ -112,7 +114,8 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
       }
 
       // Attack candidates (excluding Navarre if we can recruit him, and staff users cannot attack)
-      const targetableEnemies = enemies.filter((e) => e.unit.id !== 'navarre');
+      const caedaAlive = units.some((u) => u.unit.id === 'caeda' && !u.unit.isDead);
+      const targetableEnemies = caedaAlive ? enemies.filter((e) => e.unit.id !== 'navarre') : enemies;
       const canAttack = actor.weapon && actor.weapon.type !== 'staff' && (actor.weapon.might ?? 0) > 0;
       const attacks = canAttack ? destinations.flatMap((position) => targetableEnemies
         .filter(({ unit }) => {
@@ -156,6 +159,7 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
             score += 30; // free ranged damage
           }
           if (attackerTerrain === 'fort') score += 25;
+          if (id !== 'marth' && position.x === gate.x && position.y === gate.y) score -= 200;
           if (attackerTerrain === 'forest') score += 15;
           if (position.x === actor.unit.position.x && position.y === actor.unit.position.y) score += 20;
 
@@ -170,17 +174,23 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
       let attackCandidate: { position: Position; target: ExtendedUnitState } | null = null;
       if (isTalkMove && talkDest) {
         destination = talkDest;
-      } else if (id === 'caeda' && navarreEnemy) {
-        // Caeda advances towards Navarre safely
-        const scored = destinations.map((pos) => {
-          const dist = Math.abs(pos.x - navarreEnemy.unit.position.x) + Math.abs(pos.y - navarreEnemy.unit.position.y);
-          return { pos, score: -dist * 10 };
-        });
-        scored.sort((a, b) => b.score - a.score);
-        destination = scored[0]?.pos ?? actor.unit.position;
       } else if (bestAttack) {
         destination = bestAttack.position;
         attackCandidate = bestAttack;
+      } else if (id === 'caeda' && navarreEnemy) {
+        // Caeda advances towards Navarre safely, avoiding bow threats
+        const scored = destinations.map((pos) => {
+          const dist = Math.abs(pos.x - navarreEnemy.unit.position.x) + Math.abs(pos.y - navarreEnemy.unit.position.y);
+          const threats = enemies.filter((e) => {
+            const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
+            return dist <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1);
+          });
+          const bowThreats = threats.filter((e) => e.weapon.type === 'bow' || e.unit.id.includes('hunter'));
+          const penalty = threats.length * 100 + bowThreats.length * 500;
+          return { pos, score: -dist * 10 - penalty };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        destination = scored[0]?.pos ?? actor.unit.position;
       } else if (id === 'marth') {
         if (fieldEnemies.length > 0) {
           // Marth stays in backline away from threats
@@ -215,7 +225,11 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
           return (threatsA * 100 + distAlliesA) - (threatsB * 100 + distAlliesB);
         })[0] ?? actor.unit.position;
       } else if (enemies.length === 0) {
-        destination = actor.unit.position;
+        if (id !== 'marth' && actor.unit.position.x === gate.x && actor.unit.position.y === gate.y) {
+          destination = destinations.find((pos) => pos.x !== gate.x || pos.y !== gate.y) ?? actor.unit.position;
+        } else {
+          destination = actor.unit.position;
+        }
       } else if (actor.stats.hp <= 8) {
         const scored = destinations.map((pos) => {
           const threats = enemies.filter((e) => {
