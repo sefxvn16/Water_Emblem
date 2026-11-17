@@ -979,7 +979,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
-      {showStoryIntro && activeScreen === 'none' && (
+      {showStoryIntro && !showPreparation && activeScreen === 'none' && (
         <DialogueBox
           dialogues={currentDialogues.opening}
           title={`📜 ${currentChapter.name}`}
