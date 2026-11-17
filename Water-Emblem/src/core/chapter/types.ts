@@ -14,12 +14,10 @@ export function evaluateChapterOutcome(
   units: readonly GridUnit[],
   objective: ChapterObjective,
   seizeCommandUsed = false,
-  lordUnitId?: string,
+  lordUnitId: string,
 ): ChapterOutcome {
-  // Defeat when the lord falls. Without an explicit lord id the first player unit is the lord.
-  const lord = lordUnitId === undefined
-    ? units.find((u) => u.faction === 'player')
-    : units.find((u) => u.id === lordUnitId);
+  // Defeat when the lord falls.
+  const lord = units.find((u) => u.id === lordUnitId);
   if (!lord || lord.isDead) {
     return 'defeat';
   }

@@ -56,7 +56,7 @@ Theo quy tắc nguồn ngày 2026-11-14 trong `decisions.md`, bản đang chạy
 
 ## AI và minh bạch ý định
 
-Chủ dự án đã giao chọn phần hệ số AI theo FE hiện đại: tạm giữ `data/balance.json` làm cân bằng Water Emblem cho khung chấm mục tiêu FE8 (sát thương kỳ vọng, khả năng kết liễu, rủi ro phản đòn, HP mục tiêu). Các hệ số này **không phải số trích từ FE8** vì mã tham chiếu không chứa bảng hệ số. Có thể điều chỉnh bằng đo trận thực tế; không ghi như đã được FE8 xác nhận.
+Chủ dự án đã giao chọn phần hệ số AI theo FE hiện đại: tạm giữ `data/balance.json` làm cân bằng Water Emblem cho khung chấm mục tiêu FE8 (sát thương kỳ vọng, khả năng kết liễu, rủi ro phản đòn, HP mục tiêu). Các hệ số này **không phải số trích từ FE8** vì mã tham chiếu không chứa bảng hệ số. Có thể điều chỉnh bằng đo trận thực tế; không ghi như đã được FE8 xác nhận. Vai trò AI của từng quân (`stationary`, `pursue`, `pillage`) do trường `aiRole` trong JSON chương quyết định; quân `pillage` phá làng nó đứng lên theo dữ liệu, không theo class (chủ dự án chốt 2026-11-17).
 
 B10 cho địch nhiều vai trò: canh giữ, truy đuổi, tuần tra, rút lui, cướp đồ hoặc bỏ chạy. Đây là danh sách gợi ý từ báo cáo; vai trò nào có ở chương nào do `campaign.md` quyết định. Đề án cũ mô tả pipeline trạng thái → quét tầm → chấm mục tiêu → chọn ô đứng → hành động. Các tiêu chí hiện có là khả năng kết liễu, sát thương dự kiến, rủi ro phản đòn và HP mục tiêu; hệ số là cân bằng tạm của Water Emblem.
 

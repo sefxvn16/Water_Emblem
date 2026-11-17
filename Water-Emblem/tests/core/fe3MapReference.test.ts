@@ -33,7 +33,7 @@ describe('game maps match FE3 reference grids', () => {
     const diffs: string[] = [];
     for (let y = 0; y < ref.height; y++) {
       for (let x = 0; x < ref.width; x++) {
-        const expected = ref.legend[ref.rows[y][x]];
+        const expected = ref.legend[ref.rows[y]?.[x] ?? ''];
         const actual = map.grid[y]?.[x];
         if (actual !== expected) diffs.push(`(${x},${y}) expected ${expected} got ${actual}`);
       }
