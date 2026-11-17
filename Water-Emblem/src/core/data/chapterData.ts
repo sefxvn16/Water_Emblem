@@ -12,7 +12,7 @@ import classesJson from '../../../data/classes.json';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
-import type { GridUnit, MapData, MoveType, UnitFaction, WeaponRank } from '../grid/types';
+import type { GridUnit, MapData, MoveType, Position, UnitFaction, WeaponRank } from '../grid/types';
 import { initialSupportPoints } from '../combat/support';
 
 export interface InventoryEntry {
@@ -59,6 +59,7 @@ export interface ChapterData {
   readonly optionalUnits: ExtendedUnitState[];
   readonly recruitments: readonly { speakerUnitId: string; targetUnitId: string; maxDistance: number }[];
   readonly carryoverUnitIds: readonly string[];
+  readonly deploymentSlots: readonly Position[];
   readonly villages?: readonly ChapterVillage[];
   readonly seizeReward?: ChapterReward;
 }
@@ -291,6 +292,16 @@ export function loadChapterData(
   if (!Array.isArray(carryoverRows)) throw new Error('chapter.carryoverUnitIds must be an array');
   const carryoverUnitIds = carryoverRows.map((value: unknown, index: number) =>
     requireString(value, `chapter.carryoverUnitIds[${index}]`));
+  const deploymentSlotRows = data.deploymentSlots ?? [];
+  if (!Array.isArray(deploymentSlotRows)) throw new Error('chapter.deploymentSlots must be an array');
+  const deploymentSlots = deploymentSlotRows.map((value: unknown, index: number) =>
+    readPosition(value, map, `chapter.deploymentSlots[${index}]`));
+  if (deploymentSlots.length > 0 && deploymentSlots.length !== carryoverUnitIds.length) {
+    throw new Error('Deployment slot count must match carryover unit count');
+  }
+  if (new Set(deploymentSlots.map(({ x, y }) => `${x},${y}`)).size !== deploymentSlots.length) {
+    throw new Error('Duplicate deployment slot');
+  }
 
   const ids = [...units, ...optionalUnits].map(({ unit }) => unit.id);
   if (new Set(ids).size !== ids.length) throw new Error('Duplicate unit ID');
@@ -366,7 +377,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds, villages, seizeReward };
+  return { id, name, mapId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

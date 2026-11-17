@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
 import talysMapRaw from '../data/maps/chapter_01_talys.json';
 import galderMapRaw from '../data/maps/chapter_02_galder.json';
 import devilMountainMapRaw from '../data/maps/chapter_03_devil_mountain.json';
@@ -18,7 +18,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { evaluateChapterOutcome } from './core/chapter/types';
-import { carryUnitsToChapter } from './core/chapter/transition';
+import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState, InventoryEntry } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
@@ -72,6 +72,12 @@ const TERRAIN_COLORS: Record<string, { bg: string; label: string; icon: string }
   gate: { bg: '#c0392b', label: 'Gate', icon: '⛩️' },
   village: { bg: '#d97706', label: 'Village', icon: '🏡' },
   wall: { bg: '#474747', label: 'Stone Wall', icon: '🧱' },
+  rock: { bg: '#6b5847', label: 'Rock', icon: '🪨' },
+  rubble: { bg: '#545454', label: 'Rubble', icon: '🧱' },
+  road: { bg: '#b89f78', label: 'Road', icon: '🛤️' },
+  castle: { bg: '#4a5568', label: 'Castle', icon: '🏯' },
+  house: { bg: '#b45309', label: 'House', icon: '🏠' },
+  shop: { bg: '#047857', label: 'Shop', icon: '🏪' },
 };
 
 interface DialogueCutsceneModalProps {
@@ -402,11 +408,22 @@ export const App: React.FC = () => {
   const [turnState, setTurnState] = useState(turnManager.getState());
 
   // Giao tranh & Hành động
-  const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d');
+  const [viewMode, setViewMode] = useState<'3d' | '2d'>('2d');
   const [showStoryIntro, setShowStoryIntro] = useState<boolean>(true);
   const [showPreparation, setShowPreparation] = useState<boolean>(false);
   const [chapterOutcome, setChapterOutcome] = useState<'ongoing' | 'victory' | 'defeat'>('ongoing');
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
+  const noticeTimerRef = useRef<number | null>(null);
+  const showNotice = (msg: string, duration = 3000) => {
+    if (noticeTimerRef.current !== null) {
+      window.clearTimeout(noticeTimerRef.current);
+    }
+    setStatusNotice(msg);
+    noticeTimerRef.current = window.setTimeout(() => {
+      setStatusNotice(null);
+      noticeTimerRef.current = null;
+    }, duration);
+  };
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [originalPos, setOriginalPos] = useState<Position | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
@@ -423,7 +440,7 @@ export const App: React.FC = () => {
   } | null>(null);
 
   // Màn hình tổng thể & Bản lưu
-  const [activeScreen, setActiveScreen] = useState<'none' | 'title' | 'book_select' | 'save_slots' | 'world_map'>('none');
+  const [activeScreen, setActiveScreen] = useState<'none' | 'title' | 'book_select' | 'save_slots' | 'world_map'>('title');
   const [saveSlotsMode, setSaveSlotsMode] = useState<'load' | 'save'>('load');
 
   const syncState = () => {
@@ -491,8 +508,7 @@ export const App: React.FC = () => {
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
-    setStatusNotice(`Switched to ${targetChapter.name}`);
-    setTimeout(() => setStatusNotice(null), 3000);
+    showNotice(`Switched to ${targetChapter.name}`);
     setCombatLog([`📜 Started ${targetChapter.name}`]);
   };
 
@@ -500,7 +516,7 @@ export const App: React.FC = () => {
     if (unitId === 'marth') return;
     const active = extendedUnits.find(({ unit }) => unit.id === unitId && unit.faction === 'player');
     if (active) {
-      const nextActive = extendedUnits.filter(({ unit }) => unit.id !== unitId);
+      const nextActive = placeDeployedUnits(extendedUnits.filter(({ unit }) => unit.id !== unitId), currentChapter);
       setExtendedUnits(nextActive);
       setReserveUnits([...reserveUnits, active]);
       turnManager.replaceUnits(nextActive.map(({ unit }) => unit));
@@ -510,7 +526,7 @@ export const App: React.FC = () => {
     const reserve = reserveUnits.find(({ unit }) => unit.id === unitId);
     const deploymentLimit = currentChapter.units.filter(({ unit }) => unit.faction === 'player').length;
     if (!reserve || extendedUnits.filter(({ unit }) => unit.faction === 'player').length >= deploymentLimit) return;
-    const nextActive = [...extendedUnits, reserve];
+    const nextActive = placeDeployedUnits([...extendedUnits, reserve], currentChapter);
     setExtendedUnits(nextActive);
     setReserveUnits(reserveUnits.filter(({ unit }) => unit.id !== unitId));
     turnManager.replaceUnits(nextActive.map(({ unit }) => unit));
@@ -1117,7 +1133,7 @@ export const App: React.FC = () => {
 
   const handleSave = async (slotId: string = 'slot1') => {
     if (pendingMovePos || combatForecast || isProcessingAI || turnState.activePhase !== 'player_phase') {
-      setStatusNotice('Please complete your current action before saving.');
+      showNotice('Please complete your current action before saving.');
       return;
     }
     const ok = await saveGameState({
@@ -1133,10 +1149,9 @@ export const App: React.FC = () => {
       villageStates,
     }, slotId);
     if (ok) {
-      setStatusNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
-      setTimeout(() => setStatusNotice(null), 2500);
+      showNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
     } else {
-      setStatusNotice('Failed to save progress.');
+      showNotice('Failed to save progress.');
     }
   };
 
@@ -1144,8 +1159,7 @@ export const App: React.FC = () => {
     const data = await loadGameState(slotId);
     if (data) {
       applyLoadedSnapshot(data);
-      setStatusNotice(`✓ Save file loaded from ${slotId.toUpperCase()}!`);
-      setTimeout(() => setStatusNotice(null), 2500);
+      showNotice(`✓ Save file loaded from ${slotId.toUpperCase()}!`);
     } else {
       alert('No valid save data found.');
     }
@@ -1471,6 +1485,9 @@ export const App: React.FC = () => {
                 padding: '4px',
                 borderRadius: '4px',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                maxWidth: '100%',
+                maxHeight: 'calc(100vh - 120px)',
+                overflow: 'auto',
               }}
             >
               {mapData.grid.map((row, y) =>
@@ -2128,7 +2145,7 @@ export const App: React.FC = () => {
       )}
 
       {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
-      {showStoryIntro && (
+      {showStoryIntro && activeScreen === 'none' && (
         <DialogueCutsceneModal
           dialogues={currentDialogues.opening}
           title={`📜 ${currentChapter.name}`}
