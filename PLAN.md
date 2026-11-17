@@ -179,6 +179,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: Mở giai đoạn port 3D khi nào, và thiết bị mục tiêu là gì?
   - Kiểm bởi: tôi
 
+- [ ] 72. Thử dựng prop địa hình 3D bằng code thay cho Blender (chủ dự án yêu cầu ghi 2026-11-17; thuộc giai đoạn port 3D, mục 41).
+  - Tiêu chí xong: Dựng bằng Three.js có sẵn (`IcosahedronGeometry`, `LatheGeometry`, `ExtrudeGeometry`, `TubeGeometry`) cộng đẩy đỉnh bằng noise và RNG có seed, không thêm dependency; làm thử ít nhất đá/núi, cây, pháo đài, cầu trên một ô; prop tái lập giống hệt mỗi lần tải (test seed); chủ dự án duyệt ảnh chụp so với hướng chibi low-poly toon trong `Game_Design/art_ui.md`; đo tam giác và draw calls trong ngân sách mục 41. Nhân vật vẫn dùng GLB, không thuộc mục này.
+  - Nguồn ý tưởng: repo `Noniv/abyssal-garden` (MIT, commit `a596354`, đã đọc toàn bộ `source/src/`): đá từ icosphere đẩy noise + cắt mặt phẳng (`world.js` `meshChunk`), lathe có noise (`meshLathe`), ghép thanh theo đường (`meshShip`, `Mesh.sweep` trong `math.js`), seed RNG riêng từng hệ (`rseed`). Chỉ lấy ý, không chép mã: repo dùng WebGPU thuần, không qua Three.js, phong cách tả thực.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Làm khi mở giai đoạn port 3D (mục 41).
+  - Kiểm bởi: người dùng
+
 - [ ] 9. Kiểm thử, tối ưu và phát hành.
   - Tiêu chí xong: Gate PASS; chơi hết phạm vi đã duyệt; kiểm trên trình duyệt và thiết bị đã chốt; kiểm quyền sử dụng hình ảnh, âm thanh; bản phát hành được chủ dự án duyệt trước khi publish.
   - Kết quả: CHỜ NGƯỜI DÙNG: Chọn nền tảng triển khai và thời điểm publish.
