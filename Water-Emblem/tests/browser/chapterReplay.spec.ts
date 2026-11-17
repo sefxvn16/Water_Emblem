@@ -20,8 +20,18 @@ function loadFixture(name: string): ReplayFixture {
   return JSON.parse(readFileSync(`tests/browser/fixtures/${name}.replay.json`, 'utf8')) as ReplayFixture;
 }
 
+// Save then load right after the first battle starts; the replay must still win afterwards.
+async function saveAndLoad(page: Page): Promise<void> {
+  await page.getByRole('button', { name: /Save Game/i }).click();
+  await expect(page.getByText(/Game progress saved/i)).toBeVisible();
+  await page.getByRole('button', { name: /Load Game/i }).click();
+  await expect(page.getByText(/Save file loaded/i)).toBeVisible();
+  await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+}
+
 async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
   let seizes = 0;
+  let savedOnce = false;
   for (const [index, step] of fixture.steps.entries()) {
     const where = `step ${index}: ${JSON.stringify(step)}`;
     if (step.kind === 'tile') {
@@ -37,6 +47,14 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
       if (/Seize/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /STAGE CLEAR/i }), where).toBeVisible();
         seizes += 1;
+      } else if (/Advance to Chapter/i.test(step.name)) {
+        await expect(page.getByRole('heading', { name: /Battle Preparation/i }), where).toBeVisible();
+      } else if (/Start Battle/i.test(step.name)) {
+        await expect(page.getByText('PLAYER PHASE'), where).toBeVisible({ timeout: 15000 });
+        if (!savedOnce) {
+          await saveAndLoad(page);
+          savedOnce = true;
+        }
       }
     }
   }

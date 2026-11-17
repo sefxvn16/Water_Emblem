@@ -183,7 +183,7 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
     }
   }
   return [...mandatoryIds].every((id) => ids.has(id))
-    && value.extendedUnits.some((entry: ExtendedUnitState) => entry.unit.id === 'marth');
+    && value.extendedUnits.some((entry: ExtendedUnitState) => entry.unit.id === chapter.lordUnitId);
 }
 
 export function isSaveGameData(value: unknown): value is SaveGameData {

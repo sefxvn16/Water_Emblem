@@ -27,7 +27,7 @@ Water Emblem - Mystery of Nothing là game chiến thuật theo lượt chạy t
 3. **Hoàn tác bằng git, không bằng file backup:** commit trạng thái đang có trước khi sửa lớn. Không tạo thư mục `_backup/`, file `*.bak`, `New folder`, `scratch/` hay bản sao kiểu `App.old.tsx` trong repo. File tạm để ngoài repo hoặc trong `work/<task-id>/` (đã gitignore).
 4. **Phạm vi:** chỉ làm đúng mục được giao. Ý tưởng hoặc lỗi phát hiện thêm ghi vào `PLAN.md` thành mục mới (`CHỜ NGƯỜI DÙNG` nếu cần quyết định), không tự làm. Không tự thêm màn hình, nội dung Book/chương, cơ chế hay dependency chưa có trong `Game_Design/decisions.md` hoặc `PLAN.md`.
 5. **Báo xong:** chạy `node .studio/gate.mjs` ở gốc repo, chép nguyên dòng `Result`. Gate FAIL thì không ghi PASS, không báo hoàn thành; ghi FAIL kèm test fail và lý do.
-6. **Bàn giao:** một file duy nhất `HANDOFF.md` ở gốc repo, ghi đè mỗi lần bàn giao, theo mẫu: Ngày · Nhánh và commit cuối · Mục `PLAN.md` đã làm · File đã đổi · Lệnh đã chạy và kết quả thật (dòng `Result` của gate) · Việc còn dở · Câu hỏi cho chủ dự án. Không tạo file bàn giao theo tên công cụ hoặc theo đợt.
+6. **Một AI tại một thời điểm, đồng bộ qua `PLAN.md`:** mỗi lúc chỉ một AI làm việc trong repo. Không tạo file bàn giao (`HANDOFF*.md` hay tương tự). Trước khi dừng, ghi trạng thái thật vào dòng Kết quả của mục đang làm trong `PLAN.md` (đã làm gì, commit nào, dòng `Result` của gate, việc còn dở, câu hỏi cho chủ dự án) và commit. AI tiếp theo bắt đầu bằng `git status`, `git log` và `PLAN.md`.
 
 ## Định dạng `PLAN.md`
 

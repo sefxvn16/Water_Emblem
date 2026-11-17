@@ -30,9 +30,9 @@ Quy tắc làm việc, kiến trúc và định dạng mục: theo `AGENTS.md`. 
   - Kết quả: PASS: Chủ dự án yêu cầu làm mục 47 (2026-11-17); chọn phương án (a): `battle.spec.ts` bấm nút "3D View" trước khi tìm canvas, không bỏ assertion nào; commit `0a6e1da`. Kết quả gate sau khi merge ghi ở mục 67.
   - Kiểm bởi: tôi
 
-- [x] 48. Dọn file rác và gộp bàn giao.
-  - Tiêu chí xong: Không còn `_backup/` trong `Water-Emblem/`; `New folder`, `scratch`, `dist`, `test-results` được xóa hoặc dời theo quyết định; `ANTIGRAVITY_HANDOFF.md` và `HANDOFF_FE3_MAP_2D.md` được gộp thành `HANDOFF.md` theo mẫu trong `AGENTS.md`; build và test vẫn PASS.
-  - Kết quả: PASS: 19 thư mục `_backup/` (trong `Water-Emblem/src`, `data`, `tests`, `tools`, `Game_Design`, `reports`, gốc) và `scratch/` được dời, không xóa, sang `work/archive-2026-11-17/` (gitignore); `find -name _backup` ngoài `work/` trả 0. `New folder` do chủ dự án xóa, commit `3fff745`. `ANTIGRAVITY_HANDOFF.md` và `HANDOFF_FE3_MAP_2D.md` lưu ở `work/archive-2026-11-17/`; bảng đối chiếu lực lượng FE3 chuyển vào `Game_Design/campaign.md`; bàn giao mới ở `HANDOFF.md`. `dist/`, `test-results/` là output build/test đã gitignore, giữ nguyên.
+- [x] 48. Dọn file rác và bỏ file bàn giao.
+  - Tiêu chí xong: Không còn `_backup/` trong `Water-Emblem/`; `New folder`, `scratch`, `dist`, `test-results` được xóa hoặc dời theo quyết định; không còn file bàn giao (chủ dự án quyết định ngày 2026-11-17: mỗi lúc một AI, đồng bộ qua `PLAN.md`); build và test vẫn PASS.
+  - Kết quả: PASS: 19 thư mục `_backup/` (trong `Water-Emblem/src`, `data`, `tests`, `tools`, `Game_Design`, `reports`, gốc) và `scratch/` được dời, không xóa, sang `work/archive-2026-11-17/` (gitignore); `find -name _backup` ngoài `work/` trả 0. `New folder` do chủ dự án xóa, commit `3fff745`. `ANTIGRAVITY_HANDOFF.md` và `HANDOFF_FE3_MAP_2D.md` đã xóa theo yêu cầu chủ dự án sau khi chuyển bảng đối chiếu lực lượng FE3 vào `Game_Design/campaign.md`; `AGENTS.md` mục 6 thay file bàn giao bằng ghi trạng thái trong `PLAN.md`. `dist/`, `test-results/` là output build/test đã gitignore, giữ nguyên.
   - Kiểm bởi: tôi
 
 - [x] 49. Gỡ phụ thuộc vào `public/models/Original/` trước khi dời kho gốc.
@@ -176,7 +176,7 @@ Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-reb
 | 20–23 | Model 3D, camera, minimap | Thuộc 3D; đóng băng |
 | 24 (hai mục cùng số) | Đối chiếu ba repo tham khảo; hệ thống âm thanh | Giữ |
 | 25–32 | Công thức, growth, class theo FE11/FE8 | Unit test PASS; các điểm Tạm chốt giữ theo `decisions.md` |
-| 33 | Bàn giao cho Antigravity | Thay bằng quy tắc bàn giao trong `AGENTS.md` |
+| 33 | Bàn giao cho Antigravity | Bỏ; nay mỗi lúc một AI, đồng bộ qua `PLAN.md` (`AGENTS.md` mục 6) |
 | 35 | Test tình huống biên | Test vẫn có; số liệu cũ ghi ngày 2026-11-15 |
 | 36–39 | Camera 1:1, hội thoại, Title/Save/Book/World Map, chuẩn hóa tiếng Anh, World Map FE3 | Màn hình tồn tại; Book 2 và World Map 11 vương quốc vượt phạm vi Chương 1–3, giữ nhưng không mở rộng |
 | 40 | Hướng A/B về hiệu năng | Hướng B chuyển thành mục 41 |

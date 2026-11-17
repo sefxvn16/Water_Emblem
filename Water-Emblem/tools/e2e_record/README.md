@@ -20,4 +20,4 @@ npx playwright test -c tools/e2e_record/playwright.record.config.ts --reporter=l
 
 ## Giới hạn
 
-Fixture chỉ chứng minh luồng 2D chạy được đến STAGE CLEAR với một chuỗi nước đi. Luật chơi được kiểm bằng unit test trong `tests/core/`. Lượt ghi ngày 2026-11-17 (seed 20261117) không có bước chiêu mộ Castor/Navarre; chiêu mộ được kiểm ở `tests/core/chapterEvents.test.ts`.
+Fixture chỉ chứng minh luồng 2D chạy được đến STAGE CLEAR với một chuỗi nước đi. Luật chơi được kiểm bằng unit test trong `tests/core/`. Spec phát lại còn lưu rồi tải ngay khi trận đầu bắt đầu, kiểm màn chuẩn bị sau mỗi lần chuyển chương và PLAYER PHASE khi vào trận. Lượt ghi ngày 2026-11-17 (seed 20261117) không có bước chiêu mộ Castor/Navarre hay thăm làng; chiêu mộ qua giao diện được kiểm ở `tests/browser/battle.spec.ts`, luật chiêu mộ và thăm làng ở `tests/core/chapterEvents.test.ts`.
