@@ -16,7 +16,6 @@ export const TERRAIN_COLORS: Readonly<Record<string, TerrainStyle2d>> = {
   gate: { bg: '#c0392b', label: 'Gate', icon: '⛩️' },
   village: { bg: '#d97706', label: 'Village', icon: '🏡' },
   wall: { bg: '#474747', label: 'Stone Wall', icon: '🧱' },
-  rock: { bg: '#6b5847', label: 'Rock', icon: '🪨' },
   rubble: { bg: '#545454', label: 'Rubble', icon: '🧱' },
   road: { bg: '#b89f78', label: 'Road', icon: '🛤️' },
   castle: { bg: '#4a5568', label: 'Castle', icon: '🏯' },
