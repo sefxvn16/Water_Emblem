@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { closeSettings, openSettings } from './settingsMenu';
 import { PerspectiveCamera, Vector3 } from 'three';
 async function dismissTitle(page: Page) {
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
@@ -16,10 +17,12 @@ async function enterBattle(page: Page) {
   if (await startBtn.isVisible()) {
     await startBtn.click();
   }
+  await openSettings(page);
   const view3dBtn = page.getByRole('button', { name: /3D View/i });
   if (await view3dBtn.isVisible()) {
     await view3dBtn.click();
   }
+  await closeSettings(page);
 }
 
 
@@ -179,6 +182,7 @@ test('3D move and wait, two turns, and IndexedDB save/load', async ({ page }) =>
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
+  await openSettings(page);
   await expect(page.getByText('PLAYER PHASE')).toBeVisible();
   // 2D is the default view (PLAN.md item 47); switch to 3D explicitly for this 3D test.
   await page.getByRole('button', { name: /3D View/i }).click();
@@ -195,13 +199,18 @@ test('3D move and wait, two turns, and IndexedDB save/load', async ({ page }) =>
   await clickTile(26, 5);
   await expect(page.getByText(/(?:Actions|Lựa chọn hành động) \(Caeda\)/i)).toBeVisible();
   await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
+  await closeSettings(page);
   await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
+  await openSettings(page);
   await expect(page.getByText('Turn: 2')).toBeVisible({ timeout: 15000 });
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
+  await closeSettings(page);
   await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
+  await openSettings(page);
   await expect(page.getByText('Turn: 3')).toBeVisible({ timeout: 15000 });
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
+  await openSettings(page);
   await expect(page.getByText('Turn: 2')).toBeVisible();
   await expect(page.getByText(/(?:Save file loaded|Đã nạp lại tiến độ)/i)).toBeVisible();
 });
@@ -210,6 +219,7 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await page.evaluate(async () => {
@@ -240,6 +250,7 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
     });
     db.close();
   });
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   const box = await page.locator('canvas').boundingBox();
   expect(box).not.toBeNull();
@@ -256,6 +267,7 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
   await clickTile(23, 3);
   await page.getByRole('button', { name: /(?:Promote: Sniper|Thăng cấp: Thiện xạ)/i }).click();
   await expect(page.getByText(/Gordin (?:promoted to Sniper|thăng cấp thành Thiện xạ)/i)).toBeVisible();
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   const saved = await page.evaluate(async () => {
@@ -289,9 +301,11 @@ test('Jagen can dismount voluntarily and reload that class state', async ({ page
   await selectJagen();
   await page.getByRole('button', { name: /(?:Dismount|Xuống ngựa)/i }).click();
   await expect(page.getByRole('button', { name: /(?:Mount|Lên ngựa)/i })).toBeVisible();
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await page.getByRole('button', { name: /(?:Mount|Lên ngựa)/i }).click();
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   await expect(page.getByText(/(?:Save file loaded|Đã nạp lại tiến độ)/i)).toBeVisible();
   await selectJagen();
@@ -302,14 +316,19 @@ test('Chapter 3 can save and reload its map and roster', async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('/');
   await dismissTitle(page);
+  await openSettings(page);
   await page.locator('select').selectOption('chapter_03');
   await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
+  await openSettings(page);
   await page.locator('select').selectOption('chapter_01');
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
+  await openSettings(page);
   await expect(page.locator('select')).toHaveValue('chapter_03');
 });
 
@@ -327,6 +346,7 @@ test('enemy phase starts automatically after every player unit waits', async ({ 
     await page.mouse.click(box!.x + point.x, box!.y + point.y);
     await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
   }
+  await openSettings(page);
   await expect(page.getByText('Turn: 2')).toBeVisible({ timeout: 15000 });
   await expect(page.getByText('PLAYER PHASE')).toBeVisible();
 });
@@ -334,12 +354,14 @@ test('enemy phase starts automatically after every player unit waits', async ({ 
 test('chapter two preparation keeps reserve units in the save', async ({ page }) => {
   await page.goto('/');
   await dismissTitle(page);
+  await openSettings(page);
   await page.locator('select').selectOption('chapter_02');
   await expect(page.getByRole('heading', { name: /(?:Battle Preparation|Chuẩn bị xuất trận)/i })).toBeVisible();
   await page.getByRole('checkbox', { name: /Abel/ }).uncheck();
   await expect(page.getByText(/(?:Deployed: 10\/11|Đang chọn 10\/11)/i)).toBeVisible();
   await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect.poll(() => page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -357,6 +379,7 @@ test('chapter two preparation keeps reserve units in the save', async ({ page })
     db.close();
     return saved;
   })).toBe(true);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   await expect(page.getByText(/(?:Save file loaded|Đã nạp lại tiến độ)/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /(?:Battle Preparation|Chuẩn bị xuất trận)/i })).toHaveCount(0);
@@ -366,6 +389,7 @@ test('a valid near-victory save can seize the gate and carry HP to chapter two',
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await page.evaluate(async () => {
@@ -397,6 +421,7 @@ test('a valid near-victory save can seize the gate and carry HP to chapter two',
     });
     db.close();
   });
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   for (let i = 0; i < 8; i++) await page.getByRole('button', { name: /(?:Zoom Out|Thu nhỏ)/i }).click();
   await expect.poll(async () => Math.abs((await cameraPose(page)).target[0] - 14.5)).toBeLessThan(0.05);
@@ -416,6 +441,7 @@ test('a valid defeated snapshot shows game over and can restart', async ({ page 
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await page.evaluate(async () => {
@@ -446,6 +472,7 @@ test('a valid defeated snapshot shows game over and can restart', async ({ page 
     });
     db.close();
   });
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   await expect(page.getByRole('heading', { name: /(?:GAME OVER|THẤT BẠI)/i })).toBeVisible();
   await page.getByRole('button', { name: /(?:Restart Chapter|Chơi lại từ đầu)/i }).click();
@@ -456,9 +483,11 @@ test('Caeda recruits Castor through a talk action and can save afterward', async
   test.setTimeout(90_000);
   await page.goto('/');
   await dismissTitle(page);
+  await openSettings(page);
   await page.locator('select').selectOption('chapter_02');
   await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
   await enterBattle(page);
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await page.evaluate(async () => {
@@ -484,6 +513,7 @@ test('Caeda recruits Castor through a talk action and can save afterward', async
     });
     db.close();
   });
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   const box = await page.locator('canvas').boundingBox();
   expect(box).not.toBeNull();
@@ -491,6 +521,7 @@ test('Caeda recruits Castor through a talk action and can save afterward', async
   await page.mouse.click(box!.x + point.x, box!.y + point.y);
   await page.mouse.click(box!.x + point.x, box!.y + point.y);
   await page.getByRole('button', { name: /(?:Talk: Castor|Nói chuyện: Castor)/i }).click();
+  await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   const castorFaction = await page.evaluate(async () => {

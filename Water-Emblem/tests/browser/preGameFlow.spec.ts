@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openSettings } from './settingsMenu';
 
 test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World Map)', () => {
   test('Title screen, Save Slots, Book Select, and World Map can be navigated seamlessly', async ({ page }) => {
@@ -39,6 +40,7 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
     }
 
     // 3. Verify in-battle Header bar navigation buttons are present
+    await openSettings(page);
     const titleBtn = page.getByRole('button', { name: /Title/i });
     const worldMapBtn = page.getByRole('button', { name: /World Map/i });
     const slotsBtn = page.getByRole('button', { name: /Save Files/i });
@@ -75,6 +77,7 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
     if (await startBattleBtn2.isVisible()) {
       await startBattleBtn2.click();
     }
+    await openSettings(page);
     await expect(page.getByText('PLAYER PHASE')).toBeVisible();
   });
 });

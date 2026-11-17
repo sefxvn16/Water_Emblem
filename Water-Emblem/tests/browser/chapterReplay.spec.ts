@@ -4,7 +4,11 @@
 // STAGE CLEAR. Game rules are covered by unit tests in tests/core/; this spec
 // checks the 2D flow: title -> preparation -> actions -> seize -> next chapter.
 import { expect, test, type Page } from '@playwright/test';
+import { closeSettings, openSettings } from './settingsMenu';
 import { readFileSync } from 'node:fs';
+
+// Recorded buttons that now live in the Settings menu (PLAN.md item 71).
+const SETTINGS_BUTTONS = /(2D Grid|3D View|Save Game|Load Game|Save Files|World Map|Title|Sound: On|Muted)/;
 
 type ReplayStep =
   | { kind: 'tile'; testId: string }
@@ -22,10 +26,13 @@ function loadFixture(name: string): ReplayFixture {
 
 // Save then load right after the first battle starts; the replay must still win afterwards.
 async function saveAndLoad(page: Page): Promise<void> {
+  await openSettings(page);
   await page.getByRole('button', { name: /Save Game/i }).click();
   await expect(page.getByText(/Game progress saved/i)).toBeVisible();
+  await openSettings(page);
   await page.getByRole('button', { name: /Load Game/i }).click();
   await expect(page.getByText(/Save file loaded/i)).toBeVisible();
+  await openSettings(page);
   await expect(page.getByText('PLAYER PHASE')).toBeVisible();
 }
 
@@ -36,13 +43,17 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
     const where = `step ${index}: ${JSON.stringify(step)}`;
     if (step.kind === 'tile') {
       // Enemy phase must be over before the player selects tiles again.
+      await openSettings(page);
       await expect(page.getByText('PLAYER PHASE'), where).toBeVisible({ timeout: 15000 });
       await page.getByTestId(step.testId).dispatchEvent('click');
     } else if (step.kind === 'select') {
+      await openSettings(page);
       await page.locator('select').first().selectOption(step.value);
     } else {
       // Recorded name is the button's textContent; match it exactly, tolerant of whitespace only.
       const pattern = step.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s*');
+      if (SETTINGS_BUTTONS.test(step.name)) await openSettings(page);
+      else await closeSettings(page);
       await page.locator('button', { hasText: new RegExp(`^\\s*${pattern}\\s*$`) }).first().click({ timeout: 15000 });
       if (/Seize/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /STAGE CLEAR/i }), where).toBeVisible();
@@ -50,6 +61,7 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
       } else if (/Advance to Chapter/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /Battle Preparation/i }), where).toBeVisible();
       } else if (/Start Battle/i.test(step.name)) {
+        await openSettings(page);
         await expect(page.getByText('PLAYER PHASE'), where).toBeVisible({ timeout: 15000 });
         if (!savedOnce) {
           await saveAndLoad(page);

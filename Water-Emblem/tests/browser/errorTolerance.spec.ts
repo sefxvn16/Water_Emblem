@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openSettings } from './settingsMenu';
 
 test.describe('Game Error Tolerance & Resilience Suite', () => {
   test('handles invalid rapid clicks and out-of-bounds selections gracefully', async ({ page }) => {
@@ -13,6 +14,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
   if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
+    await openSettings(page);
     await page.getByRole('button', { name: /2D Grid/ }).click();
 
     // Select Marth at (24, 5) in Chapter 1
@@ -30,6 +32,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Ensure no fatal page crashes or uncaught exceptions
     expect(consoleErrors.filter((e) => !e.includes('favicon'))).toEqual([]);
+    await openSettings(page);
     await expect(page.locator('text=Turn:').first()).toBeVisible();
     await expect(page.getByText('PLAYER PHASE')).toBeVisible();
   });
@@ -42,6 +45,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
 
     // Sound button starts as "🔊 Sound: On"
+    await openSettings(page);
     const muteButton = page.getByTitle(/(?:Mute Audio|Unmute Audio|Tắt âm thanh|Bật âm thanh)/i);
     await expect(muteButton).toBeVisible();
 
@@ -61,6 +65,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     if (await startBtnAfterReload.isVisible()) await startBtnAfterReload.click();
 
     // Should stay muted
+    await openSettings(page);
     await expect(page.getByText(/(?:Muted|Tắt)/i)).toBeVisible();
 
     // Click to unmute again
@@ -81,9 +86,11 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Toggle 2D and 3D back and forth 4 times
     for (let i = 0; i < 4; i++) {
+      await openSettings(page);
       await page.getByRole('button', { name: /2D Grid/ }).click();
       await expect(page.getByText('25,6', { exact: true })).toBeVisible();
 
+      await openSettings(page);
       await page.getByRole('button', { name: /3D View/ }).click();
       await expect(page.locator('canvas')).toBeVisible();
     }
@@ -97,9 +104,11 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
   if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
+    await openSettings(page);
     await expect(page.getByText('PLAYER PHASE')).toBeVisible();
 
     // First save once to initialize the IndexedDB database & store
+    await openSettings(page);
     await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
     await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible({ timeout: 10000 });
 
@@ -129,10 +138,12 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     });
 
     // Attempt to load the corrupted save
+    await openSettings(page);
     await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
 
     // Dialog should report failure, app does not crash
     await expect.poll(() => alertSeen).toBe(true);
+    await openSettings(page);
     await expect(page.getByText('PLAYER PHASE')).toBeVisible();
     await expect(page.getByText(/Turn:\s*1/)).toBeVisible();
   });
