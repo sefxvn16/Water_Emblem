@@ -23,6 +23,9 @@ async function enterBattle(page: Page) {
     await view3dBtn.click();
   }
   await closeSettings(page);
+  // ThreeScene rebuilds its canvas once models load; wait until that settles (PLAN.md item 71).
+  await expect(page.locator('[data-models-ready]')).toHaveAttribute('data-models-ready', 'true', { timeout: 15000 });
+  await expect.poll(() => page.locator('canvas').boundingBox(), { timeout: 15000 }).not.toBeNull();
 }
 
 
