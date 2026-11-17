@@ -1,12 +1,15 @@
 import { expect, test, type Page } from '@playwright/test';
-import mapJson from '../../data/maps/chapter_03_devil_mountain.json' with { type: 'json' };
+import { SEED, recordOn, saveRecording } from './recorder';
+test.beforeEach(async ({ page }) => { await recordOn(page); });
+test.afterEach(async ({ page }, info) => { await saveRecording(page, info, 'chapter1'); });
+import mapJson from '../../data/maps/chapter_01_talys.json' with { type: 'json' };
 import type { MapData, Position } from '../../src/core/grid/types';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import { TerrainRegistry } from '../../src/core/grid/terrain';
 import { calculateMovementRange } from '../../src/core/grid/pathfinding';
 
 const map = mapJson as MapData;
-const gate = { x: 2, y: 8 };
+const gate = { x: 4, y: 4 };
 const terrains = new TerrainRegistry();
 
 function movementRange(actor: ExtendedUnitState, units: ExtendedUnitState[]): Position[] {
@@ -68,56 +71,27 @@ function routeDistance(start: Position, goal: Position, moveType: ExtendedUnitSt
   return 999;
 }
 
-test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and seize gate', async ({ page }) => {
-  test.setTimeout(360_000);
-  await page.goto('/');
+test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', async ({ page }) => {
+  test.setTimeout(300_000);
+  await page.goto('/?seed=' + SEED);
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
   if (await resumeBtn.isVisible()) await resumeBtn.click();
-
-  // Switch to Chapter 3
-  await page.locator('select').first().selectOption('chapter_03');
-  await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
-  await expect(page.getByRole('heading', { name: /Chapter 3: The Devil Mountain/i })).toBeVisible();
-
+  await expect(page.getByText(/save Talys Castle|cứu lấy thành Talys/i).first()).toBeVisible();
   await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
   await page.getByRole('button', { name: /2D Grid/ }).click();
   const tile = (position: Position) => page.getByText(`${position.x},${position.y}`, { exact: true }).dispatchEvent('click');
+  const order = ['draug', 'jagen', 'gordin', 'cain', 'abel', 'caeda', 'marth'];
 
-  const order = [
-    'jagen', 'ogma', 'barst', 'bord', 'cord', 'cain', 'abel',
-    'draug', 'gordin', 'castor', 'julian', 'lena', 'caeda', 'navarre', 'marth',
-  ];
-
-  for (let turn = 1; turn <= 40; turn++) {
+  for (let turn = 1; turn <= 30; turn++) {
     for (const id of order) {
       const { units } = await readBattle(page);
       const actor = units.find(({ unit }) => unit.id === id);
-      if (!actor || actor.unit.isDead || actor.unit.hasActed || actor.unit.faction !== 'player') continue;
-
+      if (!actor || actor.unit.isDead || actor.unit.hasActed) continue;
       const enemies = units.filter(({ unit }) => unit.faction === 'enemy' && !unit.isDead);
-      const fieldEnemies = enemies.filter((e) => e.unit.id !== 'hyman');
+      const fieldEnemies = enemies.filter((e) => e.unit.id !== 'gazzak');
       const destinations = movementRange(actor, units);
 
-      // Special priority: Caeda talks to Navarre if Navarre is an enemy
-      const navarreEnemy = enemies.find((e) => e.unit.id === 'navarre');
-      let isTalkMove = false;
-      let talkDest: Position | null = null;
-      if (id === 'caeda' && navarreEnemy) {
-        const talkTiles = destinations.filter((pos) => {
-          const dist = Math.abs(pos.x - navarreEnemy.unit.position.x) + Math.abs(pos.y - navarreEnemy.unit.position.y);
-          return dist === 1;
-        });
-        if (talkTiles.length > 0) {
-          talkDest = talkTiles[0] ?? null;
-          isTalkMove = true;
-        }
-      }
-
-      // Attack candidates (excluding Navarre if we can recruit him, and staff users cannot attack)
-      const caedaAlive = units.some((u) => u.unit.id === 'caeda' && !u.unit.isDead);
-      const targetableEnemies = caedaAlive ? enemies.filter((e) => e.unit.id !== 'navarre') : enemies;
-      const canAttack = actor.weapon && actor.weapon.type !== 'staff' && (actor.weapon.might ?? 0) > 0;
-      const attacks = canAttack ? destinations.flatMap((position) => targetableEnemies
+      const attacks = destinations.flatMap((position) => enemies
         .filter(({ unit }) => {
           const distance = Math.abs(position.x - unit.position.x) + Math.abs(position.y - unit.position.y);
           return distance >= actor.weapon.minRange && distance <= actor.weapon.maxRange;
@@ -140,8 +114,8 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
 
           if (isLethal) {
             let score = 300 - target.stats.hp;
-            if (target.unit.id.includes('thief')) score += 100;
-            if (target.unit.id === 'hyman') score += 50;
+            if (target.unit.id === 'enemy_thief') score += 100;
+            if (target.unit.id === 'gazzak') score += 50;
             return { position, target, score };
           }
 
@@ -151,86 +125,55 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
           }
 
           let score = 100 - target.stats.hp;
-          if (target.unit.id.includes('thief')) score += 50;
-          if (target.unit.id === 'hyman') score += 20;
+          if (target.unit.id === 'enemy_thief') score += 50;
+          if (target.unit.id === 'gazzak') score += 20;
           if (canCounter) {
             score -= counterDmg * 4;
           } else {
-            score += 30; // free ranged damage
+            score += 30; // free damage bonus (e.g. ranged Gordin)
           }
           if (attackerTerrain === 'fort') score += 25;
-          if (id !== 'marth' && position.x === gate.x && position.y === gate.y) score -= 200;
           if (attackerTerrain === 'forest') score += 15;
           if (position.x === actor.unit.position.x && position.y === actor.unit.position.y) score += 20;
 
           return { position, target, score };
         }))
-        .filter((a): a is { position: Position; target: ExtendedUnitState; score: number } => a !== null) : [];
+        .filter((a): a is { position: Position; target: ExtendedUnitState; score: number } => a !== null);
 
       attacks.sort((a, b) => b.score - a.score);
       const bestAttack = attacks[0];
 
       let destination: Position;
-      let attackCandidate: { position: Position; target: ExtendedUnitState } | null = null;
-      if (isTalkMove && talkDest) {
-        destination = talkDest;
-      } else if (bestAttack) {
+      if (bestAttack) {
         destination = bestAttack.position;
-        attackCandidate = bestAttack;
-      } else if (id === 'caeda' && navarreEnemy) {
-        // Caeda advances towards Navarre safely, avoiding bow threats
-        const scored = destinations.map((pos) => {
-          const dist = Math.abs(pos.x - navarreEnemy.unit.position.x) + Math.abs(pos.y - navarreEnemy.unit.position.y);
-          const threats = enemies.filter((e) => {
-            const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
-            return dist <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1);
-          });
-          const bowThreats = threats.filter((e) => e.weapon.type === 'bow' || e.unit.id.includes('hunter'));
-          const penalty = threats.length * 100 + bowThreats.length * 500;
-          return { pos, score: -dist * 10 - penalty };
-        });
-        scored.sort((a, b) => b.score - a.score);
-        destination = scored[0]?.pos ?? actor.unit.position;
       } else if (id === 'marth') {
         if (fieldEnemies.length > 0) {
-          // Marth stays in backline away from threats
+          // Marth prioritizes zero-threat tiles, maximizing distance to all field enemies
           const scored = destinations.map((pos) => {
             const threats = fieldEnemies.filter((e) => {
               const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
               return dist <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1);
             });
             const minDist = Math.min(...fieldEnemies.map((e) => Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y)));
-            const cornerDist = Math.abs(pos.x - 27) + Math.abs(pos.y - 19);
+            const cornerDist = Math.abs(pos.x - 26) + Math.abs(pos.y - 11);
             const score = -threats.length * 1000 + minDist * 10 - cornerDist;
             return { pos, score };
           });
           scored.sort((a, b) => b.score - a.score);
           destination = scored[0]?.pos ?? actor.unit.position;
         } else {
-          // Field cleared, Marth heads straight to gate
+          // All field enemies defeated, head straight to gate using BFS routeDistance
           destination = destinations.sort((a, b) => {
             const distA = routeDistance(a, gate, actor.unit.moveType, actor.unit.classId);
             const distB = routeDistance(b, gate, actor.unit.moveType, actor.unit.classId);
             return distA - distB;
           })[0] ?? actor.unit.position;
         }
-      } else if (id === 'lena') {
-        // Lena is a fragile staff user, keep her safe near allies
-        const allies = units.filter((u) => u.unit.faction === 'player' && u.unit.id !== 'lena');
-        destination = destinations.sort((a, b) => {
-          const threatsA = enemies.filter((e) => Math.abs(a.x - e.unit.position.x) + Math.abs(a.y - e.unit.position.y) <= (e.unit.mov ?? 5) + 1).length;
-          const threatsB = enemies.filter((e) => Math.abs(b.x - e.unit.position.x) + Math.abs(b.y - e.unit.position.y) <= (e.unit.mov ?? 5) + 1).length;
-          const distAlliesA = Math.min(...allies.map((u) => Math.abs(a.x - u.unit.position.x) + Math.abs(a.y - u.unit.position.y)));
-          const distAlliesB = Math.min(...allies.map((u) => Math.abs(b.x - u.unit.position.x) + Math.abs(b.y - u.unit.position.y)));
-          return (threatsA * 100 + distAlliesA) - (threatsB * 100 + distAlliesB);
-        })[0] ?? actor.unit.position;
       } else if (enemies.length === 0) {
-        if (id !== 'marth' && actor.unit.position.x === gate.x && actor.unit.position.y === gate.y) {
-          destination = destinations.find((pos) => pos.x !== gate.x || pos.y !== gate.y) ?? actor.unit.position;
-        } else {
-          destination = actor.unit.position;
-        }
+        // All enemies defeated, allies hold position
+        destination = actor.unit.position;
       } else if (actor.stats.hp <= 8) {
+        // Low HP ally stays safe or seeks defensive terrain
         const scored = destinations.map((pos) => {
           const threats = enemies.filter((e) => {
             const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
@@ -243,11 +186,8 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
         scored.sort((a, b) => b.score - a.score);
         destination = scored[0]?.pos ?? actor.unit.position;
       } else {
-        // Move towards nearest enemy or Navarre if Caeda
-        const goals = (id === 'caeda' && navarreEnemy)
-          ? [navarreEnemy.unit.position]
-          : enemies.map(({ unit }) => unit.position);
-
+        // Healthy ally moves towards enemies, preferring defensive terrain
+        const goals = enemies.map(({ unit }) => unit.position);
         destination = destinations.sort((a, b) => {
           const distA = Math.min(...goals.map((goal) => routeDistance(a, goal, actor.unit.moveType, actor.unit.classId)));
           const distB = Math.min(...goals.map((goal) => routeDistance(b, goal, actor.unit.moveType, actor.unit.classId)));
@@ -258,39 +198,34 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
           return (distA + bonusA) - (distB + bonusB);
         })[0] ?? actor.unit.position;
       }
-
       await tile(actor.unit.position);
       await tile(destination);
-      console.log(`[CH3-T${turn}] ${id} -> (${destination.x},${destination.y}) ${isTalkMove ? 'talking to Navarre' : attackCandidate ? `attacks ${attackCandidate.target.unit.id}` : 'waits'}`);
-
-      // Seize check
-      if (id === 'marth' && destination.x === gate.x && destination.y === gate.y && !enemies.some(({ unit }) => unit.id === 'hyman')) {
+      console.log(`[T${turn}] ${id} -> (${destination.x},${destination.y}) ${bestAttack ? `attacks ${bestAttack.target.unit.id} (hp ${bestAttack.target.stats.hp})` : 'waits'}`);
+      if (id === 'marth' && destination.x === gate.x && destination.y === gate.y && !enemies.some(({ unit }) => unit.id === 'gazzak')) {
         await page.getByRole('button', { name: /(?:Seize|Chiếm cổng thành)/i }).click();
         await expect(page.getByRole('heading', { name: /(?:STAGE CLEAR|CHIẾN THẮNG)/i })).toBeVisible();
-        console.log(`[CH3] Stage Cleared! Chapter 3 completed successfully!`);
+        await expect(page.getByText(/mercenary captain Ogma|Ogma cùng đội lính đánh thuê|Ogma cùng các/i)).toBeVisible();
+        await page.getByRole('button', { name: /(?:Advance to Chapter 2|Tiến quân sang Chương 2)/i }).click();
+        await expect(page.getByRole('heading', { name: /(?:Battle Preparation|Chuẩn bị xuất trận)/i })).toBeVisible();
+        await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
+        await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
+        await expect(page.getByText('PLAYER PHASE')).toBeVisible();
         return;
       }
-
-      // Check Talk button
-      const talkButton = page.getByRole('button', { name: /(?:Talk|Nói chuyện)/i });
-      if (isTalkMove && await talkButton.isVisible()) {
-        await talkButton.click();
-        console.log(`[CH3-T${turn}] Navarre recruited by Caeda!`);
-      } else if (attackCandidate) {
-        await tile(attackCandidate.target.unit.position);
+      if (bestAttack) {
+        await tile(bestAttack.target.unit.position);
         await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
       } else {
         await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
       }
     }
-
     if (await page.getByRole('heading', { name: /(?:GAME OVER|THẤT BẠI)/i }).isVisible()) {
-      throw new Error(`Marth was defeated in Chapter 3 on turn ${turn}`);
+      throw new Error(`Marth was defeated on turn ${turn}`);
     }
     if (await page.getByText('PLAYER PHASE').isVisible()) {
       await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
     }
     await expect(page.getByText(`Turn: ${turn + 1}`)).toBeVisible({ timeout: 15000 });
   }
-  throw new Error('Chapter 3 was not completed within 40 turns');
+  throw new Error('The chapter was not completed within 30 turns');
 });

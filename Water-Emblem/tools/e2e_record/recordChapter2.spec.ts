@@ -1,12 +1,15 @@
 import { expect, test, type Page } from '@playwright/test';
-import mapJson from '../../data/maps/chapter_01_talys.json' with { type: 'json' };
+import { SEED, recordOn, saveRecording } from './recorder';
+test.beforeEach(async ({ page }) => { await recordOn(page); });
+test.afterEach(async ({ page }, info) => { await saveRecording(page, info, 'chapter2'); });
+import mapJson from '../../data/maps/chapter_02_galder.json' with { type: 'json' };
 import type { MapData, Position } from '../../src/core/grid/types';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import { TerrainRegistry } from '../../src/core/grid/terrain';
 import { calculateMovementRange } from '../../src/core/grid/pathfinding';
 
 const map = mapJson as MapData;
-const gate = { x: 4, y: 4 };
+const gate = { x: 2, y: 2 };
 const terrains = new TerrainRegistry();
 
 function movementRange(actor: ExtendedUnitState, units: ExtendedUnitState[]): Position[] {
@@ -68,27 +71,52 @@ function routeDistance(start: Position, goal: Position, moveType: ExtendedUnitSt
   return 999;
 }
 
-test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', async ({ page }) => {
+test('Chapter 2 can be played from opening, recruit Castor, defeat Gomer, and seize gate', async ({ page }) => {
   test.setTimeout(300_000);
-  await page.goto('/');
+  await page.goto('/?seed=' + SEED);
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
   if (await resumeBtn.isVisible()) await resumeBtn.click();
-  await expect(page.getByText(/save Talys Castle|cứu lấy thành Talys/i).first()).toBeVisible();
+
+  // Switch to Chapter 2
+  await page.locator('select').first().selectOption('chapter_02');
+  await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
+  await expect(page.getByRole('heading', { name: /Chapter 2: The Pirates of Galder/i })).toBeVisible();
+
   await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
   await page.getByRole('button', { name: /2D Grid/ }).click();
   const tile = (position: Position) => page.getByText(`${position.x},${position.y}`, { exact: true }).dispatchEvent('click');
-  const order = ['draug', 'jagen', 'gordin', 'cain', 'abel', 'caeda', 'marth'];
 
-  for (let turn = 1; turn <= 30; turn++) {
+  const order = ['jagen', 'ogma', 'barst', 'bord', 'cord', 'cain', 'abel', 'draug', 'gordin', 'caeda', 'castor', 'marth'];
+
+  for (let turn = 1; turn <= 35; turn++) {
     for (const id of order) {
       const { units } = await readBattle(page);
       const actor = units.find(({ unit }) => unit.id === id);
-      if (!actor || actor.unit.isDead || actor.unit.hasActed) continue;
+      if (!actor || actor.unit.isDead || actor.unit.hasActed || actor.unit.faction !== 'player') continue;
+
       const enemies = units.filter(({ unit }) => unit.faction === 'enemy' && !unit.isDead);
-      const fieldEnemies = enemies.filter((e) => e.unit.id !== 'gazzak');
+      const fieldEnemies = enemies.filter((e) => e.unit.id !== 'gomer');
       const destinations = movementRange(actor, units);
 
-      const attacks = destinations.flatMap((position) => enemies
+      // Special priority: Caeda talks to Castor if Castor is an enemy
+      const castorEnemy = enemies.find((e) => e.unit.id === 'castor');
+      let isTalkMove = false;
+      let talkDest: Position | null = null;
+      if (id === 'caeda' && castorEnemy) {
+        const talkTiles = destinations.filter((pos) => {
+          const dist = Math.abs(pos.x - castorEnemy.unit.position.x) + Math.abs(pos.y - castorEnemy.unit.position.y);
+          return dist === 1;
+        });
+        if (talkTiles.length > 0) {
+          talkDest = talkTiles[0] ?? null;
+          isTalkMove = true;
+        }
+      }
+
+      // Attack candidates (excluding Castor if we can recruit him)
+      const caedaAlive = units.some((u) => u.unit.id === 'caeda' && !u.unit.isDead);
+      const targetableEnemies = caedaAlive ? enemies.filter((e) => e.unit.id !== 'castor') : enemies;
+      const attacks = destinations.flatMap((position) => targetableEnemies
         .filter(({ unit }) => {
           const distance = Math.abs(position.x - unit.position.x) + Math.abs(position.y - unit.position.y);
           return distance >= actor.weapon.minRange && distance <= actor.weapon.maxRange;
@@ -111,8 +139,8 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
 
           if (isLethal) {
             let score = 300 - target.stats.hp;
-            if (target.unit.id === 'enemy_thief') score += 100;
-            if (target.unit.id === 'gazzak') score += 50;
+            if (target.unit.id.includes('thief')) score += 100;
+            if (target.unit.id === 'gomer') score += 50;
             return { position, target, score };
           }
 
@@ -122,14 +150,15 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
           }
 
           let score = 100 - target.stats.hp;
-          if (target.unit.id === 'enemy_thief') score += 50;
-          if (target.unit.id === 'gazzak') score += 20;
+          if (target.unit.id.includes('thief')) score += 50;
+          if (target.unit.id === 'gomer') score += 20;
           if (canCounter) {
             score -= counterDmg * 4;
           } else {
-            score += 30; // free damage bonus (e.g. ranged Gordin)
+            score += 30; // free ranged damage
           }
           if (attackerTerrain === 'fort') score += 25;
+          if (id !== 'marth' && position.x === gate.x && position.y === gate.y) score -= 200;
           if (attackerTerrain === 'forest') score += 15;
           if (position.x === actor.unit.position.x && position.y === actor.unit.position.y) score += 20;
 
@@ -141,25 +170,43 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
       const bestAttack = attacks[0];
 
       let destination: Position;
-      if (bestAttack) {
+      let attackCandidate: { position: Position; target: ExtendedUnitState } | null = null;
+      if (isTalkMove && talkDest) {
+        destination = talkDest;
+      } else if (bestAttack) {
         destination = bestAttack.position;
+        attackCandidate = bestAttack;
+      } else if (id === 'caeda' && castorEnemy) {
+        // Caeda advances towards Castor safely, avoiding bow threats
+        const scored = destinations.map((pos) => {
+          const distToCastor = Math.abs(pos.x - castorEnemy.unit.position.x) + Math.abs(pos.y - castorEnemy.unit.position.y);
+          const threats = enemies.filter((e) => {
+            const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
+            return dist <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1);
+          });
+          const bowThreats = threats.filter((e) => e.weapon.type === 'bow' || e.unit.id.includes('hunter'));
+          const penalty = threats.length * 100 + bowThreats.length * 500;
+          return { pos, score: -distToCastor * 10 - penalty };
+        });
+        scored.sort((a, b) => b.score - a.score);
+        destination = scored[0]?.pos ?? actor.unit.position;
       } else if (id === 'marth') {
         if (fieldEnemies.length > 0) {
-          // Marth prioritizes zero-threat tiles, maximizing distance to all field enemies
+          // Marth stays in backline away from threats
           const scored = destinations.map((pos) => {
             const threats = fieldEnemies.filter((e) => {
               const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
               return dist <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1);
             });
             const minDist = Math.min(...fieldEnemies.map((e) => Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y)));
-            const cornerDist = Math.abs(pos.x - 26) + Math.abs(pos.y - 11);
+            const cornerDist = Math.abs(pos.x - 24) + Math.abs(pos.y - 12);
             const score = -threats.length * 1000 + minDist * 10 - cornerDist;
             return { pos, score };
           });
           scored.sort((a, b) => b.score - a.score);
           destination = scored[0]?.pos ?? actor.unit.position;
         } else {
-          // All field enemies defeated, head straight to gate using BFS routeDistance
+          // Field cleared, Marth heads straight to gate
           destination = destinations.sort((a, b) => {
             const distA = routeDistance(a, gate, actor.unit.moveType, actor.unit.classId);
             const distB = routeDistance(b, gate, actor.unit.moveType, actor.unit.classId);
@@ -167,10 +214,12 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
           })[0] ?? actor.unit.position;
         }
       } else if (enemies.length === 0) {
-        // All enemies defeated, allies hold position
-        destination = actor.unit.position;
+        if (id !== 'marth' && actor.unit.position.x === gate.x && actor.unit.position.y === gate.y) {
+          destination = destinations.find((pos) => pos.x !== gate.x || pos.y !== gate.y) ?? actor.unit.position;
+        } else {
+          destination = actor.unit.position;
+        }
       } else if (actor.stats.hp <= 8) {
-        // Low HP ally stays safe or seeks defensive terrain
         const scored = destinations.map((pos) => {
           const threats = enemies.filter((e) => {
             const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);
@@ -183,8 +232,11 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
         scored.sort((a, b) => b.score - a.score);
         destination = scored[0]?.pos ?? actor.unit.position;
       } else {
-        // Healthy ally moves towards enemies, preferring defensive terrain
-        const goals = enemies.map(({ unit }) => unit.position);
+        // Move towards nearest enemy or Castor if Caeda
+        const goals = (id === 'caeda' && castorEnemy)
+          ? [castorEnemy.unit.position]
+          : enemies.map(({ unit }) => unit.position);
+
         destination = destinations.sort((a, b) => {
           const distA = Math.min(...goals.map((goal) => routeDistance(a, goal, actor.unit.moveType, actor.unit.classId)));
           const distB = Math.min(...goals.map((goal) => routeDistance(b, goal, actor.unit.moveType, actor.unit.classId)));
@@ -195,34 +247,43 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
           return (distA + bonusA) - (distB + bonusB);
         })[0] ?? actor.unit.position;
       }
+
       await tile(actor.unit.position);
       await tile(destination);
-      console.log(`[T${turn}] ${id} -> (${destination.x},${destination.y}) ${bestAttack ? `attacks ${bestAttack.target.unit.id} (hp ${bestAttack.target.stats.hp})` : 'waits'}`);
-      if (id === 'marth' && destination.x === gate.x && destination.y === gate.y && !enemies.some(({ unit }) => unit.id === 'gazzak')) {
+      console.log(`[CH2-T${turn}] ${id} -> (${destination.x},${destination.y}) ${isTalkMove ? 'talking to Castor' : attackCandidate ? `attacks ${attackCandidate.target.unit.id}` : 'waits'}`);
+
+      // Seize check
+      if (id === 'marth' && destination.x === gate.x && destination.y === gate.y && !enemies.some(({ unit }) => unit.id === 'gomer')) {
         await page.getByRole('button', { name: /(?:Seize|Chiếm cổng thành)/i }).click();
         await expect(page.getByRole('heading', { name: /(?:STAGE CLEAR|CHIẾN THẮNG)/i })).toBeVisible();
-        await expect(page.getByText(/mercenary captain Ogma|Ogma cùng đội lính đánh thuê|Ogma cùng các/i)).toBeVisible();
-        await page.getByRole('button', { name: /(?:Advance to Chapter 2|Tiến quân sang Chương 2)/i }).click();
+        await page.getByRole('button', { name: /(?:Advance to Chapter 3|Tiến quân sang Chương 3)/i }).click();
         await expect(page.getByRole('heading', { name: /(?:Battle Preparation|Chuẩn bị xuất trận)/i })).toBeVisible();
         await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
         await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
         await expect(page.getByText('PLAYER PHASE')).toBeVisible();
         return;
       }
-      if (bestAttack) {
-        await tile(bestAttack.target.unit.position);
+
+      // Check Talk button
+      const talkButton = page.getByRole('button', { name: /(?:Talk|Nói chuyện)/i });
+      if (isTalkMove && await talkButton.isVisible()) {
+        await talkButton.click();
+        console.log(`[CH2-T${turn}] Castor recruited by Caeda!`);
+      } else if (attackCandidate) {
+        await tile(attackCandidate.target.unit.position);
         await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
       } else {
         await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
       }
     }
+
     if (await page.getByRole('heading', { name: /(?:GAME OVER|THẤT BẠI)/i }).isVisible()) {
-      throw new Error(`Marth was defeated on turn ${turn}`);
+      throw new Error(`Marth was defeated in Chapter 2 on turn ${turn}`);
     }
     if (await page.getByText('PLAYER PHASE').isVisible()) {
       await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
     }
     await expect(page.getByText(`Turn: ${turn + 1}`)).toBeVisible({ timeout: 15000 });
   }
-  throw new Error('The chapter was not completed within 30 turns');
+  throw new Error('Chapter 2 was not completed within 35 turns');
 });
