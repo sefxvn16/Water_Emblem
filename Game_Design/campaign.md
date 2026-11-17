@@ -16,6 +16,26 @@ Chủ dự án đã xác nhận ngày 2026-11-13: tất cả màn chiến dịch
 
 Nguồn đối chiếu: [sổ tay Nintendo](https://www.nintendo.co.jp/data/software/manual/man_jahj.pdf), [danh sách chương FE3](https://fireemblemwiki.org/wiki/List_of_chapters_in_Fire_Emblem:_Mystery_of_the_Emblem), [dữ liệu địch FE3 Book 1](https://serenesforest.net/mystery-of-the-emblem/characters/enemy-data/book-1/). Dữ liệu vị trí ô, chỉ số và lời thoại trong prototype vẫn cần kiểm riêng; các nguồn này không xác nhận toàn bộ JSON hiện có.
 
+### Quy trình đối chiếu bản đồ FE3 cho các chương tiếp theo (2026-11-16)
+
+Nguồn đã mở và dùng để đối chiếu:
+
+| Nguồn | Nội dung dùng được | Giới hạn |
+|---|---|---|
+| `Water-Emblem/public/models/Original/01_Maps/Book_1/Cm_fe03_b1_<chương>.png` và `Book_2/` cùng cấu trúc | Hình dạng bờ biển, núi, công trình và vị trí sprite trên ảnh FE3; có bản phóng 4x trong `Upscaled_PixelSharp/4x/` | Sprite và chú thích che địa hình; `Original/README.md` chưa ghi URL hoặc quyền sử dụng của từng ảnh. Kích thước PNG có thể gồm phần mép, không tự coi là kích thước map chơi được. |
+| [Sơ đồ Book 1 chương 1–10](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_1_1.html), [11–20](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_1_2.html) | Lưới có chú giải loại địa hình, công trình và ký hiệu quân; ảnh chương 1–3 đã mở trực tiếp tại `MAP/map1_01.png`, `map1_02.png`, `map1_03.png`. | Sơ đồ do người viết hướng dẫn lập, không phải dữ liệu ROM; ký hiệu có thể che màu ô hoặc được dời để dễ đọc. Chỉ dùng làm nguồn tham chiếu, không chép ảnh vào game. |
+| [Sơ đồ Book 2 chương 1–12](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_2_1.html), [13–Endgame](https://chirimenzeyo.ari-jigoku.com/fire_emblem/03_monsyou/kouryaku_2_2.html) | Điểm bắt đầu tra chương Book 2 về sau. | Chưa kiểm trực tiếp từng ảnh; không suy URL ảnh hoặc độ chính xác từ ba chương Book 1. |
+| [Bảng địch FE3 Book 1](https://serenesforest.net/mystery-of-the-emblem/characters/enemy-data/book-1/), trang chương tương ứng trên Fire Emblem Wiki | Kiểm số lượng, class, nhân vật xuất hiện, sự kiện và mục tiêu. | Không thay thế được tọa độ từng ô. |
+
+Các bước khi thêm hoặc sửa một chương:
+
+1. Xác nhận đúng **FE3, Book và chương**. Mở ảnh `Original/01_Maps/` và sơ đồ chương tương ứng; ghi URL, ngày kiểm, kích thước ảnh, kích thước lưới và quy ước tọa độ `x=0` bên trái, `y=0` phía trên vào hồ sơ đối chiếu của chương.
+2. Đếm cột/hàng theo **vạch lưới của sơ đồ**. Ba sơ đồ đầu có bước cột 17 px, bước hàng 15 px (kể cả nét lưới), bắt đầu tại `(8,29)`, `(4,30)`, `(4,29)`; hàng và cột cuối là nét viền, không phải ô chơi. Lưới thực là 30×13, 30×15, 30×20. Ảnh chương 1–3 trong repo tương ứng 32×15, 32×17, 32×22 khối 16 px; chênh lệch này chưa được phép tự động cắt một ô mỗi mép, phải đối chiếu điểm gốc bằng cổng, làng, đường bờ và vị trí quân.
+3. Đọc **chú giải của đúng ảnh chương** rồi nhập `grid[y][x]` vào `Water-Emblem/data/maps/<map-id>.json` và kiểm trực quan với ảnh FE3. Cùng màu be xám là `がれき` (rubble) ở Chương 1 nhưng là `橋` (bridge) ở Chương 2; không dùng một bảng màu chung cho mọi chương. `elevations[y][x]` chỉ ghi mức có căn cứ; màu ảnh phẳng không đủ chứng minh độ cao gameplay. Ô bị ký hiệu che hoặc hai nguồn khác nhau phải ghi `chưa xác minh` trong hồ sơ, không đoán bằng ô lân cận.
+4. Ghi vị trí quân, phe, điểm thắng và vật thể vào `Water-Emblem/data/chapters/<chapter-id>.json`. Dùng tâm sprite trên ảnh FE3 và ký hiệu sơ đồ để đối chiếu; nếu chúng khác nhau, tìm ảnh chụp gameplay hoặc nguồn dữ liệu FE3 khác trước khi chốt. Không dùng tọa độ FE1, FE11 hoặc FE12 để lấp chỗ trống.
+5. Kiểm từng vị trí nằm trong lưới, không chồng sai, loại địa hình cho phép class đó đứng/di chuyển, cổng/làng/cầu nằm ở đúng ô, và đường đi tới mục tiêu thực sự chơi được. Đối chiếu số quân và sự kiện theo nguồn FE3; chạy test logic, build, rồi mở từng map trong Chromium để so ảnh ở trạng thái bắt đầu trận.
+6. Hồ sơ đối chiếu phải ghi **tọa độ hoặc ô chưa chắc, nguồn nào xác nhận, kết quả test và ảnh kiểm thực tế**. Chỉ ghi PASS khi mọi ô và vị trí thuộc phạm vi chương đã được xác nhận; test/build PASS riêng không chứng minh map khớp FE3. Ảnh tham khảo bên ngoài và asset FE3 chưa rõ quyền không được tự động thêm vào bản phát hành.
+
 ### Chi tiết các chương đã chuẩn hóa (2026-11-15)
 
 Ngôn ngữ mặc định cho tên chương, mục tiêu, thoại và phần thưởng là **tiếng Anh (English)**:
