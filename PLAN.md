@@ -76,9 +76,9 @@ Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sa
   - Kết quả: CHỜ NGƯỜI DÙNG: Làm sau mục 54.
   - Kiểm bởi: subagent
 
-- [ ] 56. Tách sự kiện chương và bỏ hard-code ID.
+- [x] 56. Tách sự kiện chương và bỏ hard-code ID.
   - Tiêu chí xong: Thăm làng, chiếm thành, chiêu mộ, thoại boss và loot nằm trong `src/core/chapter/`; người được chiếm thành, cặp chiêu mộ và thoại khai báo trong JSON chương; `grep` các ID nhân vật (`'marth'`, `'castor'`, `'navarre'`, `'gazzak'`, `'gomer'`, `'hyman'`, `'caeda'`) trong `src/` không còn kết quả ngoài file test.
-  - Kết quả: CHỜ NGƯỜI DÙNG: Đã làm trên nhánh `cs/plan-phase0` (commit `27e3750`, sửa thêm `bdff589`): thăm làng, chiếm thành, chiêu mộ, loot, thoại boss nằm trong `src/core/chapter/events.ts` (hàm thuần, 15 unit test); JSON chương có `lordUnitId`; `saveLoad.ts` dùng `chapter.lordUnitId`; cướp làng theo `aiRole: "pillage"`. Verify 3 trên `bdff589`: Vitest 119/119, build PASS, Playwright 20/20 (PASS-FLAGGED, cờ là test mới); review vòng 2 PASS WITH NOTES. Grep ID còn đúng 1 chỗ: `src/renderer/ThreeScene.tsx:125` (`'navarre'` chọn model 3D, 3D đang đóng băng). Chấp nhận ngoại lệ này đến lúc port 3D (mục 41) không?
+  - Kết quả: PASS: Sự kiện chương nằm trong `src/core/chapter/events.ts` (hàm thuần, unit test); JSON chương có `lordUnitId`; `saveLoad.ts` dùng `chapter.lordUnitId`; cướp làng theo `aiRole: "pillage"` (commit `27e3750`, `bdff589`; verify 3: Vitest 119/119, build PASS, Playwright 20/20). Ngoại lệ được chủ dự án chấp nhận ngày 2026-11-17: `src/renderer/ThreeScene.tsx` hàm `characterModelFor` còn so `'ogma'`, `'navarre'`, `'julian'` để chọn model 3D (chỉ hiển thị, không phải luật); 3D đang đóng băng, sửa khi port 3D theo mục 41.
   - Kiểm bởi: subagent
 
 - [ ] 57. Tách lưới 2D thành renderer và thu gọn `App.tsx`.
@@ -163,7 +163,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kiểm bởi: tôi
 
 - [ ] 41. Port 3D và đo chi phí render.
-  - Tiêu chí xong: 3D đọc cùng state/sự kiện như 2D; chốt thiết bị và ngân sách (fps, draw calls, tam giác); đo trước và sau trên bản chạy thật; test 3D PASS.
+  - Tiêu chí xong: 3D đọc cùng state/sự kiện như 2D; chọn model 3D theo dữ liệu (thêm trường như `modelId` trong `characters.json`/`classes.json`) thay cho các ID viết cứng `'ogma'`, `'navarre'`, `'julian'` trong `characterModelFor` của `ThreeScene.tsx` (ngoại lệ còn lại của mục 56); chốt thiết bị và ngân sách (fps, draw calls, tam giác); đo trước và sau trên bản chạy thật; test 3D PASS.
   - Kết quả: CHỜ NGƯỜI DÙNG: Mở giai đoạn port 3D khi nào, và thiết bị mục tiêu là gì?
   - Kiểm bởi: tôi
 
