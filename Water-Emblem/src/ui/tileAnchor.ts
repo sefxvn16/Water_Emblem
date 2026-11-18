@@ -13,7 +13,7 @@ export const HUD_CLEAR_BOTTOM = HUD_EDGE + HUD_SIZE + 8;
 
 /** On-screen rectangle of a 2D grid tile, or null when it is not rendered (3D view, hidden). */
 export function getTileRect(tile: Position | null): ScreenRect | null {
-  if (!tile) return null;
+  if (!tile || typeof document === 'undefined') return null;
   const element = document.querySelector(`[data-testid="tile-${tile.x}-${tile.y}"]`);
   if (!element) return null;
   const { left, right, top, bottom } = element.getBoundingClientRect();

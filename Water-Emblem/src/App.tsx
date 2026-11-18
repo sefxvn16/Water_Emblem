@@ -290,8 +290,10 @@ export const App: React.FC = () => {
     return entry && {
       name: entry.unit.name,
       hp: entry.stats.hp,
+      maxHp: entry.stats.maxHp,
       faction: entry.unit.faction,
       hasActed: Boolean(entry.unit.hasActed),
+      avatarUrl: entry.avatarUrl,
     };
   };
 
@@ -361,7 +363,6 @@ export const App: React.FC = () => {
         setPendingMovePos({ x, y });
         setExtendedUnits([...extendedUnits]);
         syncState();
-
       }
       return;
     }
@@ -933,11 +934,7 @@ export const App: React.FC = () => {
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
 
       {hoveredUnit && hoveredTile && !combatForecast && !inspectedUnit && (
-        <UnitHoverWindow
-          unit={hoveredUnit}
-          terrainId={hoveredTerrainId ?? 'plains'}
-          tile={hoveredTile}
-        />
+        <UnitHoverWindow unit={hoveredUnit} terrainId={hoveredTerrainId ?? 'plains'} tile={hoveredTile} onInspect={() => setInspectedTile(hoveredTile)} />
       )}
 
       {inspectedUnit && inspectedTile && (

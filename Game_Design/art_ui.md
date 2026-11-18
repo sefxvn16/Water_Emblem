@@ -34,10 +34,10 @@ Theo `decisions.md` ngày 2026-11-17: bản đồ chiếm toàn khung và cuộn
 Quyết định chủ dự án ngày 2026-11-17 và 2026-11-18 (`PLAN.md` mục 71, 73):
 
 - Điều khiển không có trong FE3 nằm trong menu Settings (⚙). End Turn và ⚙ đặt cạnh nhau ở góc phải dưới, ⚙ bên phải; menu mở lên trên. Menu tự đóng khi đổi chương hoặc mở màn khác.
-- Thông tin quân: rê chuột hiện khung gọn (tên, class, LV, HP, vũ khí, địa hình) ở phía đối diện ô đang trỏ; chuột phải hoặc nhấn giữ mở bảng đầy đủ. Không hiển thị growth rate.
+- Thông tin quân: rê chuột hoặc chạm hiện khung gọn (tên, class, LV, HP, vũ khí kèm icon, địa hình, nút 'Chi tiết' cho tablet); chuột phải, nhấn giữ (0.5s) hoặc bấm nút 'Chi tiết' mở bảng đầy đủ theo chuẩn FE3 (khung viền vàng, nền xanh navy, phân khối chỉ số combat, chỉ số gốc, vũ khí & vật phẩm kèm icon FE3, Max HP, Move). Không hiển thị growth rate.
 - Menu hành động hiện cạnh quân vừa di chuyển, luôn nằm trong khung nhìn.
 - Dự báo giao tranh ghi "×N" khi một bên đánh nhiều lần.
-- Trên 2D mỗi quân là hình tròn nằm giữa ô.
+- Trên 2D mỗi quân hiển thị bằng avatar nhân vật (42×42) có viền màu phe (xanh: ta, đỏ: địch, xám: đã đi, vàng: đang chọn); phía dưới có thanh máu kèm số máu hiện tại/tối đa (HP: còn lại/tổng số).
 
 Vị trí chính xác của menu hành động và cửa sổ thông tin quân khi rê chuột trong FE3 chưa có ảnh đối chiếu trong kho; bố cục hiện tại là lựa chọn của dự án.
 

@@ -85,6 +85,11 @@ Kho hình ảnh gốc FE3 (bản đồ chương, World Map, sprite, chân dung, 
 * **Gói nguồn:** `D:\OneDrive\AI Relax\projects\Asset\Quaternius\monsters\Monster_Pack_Animated.zip` & `Quaternius\animals\`
 * **Mô hình sẵn có:** Rồng (`Dragon`), Xương (`Skeleton`), Dơi (`Bat`), Slime, Ngựa chiến (`Horse`).
 
+### F. Biểu tượng Vật phẩm & Vũ khí 2D (Item & Weapon Icons)
+* **Thư mục nguồn gốc:** `Original/08_Items_and_Weapons/` (16×16 PNG sprites FE3 gốc).
+* **Thư mục đích trong game:** `Water-Emblem/public/icons/items/`
+* **Quy ước:** Giữ tên file `Is_fe03_<item_name>.png`, hiển thị pixelated trên bảng thông tin nhân vật FE3 (`UnitInspectorWindow`) và khung hover (`UnitHoverWindow`). Mapping qua `src/ui/itemIcon.ts`.
+
 ---
 
 ## 4. Lệnh PowerShell mẫu cho AI khi trích xuất đơn lẻ
