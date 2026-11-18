@@ -17,6 +17,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
+import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import {
   bossStartEvent,
@@ -106,7 +107,9 @@ export const App: React.FC = () => {
     }, duration);
   };
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
-  const [originalPos, setOriginalPos] = useState<Position | null>(null);
+  const [plannedPath, setPlannedPath] = useState<readonly Position[] | null>(null);
+  const [activeMovingUnit, setActiveMovingUnit] = useState<ActiveMovingUnit | null>(null);
+  const animCleanupRef = useRef<(() => void) | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
   const [inspectedTile, setInspectedTile] = useState<Position | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
@@ -319,6 +322,10 @@ export const App: React.FC = () => {
 
   // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
+    if (animCleanupRef.current) {
+      animCleanupRef.current();
+      animCleanupRef.current = null;
+    }
     if (turnState.activePhase !== 'player_phase' || isProcessingAI) {
       return;
     }
@@ -355,21 +362,18 @@ export const App: React.FC = () => {
       }
     }
 
-    // Nếu đã chọn 1 quân ta và click vào ô di chuyển
-    if (selectedExtUnit && reachableKeys.has(`${x},${y}`) && !pendingMovePos) {
-      setOriginalPos({ ...selectedExtUnit.unit.position });
-      const success = turnManager.moveSelectedUnit({ x, y });
-      if (success) {
-        soundManager.playMoveStep(selectedExtUnit.unit.moveType);
-        setPendingMovePos({ x, y });
-        setExtendedUnits([...extendedUnits]);
-        syncState();
-      }
+    // Nếu đã chọn 1 quân ta và click vào ô di chuyển trong phạm vi
+    if (selectedExtUnit && reachableKeys.has(`${x},${y}`) && !activeMovingUnit) {
+      const moveData = turnState.reachableTiles?.get(`${x},${y}`);
+      const path = moveData?.path ?? [selectedExtUnit.unit.position, { x, y }];
+      setPendingMovePos({ x, y });
+      setPlannedPath(path);
+      soundManager.playSfx('cursor');
       return;
     }
 
     // Chọn đơn vị quân ta chưa đi
-    if (clickedExt && clickedExt.unit.faction === 'player' && !clickedExt.unit.hasActed && !pendingMovePos) {
+    if (clickedExt && clickedExt.unit.faction === 'player' && !clickedExt.unit.hasActed && !pendingMovePos && !activeMovingUnit) {
       soundManager.playSfx('select');
       const range = calculateMovementRange(clickedExt.unit, {
         map: mapData,
@@ -378,6 +382,7 @@ export const App: React.FC = () => {
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
       setPendingMovePos(null);
+      setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -385,133 +390,144 @@ export const App: React.FC = () => {
     }
 
     // Bỏ chọn
-    if (!pendingMovePos) {
+    if (!pendingMovePos && !activeMovingUnit) {
       soundManager.playSfx('cancel');
       turnManager.cancelSelect();
+      setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
     }
   };
 
+  // Chạy di chuyển có hoạt cảnh trước khi hoàn tất hành động
+  const executeWithMove = (actionFn: () => void) => {
+    if (!selectedExtUnit || !pendingMovePos) { actionFn(); return; }
+    const dest = { ...pendingMovePos };
+    const path = plannedPath && plannedPath.length > 1 ? [...plannedPath] : null;
+    const moveType = selectedExtUnit.unit.moveType;
+    const unitId = selectedExtUnit.unit.id;
+    setPendingMovePos(null);
+    setPlannedPath(null);
+    const origin = path?.[0];
+    if (!path || !origin || (origin.x === dest.x && origin.y === dest.y)) {
+      turnManager.moveSelectedUnit(dest);
+      setExtendedUnits([...extendedUnits]);
+      actionFn();
+      return;
+    }
+    animCleanupRef.current = runMovementAnimation(path, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+      animCleanupRef.current = null;
+      turnManager.moveSelectedUnit(dest);
+      setExtendedUnits([...extendedUnits]);
+      setActiveMovingUnit(null);
+      actionFn();
+    });
+  };
+
   // Xác nhận Tấn công
   const handleConfirmAttack = () => {
     if (!combatForecast || !selectedExtUnit || !selectedTarget) return;
+    const forecast = combatForecast;
+    const attacker = selectedExtUnit;
+    const defender = selectedTarget;
+    setCombatForecast(null);
+    setSelectedTarget(null);
 
-    const hpBefore = { attacker: selectedExtUnit.stats.hp, defender: selectedTarget.stats.hp };
-    const result = executeCombat(combatForecast, defaultRNG);
-    const popup = buildCombatPopup(++popupIdRef.current, selectedExtUnit, selectedTarget, hpBefore, result);
-    // A new player action supersedes any enemy-phase results still waiting.
-    setPopupQueue([popup]);
+    executeWithMove(() => {
+      const hpBefore = { attacker: attacker.stats.hp, defender: defender.stats.hp };
+      const result = executeCombat(forecast, defaultRNG);
+      const popup = buildCombatPopup(++popupIdRef.current, attacker, defender, hpBefore, result);
+      setPopupQueue([popup]);
 
-    // Cập nhật log trận đánh
-    const logs: string[] = [];
-    const startEvent = bossStartEvent(currentDialogues, selectedTarget.unit.id, selectedTarget.unit.name);
-    if (startEvent) logs.push(...eventLogLines([startEvent]));
-    logs.push(`⚔️ ENGAGEMENT: ${selectedExtUnit.unit.name} vs ${selectedTarget.unit.name}`);
-    for (const ev of result.events) {
-      const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Unknown';
-      const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Unknown';
-      if (!ev.isHit) {
-        soundManager.playSfx('miss');
-        logs.push(`${atk} attacked ${def} but MISSED!`);
-      } else {
-        if (ev.isCrit) {
-          soundManager.playSfx('crit');
-        } else if (ev.damageDealt === 0) {
-          soundManager.playSfx('nodamage');
+      const logs: string[] = [];
+      const startEvent = bossStartEvent(currentDialogues, defender.unit.id, defender.unit.name);
+      if (startEvent) logs.push(...eventLogLines([startEvent]));
+      logs.push(`⚔️ ENGAGEMENT: ${attacker.unit.name} vs ${defender.unit.name}`);
+      for (const ev of result.events) {
+        const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Unknown';
+        const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Unknown';
+        if (!ev.isHit) {
+          soundManager.playSfx('miss');
+          logs.push(`${atk} attacked ${def} but MISSED!`);
         } else {
-          const attackerUnit = extendedUnits.find((u) => u.unit.id === ev.attackerId);
-          soundManager.playWeaponHit(attackerUnit?.weapon.type ?? 'sword');
+          if (ev.isCrit) soundManager.playSfx('crit');
+          else if (ev.damageDealt === 0) soundManager.playSfx('nodamage');
+          else soundManager.playWeaponHit(extendedUnits.find((u) => u.unit.id === ev.attackerId)?.weapon.type ?? 'sword');
+          const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
+          logs.push(`${atk} hit ${def} for ${ev.damageDealt} damage!${critText} (${def} remaining HP: ${ev.defenderHpAfter})`);
         }
-        const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
-        logs.push(`${atk} hit ${def} for ${ev.damageDealt} damage!${critText} (${def} remaining HP: ${ev.defenderHpAfter})`);
       }
-    }
 
-    // Update HP and alive state
-    let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
-        if (item.unit.id === selectedExtUnit.unit.id) {
-          return {
-            ...item,
-            stats: { ...combatForecast.attacker.stats },
-            unit: { ...item.unit, isDead: combatForecast.attacker.stats.hp <= 0 },
-          };
-        }
-        if (item.unit.id === selectedTarget.unit.id) {
-          return {
-            ...item,
-            stats: { ...combatForecast.defender.stats },
-            unit: { ...item.unit, isDead: combatForecast.defender.stats.hp <= 0 },
-          };
-        }
+      let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
+        if (item.unit.id === attacker.unit.id) return { ...item, stats: { ...forecast.attacker.stats }, unit: { ...item.unit, isDead: forecast.attacker.stats.hp <= 0 } };
+        if (item.unit.id === defender.unit.id) return { ...item, stats: { ...forecast.defender.stats }, unit: { ...item.unit, isDead: forecast.defender.stats.hp <= 0 } };
         return item;
       });
-    if (result.unitDefeatedId) {
-      soundManager.playSfx('death');
-      logs.push(`💀 ${updatedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name} was defeated!`);
-      const killerId = result.unitDefeatedId === selectedExtUnit.unit.id ? selectedTarget.unit.id : selectedExtUnit.unit.id;
-      const defeat = resolveDefeat(chapterState(updatedUnits), result.unitDefeatedId, killerId, itemsJson.items, currentDialogues);
-      logs.push(...eventLogLines(defeat.events));
-      updatedUnits = [...defeat.state.units];
-    }
-    const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
-    updatedUnits = experience.entries;
-    logs.push(...experience.messages);
-    setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
-    turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
-    setExtendedUnits(updatedUnits);
+      if (result.unitDefeatedId) {
+        soundManager.playSfx('death');
+        logs.push(`💀 ${updatedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name} was defeated!`);
+        const killerId = result.unitDefeatedId === attacker.unit.id ? defender.unit.id : attacker.unit.id;
+        const defeat = resolveDefeat(chapterState(updatedUnits), result.unitDefeatedId, killerId, itemsJson.items, currentDialogues);
+        logs.push(...eventLogLines(defeat.events));
+        updatedUnits = [...defeat.state.units];
+      }
+      const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
+      updatedUnits = experience.entries;
+      logs.push(...experience.messages);
+      setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
+      turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
+      setExtendedUnits(updatedUnits);
 
-    // Kiểm tra kết quả chương
-    const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
-    if (outcome !== 'ongoing') setChapterOutcome(outcome);
+      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+      if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
-    // Đánh dấu hành động hoàn thành
-    turnManager.waitSelectedUnit();
-    setPendingMovePos(null);
-    setSelectedTarget(null);
-    setCombatForecast(null);
-    syncState();
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
   };
 
   // Xác nhận Chờ
   const handleConfirmWait = () => {
-    soundManager.playSfx('accept');
-    turnManager.waitSelectedUnit();
-    setPendingMovePos(null);
-    setSelectedTarget(null);
-    setCombatForecast(null);
-    syncState();
+    executeWithMove(() => {
+      soundManager.playSfx('accept');
+      turnManager.waitSelectedUnit();
+      setSelectedTarget(null);
+      setCombatForecast(null);
+      syncState();
+    });
   };
 
   const handleUseVulnerary = () => {
     if (!selectedExtUnit || !pendingMovePos) return;
-    const item = itemsJson.items.find(({ id }) => id === 'vulnerary') as ItemDefinition | undefined;
-    if (!item) return;
-    const changed = useVulnerary(selectedExtUnit, item);
-    if (!changed) return;
-    soundManager.playSfx('heal');
-    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
-    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-    turnManager.waitSelectedUnit();
-    setExtendedUnits(nextUnits);
-    setPendingMovePos(null);
-    setCombatLog((previous) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...previous].slice(0, 20));
-    syncState();
+    executeWithMove(() => {
+      const item = itemsJson.items.find(({ id }) => id === 'vulnerary') as ItemDefinition | undefined;
+      if (!item) return;
+      const changed = useVulnerary(selectedExtUnit, item);
+      if (!changed) return;
+      soundManager.playSfx('heal');
+      const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
+      turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+      turnManager.waitSelectedUnit();
+      setExtendedUnits(nextUnits);
+      setCombatLog((prev) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...prev].slice(0, 20));
+      syncState();
+    });
   };
 
   const handlePromote = (targetClassId: string) => {
     if (!selectedExtUnit || !pendingMovePos) return;
-    const changed = promoteWithMasterSeal(selectedExtUnit, targetClassId);
-    if (!changed) return;
-    soundManager.playSfx('levelup');
-    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
-    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-    turnManager.waitSelectedUnit();
-    setExtendedUnits(nextUnits);
-    setPendingMovePos(null);
-    setCombatLog((previous) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...previous].slice(0, 20));
-    syncState();
+    executeWithMove(() => {
+      const changed = promoteWithMasterSeal(selectedExtUnit, targetClassId);
+      if (!changed) return;
+      soundManager.playSfx('levelup');
+      const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
+      turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+      turnManager.waitSelectedUnit();
+      setExtendedUnits(nextUnits);
+      setCombatLog((prev) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...prev].slice(0, 20));
+      syncState();
+    });
   };
 
   const handleToggleMounted = () => {
@@ -542,63 +558,61 @@ export const App: React.FC = () => {
 
   const handleSeize = () => {
     if (!selectedExtUnit || !pendingMovePos) return;
-    const result = seize(chapterState(), selectedExtUnit.unit.id, currentChapter, itemsJson.items);
-    if (!result.events.some(({ type }) => type === 'chapter_seized')) return;
-    soundManager.playSfx('stage_clear');
-    commitChapterState(result.state);
-    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
-    turnManager.waitSelectedUnit();
-    setPendingMovePos(null);
-    setChapterOutcome('victory');
-    syncState();
+    executeWithMove(() => {
+      const result = seize(chapterState(), selectedExtUnit.unit.id, currentChapter, itemsJson.items);
+      if (!result.events.some(({ type }) => type === 'chapter_seized')) return;
+      soundManager.playSfx('stage_clear');
+      commitChapterState(result.state);
+      setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+      turnManager.waitSelectedUnit();
+      setChapterOutcome('victory');
+      syncState();
+    });
   };
 
   const handleTalk = () => {
     if (!talkTarget || !selectedExtUnit) return;
-    const result = recruit(chapterState(), selectedExtUnit.unit.id, talkTarget.unit.id, currentChapter, currentDialogues);
-    if (result.events.length === 0) return;
-    soundManager.playSfx('item_get');
-    commitChapterState(result.state);
-    turnManager.waitSelectedUnit();
-    setPendingMovePos(null);
-    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
-    syncState();
+    executeWithMove(() => {
+      const result = recruit(chapterState(), selectedExtUnit.unit.id, talkTarget.unit.id, currentChapter, currentDialogues);
+      if (result.events.length === 0) return;
+      soundManager.playSfx('item_get');
+      commitChapterState(result.state);
+      turnManager.waitSelectedUnit();
+      setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+      syncState();
+    });
   };
 
   const handleVisitVillage = () => {
     if (!currentVillageAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
     const village = currentVillageAtPendingPos;
-    const result = visitVillage(chapterState(), selectedExtUnit.unit.id, village, itemsJson.items, currentDialogues);
-    if (result.events.length === 0) return;
-    soundManager.playSfx('item_get');
-    const dialogue = result.events.find((event) => event.type === 'dialogue');
-    setActiveVillageDialogue({
-      villageName: village.name,
-      lines: dialogue?.type === 'dialogue' ? dialogue.lines : [],
-      rewardText: villageRewardText(result.events),
+    executeWithMove(() => {
+      const result = visitVillage(chapterState(), selectedExtUnit.unit.id, village, itemsJson.items, currentDialogues);
+      if (result.events.length === 0) return;
+      soundManager.playSfx('item_get');
+      const dialogue = result.events.find((event) => event.type === 'dialogue');
+      setActiveVillageDialogue({
+        villageName: village.name,
+        lines: dialogue?.type === 'dialogue' ? dialogue.lines : [],
+        rewardText: villageRewardText(result.events),
+      });
+      setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+      commitChapterState(result.state);
+      turnManager.waitSelectedUnit();
+      setSelectedTarget(null);
+      setCombatForecast(null);
+      syncState();
     });
-    setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
-    commitChapterState(result.state);
-    turnManager.waitSelectedUnit();
-    setPendingMovePos(null);
-    setOriginalPos(null);
-    setSelectedTarget(null);
-    setCombatForecast(null);
-    syncState();
   };
 
   // Hủy bước di chuyển
   const handleCancelMove = () => {
     soundManager.playSfx('cancel');
-    if (selectedExtUnit && originalPos) {
-      selectedExtUnit.unit.position = { ...originalPos };
-    }
-    turnManager.cancelSelect();
-    setExtendedUnits([...extendedUnits]);
     setPendingMovePos(null);
-    setOriginalPos(null);
+    setPlannedPath(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    turnManager.cancelSelect();
     syncState();
   };
 
@@ -697,31 +711,15 @@ export const App: React.FC = () => {
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
     // Kiểm tra kết quả chương sau lượt địch
-    const outcome = evaluateChapterOutcome(
-      phaseUnits.map((u) => u.unit),
-      chapterObjective, false, currentChapter.lordUnitId
-    );
-    if (outcome !== 'ongoing') {
-      setChapterOutcome(outcome);
-    }
+    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+    if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
     // Chuyển lại về Player Phase
     if (outcome === 'ongoing') {
       soundManager.playSfx('player_phase');
       turnManager.switchPhase('player_phase');
       phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
-      phaseUnits = phaseUnits.map((u) => {
-        if (u.unit.faction === 'player' && !u.unit.isDead) {
-          return {
-            ...u,
-            unit: {
-              ...u.unit,
-              hasActed: false,
-            },
-          };
-        }
-        return u;
-      });
+      phaseUnits = phaseUnits.map((u) => u.unit.faction === 'player' && !u.unit.isDead ? { ...u, unit: { ...u.unit, hasActed: false } } : u);
     }
     turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
     setExtendedUnits(phaseUnits);
@@ -746,7 +744,6 @@ export const App: React.FC = () => {
     setVillageStates(data.villageStates);
     setActiveVillageDialogue(null);
     setPendingMovePos(null);
-    setOriginalPos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
     syncState();
@@ -835,6 +832,9 @@ export const App: React.FC = () => {
           <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: `8px ${HUD_CLEAR}px ${HUD_CLEAR}px 8px` }}>
             <Grid2D
               board={boardView}
+              movementPath={plannedPath}
+              pendingDestination={pendingMovePos}
+              activeMovingUnit={activeMovingUnit}
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
               onTileHover={(x, y) => setHoveredTile({ x, y })}
@@ -869,7 +869,7 @@ export const App: React.FC = () => {
         leading={turnState.activePhase === 'player_phase' && (
           <button
             onClick={handleEndTurn}
-            disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null}
+            disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null || activeMovingUnit !== null}
             style={{
               height: `${HUD_SIZE}px`,
               padding: '0 20px',
@@ -881,7 +881,7 @@ export const App: React.FC = () => {
               fontWeight: 'bold',
               cursor: 'pointer',
               boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
-              opacity: (isProcessingAI || pendingMovePos !== null || combatForecast !== null) ? 0.5 : 1,
+              opacity: (isProcessingAI || pendingMovePos !== null || combatForecast !== null || activeMovingUnit !== null) ? 0.5 : 1,
             }}
           >
             End Turn
@@ -889,7 +889,7 @@ export const App: React.FC = () => {
         )}
       />
 
-      {combatForecast && selectedExtUnit && selectedTarget && (
+      {combatForecast && selectedExtUnit && selectedTarget && !activeMovingUnit && (
         <CombatForecastWindow
           forecast={combatForecast}
           attacker={selectedExtUnit}
@@ -902,12 +902,12 @@ export const App: React.FC = () => {
       <ActionMenuWindow
         anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
-          selectedExtUnit && !pendingMovePos && !combatForecast
+          selectedExtUnit && !pendingMovePos && !combatForecast && !activeMovingUnit
             && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && !combatForecast ? {
+        actions={pendingMovePos && !combatForecast && !activeMovingUnit ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x

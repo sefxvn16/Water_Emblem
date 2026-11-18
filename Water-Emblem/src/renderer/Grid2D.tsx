@@ -1,7 +1,8 @@
 import React, { useRef } from 'react';
 import type { BoardView } from '../core/grid/boardView';
-import type { UnitFaction } from '../core/grid/types';
+import type { Position, UnitFaction } from '../core/grid/types';
 import { TERRAIN_COLORS } from './terrainStyle2d';
+import { MovementArrow } from './MovementArrow';
 
 export interface UnitDisplay {
   readonly name: string;
@@ -14,6 +15,9 @@ export interface UnitDisplay {
 
 interface Grid2DProps {
   board: BoardView;
+  movementPath?: readonly Position[] | null;
+  pendingDestination?: Position | null;
+  activeMovingUnit?: { unitId: string; pos: Position } | null;
   getUnitDisplay: (unitId: string) => UnitDisplay | undefined;
   onTileClick: (x: number, y: number) => void;
   onTileHover: (x: number, y: number) => void;
@@ -22,10 +26,18 @@ interface Grid2DProps {
 }
 
 const LONG_PRESS_MS = 500;
-
 const FALLBACK_TERRAIN = { bg: '#333', icon: '' };
 
-export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileClick, onTileHover, onTileInspect }) => {
+export const Grid2D: React.FC<Grid2DProps> = ({
+  board,
+  movementPath,
+  pendingDestination,
+  activeMovingUnit,
+  getUnitDisplay,
+  onTileClick,
+  onTileHover,
+  onTileInspect,
+}) => {
   const pressTimer = useRef<number | null>(null);
   const longPressed = useRef(false);
   const cancelPress = () => {
@@ -36,6 +48,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
   return (
     <div
       style={{
+        position: 'relative',
         display: 'grid',
         gridTemplateColumns: `repeat(${board.width}, 64px)`,
         gridTemplateRows: `repeat(${board.height}, 64px)`,
@@ -48,10 +61,20 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
         flexShrink: 0,
       }}
     >
+      {/* 1. Tactical movement path arrow */}
+      <MovementArrow
+        path={movementPath ?? null}
+        boardWidth={board.width}
+        boardHeight={board.height}
+      />
+
+      {/* 2. Map tiles */}
       {board.tiles.map((row) =>
         row.map(({ x, y, key, terrainId, unitId, overlay }) => {
           const terrain = TERRAIN_COLORS[terrainId] ?? FALLBACK_TERRAIN;
           const unit = unitId === null ? undefined : getUnitDisplay(unitId);
+          const isTraveling = activeMovingUnit && unitId === activeMovingUnit.unitId;
+          const isPendingDest = pendingDestination && pendingDestination.x === x && pendingDestination.y === y;
           const { reachable, danger, attackTarget, selected } = overlay;
           const hpRatio = unit && unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
           const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
@@ -61,6 +84,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
               key={key}
               data-testid={`tile-${x}-${y}`}
               data-attack-target={attackTarget ? 'true' : undefined}
+              data-pending-dest={isPendingDest ? 'true' : undefined}
               onClick={() => {
                 if (longPressed.current) {
                   longPressed.current = false;
@@ -101,6 +125,8 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
                 cursor: 'pointer',
                 border: selected
                   ? '2px solid #FFEB3B'
+                  : isPendingDest
+                  ? '2px dashed #38bdf8'
                   : attackTarget
                   ? '2px solid #FF1744'
                   : '1px solid rgba(255,255,255,0.05)',
@@ -125,10 +151,13 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
               {attackTarget && (
                 <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 23, 68, 0.35)', pointerEvents: 'none' }} />
               )}
+              {isPendingDest && !unit && (
+                <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(56, 189, 248, 0.22)', pointerEvents: 'none' }} />
+              )}
 
               <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
 
-              {unit && (
+              {unit && !isTraveling && (
                 <div
                   style={{
                     position: 'absolute',
@@ -245,6 +274,106 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
           );
         }),
       )}
+
+      {/* 3. Traveling unit avatar with smooth position transition */}
+      {activeMovingUnit && (() => {
+        const unit = getUnitDisplay(activeMovingUnit.unitId);
+        if (!unit) return null;
+        const center = {
+          x: 4 + activeMovingUnit.pos.x * 66 + 32,
+          y: 4 + activeMovingUnit.pos.y * 66 + 32,
+        };
+        const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
+        const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
+
+        return (
+          <div
+            data-testid="moving-unit-avatar"
+            style={{
+              position: 'absolute',
+              left: `${center.x}px`,
+              top: `${center.y}px`,
+              transform: 'translate(-50%, -50%)',
+              transition: 'left 60ms linear, top 60ms linear',
+              zIndex: 25,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2px',
+              pointerEvents: 'none',
+            }}
+          >
+            <div
+              style={{
+                width: '42px',
+                height: '42px',
+                boxSizing: 'border-box',
+                borderRadius: '6px',
+                overflow: 'hidden',
+                backgroundColor: unit.faction === 'player' ? '#1e3a8a' : '#7f1d1d',
+                border: '2px solid #3b82f6',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.7)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {unit.avatarUrl ? (
+                <img
+                  src={unit.avatarUrl}
+                  alt={unit.name}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                />
+              ) : (
+                <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#fff' }}>
+                  {unit.name.substring(0, 3)}
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{
+                width: '46px',
+                height: '10px',
+                boxSizing: 'border-box',
+                backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                border: '1px solid rgba(0, 0, 0, 0.95)',
+                borderRadius: '2px',
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.6)',
+              }}
+            >
+              <div
+                style={{
+                  height: '100%',
+                  width: `${Math.max(0, Math.min(100, hpRatio * 100))}%`,
+                  backgroundColor: hpColor,
+                }}
+              />
+              <span
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '8.5px',
+                  fontWeight: 'bold',
+                  lineHeight: 1,
+                  color: '#ffffff',
+                  textShadow: '0 0 2px #000, 1px 1px 1px #000',
+                  letterSpacing: '-0.3px',
+                  userSelect: 'none',
+                }}
+              >
+                {`${unit.hp}/${unit.maxHp}`}
+              </span>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };

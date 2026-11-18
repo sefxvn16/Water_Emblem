@@ -8,6 +8,8 @@ import { UnitInspectorWindow } from '../../src/ui/UnitInspectorWindow';
 import { CombatForecastWindow } from '../../src/ui/CombatForecastWindow';
 import { ActionMenuWindow } from '../../src/ui/ActionMenuWindow';
 import { computeActionMenuPosition } from '../../src/ui/tileAnchor';
+import { MovementArrow } from '../../src/renderer/MovementArrow';
+import { runMovementAnimation } from '../../src/renderer/movementAnimation';
 import type { BoardView } from '../../src/core/grid/boardView';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import type { CombatForecast } from '../../src/core/combat/types';
@@ -300,6 +302,55 @@ describe('UI rendering tests', () => {
       const isAbove = pos!.top + 160 <= anchor.top;
       const isBelow = pos!.top >= anchor.bottom;
       expect(isAbove || isBelow).toBe(true);
+    });
+  });
+
+  describe('MovementArrow & movementAnimation', () => {
+    it('renders SVG polyline and destination marker when path has >= 2 waypoints', () => {
+      const html = renderToString(
+        React.createElement(MovementArrow, {
+          path: [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
+          boardWidth: 4,
+          boardHeight: 4,
+        })
+      );
+
+      expect(html).toContain('data-testid="movement-arrow-svg"');
+      expect(html).toContain('feDropShadow');
+      expect(html).toContain('polyline');
+      expect(html).toContain('stroke-dasharray="6 6"');
+    });
+
+    it('returns null when path has fewer than 2 waypoints', () => {
+      const html = renderToString(
+        React.createElement(MovementArrow, {
+          path: [{ x: 1, y: 1 }],
+          boardWidth: 4,
+          boardHeight: 4,
+        })
+      );
+      expect(html).toBe('');
+    });
+
+    it('steps through all path points and triggers moveStep sounds during animation', async () => {
+      const path = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }];
+      const visited: { x: number; y: number }[] = [];
+      let soundCount = 0;
+      const soundPlayer = { playMoveStep: () => { soundCount++; } };
+
+      await new Promise<void>((resolve) => {
+        runMovementAnimation(
+          path,
+          'foot',
+          soundPlayer,
+          (pos) => { visited.push(pos); },
+          () => { resolve(); },
+          10,
+        );
+      });
+
+      expect(visited).toEqual(path);
+      expect(soundCount).toBe(2);
     });
   });
 });
