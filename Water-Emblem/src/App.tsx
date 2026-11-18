@@ -33,7 +33,7 @@ import {
 import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
-import { saveGameState, loadGameState, type SaveGameData } from './storage/saveLoad';
+import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
@@ -1145,9 +1145,19 @@ export const App: React.FC = () => {
             await handleSave(slotId);
             setActiveScreen('none');
           }}
-          onNewGameAtSlot={(slotId) => {
+          onNewGameAtSlot={async (slotId) => {
             loadChapter('chapter_01');
-            handleSave(slotId);
+            const snapshot = buildNewGameSnapshot('chapter_01', defaultRNG.getSeed());
+            if (!snapshot) {
+              showNotice('Failed to start a new game.');
+            } else {
+              const ok = await saveGameState(snapshot, slotId);
+              if (ok) {
+                showNotice(`✓ New game started and saved to ${slotId.toUpperCase()}!`);
+              } else {
+                showNotice('Failed to save the new game.');
+              }
+            }
             setActiveScreen('world_map');
           }}
           onClose={() => setActiveScreen('none')}

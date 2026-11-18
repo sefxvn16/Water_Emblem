@@ -51,8 +51,12 @@ export const SaveSlotsModal: React.FC<SaveSlotsModalProps> = ({
     soundManager.playSfx('cancel');
     const confirmed = window.confirm(`Are you sure you want to delete data in ${slotId.toUpperCase()}?`);
     if (!confirmed) return;
-    await deleteSaveSlot(slotId);
-    showToast(`Deleted save data in ${slotId.toUpperCase()}`);
+    const ok = await deleteSaveSlot(slotId);
+    if (ok) {
+      showToast(`Deleted save data in ${slotId.toUpperCase()}`);
+    } else {
+      showToast(`Failed to delete save data in ${slotId.toUpperCase()}`);
+    }
     await fetchSlots();
   };
 
@@ -65,9 +69,20 @@ export const SaveSlotsModal: React.FC<SaveSlotsModalProps> = ({
 
   const handlePasteCopy = async (targetSlotId: string) => {
     if (!copySourceSlot) return;
+    const target = slots.find((slot) => slot.slotId === targetSlotId);
+    if (target?.data) {
+      const confirmed = window.confirm(
+        `Slot ${targetSlotId.toUpperCase()} already has save data. Overwrite it with the copy from ${copySourceSlot.toUpperCase()}?`,
+      );
+      if (!confirmed) return;
+    }
     soundManager.playSfx('accept');
-    await copySaveSlot(copySourceSlot, targetSlotId);
-    showToast(`Successfully copied from ${copySourceSlot.toUpperCase()} to ${targetSlotId.toUpperCase()}`);
+    const ok = await copySaveSlot(copySourceSlot, targetSlotId);
+    if (ok) {
+      showToast(`Successfully copied from ${copySourceSlot.toUpperCase()} to ${targetSlotId.toUpperCase()}`);
+    } else {
+      showToast(`Failed to copy from ${copySourceSlot.toUpperCase()} to ${targetSlotId.toUpperCase()}`);
+    }
     setCopySourceSlot(null);
     await fetchSlots();
   };

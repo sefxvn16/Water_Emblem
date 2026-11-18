@@ -254,6 +254,29 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
 export const DEFAULT_SAVE_SLOTS = ['slot1', 'slot2', 'slot3'] as const;
 export type SaveSlotId = typeof DEFAULT_SAVE_SLOTS[number] | string;
 
+// A fresh game for a chapter, built from chapter data instead of the app's
+// current state. New Game at an empty slot must save this — not whatever the
+// previous game had become — because loadChapter only queues React state
+// updates, so a save taken right after it would still hold the old game
+// (PLAN item 75, H1). Mirrors loadChapter in App.tsx: turn 1, player phase,
+// chapter units, no gold, no visited villages, story intro shown.
+export function buildNewGameSnapshot(chapterId: string, rngSeed: number): GameSnapshot | null {
+  const chapter = chapters[chapterId];
+  if (!chapter) return null;
+  return {
+    chapterId,
+    turnState: { turnNumber: 1, activePhase: 'player_phase' },
+    extendedUnits: structuredClone(chapter.units),
+    reserveUnits: [],
+    rngSeed,
+    chapterOutcome: 'ongoing',
+    showStoryIntro: true,
+    combatLog: [`📜 Started ${chapter.name}`],
+    gold: 0,
+    villageStates: {},
+  };
+}
+
 export async function saveGameState(snapshot: GameSnapshot, slot: SaveSlotId = SAVE_SLOT): Promise<boolean> {
   if (!isGameSnapshot(snapshot)) return false;
   try {
