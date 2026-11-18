@@ -60,6 +60,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({ board, getUnitDisplay, onTileCli
             <div
               key={key}
               data-testid={`tile-${x}-${y}`}
+              data-attack-target={attackTarget ? 'true' : undefined}
               onClick={() => {
                 if (longPressed.current) {
                   longPressed.current = false;

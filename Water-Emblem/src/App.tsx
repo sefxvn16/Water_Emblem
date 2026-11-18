@@ -913,14 +913,14 @@ export const App: React.FC = () => {
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
             && pendingMovePos.y === chapterObjective.seizeTargetTile?.y,
           talkTargetName: talkTarget?.unit.name ?? null,
-          canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.inventory.some((item) => item.itemId === 'vulnerary' && item.uses > 0)
-            && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp),
+          canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp
+            && selectedExtUnit.inventory.some((i) => i.itemId === 'vulnerary' && i.uses > 0)),
           promotions: selectedExtUnit && selectedExtUnit.level >= 10
-            && selectedExtUnit.inventory.some((item) => item.itemId === 'master_seal' && item.uses > 0)
-            ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id }))
-            : [],
+            && selectedExtUnit.inventory.some((i) => i.itemId === 'master_seal' && i.uses > 0)
+            ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id })) : [],
           villageName: currentVillageAtPendingPos?.name ?? null,
           hasAttackTargets: attackableTargets.length > 0,
+          targetPositions: attackableTargets.map((t) => t.unit.position),
         } : null}
         onToggleMount={handleToggleMounted}
         onSeize={handleSeize}

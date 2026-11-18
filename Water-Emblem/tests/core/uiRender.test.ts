@@ -6,6 +6,7 @@ import { UnitHoverWindow } from '../../src/ui/UnitHoverWindow';
 import { TerrainInfoWindow } from '../../src/ui/TerrainInfoWindow';
 import { UnitInspectorWindow } from '../../src/ui/UnitInspectorWindow';
 import { CombatForecastWindow } from '../../src/ui/CombatForecastWindow';
+import { ActionMenuWindow, computeActionMenuPosition } from '../../src/ui/ActionMenuWindow';
 import type { BoardView } from '../../src/core/grid/boardView';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import type { CombatForecast } from '../../src/core/combat/types';
@@ -235,5 +236,69 @@ describe('UI rendering tests', () => {
     expect(html).toContain('100');
     expect(html).toContain('94');
     expect(html).toContain('⚔️ Attack!');
+  });
+
+  describe('ActionMenuWindow & positioning', () => {
+    it('renders actions and attack target hints without crashing', () => {
+      const html = renderToString(
+        React.createElement(ActionMenuWindow, {
+          anchorTile: { x: 16, y: 4 },
+          mountLabel: null,
+          actions: {
+            unitName: 'Draug',
+            canSeize: false,
+            talkTargetName: null,
+            canUseVulnerary: false,
+            promotions: [],
+            villageName: null,
+            hasAttackTargets: true,
+            targetPositions: [{ x: 17, y: 4 }],
+          },
+          onToggleMount: () => {},
+          onSeize: () => {},
+          onTalk: () => {},
+          onUseVulnerary: () => {},
+          onPromote: () => {},
+          onVisitVillage: () => {},
+          onWait: () => {},
+          onCancelMove: () => {},
+        })
+      );
+
+      expect(html).toContain('Actions (Draug)');
+      expect(html).toContain('Click red tile to attack');
+      expect(html).toContain('✓ Wait');
+      expect(html).toContain('Cancel Move');
+    });
+
+    it('positions menu to the left when attack targets are to the right', () => {
+      const anchor = { left: 512, right: 576, top: 256, bottom: 320 };
+      const targetOnRight = { left: 576, right: 640, top: 256, bottom: 320 };
+      const pos = computeActionMenuPosition(anchor, [targetOnRight], 190, 160, 1200, 800);
+      expect(pos).not.toBeNull();
+      // Must be to the left of anchor
+      expect(pos!.left + 190).toBeLessThanOrEqual(anchor.left);
+    });
+
+    it('positions menu to the right when attack targets are to the left', () => {
+      const anchor = { left: 512, right: 576, top: 256, bottom: 320 };
+      const targetOnLeft = { left: 448, right: 512, top: 256, bottom: 320 };
+      const pos = computeActionMenuPosition(anchor, [targetOnLeft], 190, 160, 1200, 800);
+      expect(pos).not.toBeNull();
+      // Must be to the right of anchor
+      expect(pos!.left).toBeGreaterThanOrEqual(anchor.right);
+    });
+
+    it('avoids targets on both sides by moving vertically', () => {
+      const anchor = { left: 512, right: 576, top: 256, bottom: 320 };
+      const targetL = { left: 448, right: 512, top: 256, bottom: 320 };
+      const targetR = { left: 576, right: 640, top: 256, bottom: 320 };
+      const pos = computeActionMenuPosition(anchor, [targetL, targetR], 190, 160, 1200, 800);
+      expect(pos).not.toBeNull();
+      // Menu should be above or below the horizontal row [256..320]
+      const isAbove = pos!.top + 160 <= anchor.top;
+      const isBelow = pos!.top >= anchor.bottom;
+      expect(isAbove || isBelow).toBe(true);
+    });
   });
 });
