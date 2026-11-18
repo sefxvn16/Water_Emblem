@@ -111,6 +111,10 @@ export const App: React.FC = () => {
   const [activeMovingUnit, setActiveMovingUnit] = useState<ActiveMovingUnit | null>(null);
   const animCleanupRef = useRef<(() => void) | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
+  const [pinnedUnitId, setPinnedUnitId] = useState<string | null>(null);
+  const [hoveredUnitSummary, setHoveredUnitSummary] = useState<{ unitId: string; tile: Position } | null>(null);
+  const isHoveringSummaryRef = useRef(false);
+  const summaryGraceTimerRef = useRef<number | null>(null);
   const [inspectedTile, setInspectedTile] = useState<Position | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
@@ -196,6 +200,8 @@ export const App: React.FC = () => {
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    setPinnedUnitId(null);
+    setHoveredUnitSummary(null);
     showNotice(`Switched to ${targetChapter.name}`);
     setCombatLog([`📜 Started ${targetChapter.name}`]);
   };
@@ -381,6 +387,8 @@ export const App: React.FC = () => {
         units: extendedUnits.map((u) => u.unit),
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
+      setPinnedUnitId(clickedExt.unit.id);
+      setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
       setPendingMovePos(null);
       setPlannedPath(null);
       setSelectedTarget(null);
@@ -389,13 +397,21 @@ export const App: React.FC = () => {
       return;
     }
 
-    // Bỏ chọn
+    // Bỏ chọn hoặc chạm vào quân khác (địch hoặc đã đi)
     if (!pendingMovePos && !activeMovingUnit) {
       soundManager.playSfx('cancel');
       turnManager.cancelSelect();
       setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
+      if (clickedExt) {
+        setPinnedUnitId(clickedExt.unit.id);
+        setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
+      } else {
+        setPinnedUnitId(null);
+        setHoveredUnitSummary(null);
+      }
+      setHoveredTile({ x, y });
       syncState();
     }
   };
@@ -612,6 +628,8 @@ export const App: React.FC = () => {
     setPlannedPath(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    setPinnedUnitId(null);
+    setHoveredUnitSummary(null);
     turnManager.cancelSelect();
     syncState();
   };
@@ -746,6 +764,8 @@ export const App: React.FC = () => {
     setPendingMovePos(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    setPinnedUnitId(null);
+    setHoveredUnitSummary(null);
     syncState();
   };
 
@@ -800,12 +820,35 @@ export const App: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [turnState.activePhase, chapterOutcome]);
 
+  const handleTileHover = (x: number, y: number) => {
+    setHoveredTile({ x, y });
+    const unitAtTile = extendedUnits.find((u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y);
+    if (unitAtTile) {
+      if (summaryGraceTimerRef.current) {
+        clearTimeout(summaryGraceTimerRef.current);
+        summaryGraceTimerRef.current = null;
+      }
+      setHoveredUnitSummary({ unitId: unitAtTile.unit.id, tile: { x, y } });
+    } else {
+      if (!isHoveringSummaryRef.current && !summaryGraceTimerRef.current) {
+        summaryGraceTimerRef.current = window.setTimeout(() => {
+          summaryGraceTimerRef.current = null;
+          if (!isHoveringSummaryRef.current) setHoveredUnitSummary(null);
+        }, 600);
+      }
+    }
+  };
+
   const hoveredTerrainId = hoveredTile ? mapData.grid[hoveredTile.y]?.[hoveredTile.x] : null;
-  const hoveredUnit = hoveredTile
-    ? extendedUnits.find(
-        (u) => !u.unit.isDead && u.unit.position.x === hoveredTile.x && u.unit.position.y === hoveredTile.y
-      )
-    : null;
+  const activeSummaryUnit = useMemo(() => {
+    const id = pinnedUnitId ?? hoveredUnitSummary?.unitId ?? (selectedExtUnit && !combatForecast ? selectedExtUnit.unit.id : null);
+    if (!id) return null;
+    return extendedUnits.find((u) => !u.unit.isDead && u.unit.id === id) ?? null;
+  }, [pinnedUnitId, hoveredUnitSummary, selectedExtUnit, combatForecast, extendedUnits]);
+
+  const activeSummaryTile = pinnedUnitId
+    ? activeSummaryUnit?.unit.position ?? null
+    : hoveredUnitSummary?.tile ?? activeSummaryUnit?.unit.position ?? null;
 
   const inspectedUnit = inspectedTile
     ? extendedUnits.find((u) => !u.unit.isDead && u.unit.position.x === inspectedTile.x && u.unit.position.y === inspectedTile.y)
@@ -825,7 +868,7 @@ export const App: React.FC = () => {
               selectedPos={pendingMovePos || (selectedExtUnit ? selectedExtUnit.unit.position : null)}
               attackTargetKeys={attackTargetKeys}
               onTileClick={handleTileClick}
-              onTileHover={(x, y) => setHoveredTile({ x, y })}
+              onTileHover={handleTileHover}
             />
           </div>
         ) : (
@@ -837,7 +880,7 @@ export const App: React.FC = () => {
               activeMovingUnit={activeMovingUnit}
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
-              onTileHover={(x, y) => setHoveredTile({ x, y })}
+              onTileHover={handleTileHover}
               onTileInspect={(x, y) => setInspectedTile({ x, y })}
             />
           </div>
@@ -871,15 +914,8 @@ export const App: React.FC = () => {
             onClick={handleEndTurn}
             disabled={isProcessingAI || pendingMovePos !== null || combatForecast !== null || activeMovingUnit !== null}
             style={{
-              height: `${HUD_SIZE}px`,
-              padding: '0 20px',
-              backgroundColor: '#1d4ed8',
-              border: '1px solid #60a5fa',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '15px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
+              height: `${HUD_SIZE}px`, padding: '0 20px', backgroundColor: '#1d4ed8', border: '1px solid #60a5fa',
+              borderRadius: '8px', color: '#fff', fontSize: '15px', fontWeight: 'bold', cursor: 'pointer',
               boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
               opacity: (isProcessingAI || pendingMovePos !== null || combatForecast !== null || activeMovingUnit !== null) ? 0.5 : 1,
             }}
@@ -933,10 +969,28 @@ export const App: React.FC = () => {
       />
 
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
-      {hoveredUnit && hoveredTile && !combatForecast && !inspectedUnit && (
-        <UnitHoverWindow unit={hoveredUnit} tile={hoveredTile} onInspect={() => setInspectedTile(hoveredTile)} />
+      {activeSummaryUnit && activeSummaryTile && !combatForecast && !inspectedUnit && (
+        <UnitHoverWindow
+          unit={activeSummaryUnit}
+          tile={activeSummaryTile}
+          onInspect={() => setInspectedTile(activeSummaryTile)}
+          onMouseEnter={() => {
+            isHoveringSummaryRef.current = true;
+            if (summaryGraceTimerRef.current) {
+              clearTimeout(summaryGraceTimerRef.current);
+              summaryGraceTimerRef.current = null;
+            }
+          }}
+          onMouseLeave={() => {
+            isHoveringSummaryRef.current = false;
+            summaryGraceTimerRef.current = window.setTimeout(() => {
+              summaryGraceTimerRef.current = null;
+              if (!isHoveringSummaryRef.current) setHoveredUnitSummary(null);
+            }, 300);
+          }}
+        />
       )}
-      {!hoveredUnit && hoveredTile && hoveredTerrainId && !combatForecast && !inspectedUnit && (
+      {!activeSummaryUnit && hoveredTile && hoveredTerrainId && !combatForecast && !inspectedUnit && (
         <TerrainInfoWindow terrainId={hoveredTerrainId} tile={hoveredTile} />
       )}
       {inspectedUnit && inspectedTile && (
@@ -951,21 +1005,7 @@ export const App: React.FC = () => {
 
       {/* Status Notification Toast */}
       {statusNotice && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: '#2e7d32',
-            color: '#fff',
-            padding: '12px 20px',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-            zIndex: 9999,
-          }}
-        >
+        <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#2e7d32', color: '#fff', padding: '12px 20px', borderRadius: '6px', fontWeight: 'bold', boxShadow: '0 4px 12px rgba(0,0,0,0.4)', zIndex: 9999 }}>
           {statusNotice}
         </div>
       )}
@@ -1045,63 +1085,17 @@ export const App: React.FC = () => {
 
       {/* Defeat Modal */}
       {chapterOutcome === 'defeat' && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.85)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: '#7f1d1d',
-              border: '2px solid #ef4444',
-              borderRadius: '12px',
-              padding: '28px',
-              maxWidth: '460px',
-              textAlign: 'center',
-              boxShadow: '0 8px 30px rgba(0,0,0,0.8)',
-            }}
-          >
-            <h2 style={{ margin: '0 0 10px 0', color: '#fca5a5', fontSize: '24px' }}>
-              💀 GAME OVER
-            </h2>
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div style={{ backgroundColor: '#7f1d1d', border: '2px solid #ef4444', borderRadius: '12px', padding: '28px', maxWidth: '460px', textAlign: 'center', boxShadow: '0 8px 30px rgba(0,0,0,0.8)' }}>
+            <h2 style={{ margin: '0 0 10px 0', color: '#fca5a5', fontSize: '24px' }}>💀 GAME OVER</h2>
             <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#fee2e2', marginBottom: '20px' }}>
-              Prince Marth has fallen in battle...
-              <br />
-              The kingdom of Altea has lost all hope.
+              Prince Marth has fallen in battle...<br />The kingdom of Altea has lost all hope.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button
-                onClick={() => handleLoad()}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#3b82f6',
-                  border: 'none',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
+              <button onClick={() => handleLoad()} style={{ padding: '10px 20px', backgroundColor: '#3b82f6', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
                 📂 Load Last Save
               </button>
-              <button
-                onClick={handleRestartChapter}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: '#475569',
-                  border: 'none',
-                  borderRadius: '6px',
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
+              <button onClick={handleRestartChapter} style={{ padding: '10px 20px', backgroundColor: '#475569', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
                 🔄 Restart Chapter
               </button>
             </div>

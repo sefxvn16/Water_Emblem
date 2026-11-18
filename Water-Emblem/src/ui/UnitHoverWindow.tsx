@@ -10,10 +10,18 @@ interface UnitHoverWindowProps {
   unit: ExtendedUnitState;
   tile: Position;
   onInspect?: () => void;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 /** Basic unit info popup: horizontal banner matching FE3 layout (Image 4). */
-export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({ unit: u, tile, onInspect }) => {
+export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
+  unit: u,
+  tile,
+  onInspect,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   const rect = getTileRect(tile);
   const tileCenterX = rect ? (rect.left + rect.right) / 2 : null;
   const onLeft = tileCenterX === null || typeof window === 'undefined' || tileCenterX >= window.innerWidth / 2;
@@ -25,6 +33,8 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({ unit: u, tile,
   return (
     <div
       onClick={onInspect}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       role="button"
       tabIndex={0}
       aria-label={`${u.unit.name} summary. Tap or click for full details.`}
