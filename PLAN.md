@@ -164,6 +164,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: gate `node .studio/gate.mjs` trên nhánh `agy/74-fe3-unit-details-avatar`: **Result: PASS** (rules 0, test 23 files/150 tests PASS, build PASS, integration 20/20 Playwright e2e PASS); mũi tên dẫn đường di chuyển (`MovementArrow.tsx`) và hoạt cảnh bước chân lướt từng ô (`movementAnimation.ts`, ~65ms/ô) kèm âm thanh bước chân theo loại di chuyển (foot, cavalry, armor, flier); menu hành động né thông minh mục tiêu tấn công (`computeActionMenuPosition`), không che ô đỏ/quân địch; hỗ trợ tablet qua nút "Details ℹ️" trên `UnitHoverWindow` và long-press ~500ms trên ô; popup `UnitInspectorWindow` giữ đúng bố cục FE3 với icon vũ khí/vật phẩm FE3 gốc từ `public/icons/items/` và phong cách theme phẳng hiện đại, 100% tiếng Anh; `Grid2D` thay hình tròn bằng avatar nhân vật bo góc (42×42) kèm viền phe và thanh máu trực quan hiển thị `HP: current/max`; hoàn thiện 4 giao diện màn trận theo 4 ảnh tham chiếu FE3 (hộp thoại có đuôi mũi tên chỉ avatar, thông tin ô đất gọn gàng, menu hành động có con trỏ bàn tay `👉`, banner thông tin cơ bản nhân vật 3 cột); bảng dự báo giao tranh hiển thị đầy đủ lượng máu giảm `HP: current → after (-loss)` kèm thanh máu hai màu, `Hit`, `Avo`, `Crit`, `AS` và icon vũ khí FE3; `App.tsx` duy trì 1179 dòng (không vượt).
   - Kiểm bởi: tôi
 
+- [ ] 75. Sửa các phát hiện High/Medium của code review toàn repo ngày 2026-11-18.
+  - Nguồn: `reports/code_review_toan_repo_2026-11-18.md` (OCR delegate, 88/88 file, HEAD `4567226`); mã H1–H2, M1–M13 trong file đó. `reports/` bị gitignore, file nằm trong thư mục dự án trên OneDrive.
+  - Tiêu chí xong: (1) H1, H2 sửa xong, mỗi lỗi có test tái hiện (unit hoặc Playwright) fail trước khi sửa và pass sau khi sửa. (2) M1, M3, M4, M8 (phần `loadGameState`), M9, M10, M13 sửa xong, có test hoặc bằng chứng kiểm tay ghi lại. (3) M2, M5, M6, M7, M11, M12 thuộc diện sửa lớn hoặc đổi type core: được sửa, hoặc tách thành mục riêng trong `PLAN.md` kèm lý do. (4) Không sửa hay làm yếu test có sẵn; mục cần đổi test ghi lý do và chờ duyệt. (5) Gate `node .studio/gate.mjs` Result: PASS.
+  - Kết quả: CHỜ NGƯỜI DÙNG: Chưa sửa. Lỗi H1 (New Game lưu nhầm state) và M5 (core sửa trực tiếp input, đụng nhiều file) sửa trong mục này hay tách riêng? Class `knight` thăng lên `cataphract` (`classes.json:305`) là chủ ý hay lỗi?
+  - Kiểm bởi: tôi
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
