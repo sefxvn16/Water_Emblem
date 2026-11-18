@@ -41,7 +41,10 @@ import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
 import { SaveSlotsModal } from './ui/SaveSlotsModal';
 import { WorldMapModal } from './ui/WorldMapModal';
-import { BattleSettingsMenu, HUD_SIZE } from './ui/BattleSettingsMenu';
+import { BattleSettingsMenu, HUD_EDGE, HUD_SIZE } from './ui/BattleSettingsMenu';
+
+// Scroll padding so the last tiles can scroll out from under the bottom-right HUD cluster.
+const HUD_CLEAR = HUD_EDGE + HUD_SIZE + 8;
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
@@ -166,6 +169,7 @@ export const App: React.FC = () => {
   }, [extendedUnits, turnState, currentChapterId]);
 
   const loadChapter = (chapterId: string, carryoverUnits?: readonly ExtendedUnitState[]) => {
+    setPopupQueue([]);
     const targetChapter = chapters[chapterId];
     if (!targetChapter) return;
     setCurrentChapterId(chapterId);
@@ -395,7 +399,8 @@ export const App: React.FC = () => {
     const hpBefore = { attacker: selectedExtUnit.stats.hp, defender: selectedTarget.stats.hp };
     const result = executeCombat(combatForecast, defaultRNG);
     const popup = buildCombatPopup(++popupIdRef.current, selectedExtUnit, selectedTarget, hpBefore, result);
-    setPopupQueue((queue) => [...queue, popup]);
+    // A new player action supersedes any enemy-phase results still waiting.
+    setPopupQueue([popup]);
 
     // Cập nhật log trận đánh
     const logs: string[] = [];
@@ -723,6 +728,7 @@ export const App: React.FC = () => {
   };
 
   const applyLoadedSnapshot = (data: SaveGameData) => {
+    setPopupQueue([]);
     if (data.chapterId !== currentChapterId) {
       setCurrentChapterId(data.chapterId);
     }
@@ -779,6 +785,7 @@ export const App: React.FC = () => {
   };
 
   const handleRestartChapter = () => {
+    setPopupQueue([]);
     loadChapter(currentChapterId);
   };
 
@@ -823,7 +830,7 @@ export const App: React.FC = () => {
             />
           </div>
         ) : (
-          <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: '8px' }}>
+          <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: `8px ${HUD_CLEAR}px ${HUD_CLEAR}px 8px` }}>
             <Grid2D
               board={boardView}
               getUnitDisplay={getUnitDisplay}

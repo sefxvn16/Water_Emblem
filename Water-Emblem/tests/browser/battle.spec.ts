@@ -335,7 +335,7 @@ test('Chapter 3 can save and reload its map and roster', async ({ page }) => {
   await enterBattle(page);
   await openSettings(page);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
-  // Settings closes when the loaded chapter changes; reopen after the load finishes (PLAN.md item 72).
+  // Settings closes when the loaded chapter changes; reopen after the load finishes (PLAN.md item 73).
   await expect(page.getByText(/(?:Save file loaded|Đã tải)/i)).toBeVisible();
   await openSettings(page);
   await expect(page.locator('select')).toHaveValue('chapter_03');

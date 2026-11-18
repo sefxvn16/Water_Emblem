@@ -28,8 +28,18 @@ Theo `decisions.md` ngày 2026-11-17: bản đồ chiếm toàn khung và cuộn
 | Dự báo giao tranh | Cửa sổ đè mép trái bản đồ, chỉ số xếp dọc | `UI_and_Menus/Ss_fe03_combat_forecast.png`, `Ss_fe03_combat_forecast_01.png` |
 | Hội thoại | Khung chữ kèm chân dung đè mép trên/dưới bản đồ | `InGame_Screenshots/Ss_fe03_fan_translation_ch6.png`, `Ss_fe03_fan_translation_ch2-18.png` |
 | Trao đổi đồ | Hai cửa sổ đè lên bản đồ | `InGame_Screenshots/Ss_fe03_trade.png` |
+| Kết quả giao tranh | Hai panel đỏ (địch, trái) / xanh (ta, phải) ở giữa mép dưới: tên, class, LV, vũ khí, thanh HP trước → sau, từng đòn trúng/trượt/chí mạng; không hoạt cảnh; tự đóng sau khoảng 2,5 giây hoặc khi click/nhấn phím, không chặn thao tác | `InGame_Screenshots/Ss_fe03_marth_battle.png` |
+| Chuẩn bị trận | Thanh trên (số quân đã chọn, nút bắt đầu), lưới tên quân 3 cột, panel thông tin quân đang trỏ ở dưới | `InGame_Screenshots/Ss_fe03_unit_select.png` |
 
-Menu hành động và thông tin quân/địa hình là popup chỉ hiện khi cần. Điều khiển không có trong FE3 nằm trong nút Settings góc phải trên; End Turn hiện ngoài. Vị trí chính xác của menu hành động và cửa sổ thông tin quân trong FE3 chưa có ảnh đối chiếu trong kho.
+Quyết định chủ dự án ngày 2026-11-17 và 2026-11-18 (`PLAN.md` mục 71, 73):
+
+- Điều khiển không có trong FE3 nằm trong menu Settings (⚙). End Turn và ⚙ đặt cạnh nhau ở góc phải dưới, ⚙ bên phải; menu mở lên trên. Menu tự đóng khi đổi chương hoặc mở màn khác.
+- Thông tin quân: rê chuột hiện khung gọn (tên, class, LV, HP, vũ khí, địa hình) ở phía đối diện ô đang trỏ; chuột phải hoặc nhấn giữ mở bảng đầy đủ. Không hiển thị growth rate.
+- Menu hành động hiện cạnh quân vừa di chuyển, luôn nằm trong khung nhìn.
+- Dự báo giao tranh ghi "×N" khi một bên đánh nhiều lần.
+- Trên 2D mỗi quân là hình tròn nằm giữa ô.
+
+Vị trí chính xác của menu hành động và cửa sổ thông tin quân khi rê chuột trong FE3 chưa có ảnh đối chiếu trong kho; bố cục hiện tại là lựa chọn của dự án.
 
 ## Camera và hoạt cảnh
 
