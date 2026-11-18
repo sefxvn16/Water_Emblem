@@ -74,9 +74,10 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
       const vh = window.innerHeight;
       let left = anchor.right + MENU_GAP;
       if (left + MENU_WIDTH > vw - MENU_GAP) left = anchor.left - MENU_GAP - MENU_WIDTH;
-      left = Math.max(MENU_GAP, left);
+      // Clamp to both viewport edges: the unit's tile may be scrolled out of view.
+      left = Math.max(MENU_GAP, Math.min(left, vw - MENU_GAP - MENU_WIDTH));
       const bottomLimit = left + MENU_WIDTH > vw - HUD_CLUSTER_WIDTH ? vh - HUD_CLEAR_BOTTOM : vh - MENU_GAP;
-      const top = Math.max(MENU_GAP, Math.min(anchor.top, bottomLimit - box.offsetHeight));
+      const top = Math.max(MENU_GAP, Math.min(Math.max(anchor.top, MENU_GAP), bottomLimit - box.offsetHeight));
       next = { left, top };
     }
     setPos((prev) => (prev?.left === next?.left && prev?.top === next?.top ? prev : next));
