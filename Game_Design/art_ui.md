@@ -39,7 +39,7 @@ Quyết định chủ dự án ngày 2026-11-17 và 2026-11-18 (`PLAN.md` mục 
 - Thông tin ô đất (`TerrainInfoWindow.tsx`): khi rê chuột hoặc chạm vào ô trống không có quân, hiện khung nhỏ gọn hiển thị tên địa hình (Plains, Forest, Fort, Castle...) và chỉ số né tránh (`Avoid : X%` kèm Def nếu > 0), tự động căn mép đối diện ô đang trỏ.
 - Menu hành động (`ActionMenuWindow.tsx`): khung nền navy viền vàng hiện cạnh quân vừa di chuyển, luôn nằm trong khung nhìn, có con trỏ bàn tay (`👉`) chỉ vào lệnh đang hover/chọn.
 - Hộp hội thoại nhân vật (`DialogueBox.tsx`): chân dung nhân vật đóng khung bên cạnh khung chữ, có đuôi mũi tên hình tam giác chỉ trực tiếp vào chân dung nhân vật đang nói, bố cục đảo bên theo phe/vị trí người nói.
-- Dự báo giao tranh ghi "×N" khi một bên đánh nhiều lần.
+- Dự báo giao tranh (`CombatForecastWindow.tsx`): hiển thị chi tiết lượng máu giảm dự kiến `HP: current → after (-loss)` (không tính crit), kèm thanh máu trực quan phân đoạn hai màu (xanh: máu còn lại, đỏ: lượng máu bị trừ), tỉ lệ trúng `Hit: X%`, chỉ số né tránh `Avo: X%`, chí mạng `Crit: X%`, tốc độ ra đòn `AS: X` (và nhãn `Double Attack / ×N` khi đánh nhiều lần), chân dung avatar và icon vũ khí FE3 gốc.
 - Trên 2D mỗi quân hiển thị bằng avatar nhân vật (42×42) có viền màu phe (xanh: ta, đỏ: địch, xám: đã đi, vàng: đang chọn); phía dưới có thanh máu kèm số máu hiện tại/tối đa (HP: còn lại/tổng số).
 
 Vị trí chính xác của menu hành động và cửa sổ thông tin quân khi rê chuột trong FE3 chưa có ảnh đối chiếu trong kho; bố cục hiện tại là lựa chọn của dự án.

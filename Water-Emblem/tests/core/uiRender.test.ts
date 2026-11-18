@@ -5,8 +5,10 @@ import { Grid2D, type UnitDisplay } from '../../src/renderer/Grid2D';
 import { UnitHoverWindow } from '../../src/ui/UnitHoverWindow';
 import { TerrainInfoWindow } from '../../src/ui/TerrainInfoWindow';
 import { UnitInspectorWindow } from '../../src/ui/UnitInspectorWindow';
+import { CombatForecastWindow } from '../../src/ui/CombatForecastWindow';
 import type { BoardView } from '../../src/core/grid/boardView';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
+import type { CombatForecast } from '../../src/core/combat/types';
 
 const mockBoardView: BoardView = {
   width: 2,
@@ -177,5 +179,61 @@ describe('UI rendering tests', () => {
     expect(html).toContain('/icons/items/Is_fe03_vulnerary.png');
     expect(html).toContain('Max HP:');
     expect(html).toContain('Move:');
+  });
+
+  it('CombatForecastWindow renders HP transition delta and hit/avoid stats', () => {
+    const mockForecast: CombatForecast = {
+      attacker: {
+        unit: mockUnit.unit,
+        stats: mockUnit.stats,
+        weapon: mockUnit.weapon,
+        damage: 11,
+        hitRate: 100,
+        critRate: 2,
+        attackSpeed: 7,
+        attackCount: 1,
+        canCounter: true,
+      },
+      defender: {
+        unit: { ...mockUnit.unit, id: 'thief', name: 'Thief', faction: 'enemy' },
+        stats: { ...mockUnit.stats, hp: 16, maxHp: 16, def: 2 },
+        weapon: mockUnit.weapon,
+        damage: 0,
+        hitRate: 94,
+        critRate: 0,
+        attackSpeed: 5,
+        attackCount: 1,
+        canCounter: true,
+      },
+      distance: 1,
+    };
+
+    const defenderUnit: ExtendedUnitState = {
+      ...mockUnit,
+      unit: { ...mockUnit.unit, id: 'thief', name: 'Thief', faction: 'enemy' },
+      stats: { ...mockUnit.stats, hp: 16, maxHp: 16, def: 2 },
+    };
+
+    const html = renderToString(
+      React.createElement(CombatForecastWindow, {
+        forecast: mockForecast,
+        attacker: mockUnit,
+        defender: defenderUnit,
+        onConfirm: () => {},
+        onCancel: () => {},
+      })
+    );
+
+    expect(html).toContain('COMBAT FORECAST');
+    expect(html).toContain('HP: 18 → ');
+    expect(html).toContain('>18<');
+    expect(html).toContain('HP: 16 → ');
+    expect(html).toContain('>5<');
+    expect(html).toContain('11');
+    expect(html).toContain('Hit:');
+    expect(html).toContain('Avo:');
+    expect(html).toContain('100');
+    expect(html).toContain('94');
+    expect(html).toContain('⚔️ Attack!');
   });
 });
