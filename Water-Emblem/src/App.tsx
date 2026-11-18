@@ -51,6 +51,7 @@ import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
 import { DialogueBox } from './ui/DialogueBox';
 import { BattlePreparationModal } from './ui/BattlePreparationModal';
 import { UnitHoverWindow } from './ui/UnitHoverWindow';
+import { TerrainInfoWindow } from './ui/TerrainInfoWindow';
 import { CombatResultPopup } from './ui/CombatResultPopup';
 import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
 
@@ -932,11 +933,12 @@ export const App: React.FC = () => {
       />
 
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
-
       {hoveredUnit && hoveredTile && !combatForecast && !inspectedUnit && (
-        <UnitHoverWindow unit={hoveredUnit} terrainId={hoveredTerrainId ?? 'plains'} tile={hoveredTile} onInspect={() => setInspectedTile(hoveredTile)} />
+        <UnitHoverWindow unit={hoveredUnit} tile={hoveredTile} onInspect={() => setInspectedTile(hoveredTile)} />
       )}
-
+      {!hoveredUnit && hoveredTile && hoveredTerrainId && !combatForecast && !inspectedUnit && (
+        <TerrainInfoWindow terrainId={hoveredTerrainId} tile={hoveredTile} />
+      )}
       {inspectedUnit && inspectedTile && (
         <UnitInspectorWindow
           unit={inspectedUnit}

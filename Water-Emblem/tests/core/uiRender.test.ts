@@ -3,6 +3,7 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Grid2D, type UnitDisplay } from '../../src/renderer/Grid2D';
 import { UnitHoverWindow } from '../../src/ui/UnitHoverWindow';
+import { TerrainInfoWindow } from '../../src/ui/TerrainInfoWindow';
 import { UnitInspectorWindow } from '../../src/ui/UnitInspectorWindow';
 import type { BoardView } from '../../src/core/grid/boardView';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
@@ -135,7 +136,6 @@ describe('UI rendering tests', () => {
     const html = renderToString(
       React.createElement(UnitHoverWindow, {
         unit: mockUnit,
-        terrainId: 'plains',
         tile: { x: 0, y: 0 },
         onInspect: () => {},
       })
@@ -144,6 +144,18 @@ describe('UI rendering tests', () => {
     expect(html).toContain('Marth');
     expect(html).toContain('Rapier');
     expect(html).toContain('Details');
+  });
+
+  it('TerrainInfoWindow renders terrain name and avoid bonus', () => {
+    const html = renderToString(
+      React.createElement(TerrainInfoWindow, {
+        terrainId: 'forest',
+        tile: { x: 1, y: 0 },
+      })
+    );
+
+    expect(html).toContain('Forest');
+    expect(html).toContain('Avoid : 10%');
   });
 
   it('UnitInspectorWindow renders FE3 status layout with weapon and item icons', () => {

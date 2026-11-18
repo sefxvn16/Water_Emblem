@@ -31,11 +31,14 @@ Theo `decisions.md` ngày 2026-11-17: bản đồ chiếm toàn khung và cuộn
 | Kết quả giao tranh | Hai panel đỏ (địch, trái) / xanh (ta, phải) ở giữa mép dưới: tên, class, LV, vũ khí, thanh HP trước → sau, từng đòn trúng/trượt/chí mạng; không hoạt cảnh; tự đóng sau khoảng 2,5 giây hoặc khi click/nhấn phím, không chặn thao tác | `InGame_Screenshots/Ss_fe03_marth_battle.png` |
 | Chuẩn bị trận | Thanh trên (số quân đã chọn, nút bắt đầu), lưới tên quân 3 cột, panel thông tin quân đang trỏ ở dưới | `InGame_Screenshots/Ss_fe03_unit_select.png` |
 
-Quyết định chủ dự án ngày 2026-11-17 và 2026-11-18 (`PLAN.md` mục 71, 73):
+Quyết định chủ dự án ngày 2026-11-17 và 2026-11-18 (`PLAN.md` mục 71, 73, 74):
 
 - Điều khiển không có trong FE3 nằm trong menu Settings (⚙). End Turn và ⚙ đặt cạnh nhau ở góc phải dưới, ⚙ bên phải; menu mở lên trên. Menu tự đóng khi đổi chương hoặc mở màn khác.
-- Thông tin quân: rê chuột hoặc chạm hiện khung gọn (tên, class, LV, HP, vũ khí kèm icon, địa hình, nút 'Chi tiết' cho tablet); chuột phải, nhấn giữ (0.5s) hoặc bấm nút 'Chi tiết' mở bảng đầy đủ theo chuẩn FE3 (khung viền vàng, nền xanh navy, phân khối chỉ số combat, chỉ số gốc, vũ khí & vật phẩm kèm icon FE3, Max HP, Move). Không hiển thị growth rate.
-- Menu hành động hiện cạnh quân vừa di chuyển, luôn nằm trong khung nhìn.
+- Thông tin cơ bản nhân vật (`UnitHoverWindow.tsx`): khi rê chuột hoặc chạm vào ô có quân, hiện banner ngang 3 cột theo chuẩn FE3 (Cột 1: Name, Class, LV · EX, HP; Cột 2: chân dung avatar đóng khung ở giữa; Cột 3: tên vũ khí trang bị kèm `/uses` và icon FE3 gốc, nút 'Details ℹ️' cho tablet).
+- Bảng thông tin chi tiết nhân vật (`UnitInspectorWindow.tsx`): chuột phải, nhấn giữ (0.5s) hoặc bấm nút 'Details ℹ️' mở bảng đầy đủ theo chuẩn FE3 (khung viền vàng, nền xanh navy, phân khối chỉ số combat At/Ac/Av/Cr/AS/Ef, chỉ số gốc Str/Skl/Spd/Lck/Wlv/Def/Res, vũ khí & vật phẩm kèm icon FE3 gốc trích từ `Original/08_Items_and_Weapons/` vào `public/icons/items/`, Max HP, Move). Không hiển thị growth rate. Toàn bộ bằng tiếng Anh, hỗ trợ đóng rõ ràng bằng nút [✕].
+- Thông tin ô đất (`TerrainInfoWindow.tsx`): khi rê chuột hoặc chạm vào ô trống không có quân, hiện khung nhỏ gọn hiển thị tên địa hình (Plains, Forest, Fort, Castle...) và chỉ số né tránh (`Avoid : X%` kèm Def nếu > 0), tự động căn mép đối diện ô đang trỏ.
+- Menu hành động (`ActionMenuWindow.tsx`): khung nền navy viền vàng hiện cạnh quân vừa di chuyển, luôn nằm trong khung nhìn, có con trỏ bàn tay (`👉`) chỉ vào lệnh đang hover/chọn.
+- Hộp hội thoại nhân vật (`DialogueBox.tsx`): chân dung nhân vật đóng khung bên cạnh khung chữ, có đuôi mũi tên hình tam giác chỉ trực tiếp vào chân dung nhân vật đang nói, bố cục đảo bên theo phe/vị trí người nói.
 - Dự báo giao tranh ghi "×N" khi một bên đánh nhiều lần.
 - Trên 2D mỗi quân hiển thị bằng avatar nhân vật (42×42) có viền màu phe (xanh: ta, đỏ: địch, xám: đã đi, vàng: đang chọn); phía dưới có thanh máu kèm số máu hiện tại/tối đa (HP: còn lại/tổng số).
 
