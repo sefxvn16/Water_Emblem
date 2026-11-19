@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { initialChapterData, testChapter01Data, type ExtendedUnitState } from '../../src/core/data/chapterData';
+import { initialChapterData, type ExtendedUnitState } from '../../src/core/data/chapterData';
 import { calculateCombatForecast, hasPincerAlly } from '../../src/core/combat/calculator';
 import { defaultTerrainRegistry, getElevation } from '../../src/core/grid/terrain';
-import { applyTrapDamage, trapAt } from '../../src/core/chapter/traps';
 import type { MapData } from '../../src/core/grid/types';
 import testMapJson from '../../data/maps/test_map_01.json';
 
@@ -83,22 +82,3 @@ describe('pincer attack (PLAN item 103, V05)', () => {
 
 // PLAN item 143: the C12 destructible-object tests that lived here were
 // removed with the mechanic itself (owner order 2026-11-19).
-
-describe('traps (PLAN item 105, V08)', () => {
-  it('loads traps from chapter data', () => {
-    expect(testChapter01Data.traps).toHaveLength(1);
-    expect(testChapter01Data.traps?.[0]?.damage).toBe(5);
-  });
-
-  it('triggers once and never reduces HP below 1', () => {
-    const traps = testChapter01Data.traps ?? [];
-    const trap = trapAt(traps, new Set(), { x: 7, y: 5 });
-    expect(trap?.id).toBe('test_trap');
-    expect(trapAt(traps, new Set(['test_trap']), { x: 7, y: 5 })).toBeUndefined();
-    const units = freshUnits();
-    const marth = find(units, 'marth');
-    marth.stats.hp = 3;
-    const after = applyTrapDamage(units, 'marth', 5);
-    expect(find(after, 'marth').stats.hp).toBe(1);
-  });
-});

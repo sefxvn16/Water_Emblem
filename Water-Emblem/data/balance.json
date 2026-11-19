@@ -236,6 +236,5 @@
   "shop": {
     "sellBackDivisor": 2
   },
-  "trapMinHp": 1,
   "reinforcementSearchRadius": 2
 }

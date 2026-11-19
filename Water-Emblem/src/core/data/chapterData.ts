@@ -93,14 +93,6 @@ export interface ChapterReinforcement {
   units: ExtendedUnitState[];
 }
 
-/** Hidden trap tile (PLAN item 105, V08): triggers once when a unit ends
-    its movement on the tile, dealing `damage` (never lethal below 1 HP). */
-export interface ChapterTrap {
-  id: string;
-  position: { x: number; y: number };
-  damage: number;
-}
-
 export interface ChapterData {
   readonly id: string;
   readonly name: string;
@@ -116,7 +108,6 @@ export interface ChapterData {
   readonly chests?: readonly ChapterChest[];
   readonly doors?: readonly ChapterDoor[];
   readonly reinforcements?: readonly ChapterReinforcement[];
-  readonly traps?: readonly ChapterTrap[];
   readonly seizeReward?: ChapterReward;
 }
 
@@ -563,19 +554,6 @@ export function loadChapterData(
   const reinforcementIds = reinforcements.map((r) => r.id);
   if (new Set(reinforcementIds).size !== reinforcementIds.length) throw new Error('Duplicate reinforcement ID');
 
-  const trapRows = data.traps ?? [];
-  if (!Array.isArray(trapRows)) throw new Error('chapter.traps must be an array');
-  const traps: ChapterTrap[] = trapRows.map((value: unknown, index: number) => {
-    const item = requireRecord(value, `chapter.traps[${index}]`);
-    return {
-      id: requireString(item.id, `chapter.traps[${index}].id`),
-      position: readPosition(item.position, map, `chapter.traps[${index}].position`),
-      damage: requireInteger(item.damage, `chapter.traps[${index}].damage`, 1),
-    };
-  });
-  const trapIds = traps.map((t) => t.id);
-  if (new Set(trapIds).size !== trapIds.length) throw new Error('Duplicate trap ID');
-
   let seizeReward: ChapterReward | undefined;
   if (data.seizeReward !== undefined) {
     const rewardRaw = requireRecord(data.seizeReward, 'chapter.seizeReward');
@@ -596,7 +574,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, traps, seizeReward };
+  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

@@ -218,15 +218,5 @@
         }
       ]
     }
-  ],
-  "traps": [
-    {
-      "id": "test_trap",
-      "position": {
-        "x": 7,
-        "y": 5
-      },
-      "damage": 5
-    }
   ]
 }

@@ -79,7 +79,6 @@ import { ShopWindow } from './ui/ShopWindow';
 import { ArenaWindow } from './ui/ArenaWindow';
 import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
 import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
-import { applyTrapDamage, trapAt } from './core/chapter/traps';
 import { canCanto } from './core/combat/canto';
 import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
@@ -231,7 +230,6 @@ export const App: React.FC = () => {
   const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
   const [doorStates, setDoorStates] = useState<Record<string, DoorState>>({});
   const [spawnedReinforcements, setSpawnedReinforcements] = useState<string[]>([]);
-  const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
   const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
     villageName: string;
     lines: readonly DialogueLine[];
@@ -337,7 +335,6 @@ export const App: React.FC = () => {
     setChestStates({});
     setDoorStates({});
     setSpawnedReinforcements([]);
-    setTriggeredTraps([]);
     setCantoActive(false);
     cantoRemainingRef.current = 0;
     cantoUsedRef.current = false;
@@ -600,14 +597,7 @@ export const App: React.FC = () => {
         const unitId = cantoUnit.id;
         const finishCanto = () => {
           turnManager.moveSelectedUnit(dest);
-          const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
-          if (trap) {
-            setExtendedUnits((prev) => applyTrapDamage(prev, unitId, trap.damage));
-            setTriggeredTraps((prev) => [...prev, trap.id]);
-            setCombatLog((prev) => [`🪤 ${cantoUnit.name} springs a trap and takes ${trap.damage} damage!`, ...prev]);
-          } else {
-            setExtendedUnits([...extendedUnits]);
-          }
+          setExtendedUnits([...extendedUnits]);
           setActiveMovingUnit(null);
           turnManager.waitSelectedUnit();
           syncState();
@@ -758,16 +748,7 @@ export const App: React.FC = () => {
       const arriveAtDest = () => {
         turnManager.moveSelectedUnit(dest);
         cantoRemainingRef.current = turnState.reachableTiles?.get(`${dest.x},${dest.y}`)?.costRemaining ?? 0;
-        // PLAN item 105: ending movement on a trap tile springs it.
-        const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
-        if (trap) {
-          setExtendedUnits((prev) => applyTrapDamage(prev, unitId, trap.damage));
-          setTriggeredTraps((prev) => [...prev, trap.id]);
-          setCombatLog((prev) => [`🪤 ${selectedExtUnit.unit.name} springs a trap and takes ${trap.damage} damage!`, ...prev]);
-          showNotice(`🪤 ${selectedExtUnit.unit.name} springs a trap! -${trap.damage} HP`);
-        } else {
-          setExtendedUnits([...extendedUnits]);
-        }
+        setExtendedUnits([...extendedUnits]);
         setActiveMovingUnit(null);
         setMoveCommitted(true);
         syncState();
@@ -1584,14 +1565,6 @@ export const App: React.FC = () => {
     let nextVillageStates: Record<string, VillageState> = { ...villageStates };
 
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
-    const nextTriggeredTraps = [...triggeredTraps];
-    const springTrap = (unitId: string, pos: Position, name: string) => {
-      const trap = trapAt(currentChapter.traps ?? [], new Set(nextTriggeredTraps), pos);
-      if (!trap) return;
-      phaseUnits = applyTrapDamage(phaseUnits, unitId, trap.damage);
-      nextTriggeredTraps.push(trap.id);
-      logs.push(`  🪤 ${name} springs a trap and takes ${trap.damage} damage!`);
-    };
 
     for (const enemy of activeEnemies) {
       const decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
@@ -1618,7 +1591,6 @@ export const App: React.FC = () => {
 
       if (decision.type === 'attack') {
         enemy.unit.position = { ...decision.movePosition };
-        springTrap(enemy.unit.id, decision.movePosition, enemy.unit.name);
         logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
         const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
@@ -1681,7 +1653,6 @@ export const App: React.FC = () => {
         logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
         enemy.unit.position = { ...decision.movePosition };
-        springTrap(enemy.unit.id, decision.movePosition, enemy.unit.name);
         logs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
       } else {
         logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
@@ -1709,7 +1680,6 @@ export const App: React.FC = () => {
     }
 
     setVillageStates(nextVillageStates);
-    setTriggeredTraps(nextTriggeredTraps);
 
     // PLAN item 94: reinforcements arrive at the end of the enemy phase
     // and do not act on the turn they appear.
@@ -1778,7 +1748,6 @@ export const App: React.FC = () => {
     setChestStates(data.chestStates ?? {});
     setDoorStates(data.doorStates ?? {});
     setSpawnedReinforcements(data.spawnedReinforcements ?? []);
-    setTriggeredTraps(data.triggeredTraps ?? []);
     setDifficulty(data.difficulty ?? 'normal');
     setCantoActive(false);
     cantoRemainingRef.current = 0;
@@ -1814,7 +1783,6 @@ export const App: React.FC = () => {
       chestStates,
       doorStates,
       spawnedReinforcements,
-      triggeredTraps,
       difficulty,
     }, slotId);
     if (ok) {
