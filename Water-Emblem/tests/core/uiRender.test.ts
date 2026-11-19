@@ -306,7 +306,7 @@ describe('UI rendering tests', () => {
   });
 
   describe('MovementArrow & movementAnimation', () => {
-    it('renders a thick white solid arrow with a block arrowhead', () => {
+    it('renders a thin white solid line with an origin node', () => {
       const html = renderToString(
         React.createElement(MovementArrow, {
           path: [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
@@ -320,12 +320,16 @@ describe('UI rendering tests', () => {
       expect(html).not.toContain('feDropShadow');
       expect(html).not.toContain('#38bdf8');
       expect(html).not.toContain('stroke-dasharray');
-      // Thick white solid shaft with a dark outline.
+      // Thin white solid line (3px) on a dark underlay (5px) — PLAN item 81.
       expect(html).toContain('stroke="#ffffff"');
-      expect(html).toContain('stroke-width="18"');
+      expect(html).toContain('stroke-width="3"');
       expect(html).toContain('stroke="#0f172a"');
-      // Block arrowhead (reference shape): wide triangle, notched back edge.
-      expect(html).toContain('M 20,0 L -14,-22 L -7,0 L -14,22 Z');
+      expect(html).toContain('stroke-width="5"');
+      // No more thick shaft, block arrowhead or destination ring.
+      expect(html).not.toContain('stroke-width="18"');
+      expect(html).not.toContain('M 20,0 L -14,-22 L -7,0 L -14,22 Z');
+      // Origin node: diameter = 1/3 of the 64px tile → r = 10.67.
+      expect(html).toContain('r="10.67"');
     });
 
     it('returns null when path has fewer than 2 waypoints', () => {

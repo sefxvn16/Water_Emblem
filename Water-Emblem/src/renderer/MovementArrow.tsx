@@ -32,19 +32,19 @@ export const MovementArrow: React.FC<MovementArrowProps> = ({
   });
 
   const pts = path.map(getCenter);
-  const dest = pts[pts.length - 1];
-  const prev = pts[pts.length - 2];
   const origin = pts[0];
 
-  if (!dest || !prev || !origin) {
+  if (!origin) {
     return null;
   }
 
   const pointsStr = pts.map((pt) => `${pt.x},${pt.y}`).join(' ');
-  const angle = Math.atan2(dest.y - prev.y, dest.x - prev.x) * (180 / Math.PI);
 
   const totalWidth = padding * 2 + boardWidth * tileSize + Math.max(0, boardWidth - 1) * gap;
   const totalHeight = padding * 2 + boardHeight * tileSize + Math.max(0, boardHeight - 1) * gap;
+
+  // Origin node: diameter = 1/3 of the tile width (PLAN item 81).
+  const nodeRadius = Number((tileSize / 6).toFixed(2));
 
   return (
     <svg
@@ -61,62 +61,38 @@ export const MovementArrow: React.FC<MovementArrowProps> = ({
       }}
       viewBox={`0 0 ${totalWidth} ${totalHeight}`}
     >
-      {/* 1. Base dark outline for contrast across all terrain types */}
+      {/* 1. Dark underlay for contrast across all terrain types */}
       <polyline
         points={pointsStr}
         fill="none"
         stroke="#0f172a"
-        strokeWidth="26"
+        strokeWidth="5"
         strokeLinecap="round"
         strokeLinejoin="round"
         opacity="0.85"
       />
 
-      {/* 2. Main white shaft: thick, solid, slightly transparent */}
+      {/* 2. Thin white solid line */}
       <polyline
         points={pointsStr}
         fill="none"
         stroke="#ffffff"
-        strokeWidth="18"
+        strokeWidth="3"
         strokeLinecap="round"
         strokeLinejoin="round"
         opacity="0.85"
       />
 
-      {/* 3. Origin tile anchor dot */}
+      {/* 3. Origin node, centered on the start tile */}
       <circle
         cx={origin.x}
         cy={origin.y}
-        r="6"
+        r={nodeRadius}
         fill="#ffffff"
-        fillOpacity="0.85"
+        fillOpacity="0.9"
         stroke="#0f172a"
-        strokeWidth="2.5"
+        strokeWidth="2"
       />
-
-      {/* 4. Destination indicator ring */}
-      <circle
-        cx={dest.x}
-        cy={dest.y}
-        r="26"
-        fill="rgba(255, 255, 255, 0.15)"
-        stroke="#ffffff"
-        strokeOpacity="0.85"
-        strokeWidth="2.5"
-      />
-
-      {/* 5. Destination arrowhead: bold block triangle (reference shape),
-          oriented along the arrival vector */}
-      <g transform={`translate(${dest.x}, ${dest.y}) rotate(${angle})`}>
-        <path
-          d="M 20,0 L -14,-22 L -7,0 L -14,22 Z"
-          fill="#ffffff"
-          fillOpacity="0.85"
-          stroke="#0f172a"
-          strokeWidth="3.5"
-          strokeLinejoin="round"
-        />
-      </g>
     </svg>
   );
 };
