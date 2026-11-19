@@ -39,6 +39,80 @@ Dữ liệu vũ khí bản thử hiện dùng số FE11 cho 17 vũ khí có đ�
 - Độ bền áp dụng **sau khi giao tranh kết thúc** (đơn giản hóa đã ghi nhận: vũ khí còn 1 độ bền vẫn đánh đủ số đòn của giao tranh đó rồi mới vỡ; chưa mô phỏng vỡ giữa giao tranh).
 - Falchion không vỡ (FE3) — áp dụng khi vật phẩm này xuất hiện trong dữ liệu.
 
+### Đổi vũ khí trong trận (PLAN mục 85, chốt 2026-11-19)
+
+- Quân trang bị được bất kỳ vũ khí nào trong túi mà quân dùng được (loại vũ khí của class + rank vũ khí đủ) và còn độ bền. Trượng trang bị được (dùng trượng, không tấn công); vật phẩm tiêu hao không trang bị.
+- Bấm **Attack**: nếu quân có từ 2 vũ khí tấn công dùng được trở lên, game mở cửa sổ chọn vũ khí trước khi chọn mục tiêu; dự báo giao tranh tính theo vũ khí đã chọn. Menu hành động cũng có dòng **Equip: \<tên vũ khí\>** để đổi vũ khí trang bị mà không kết thúc hành động (dùng cho phản đòn pha địch).
+- Một địch được coi là tấn công được khi **bất kỳ** vũ khí dùng được nào trong túi chạm tới; khi mở dự báo, nếu vũ khí đang trang bị không chạm tới mục tiêu nhưng vũ khí khác chạm tới, game tự trang bị vũ khí chạm tới đầu tiên (theo thứ tự trong túi).
+- Đổi vũ khí không tốn hành động, không đổi luật combat nào khác.
+
+### Giới hạn túi đồ (PLAN mục 86, chốt 2026-11-19)
+
+- Mỗi quân có 2 túi riêng kiểu FE3: **4 ô vũ khí + 4 ô vật phẩm**. Trượng tính vào túi vật phẩm (FE3 §1.22); vật phẩm tiêu hao và đồ khóa (door_key, master_seal) cũng vào túi vật phẩm.
+- Nhận đồ (rương, làng, đồ rơi) khi túi tương ứng đã đầy: game hỏi bỏ một món trong cùng túi để lấy chỗ, hoặc bỏ món mới. Từ mục 88 có thêm lựa chọn gửi vào kho qua Marth.
+- Bỏ vũ khí đang trang bị thì quân thành không vũ khí (trang bị lại bằng mục 85).
+
+### Trao đổi đồ — Trade (PLAN mục 87, chốt 2026-11-19)
+
+- Quân đứng kề đồng minh có lệnh **Trade**: đổi chỗ hoặc chuyển đồ giữa 2 túi, tôn trọng giới hạn 4+4 (mục 86). Trong một lần mở Trade đổi được nhiều lần.
+- Thoát Trade thì **hết di chuyển** (ô đích bị khóa, không hủy bước đi được nữa) nhưng quân vẫn tấn công/dùng đồ/dùng trượng được từ ô đó.
+- Mỗi quân chỉ **chủ động** Trade 1 lần mỗi lượt; quân khác vẫn Trade với quân đó được.
+- Vũ khí đang trang bị rời túi thì quân tự trang bị vũ khí dùng được đầu tiên; quân **đã hành động xong** mà bị sắp xếp lại túi thì vũ khí trang bị thành cây dùng được đầu tiên trong túi (mẹo trang bị cho pha địch kiểu FE3).
+
+### Kho đồ qua Marth — Convoy (PLAN mục 88, chốt 2026-11-19)
+
+- Marth là kho: **128 ô** chung cho vũ khí + vật phẩm, cất/lấy miễn phí, kho giữ qua các chương và lưu trong save.
+- Trong trận: Marth và quân đứng **kề Marth** có lệnh **Storage** (cất/lấy). Thoát Storage thì hết di chuyển như Trade [Giả định — nghiên cứu không ghi rõ điểm này]. Màn chuẩn bị: mọi quân cất/lấy tự do.
+- Nhận đồ khi túi đầy (mục 86) có thêm lựa chọn **gửi vào kho** khi kho còn chỗ.
+
+### Dùng trượng (PLAN mục 89, C10, chốt 2026-11-19)
+
+- Quân mang trượng dùng được (class + rank) có lệnh **Staff: \<tên trượng\>** khi có mục tiêu hợp lệ; bấm vào đồng minh được tô sáng để dùng. Dùng trượng kết thúc hành động của quân.
+- Trượng hồi máu (Heal/Mend): hồi **healBase + MAG ÷ healMagDivisor** (làm tròn xuống) HP cho đồng minh trong tầm trượng (chưa đầy máu). Trượng mất 1 độ bền mỗi lần dùng, về 0 thì biến mất (mục 84).
+- EXP cho healer: **14 EXP/lần dùng [Giả định]** — nguồn FE3 mâu thuẫn (Serenes Forest nói FE3 không có EXP trượng; bảng trượng Tanas Manor ghi Heal 14); cần kiểm ROM trước khi chốt số cuối.
+- **Warp chưa làm** (trượng dịch chuyển cần chọn ô đích — ghi nhận còn nợ); các trượng FE3 khác (Recover/Physic/Fortify/Rescue/Silence/Barrier/Hammerne/Thief/Unlock/Watch/Again/Aum) chưa có trong dữ liệu.
+
+### Rank vũ khí tăng theo dùng — WEx (PLAN mục 90, A9 theo FE5, chốt 2026-11-19)
+
+- Mỗi đòn **trúng** cộng 1 WEx cho loại vũ khí đã dùng (kể cả phản đòn). Ngưỡng lên rank kiểu FE5: E→D 50, D→C 100, C→B 150, B→A 200; điểm dư mang sang rank kế. Rank tối đa **A** (dữ liệu không có vũ khí hạng S/★).
+- Dùng trượng cộng WEx trượng theo rank của trượng: E 1, D 2, C 4, B 6, A 10 **[Giả định]** (nghiên cứu chỉ ghi khoảng 1–10 theo rank).
+- Tiến độ WEx lưu theo từng loại vũ khí, giữ qua chương (save). Bonus theo rank hiện có không đổi.
+
+### Tiệm vũ khí/dụng cụ — Shop (PLAN mục 91, chốt 2026-11-19)
+
+- Đứng trên ô `shop` có lệnh **Shop**; vàng là quỹ chung của quân (đã có sẵn trong save). Đóng tiệm thì quân kết thúc hành động (luật Visit/Shop của FE3). Trong lúc tiệm mở có thể mua/bán nhiều lần.
+- Giá mua nằm trong `data/items.json` (`price`), lấy từ FE11 (Shadow Dragon): kiếm sắt 400, kiếm thép 875, kiếm diệt giáp 1000, đoản đao 1500, thương sắt 480, thương thép 980, thương bạc 2200, thương phóng 750, thương diệt kỵ 1200, rìu sắt 320, rìu thép 700, rìu ném 540, chùy 1100, cung sắt 440, cung thép 770, trượng Heal 800, trượng Mend 1280, thuốc hồi máu 360, chìa cửa 500, ấn thăng cấp 2500, Rapier/Wing Spear 1120.
+- Ba giá **[Giả định]**: Slim Lance 450 (FE11 không có, dữ liệu ghi nguồn FE8), Devil Axe 1100 và Warp 2000 (FE11 không bán hai món này nên không có giá mua).
+- Không bán ở tiệm (`buyable: false`): Rapier, Wing Spear (vũ khí cá nhân), Master Seal (thăng cấp không cần đồ theo chốt A10), Devil Axe, Warp. Các món này vẫn có giá để tính tiền bán lại.
+- Bán lại theo FE11: **nửa giá nhân tỉ lệ độ bền còn lại**, làm tròn xuống (`floor(price × uses / maxUses / 2)`). Bán vũ khí đang trang bị thì quân tự trang bị vũ khí dùng được tiếp theo (giống Trade/kho đồ).
+- Đồ mua vào túi quân mua nếu còn chỗ (giới hạn 4+4 mục 86), đầy thì vào kho đồ (mục 88), cả hai đầy thì không mua được. Chỉ bán đồ trong túi của quân đang vào tiệm (chưa bán từ kho đồ).
+
+### Rương, cửa và khóa (PLAN mục 92, chốt 2026-11-19)
+
+- Địa hình mới: `chest` (rương, đứng lên được như làng/tiệm) và `door` (cửa khóa, **chặn đường** như tường cho tới khi mở; mở xong đi qua được với chi phí 1). Rương/cửa khai trong dữ liệu chương (`chests`, `doors`), vị trí phải đúng ô địa hình tương ứng.
+- Đặt hiện tại: chương 3 — rương tại (22,2) gần Julian (thưởng Steel Sword), cửa tại (1,7) ở tường thành; chương test — rương (7,4) thưởng 1000 vàng, cửa (0,3). Hai ô này lệch khỏi lưới tham chiếu FE3 (plains/wall) — test `fe3MapReference` bỏ qua ô chest/door vì là thêm mới có chủ đích.
+- Mở rương: đứng **trên** ô rương, lệnh **Open Chest**. Chỉ lớp đạo tặc (cờ dữ liệu `canOpenLocks`: Thief, Trickster) mở bẩm sinh; Marth chỉ mở được khi mang **Fire Emblem** (luật FE3; vật phẩm `fire_emblem` đã thêm vào dữ liệu, chưa chương nào phát — tới chương có Fire Emblem mới dùng). Thưởng theo dữ liệu chương (vật phẩm/vàng), tràn túi thì theo luồng mục 86.
+- Mở cửa: đứng **kề** cửa, lệnh **Open Door**. Đạo tặc mở không tốn đồ; quân khác phải mang **Door Key** (tiêu hao 1 lần dùng). Mở rương/cửa đều kết thúc hành động của quân.
+- Trạng thái rương/cửa đã mở lưu trong save (`chestStates`, `doorStates`); save cũ không có hai trường này thì coi như chưa mở. Ô cửa đã mở vẫn vẽ như ô cửa (chưa đổi hình), vùng di chuyển cho thấy đi qua được.
+
+### Đấu trường — Arena (PLAN mục 93, chốt 2026-11-19)
+
+- Địa hình mới `arena` (đứng lên được như tiệm); hiện đặt ở bản đồ test (6,7). Các chương 1–4 theo FE3 không có đấu trường (FE3 đặt đấu trường từ chương 7) nên chưa đặt ở đó — khi thêm chương có đấu trường thì đặt theo dữ liệu chương.
+- Đứng trên ô arena, quân có vũ khí gây sát thương và đủ vàng thì có lệnh **Arena**: chọn mức cược 300/600/1000 vàng [Giả định]. Cược càng cao đối thủ càng mạnh (đối thủ gương theo chính quân đó: cấp +0/+1/+2, chỉ số chiến đấu +0/+1/+2, HP tối đa +0/+2/+4, cầm vũ khí sắt cùng loại).
+- Đánh nhiều hiệp tới khi một bên gục (tối đa 10 hiệp, hòa = thua cược). Quân người chơi đánh trước mỗi hiệp (FE3 quyết định đòn đầu theo AS — đơn giản hóa, ghi nhận tại đây). Thắng: nhận lại cược + lãi bằng cược (tổng 2× cược) và EXP chiến đấu như thường. Thua: mất cược, quân **không chết**, còn 1 HP (luật hiện đại theo PLAN 93; FE3 gốc là chết thật, có nút Yield để bỏ cược cứu quân).
+- Độ bền vũ khí (mục 84) và WEx (mục 90) áp dụng trong đấu trường. Đánh xong được đánh tiếp (cược mới, đối thủ mới) hoặc rời đấu trường; rời kết thúc hành động của quân.
+
+### Viện binh — Reinforcements (B04, PLAN mục 94, chốt 2026-11-19)
+
+- Dữ liệu chương khai báo `reinforcements`: mỗi nhóm có `id`, `turn` (lượt xuất hiện) và danh sách quân (cùng định dạng quân chương). Hiện đặt ở chương test: nhóm `test_reinforcements` lượt 2, một Galder Pirate ở (7,1) [Giả định — chương 1–4 theo FE3 chưa đặt viện binh].
+- **Báo trước**: đầu pha người chơi của lượt xuất hiện, game hiện thông báo + dòng nhật ký "Enemy reinforcements will arrive at the end of this turn!".
+- **Xuất hiện cuối pha địch** của lượt đó (chốt của chủ dự án), không hành động trong lượt xuất hiện (đánh dấu đã hành động; lượt địch kế tiếp mới di chuyển). Quân viện binh hiện tông tím (mục 79, cờ `isReinforcement`).
+- Ô xuất hiện bị chiếm thì quân dời tới ô trống gần nhất trong bán kính 2; không có ô trống thì quân đó không xuất hiện. Nhóm đã xuất hiện được ghi vào save (`spawnedReinforcements`) để nạp lại không xuất hiện lần hai.
+
+### Thăng cấp không cần đồ (PLAN mục 95, chốt A10 2026-11-19)
+
+- Quân cấp ≥10 được người chơi chọn thăng cấp ngay trong menu hành động (lệnh Promote theo cây thăng cấp nhánh N03), **không cần Master Seal** hay vật phẩm nào. Thăng cấp reset cấp về 1, EXP về 0 và cộng chênh lệch chỉ số gốc của lớp mới (luật FE11 sẵn có trong `promoteUnit`). Vật phẩm `master_seal` vẫn còn trong dữ liệu nhưng không còn dùng để thăng cấp và không bán ở tiệm.
+
 ## Công thức đề xuất cũ, chưa được duyệt
 
 Các chỉ số đề án dùng: HP, STR, MAG, DEX, SPD, LCK, DEF, RES, BLD và MOV. Công thức dưới đây chỉ ghi lại bản đề án để tránh thất lạc khi thay file cũ:

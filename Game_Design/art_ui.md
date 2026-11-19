@@ -54,6 +54,16 @@ Minimap hình tròn đặt ở góc trên bên trái khung chơi, hiển thị k
 
 Hoạt cảnh cần tối thiểu các trạng thái đọc được: đứng, đi, ra đòn, trúng/né, bị hạ và hiệu ứng hành động hỗ trợ. Số bộ hoạt cảnh và camera zoom giao tranh tùy quy mô asset được duyệt. Q07 cho phép tua hoặc bỏ hoạt cảnh; kết quả trận đánh, RNG, thứ tự hiệu ứng và thời điểm lưu không phụ thuộc tốc độ hiển thị.
 
+## Chỉ dấu di chuyển trong 3D (chốt 2026-11-19, làm ở giai đoạn 3D — PLAN mục 97)
+
+Chủ dự án chốt theo ảnh tham chiếu gửi 2026-11-19: trong 3D **không** dùng đường dẫn/mũi tên trên mặt đất như bản 2D (mục 78/81/83 chỉ áp dụng cho 2D). Thay vào đó:
+
+- Quân đang chọn có một **dấu chevron trắng lớn lơ lửng phía trên đầu** (hình chữ V hướng xuống, phía trên có một viên kim cương nhỏ cùng màu), nhấp nhô nhẹ lên xuống để dễ nhận diện giữa cảnh 3D.
+- Đường di chuyển dự kiến vẽ thành **một cung cong trên không** (dạng parabol) màu đỏ, bắt đầu từ ô quân đang đứng, vồng lên rồi hạ xuống **ô đích được tô đỏ**. Cung cong thay cho đường thẳng nối các ô của bản 2D.
+- Thanh HP và biểu tượng class nhỏ vẫn hiện cạnh quân như trong ảnh tham chiếu.
+
+Mục này chỉ triển khai khi bắt đầu giai đoạn 3D (hiện 3D đóng băng theo `AGENTS.md`); ghi lại để không phải hỏi lại khi chuyển trọng tâm sang 3D.
+
 ## Thông tin chiến thuật trên màn hình
 
 | Thông tin | Cách dùng UI; nguồn luật |

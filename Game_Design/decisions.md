@@ -49,6 +49,17 @@ Ngôn ngữ mặc định của toàn bộ trò chơi là **tiếng Anh (English
 
 Break; Arts khắc Bow/Tome/Dagger; Battle Styles đầy đủ; Chain Attack tự động; Combat Arts; Gambits; Pair Up/Guard Stance; Rescue/Drop/Shove/Swap; rewind; Ironman/Classic/Casual; Fog of War; tương tác nguyên tố và phá/đốt/đóng băng diện rộng; tháp thử thách; randomizer; toàn bộ campaign 40+ chương; shop/forge và hub mở rộng. Những mục này không được triển khai chỉ vì từng xuất hiện trong báo cáo hoặc đề án. Một số có thể trở lại nếu chủ dự án chọn sau.
 
+## Quyết định về cơ chế ngày 2026-11-19
+
+Nguồn: chủ dự án chốt sau bản đề xuất tổng hợp cơ chế FE3 gốc + FE hiện đại (`work/water-mechanics-proposal/01-proposal.md`, đối chiếu kiểm kê code trên `main` @ `216888c`).
+
+- **Nhóm C bỏ đi:** các cơ chế hiện đại ngoài 30 mã đã chọn (Rescue, Shove, Casual, Capture, Forging, Bonus EXP, Fog of War, Steal, Combat Arts, Turnwheel, Pair Up, Gambits, Break/Chain/Engage, Fatigue...) **không làm**. Phạm vi cơ chế = 30 mã đã chọn + cơ chế FE3 gốc còn thiếu. Bonus EXP (FE9) không cần vì game đã có Arena.
+- **Vũ khí vỡ thì biến mất** (không thành "Broken"), vì game không có rèn đồ (forge không làm).
+- **Viện binh (B04):** viện binh **báo trước** (điểm/lượt xuất hiện), **xuất hiện cuối pha địch** và không hành động trong lượt xuất hiện — kiểu hiện đại được người chơi đánh giá cao hơn; ambush spawn kiểu FE3 bị phê bình là không công bằng.
+- **Pha ally cho mục tiêu bảo vệ/NPC:** đồng ý về nội dung, nhưng bản đồ gốc hiện tại không có map nào cần; chỉ làm khi bổ sung map mới sau này.
+- **Nhóm A đã chốt (17:06):** A1–A7 đồng ý; A8 túi đồ theo FE3 (4 vũ khí + 4 vật phẩm); A9 WEx theo FE5 (rank vũ khí đã có sẵn trong dữ liệu, chỉ chưa tăng theo dùng); A10 **thăng cấp không cần đồ** — đủ cấp (≥10) thì người chơi được chọn thăng cấp, không cần Master Seal; A11 viện binh cuối pha địch; A12 **bỏ toàn bộ Astral Shards**, chỉ giữ Spheres nhưng **bỏ chức năng tăng chỉ số**, chỉ giữ chức năng dùng để đánh rồng/boss (vd Lightsphere khắc Darksphere, Binding Shield đuổi Earth Dragon); A13 manakete biến hình **không cần đá**, tối đa 5 lượt, Luck cao thêm 1 lượt, sau đó nghỉ 2 lượt mới biến hình lại; A14–A16 đồng ý (ballista, Triangle Attack, Dancer/Xane — nội dung Book 2); **A17 bỏ** (không làm vật phẩm tăng chỉ số).
+- **Nhóm B đã chốt, cứ làm không thay đổi.**
+
 ## Điểm còn cần chốt hoặc kiểm nguồn trước khi triển khai
 
 | Vấn đề | Vì sao chưa chốt |
