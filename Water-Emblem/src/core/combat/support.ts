@@ -48,17 +48,16 @@ export function calculateSupportBonus(unit: GridUnit, allUnits: readonly GridUni
       supporterId === ally.id && supportedId === unit.id);
     if (!relation) continue;
     const points = unit.supportPoints?.[ally.id] ?? relation.startingPoints;
-    if (points >= relation.pointsA) {
-      total.hit += 10;
-      total.avoid += 10;
-      total.crit += 5;
-      total.dodge += 5;
-    } else if (points >= relation.pointsB) {
-      total.hit += 10;
-      total.avoid += 10;
-    } else if (points >= relation.pointsC) {
-      total.hit += 5;
-      total.avoid += 5;
+    // PLAN item 134: rank bonuses are declared in data/supports.json.
+    const bonus = points >= relation.pointsA ? supportsData.rankBonuses.A
+      : points >= relation.pointsB ? supportsData.rankBonuses.B
+      : points >= relation.pointsC ? supportsData.rankBonuses.C
+      : undefined;
+    if (bonus) {
+      total.hit += bonus.hit;
+      total.avoid += bonus.avoid;
+      total.crit += bonus.crit;
+      total.dodge += bonus.dodge;
     }
   }
   return total;

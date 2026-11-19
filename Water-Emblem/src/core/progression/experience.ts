@@ -3,6 +3,7 @@ import type { SeededRNG } from '../combat/rng';
 import type { CombatResult } from '../combat/types';
 import { getClassDefinition } from '../class/classRules';
 import charactersJson from '../../../data/characters.json' with { type: 'json' };
+import balanceConfig from '../../../data/balance.json';
 
 const STAT_KEYS = ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const;
 const GROWTH_KEYS = ['hp', ...STAT_KEYS] as const;
@@ -31,17 +32,20 @@ export function calculateCombatExp(
   dealtDamage: boolean,
   defeatedTarget: boolean,
 ): number {
-  if (actor.unit.faction !== 'player' || actor.unit.isDead || actor.stats.hp === 0 || actor.level >= 20) return 0;
-  if (!dealtDamage) return 1;
+  const expConfig = balanceConfig.experience;
+  if (actor.unit.faction !== 'player' || actor.unit.isDead || actor.stats.hp === 0 || actor.level >= expConfig.maxLevel) return 0;
+  if (!dealtDamage) return expConfig.noDamageExp;
 
   // FE8 bmbattle.c GetUnitRoundExp/GetUnitKillExpBonus: common classRelativePower = 3.
-  const actorLevel = actor.level + (isPromoted(actor) ? 20 : 0);
-  const targetLevel = target.level + (isPromoted(target) ? 20 : 0);
-  const roundExp = Math.max(0, Math.floor((31 - (actorLevel - targetLevel)) / 3));
-  const classKillBonus = (target.unit.classId === 'thief' || target.unit.classId === 'trickster' ? 20 : 0)
-    + (target.isBoss ? 40 : 0);
-  const killExp = defeatedTarget ? Math.max(0, (targetLevel - actorLevel) * 3 + 20 + classKillBonus) : 0;
-  return Math.max(1, Math.min(100, roundExp + killExp));
+  // Formula constants live in data/balance.json (PLAN item 134).
+  const actorLevel = actor.level + (isPromoted(actor) ? expConfig.promotedLevelOffset : 0);
+  const targetLevel = target.level + (isPromoted(target) ? expConfig.promotedLevelOffset : 0);
+  const roundExp = Math.max(0, Math.floor((expConfig.roundExpBase - (actorLevel - targetLevel)) / expConfig.roundExpDivisor));
+  // PLAN item 134: class kill bonus from classes.json, boss bonus from balance.json.
+  const classKillBonus = (getClassDefinition(target.unit.classId)?.killExpBonus ?? 0)
+    + (target.isBoss ? expConfig.bossKillBonus : 0);
+  const killExp = defeatedTarget ? Math.max(0, (targetLevel - actorLevel) * expConfig.killExpLevelMultiplier + expConfig.killExpBase + classKillBonus) : 0;
+  return Math.max(expConfig.minExp, Math.min(expConfig.maxExp, roundExp + killExp));
 }
 
 function rollGrowth(rate: number, rng: SeededRNG): number {
@@ -56,22 +60,23 @@ export function awardExperience(
   amount: number,
   rng: SeededRNG,
 ): { entry: ExtendedUnitState; gainedLevel: boolean } {
-  if (entry.unit.faction !== 'player' || entry.stats.hp === 0 || entry.level >= 20 || amount <= 0) {
+  const expConfig = balanceConfig.experience;
+  if (entry.unit.faction !== 'player' || entry.stats.hp === 0 || entry.level >= expConfig.maxLevel || amount <= 0) {
     return { entry, gainedLevel: false };
   }
   const next = structuredClone(entry);
   next.exp += amount;
-  if (next.exp < 100) return { entry: next, gainedLevel: false };
-  next.exp -= 100;
+  if (next.exp < expConfig.expPerLevel) return { entry: next, gainedLevel: false };
+  next.exp -= expConfig.expPerLevel;
   next.level += 1;
   const growths = getEffectiveGrowthRates(next);
   for (const key of STAT_KEYS) {
-    next.stats[key] = Math.min(30, next.stats[key] + rollGrowth(growths[key] ?? 0, rng));
+    next.stats[key] = Math.min(balanceConfig.statCaps.stat, next.stats[key] + rollGrowth(growths[key] ?? 0, rng));
   }
   const hpGain = rollGrowth(growths.hp ?? 0, rng);
-  next.stats.maxHp = Math.min(60, next.stats.maxHp + hpGain);
+  next.stats.maxHp = Math.min(balanceConfig.statCaps.hp, next.stats.maxHp + hpGain);
   next.stats.hp = Math.min(next.stats.maxHp, next.stats.hp + hpGain);
-  if (next.level >= 20) next.exp = 0;
+  if (next.level >= expConfig.maxLevel) next.exp = 0;
   return { entry: next, gainedLevel: true };
 }
 
