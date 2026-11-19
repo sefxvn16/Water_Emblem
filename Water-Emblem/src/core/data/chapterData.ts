@@ -250,7 +250,7 @@ export function loadChapterData(
   }
 
   const objectiveRaw = requireRecord(data.objective, 'chapter.objective');
-  const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize', 'protect', 'escape', 'puzzle'], 'chapter.objective.type');
+  const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize', 'protect', 'escape'], 'chapter.objective.type');
   const objective: ChapterObjective = {
     type: objectiveType,
     ...(typeof objectiveRaw.description === 'string' ? { description: objectiveRaw.description } : {}),
@@ -275,29 +275,6 @@ export function loadChapterData(
             }
             return objectiveRaw.escapeTiles.map((tile: unknown, tileIndex: number) =>
               readPosition(tile, map, `chapter.objective.escapeTiles[${tileIndex}]`));
-          })(),
-        }
-      : {}),
-    ...(objectiveType === 'puzzle'
-      ? {
-          puzzle: (() => {
-            const puzzleRaw = requireRecord(objectiveRaw.puzzle, 'chapter.objective.puzzle');
-            const kind = requireChoice(puzzleRaw.kind, ['reach_tile', 'defeat_targets'], 'chapter.objective.puzzle.kind');
-            return {
-              kind,
-              maxTurns: requireInteger(puzzleRaw.maxTurns, 'chapter.objective.puzzle.maxTurns', 1),
-              ...(kind === 'reach_tile'
-                ? { tile: readPosition(puzzleRaw.tile, map, 'chapter.objective.puzzle.tile') }
-                : {
-                    targetUnitIds: (() => {
-                      if (!Array.isArray(puzzleRaw.targetUnitIds) || puzzleRaw.targetUnitIds.length === 0) {
-                        throw new Error('chapter.objective.puzzle.targetUnitIds must be a nonempty array');
-                      }
-                      return puzzleRaw.targetUnitIds.map((id: unknown, idIndex: number) =>
-                        requireString(id, `chapter.objective.puzzle.targetUnitIds[${idIndex}]`));
-                    })(),
-                  }),
-            };
           })(),
         }
       : {}),

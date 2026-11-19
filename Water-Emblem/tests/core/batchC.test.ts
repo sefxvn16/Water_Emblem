@@ -42,25 +42,6 @@ describe('escape objective (PLAN item 109, B06)', () => {
   });
 });
 
-describe('puzzle objective (PLAN item 118, Q10)', () => {
-  it('reach_tile: wins on reaching, loses after the turn limit', () => {
-    const objective: ChapterObjective = { type: 'puzzle', puzzle: { kind: 'reach_tile', tile: { x: 3, y: 3 }, maxTurns: 5 } };
-    const away = [unit('marth', 'player', 0, 0), unit('e1', 'enemy', 2, 2)];
-    expect(evaluateChapterOutcome(away, objective, false, 'marth', { turnNumber: 5 })).toBe('ongoing');
-    expect(evaluateChapterOutcome(away, objective, false, 'marth', { turnNumber: 6 })).toBe('defeat');
-    const there = [unit('marth', 'player', 3, 3), unit('e1', 'enemy', 2, 2)];
-    expect(evaluateChapterOutcome(there, objective, false, 'marth', { turnNumber: 2 })).toBe('victory');
-  });
-
-  it('defeat_targets: wins when all targets fall in time', () => {
-    const objective: ChapterObjective = { type: 'puzzle', puzzle: { kind: 'defeat_targets', targetUnitIds: ['e1', 'e2'], maxTurns: 4 } };
-    const units = [unit('marth', 'player'), unit('e1', 'enemy', 2, 2, { isDead: true }), unit('e2', 'enemy', 3, 3)];
-    expect(evaluateChapterOutcome(units, objective, false, 'marth', { turnNumber: 2 })).toBe('ongoing');
-    units[2] = unit('e2', 'enemy', 3, 3, { isDead: true });
-    expect(evaluateChapterOutcome(units, objective, false, 'marth', { turnNumber: 3 })).toBe('victory');
-  });
-});
-
 describe('difficulty (PLAN item 115, Q04)', () => {
   it('boosts enemies only, scaled by level', () => {
     const units = structuredClone(testChapter01Data.units) as ExtendedUnitState[];

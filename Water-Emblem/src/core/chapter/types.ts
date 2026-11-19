@@ -3,7 +3,7 @@ import { GridUnit } from '../grid/types';
 export type ChapterOutcome = 'ongoing' | 'victory' | 'defeat';
 
 export interface ChapterObjective {
-  readonly type: 'defeat_boss' | 'rout' | 'seize' | 'protect' | 'escape' | 'puzzle';
+  readonly type: 'defeat_boss' | 'rout' | 'seize' | 'protect' | 'escape';
   readonly bossUnitId?: string;
   readonly seizeTargetTile?: { x: number; y: number };
   /** Protect (PLAN item 108): unit that must survive. */
@@ -12,13 +12,6 @@ export interface ChapterObjective {
   readonly surviveTurns?: number;
   /** Escape (PLAN item 109): tiles units can escape from. */
   readonly escapeTiles?: readonly { x: number; y: number }[];
-  /** Puzzle (PLAN item 118): reach a tile or defeat listed targets in time. */
-  readonly puzzle?: {
-    readonly kind: 'reach_tile' | 'defeat_targets';
-    readonly tile?: { x: number; y: number };
-    readonly targetUnitIds?: readonly string[];
-    readonly maxTurns: number;
-  };
   readonly description?: string;
   readonly descriptionVi?: string;
 }
@@ -61,24 +54,6 @@ export function evaluateChapterOutcome(
       && (context.turnNumber ?? 1) > objective.surviveTurns) {
       return 'victory';
     }
-    return 'ongoing';
-  }
-
-  // Puzzle (PLAN item 118): solve within the turn limit or lose.
-  if (objective.type === 'puzzle' && objective.puzzle) {
-    const { puzzle } = objective;
-    if (puzzle.kind === 'reach_tile' && puzzle.tile) {
-      const reached = units.some((u) => u.faction === 'player' && !u.isDead
-        && u.position.x === puzzle.tile!.x && u.position.y === puzzle.tile!.y);
-      if (reached) return 'victory';
-    } else if (puzzle.kind === 'defeat_targets' && puzzle.targetUnitIds) {
-      const allDown = puzzle.targetUnitIds.every((id) => {
-        const target = units.find((u) => u.id === id);
-        return !target || target.isDead;
-      });
-      if (allDown) return 'victory';
-    }
-    if ((context.turnNumber ?? 1) > puzzle.maxTurns) return 'defeat';
     return 'ongoing';
   }
 
