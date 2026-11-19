@@ -2,7 +2,8 @@ import type { SeededRNG } from './rng';
 import type { ItemDefinition } from './types';
 import type { ExtendedUnitState } from '../data/chapterData';
 import type { Position } from '../grid/types';
-import { isWeaponUsable } from '../class/classRules';
+import { isWeaponUsable, skillIdsOf } from '../class/classRules';
+import { getHealBonus } from './skills';
 import { awardExperience } from '../progression/experience';
 import { getUsableWeapons } from './equip';
 import { STAFF_WEX_BY_RANK, gainWeaponExp } from './weaponExp';
@@ -77,7 +78,8 @@ export function applyStaffUse(
   }
 
   const healAmount = (staff.healBase ?? 0)
-    + Math.floor(user.stats.mag / (staff.healMagDivisor ?? 1));
+    + Math.floor(user.stats.mag / (staff.healMagDivisor ?? 1))
+    + getHealBonus(skillIdsOf(user));
   const healed = Math.min(healAmount, target.stats.maxHp - target.stats.hp);
 
   const staffIndex = user.inventory.findIndex((item) => item.itemId === staffId);

@@ -12,6 +12,7 @@ import { GridUnit, Position, WeaponRank } from '../grid/types';
 import { SeededRNG } from './rng';
 import { TerrainRegistry } from '../grid/terrain';
 import { calculateSupportBonus } from './support';
+import type { SkillModifiers } from './skills';
 import { getAttackRange, getClassDefinition } from '../class/classRules';
 
 export interface TriangleResult {
@@ -113,7 +114,9 @@ export function calculateCombatSide(
   _terrainId: string,
   opponentTerrainId: string,
   allUnits?: readonly GridUnit[],
-  heightDiff = 0
+  heightDiff = 0,
+  skillMods?: SkillModifiers,
+  opponentSkillMods?: SkillModifiers
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -169,7 +172,8 @@ export function calculateCombatSide(
 
   const opponentTerrainDef = weapon.isMagic ? 0 : terrainRegistry.getDefenseBonus(opponentTerrainId, opponentUnit.moveType);
   const defense = (weapon.isMagic ? opponentStats.res : opponentStats.def) + opponentTerrainDef;
-  const damage = Math.max(0, attackPower - defense);
+  // PLAN items 112/113: skill damage modifiers.
+  const damage = Math.max(0, attackPower - defense + (skillMods?.damage ?? 0) + (opponentSkillMods?.damageTaken ?? 0));
 
   // Tính Hit
   // PLAN item 104 (V07): height advantage — ±10 Hit per elevation level,
@@ -178,13 +182,13 @@ export function calculateCombatSide(
   // PLAN item 103 (V05): pincer — an ally of the attacker stands on the
   // far side of the opponent; +15 Hit, +10 Crit [Giả định].
   const pincer = allUnits ? hasPincerAlly(unit, opponentUnit, allUnits) : false;
-  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? 15 : 0);
+  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? 15 : 0) + (skillMods?.hit ?? 0);
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
-  const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid;
+  const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid + (opponentSkillMods?.avoid ?? 0);
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) - (opponentStats.lck + opponentSupport.dodge);
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
   const critRate = Math.min(100, Math.max(0, rawCrit));
 
   const as = calculateAttackSpeed(stats, weapon);
@@ -234,7 +238,8 @@ export function calculateCombatForecast(
   attackerTerrainId: string,
   defenderTerrainId: string,
   allUnits?: readonly GridUnit[],
-  elevations?: { readonly attacker: number; readonly defender: number }
+  elevations?: { readonly attacker: number; readonly defender: number },
+  skills?: { readonly attacker?: SkillModifiers; readonly defender?: SkillModifiers }
 ): CombatForecast {
   const heightDiff = elevations ? elevations.attacker - elevations.defender : 0;
   let attackerSide = calculateCombatSide(
@@ -249,7 +254,9 @@ export function calculateCombatForecast(
     attackerTerrainId,
     defenderTerrainId,
     allUnits,
-    heightDiff
+    heightDiff,
+    skills?.attacker,
+    skills?.defender
   );
 
   let defenderSide = calculateCombatSide(
@@ -264,7 +271,9 @@ export function calculateCombatForecast(
     defenderTerrainId,
     attackerTerrainId,
     allUnits,
-    -heightDiff
+    -heightDiff,
+    skills?.defender,
+    skills?.attacker
   );
 
   // Đánh 2 lần (Double Attack)

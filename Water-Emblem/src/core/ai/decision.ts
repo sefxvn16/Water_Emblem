@@ -9,6 +9,7 @@ import {
 import { CombatForecast, ItemDefinition, UnitCombatStats } from '../combat/types';
 import { hitProbability } from '../combat/rng';
 import { getAttackRange } from '../class/classRules';
+import { getSkillModifiers } from '../combat/skills';
 
 export type AIRole = 'stationary' | 'pursue' | 'pillage' | 'patrol' | 'retreat' | 'thief' | 'flee';
 
@@ -38,6 +39,8 @@ export interface AIContext {
   readonly units: readonly GridUnit[];
   readonly unitStatsMap: Map<string, UnitCombatStats>;
   readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
+  /** Skill ids per unit (PLAN items 112/113). */
+  readonly unitSkillsMap?: ReadonlyMap<string, readonly string[]>;
   readonly villageTargets?: readonly Position[];
   /** Unopened chest tiles for the thief role (PLAN item 110). */
   readonly chestTargets?: readonly Position[];
@@ -167,7 +170,11 @@ export function evaluateAITurn(
           attackerTerrainId,
           defenderTerrainId,
           projectedUnits,
-          { attacker: getElevation(map, tile), defender: getElevation(map, target.position) }
+          { attacker: getElevation(map, tile), defender: getElevation(map, target.position) },
+          context.unitSkillsMap ? {
+            attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap),
+            defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap),
+          } : undefined
         );
 
         // Chấm điểm theo trọng số cấu hình trong data/balance.json

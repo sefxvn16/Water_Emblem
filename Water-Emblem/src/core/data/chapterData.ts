@@ -14,6 +14,7 @@ import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
 import type { GridUnit, MapData, MoveType, Position, UnitFaction, WeaponRank } from '../grid/types';
 import { initialSupportPoints } from '../combat/support';
+import { SKILLS } from '../combat/skills';
 
 export interface InventoryEntry {
   itemId: string;
@@ -47,6 +48,8 @@ export interface ExtendedUnitState {
   patrolPoints?: Position[];
   /** Multi-phase boss stages (PLAN item 111); applied as HP falls. */
   bossPhases?: BossPhase[];
+  /** Personal skill id from the character (PLAN item 112, N01). */
+  personalSkill?: string;
   /** Highest boss phase already applied (PLAN item 111). */
   bossPhase?: number;
   dropItemId?: string;
@@ -412,6 +415,13 @@ export function loadChapterData(
       }),
       ...(dropItemId === undefined ? {} : { dropItemId }),
       title: requireString(character.title, `character ${characterId}.title`),
+      ...(character.personalSkill === undefined ? {} : {
+        personalSkill: (() => {
+          const skillId = requireString(character.personalSkill, `character ${characterId}.personalSkill`);
+          if (!(skillId in SKILLS)) throw new Error(`Character ${characterId} references unknown skill ${skillId}`);
+          return skillId;
+        })(),
+      }),
       avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),
       growths: readGrowths(character.growths, `character ${characterId}.growths`),
     };

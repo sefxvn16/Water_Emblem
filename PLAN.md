@@ -429,22 +429,22 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `bossPhases` trong dữ liệu chương (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò), áp dụng 1 lần mỗi pha sau giao tranh cả hai phía, ghi nhật ký; `bossPhase` lưu trong save. Kiểm chứng: Vitest 38 file/251 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 112. N01 Kỹ năng cá nhân: kỹ năng riêng từng nhân vật.
+- [x] 112. N01 Kỹ năng cá nhân: kỹ năng riêng từng nhân vật.
   - Nguồn: cơ chế đã chọn N01.
   - Tiêu chí xong: (1) Dữ liệu nhân vật gắn được kỹ năng cá nhân; kỹ năng có hiệu lực trong chiến đấu/di chuyển theo mô tả ghi trong `characters.md`; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Kỹ năng cá nhân cho 9 nhân vật chính (`personalSkill` trong characters.json), áp dụng trong dự báo cả phía người chơi lẫn AI; hiển thị trong inspector. Kiểm chứng: `tsc --noEmit` PASS; Vitest 41 file/273 test PASS (test mới `tests/core/batchE.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 113. N02 Kỹ năng class: hệ kỹ năng theo class.
+- [x] 113. N02 Kỹ năng class: hệ kỹ năng theo class.
   - Nguồn: cơ chế đã chọn N02 (hiện mới bonus chỉ số theo class).
   - Tiêu chí xong: (1) Class gắn kỹ năng; quân thuộc class được hiệu lực kỹ năng; đổi/thăng class thì kỹ năng đổi theo; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `classSkill` cho 36 class (Faire/Sureshot/Pavise/Focus/Healer/Locktouch); kỹ năng class đổi theo khi thăng cấp/đổi class. Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 114. N04 Reclass ở màn chuẩn bị.
+- [x] 114. N04 Reclass ở màn chuẩn bị.
   - Nguồn: cơ chế đã chọn N04; tạm chốt FE11: reclass tại Battle Preparation từ chương 4.
   - Tiêu chí xong: (1) Màn chuẩn bị đổi được class của quân trong nhóm class cho phép, giữ cấp/EXP theo luật FE11 ghi rõ; chương chưa mở reclass thì ẩn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Đổi class ở màn hình chuẩn bị (cùng bậc, chung loại vũ khí, giữ cấp/chỉ số [Giả định]); mở từ chương 4 theo FE11, chương test mở để kiểm thử. Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 115. Q04 Độ khó: chọn mức khó khi bắt đầu game.
@@ -453,10 +453,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. 3 mức Normal/Hard/Lunatic chọn ở màn hình tiêu đề, lưu trong save; địch +4HP/+2 (Hard), +8HP/+4 (Lunatic) [Giả định] khi nạp chương. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 116. Q06 Chuẩn bị trận còn thiếu: trao đổi đồ giữa quân ở màn chuẩn bị.
+- [x] 116. Q06 Chuẩn bị trận còn thiếu: trao đổi đồ giữa quân ở màn chuẩn bị.
   - Nguồn: cơ chế đã chọn Q06 (kho đồ ở màn chuẩn bị đã làm mục 88; còn trao đổi đồ trực tiếp giữa 2 quân).
   - Tiêu chí xong: (1) Màn chuẩn bị trao đổi đồ được giữa 2 quân bất kỳ (không cần đứng cạnh), giữ giới hạn 4+4. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút Trade ở màn hình chuẩn bị: trao đổi trực tiếp giữa 2 quân bất kỳ qua cửa sổ Trade (giữ giới hạn 4+4). Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 117. Q07 Tua/bỏ còn thiếu: cài đặt tốc độ hoạt cảnh + bỏ qua hội thoại.

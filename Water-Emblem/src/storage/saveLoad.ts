@@ -6,6 +6,7 @@ import testMapJson from '../../data/maps/test_map_01.json';
 import itemsJson from '../../data/items.json';
 import type { ChapterOutcome } from '../core/chapter/types';
 import { DIFFICULTIES, type Difficulty } from '../core/chapter/difficulty';
+import { SKILLS } from '../core/combat/skills';
 import type { ItemDefinition } from '../core/combat/types';
 import { chapters, type ExtendedUnitState, type InventoryEntry } from '../core/data/chapterData';
 import type { GamePhase } from '../core/turn/turnManager';
@@ -134,7 +135,8 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
         && (entry.uses as number) >= 1 && (entry.uses as number) <= item.maxUses;
     })
     && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
-    && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string));
+    && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string))
+    && (value.personalSkill === undefined || (typeof value.personalSkill === 'string' && value.personalSkill in SKILLS));
 }
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {

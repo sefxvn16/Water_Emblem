@@ -52,7 +52,7 @@ import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, testChapter01Data, ExtendedUnitState } from './core/data/chapterData';
-import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, useVulnerary } from './core/class/classRules';
+import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
@@ -83,6 +83,7 @@ import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { generateSkirmishChapter } from './core/chapter/randomMap';
 import { computeEnemyIntents } from './core/ai/intent';
+import { getSkillModifiers } from './core/combat/skills';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -186,6 +187,7 @@ export const App: React.FC = () => {
     }
   }, [turnState.selectedUnitId]);
   const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
+  const [prepTrade, setPrepTrade] = useState<{ unitId: string; partnerId: string | null } | null>(null);
   const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
 
   // PLAN item 102 (Canto): after acting, mounted/flying units may move the
@@ -379,6 +381,7 @@ export const App: React.FC = () => {
       units: extendedUnits.map((u) => u.unit),
       unitStatsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.stats])),
       unitWeaponsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.weapon])),
+      unitSkillsMap: new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
       villageTargets: (currentChapter.villages ?? [])
         .filter((v) => (villageStates[v.id] ?? 'intact') === 'intact')
         .map((v) => v.position),
@@ -664,6 +667,11 @@ export const App: React.FC = () => {
       }
       const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
       const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
+      // PLAN items 112/113: skill modifiers for both sides.
+      const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
+      const allGridUnits = extendedUnits.map((u) => u.unit);
+      const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds);
+      const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds);
       setCombatForecast(calculateCombatForecast(
         selectedExtUnit.unit,
         selectedExtUnit.stats,
@@ -675,8 +683,9 @@ export const App: React.FC = () => {
         defaultTerrainRegistry,
         attackerTerrain,
         defenderTerrain,
-        extendedUnits.map((u) => u.unit),
-        { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) }
+        allGridUnits,
+        { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
+        { attacker: attackerMods, defender: defenderMods }
       ));
     };
 
@@ -1386,6 +1395,37 @@ export const App: React.FC = () => {
     setTradeState({ partnerId: tradePartners.length === 1 ? tradePartners[0]!.unit.id : null });
   };
 
+  // PLAN item 116: trade between any two units in battle preparation.
+  const applyPrepTrade = (fn: (units: ExtendedUnitState[]) => ExtendedUnitState[]) => {
+    const deployedIds = new Set(extendedUnits.map((u) => u.unit.id));
+    const next = fn([...extendedUnits, ...reserveUnits]);
+    setExtendedUnits(next.filter((u) => deployedIds.has(u.unit.id)));
+    setReserveUnits(next.filter((u) => !deployedIds.has(u.unit.id)));
+  };
+
+  // PLAN item 114: reclass in battle preparation (chapter 4+; test chapter
+  // allows it for testing [Giả định]).
+  const reclassAvailable = (() => {
+    if (currentChapterId === 'test_chapter_01') return true;
+    const match = /chapter_0?(\d+)/.exec(currentChapterId);
+    return match ? Number(match[1]) >= 4 : false;
+  })();
+
+  const handlePrepReclass = (unitId: string, classId: string) => {
+    const applyTo = (list: ExtendedUnitState[]) => list.map((entry) => {
+      if (entry.unit.id !== unitId) return entry;
+      return reclassUnit(entry, classId) ?? entry;
+    });
+    if (extendedUnits.some((u) => u.unit.id === unitId)) {
+      const next = applyTo(extendedUnits);
+      setExtendedUnits(next);
+      turnManager.replaceUnits(next.map((u) => u.unit));
+    } else {
+      setReserveUnits(applyTo(reserveUnits));
+    }
+    soundManager.playSfx('accept');
+  };
+
   const handleTradeSwap = (leftIndex: number, rightIndex: number) => {
     if (!selectedExtUnit || !tradeState?.partnerId) return;
     setExtendedUnits((prev) =>
@@ -1503,6 +1543,7 @@ export const App: React.FC = () => {
         units: phaseUnits.map((u) => u.unit),
         unitStatsMap: statsMap,
         unitWeaponsMap: weaponsMap,
+        unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
         villageTargets: currentChapter.villages?.filter(
           (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
         ).map((v) => v.position),
@@ -2046,6 +2087,32 @@ export const App: React.FC = () => {
         );
       })()}
 
+      {prepTrade && (() => {
+        const all = [...extendedUnits, ...reserveUnits];
+        const left = all.find((u) => u.unit.id === prepTrade.unitId);
+        if (!left) return null;
+        const partner = prepTrade.partnerId ? all.find((u) => u.unit.id === prepTrade.partnerId) : undefined;
+        const partners = all.filter((u) => u.unit.faction === 'player' && !u.unit.isDead && u.unit.id !== left.unit.id);
+        return (
+          <TradeWindow
+            left={tradeSide(left)}
+            right={partner ? tradeSide(partner) : null}
+            partnerChoices={partners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name }))}
+            onPickPartner={(unitId) => setPrepTrade({ unitId: left.unit.id, partnerId: unitId })}
+            onSwap={(leftIndex, rightIndex) => {
+              if (prepTrade.partnerId) applyPrepTrade((units) => tradeSwap(units, left.unit.id, prepTrade.partnerId!, leftIndex, rightIndex, ITEM_BY_ID));
+            }}
+            onMove={(fromSide, index) => {
+              if (!prepTrade.partnerId) return;
+              const fromId = fromSide === 'left' ? left.unit.id : prepTrade.partnerId;
+              const toId = fromSide === 'left' ? prepTrade.partnerId : left.unit.id;
+              applyPrepTrade((units) => tradeMove(units, fromId, toId, index, ITEM_BY_ID));
+            }}
+            onClose={() => setPrepTrade(null)}
+          />
+        );
+      })()}
+
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
       {activeSummaryUnit && activeSummaryTile && !combatForecast && !inspectedUnit && (
         <UnitHoverWindow
@@ -2100,6 +2167,9 @@ export const App: React.FC = () => {
           onToggle={toggleDeployment}
           onStart={() => setShowPreparation(false)}
           onOpenConvoy={(unitId) => setPrepConvoyUnitId(unitId)}
+          onTrade={(unitId) => setPrepTrade({ unitId, partnerId: null })}
+          reclassAvailable={reclassAvailable}
+          onReclass={handlePrepReclass}
         />
       )}
 

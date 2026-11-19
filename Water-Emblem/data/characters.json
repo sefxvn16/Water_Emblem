@@ -45,7 +45,8 @@
         "lck": 70,
         "def": 15,
         "res": 7
-      }
+      },
+      "personalSkill": "charisma"
     },
     {
       "id": "jagen",
@@ -92,7 +93,8 @@
         "lck": 30,
         "def": 5,
         "res": 5
-      }
+      },
+      "personalSkill": "veteran"
     },
     {
       "id": "caeda",
@@ -138,7 +140,8 @@
         "lck": 70,
         "def": 0,
         "res": 0
-      }
+      },
+      "personalSkill": "winged_grace"
     },
     {
       "id": "cain",
@@ -185,7 +188,8 @@
         "lck": 40,
         "def": 5,
         "res": 5
-      }
+      },
+      "personalSkill": "hot_blood"
     },
     {
       "id": "abel",
@@ -232,7 +236,8 @@
         "lck": 25,
         "def": 5,
         "res": 5
-      }
+      },
+      "personalSkill": "calm"
     },
     {
       "id": "draug",
@@ -277,7 +282,8 @@
         "lck": 30,
         "def": 0,
         "res": 0
-      }
+      },
+      "personalSkill": "bulwark"
     },
     {
       "id": "gordin",
@@ -322,7 +328,8 @@
         "lck": 40,
         "def": 20,
         "res": 5
-      }
+      },
+      "personalSkill": "deadeye"
     },
     {
       "id": "gazzak",
@@ -1273,7 +1280,8 @@
         "lck": 80,
         "def": 30,
         "res": 0
-      }
+      },
+      "personalSkill": "nimble"
     },
     {
       "id": "lena",
@@ -1319,7 +1327,8 @@
         "lck": 60,
         "def": 0,
         "res": 20
-      }
+      },
+      "personalSkill": "gentle"
     },
     {
       "id": "grust_cavalier",
