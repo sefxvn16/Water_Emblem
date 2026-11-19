@@ -127,7 +127,10 @@ describe('TurnManager & Phase Transition', () => {
     manager.restoreState({ turnNumber: 4, activePhase: 'player_phase' }, restoredUnits);
 
     expect(manager.getState().turnNumber).toBe(4);
-    expect(manager.getState().units).toBe(restoredUnits);
+    // PLAN item 133 (owner decision 2, 2026-11-19): value comparison instead
+    // of reference identity — restoreState now clones units so the manager
+    // never mutates caller-owned objects.
+    expect(manager.getState().units).toEqual(restoredUnits);
     expect(manager.getSelectedUnit()).toBeUndefined();
     expect(manager.getState().reachableTiles).toBeNull();
     expect(manager.getState().units[0]?.position).toEqual({ x: 2, y: 2 });

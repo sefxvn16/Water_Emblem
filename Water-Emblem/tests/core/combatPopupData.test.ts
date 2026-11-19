@@ -51,6 +51,15 @@ describe('buildCombatPopup', () => {
 
     expect(playerSide.hpBefore).toBe(20);
     expect(enemySide.hpBefore).toBe(18);
+    // PLAN item 133 (owner decision 6, 2026-11-19): assert the actual
+    // post-combat HP values derived from the strike events, not only that
+    // the popup echoes result.forecast.
+    const hpAfterFromEvents = (unitId: string, before: number) => {
+      const hits = result.events.filter((event) => event.defenderId === unitId);
+      return hits.length > 0 ? hits[hits.length - 1]!.defenderHpAfter : before;
+    };
+    expect(playerSide.hpAfter).toBe(hpAfterFromEvents('hero', 20));
+    expect(enemySide.hpAfter).toBe(hpAfterFromEvents('brigand', 18));
     expect(playerSide.hpAfter).toBe(result.forecast.attacker.stats.hp);
     expect(enemySide.hpAfter).toBe(result.forecast.defender.stats.hp);
 
