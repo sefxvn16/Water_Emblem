@@ -26,6 +26,7 @@ interface ActionMenuWindowProps {
   mountLabel: string | null;
   actions: PendingActions | null;
   onToggleMount: () => void;
+  onAttack: () => void;
   onSeize: () => void;
   onTalk: () => void;
   onUseVulnerary: () => void;
@@ -163,12 +164,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           >
             {`Actions (${actions.unitName})`}
           </div>
-          {actions.hasAttackTargets && (
-            <div style={{ padding: '4px 8px', fontSize: '12px', color: '#fde047', borderBottom: '1px solid rgba(234,179,8,0.3)', marginBottom: '4px' }}>
-              🎯 Click red tile to attack
-            </div>
-          )}
-
+          {actions.hasAttackTargets && renderItem('attack', 'Attack', props.onAttack)}
           {actions.canSeize && renderItem('seize', '👑 Seize Gate', props.onSeize)}
           {actions.talkTargetName !== null && renderItem('talk', `Talk: ${actions.talkTargetName}`, props.onTalk)}
           {actions.canUseVulnerary && renderItem('vulnerary', 'Use Vulnerary', props.onUseVulnerary)}
@@ -177,7 +173,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           )}
           {actions.villageName !== null && renderItem('village', `Visit (${actions.villageName})`, props.onVisitVillage)}
 
-          {renderItem('wait', '✓ Wait', props.onWait)}
+          {renderItem('wait', 'Wait', props.onWait)}
           {renderItem('cancel', 'Cancel Move', props.onCancelMove, true)}
         </>
       )}

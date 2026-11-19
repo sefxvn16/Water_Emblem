@@ -118,6 +118,19 @@ export const App: React.FC = () => {
   const [inspectedTile, setInspectedTile] = useState<Position | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<ExtendedUnitState | null>(null);
   const [combatForecast, setCombatForecast] = useState<CombatForecast | null>(null);
+  // Attack target-lock (PLAN item 80): after pressing Attack with several
+  // targets in range, only target tiles respond until one is picked.
+  const [attackTargeting, setAttackTargeting] = useState(false);
+
+  // Esc leaves the Attack target-lock and returns to the action menu.
+  useEffect(() => {
+    if (!attackTargeting) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setAttackTargeting(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [attackTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
@@ -341,32 +354,46 @@ export const App: React.FC = () => {
       (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
     );
 
-    // Nếu đã di chuyển và đang chọn mục tiêu tấn công
-    if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy') {
-      const isTargetValid = attackableTargets.some((t) => t.unit.id === clickedExt.unit.id);
-      if (isTargetValid && selectedExtUnit) {
-        soundManager.playSfx('cursor');
-        setSelectedTarget(clickedExt);
-        const dist = getManhattanDistance(pendingMovePos, clickedExt.unit.position);
-        const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
-        const defenderTerrain = mapData.grid[clickedExt.unit.position.y]?.[clickedExt.unit.position.x] ?? 'plains';
+    const openAttackForecast = (target: ExtendedUnitState) => {
+      if (!selectedExtUnit || !pendingMovePos) return;
+      soundManager.playSfx('cursor');
+      setSelectedTarget(target);
+      const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+      const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
+      const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
+      setCombatForecast(calculateCombatForecast(
+        selectedExtUnit.unit,
+        selectedExtUnit.stats,
+        selectedExtUnit.weapon,
+        target.unit,
+        target.stats,
+        target.weapon,
+        dist,
+        defaultTerrainRegistry,
+        attackerTerrain,
+        defenderTerrain,
+        extendedUnits.map((u) => u.unit)
+      ));
+    };
 
-        const forecast = calculateCombatForecast(
-          selectedExtUnit.unit,
-          selectedExtUnit.stats,
-          selectedExtUnit.weapon,
-          clickedExt.unit,
-          clickedExt.stats,
-          clickedExt.weapon,
-          dist,
-          defaultTerrainRegistry,
-          attackerTerrain,
-          defenderTerrain,
-          extendedUnits.map((u) => u.unit)
-        );
-        setCombatForecast(forecast);
-        return;
+    // Đang khóa chọn mục tiêu Attack (PLAN item 80): chỉ ô địch trong tầm
+    // mới đáp ứng; bấm ô đích của quân để quay lại menu, ô khác bỏ qua.
+    if (attackTargeting) {
+      if (clickedExt && clickedExt.unit.faction === 'enemy'
+        && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
+        setAttackTargeting(false);
+        openAttackForecast(clickedExt);
+      } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
+        setAttackTargeting(false);
       }
+      return;
+    }
+
+    // Nếu đã di chuyển và đang chọn mục tiêu tấn công
+    if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
+      && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
+      openAttackForecast(clickedExt);
+      return;
     }
 
     // Nếu đã chọn 1 quân ta và click vào ô di chuyển trong phạm vi
@@ -375,6 +402,11 @@ export const App: React.FC = () => {
       const path = moveData?.path ?? [selectedExtUnit.unit.position, { x, y }];
       setPendingMovePos({ x, y });
       setPlannedPath(path);
+      // Đổi ô đích thì hủy lựa chọn tấn công đang chờ: dự báo cũ tính theo
+      // vị trí cũ, giữ lại sẽ đánh địch cũ trong khi quân đi ô khác (PLAN 80).
+      setCombatForecast(null);
+      setSelectedTarget(null);
+      setAttackTargeting(false);
       soundManager.playSfx('cursor');
       return;
     }
@@ -394,6 +426,7 @@ export const App: React.FC = () => {
       setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
+      setAttackTargeting(false);
       syncState();
       return;
     }
@@ -405,6 +438,7 @@ export const App: React.FC = () => {
       setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
+      setAttackTargeting(false);
       if (clickedExt) {
         setPinnedUnitId(clickedExt.unit.id);
         setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
@@ -622,6 +656,17 @@ export const App: React.FC = () => {
     });
   };
 
+  // Nút Attack trong menu hành động (PLAN item 80): đúng 1 mục tiêu thì mở
+  // dự báo ngay; từ 2 mục tiêu thì khóa chọn mục tiêu trong tầm đánh.
+  const handleAttack = () => {
+    if (attackableTargets.length === 1) {
+      const target = attackableTargets[0];
+      if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
+    } else if (attackableTargets.length > 1) {
+      setAttackTargeting(true);
+    }
+  };
+
   // Hủy bước di chuyển
   const handleCancelMove = () => {
     soundManager.playSfx('cancel');
@@ -629,6 +674,7 @@ export const App: React.FC = () => {
     setPlannedPath(null);
     setSelectedTarget(null);
     setCombatForecast(null);
+    setAttackTargeting(false);
     setPinnedUnitId(null);
     setHoveredUnitSummary(null);
     turnManager.cancelSelect();
@@ -944,7 +990,7 @@ export const App: React.FC = () => {
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && !combatForecast && !activeMovingUnit ? {
+        actions={pendingMovePos && !combatForecast && !attackTargeting && !activeMovingUnit ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -960,6 +1006,7 @@ export const App: React.FC = () => {
           targetPositions: attackableTargets.map((t) => t.unit.position),
         } : null}
         onToggleMount={handleToggleMounted}
+        onAttack={handleAttack}
         onSeize={handleSeize}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}
