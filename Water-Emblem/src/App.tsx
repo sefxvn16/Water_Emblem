@@ -1383,7 +1383,7 @@ export const App: React.FC = () => {
   // PLAN item 93: arena — wager, fight the generated gladiator, leave ends the action.
   const handleArenaTier = (tier: ArenaTier) => {
     if (!selectedExtUnit || gold < tier.wager) return;
-    const opponent = generateArenaOpponent(selectedExtUnit, tier, ITEM_BY_ID);
+    const opponent = generateArenaOpponent(selectedExtUnit, tier, ITEM_BY_ID, defaultRNG);
     if (!opponent) return;
     setArenaTier(tier);
     setArenaOpponent(opponent);
