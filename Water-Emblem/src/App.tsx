@@ -247,7 +247,25 @@ export const App: React.FC = () => {
   const [saveSlotsMode, setSaveSlotsMode] = useState<'load' | 'save'>('load');
 
   const syncState = () => {
-    setTurnState({ ...turnManager.getState() });
+    const state = turnManager.getState();
+    setTurnState({ ...state });
+    // PLAN item 133: TurnManager never mutates unit objects (clone-on-write);
+    // adopt its current unit objects so extendedUnits shows moved/acted state.
+    setExtendedUnits((prev) => prev.map((entry) => {
+      const unit = state.units.find((u) => u.id === entry.unit.id);
+      return unit && unit !== entry.unit ? { ...entry, unit } : entry;
+    }));
+  };
+
+  // PLAN item 133: same adoption for the entries held by this render's
+  // closures, for code that must read the moved position before the next
+  // render (executeWithMove's actionFn, the cancel-move walk-back).
+  const adoptTurnUnitsInPlace = () => {
+    const turnUnits = turnManager.getState().units;
+    for (const entry of extendedUnits) {
+      const unit = turnUnits.find((u) => u.id === entry.unit.id);
+      if (unit && unit !== entry.unit) entry.unit = unit;
+    }
   };
 
   const [isMuted, setIsMuted] = useState(soundManager.isMuted);
@@ -853,6 +871,7 @@ export const App: React.FC = () => {
         animCleanupRef.current = runMovementAnimation(backPath, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
           animCleanupRef.current = null;
           turnManager.moveSelectedUnit(origin);
+          adoptTurnUnitsInPlace();
           setExtendedUnits([...extendedUnits]);
           setActiveMovingUnit(null);
           walkToDest();
@@ -929,6 +948,7 @@ export const App: React.FC = () => {
     const origin = path?.[0];
     if (!path || !origin || (origin.x === dest.x && origin.y === dest.y)) {
       turnManager.moveSelectedUnit(dest);
+      adoptTurnUnitsInPlace();
       setExtendedUnits([...extendedUnits]);
       actionFn();
       return;
@@ -936,6 +956,7 @@ export const App: React.FC = () => {
     animCleanupRef.current = runMovementAnimation(path, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
       animCleanupRef.current = null;
       turnManager.moveSelectedUnit(dest);
+      adoptTurnUnitsInPlace();
       setExtendedUnits([...extendedUnits]);
       setActiveMovingUnit(null);
       actionFn();
@@ -1001,9 +1022,10 @@ export const App: React.FC = () => {
         }
       }
 
+      // PLAN item 133: post-combat HP comes from the result, not from a mutated forecast.
       let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
-        if (item.unit.id === attacker.unit.id) return { ...item, stats: { ...forecast.attacker.stats }, unit: { ...item.unit, isDead: forecast.attacker.stats.hp <= 0 } };
-        if (item.unit.id === defender.unit.id) return { ...item, stats: { ...forecast.defender.stats }, unit: { ...item.unit, isDead: forecast.defender.stats.hp <= 0 } };
+        if (item.unit.id === attacker.unit.id) return { ...item, stats: { ...result.forecast.attacker.stats }, unit: { ...item.unit, isDead: result.forecast.attacker.stats.hp <= 0 } };
+        if (item.unit.id === defender.unit.id) return { ...item, stats: { ...result.forecast.defender.stats }, unit: { ...item.unit, isDead: result.forecast.defender.stats.hp <= 0 } };
         return item;
       });
       if (result.unitDefeatedId) {
@@ -1717,6 +1739,12 @@ export const App: React.FC = () => {
         const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
         const hpBefore = { attacker: enemy.stats.hp, defender: targetEntry?.stats.hp ?? 0 };
         const result = executeCombat(decision.forecast, defaultRNG);
+        // PLAN item 133: executeCombat is pure — write the post-combat HP
+        // from the result back into the phase units (previously the HP
+        // arrived via mutation of the shared forecast stats objects).
+        const attackerEntry = phaseUnits.find((u) => u.unit.id === enemy.unit.id);
+        if (attackerEntry) attackerEntry.stats.hp = result.forecast.attacker.stats.hp;
+        if (targetEntry) targetEntry.stats.hp = result.forecast.defender.stats.hp;
         if (targetEntry) {
           const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, hpBefore, result);
           setPopupQueue((queue) => [...queue, popup]);

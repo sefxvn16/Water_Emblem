@@ -18,6 +18,14 @@ export type TurnEvent =
   | { type: 'END_PLAYER_PHASE' }
   | { type: 'END_ENEMY_PHASE' };
 
+/**
+ * Turn/phase state holder (PLAN item 133: pure core).
+ *
+ * No method writes into a unit object it was given. A change replaces the
+ * affected unit with a new object inside a new units array and a new state
+ * object; unchanged units are shared. Callers read the result via getState()
+ * and adopt the new unit objects into their own state.
+ */
 export class TurnManager {
   private state: TurnState;
 
@@ -41,7 +49,7 @@ export class TurnManager {
   }
 
   replaceUnits(units: GridUnit[]): void {
-    this.state.units = units;
+    this.state = { ...this.state, units };
   }
 
   restoreState(snapshot: Pick<TurnState, 'turnNumber' | 'activePhase'>, units: GridUnit[]): void {
@@ -50,7 +58,8 @@ export class TurnManager {
       activePhase: snapshot.activePhase,
       selectedUnitId: null,
       reachableTiles: null,
-      units,
+      // Restored units are new objects, never the caller's references.
+      units: units.map((u) => ({ ...u, position: { ...u.position } })),
     };
   }
 
@@ -64,14 +73,12 @@ export class TurnManager {
       return false;
     }
 
-    this.state.selectedUnitId = unitId;
-    this.state.reachableTiles = reachableTiles;
+    this.state = { ...this.state, selectedUnitId: unitId, reachableTiles };
     return true;
   }
 
   cancelSelect(): void {
-    this.state.selectedUnitId = null;
-    this.state.reachableTiles = null;
+    this.state = { ...this.state, selectedUnitId: null, reachableTiles: null };
   }
 
   moveSelectedUnit(targetPos: Position): boolean {
@@ -90,8 +97,11 @@ export class TurnManager {
       return false;
     }
 
-    // Di chuyển đơn vị đến ô mới
-    unit.position = { ...targetPos };
+    // Di chuyển đơn vị đến ô mới (object mới, không sửa object cũ)
+    this.state = {
+      ...this.state,
+      units: this.state.units.map((u) => (u.id === unit.id ? { ...u, position: { ...targetPos } } : u)),
+    };
     return true;
   }
 
@@ -101,9 +111,12 @@ export class TurnManager {
       return false;
     }
 
-    unit.hasActed = true;
-    this.state.selectedUnitId = null;
-    this.state.reachableTiles = null;
+    this.state = {
+      ...this.state,
+      units: this.state.units.map((u) => (u.id === unit.id ? { ...u, hasActed: true } : u)),
+      selectedUnitId: null,
+      reachableTiles: null,
+    };
 
     // Tự động kiểm tra nếu tất cả player units đã hành động -> chuyển phase
     this.checkAutoPhaseEnd();
@@ -122,27 +135,25 @@ export class TurnManager {
   }
 
   switchPhase(newPhase: GamePhase): void {
-    this.state.activePhase = newPhase;
-    this.state.selectedUnitId = null;
-    this.state.reachableTiles = null;
+    const units = this.state.units.map((u) => {
+      if (newPhase === 'player_phase' && u.faction === 'player' && !u.isDead) {
+        // Reset trạng thái hành động của phe người chơi
+        return { ...u, hasActed: false, hasTraded: false, hasStored: false };
+      }
+      if (newPhase === 'enemy_phase' && u.faction === 'enemy' && !u.isDead) {
+        // Reset trạng thái hành động của phe địch
+        return { ...u, hasActed: false };
+      }
+      return u;
+    });
 
-    if (newPhase === 'player_phase') {
-      this.state.turnNumber += 1;
-      // Reset trạng thái hành động của phe người chơi
-      for (const u of this.state.units) {
-        if (u.faction === 'player' && !u.isDead) {
-          u.hasActed = false;
-          u.hasTraded = false;
-          u.hasStored = false;
-        }
-      }
-    } else if (newPhase === 'enemy_phase') {
-      // Reset trạng thái hành động của phe địch
-      for (const u of this.state.units) {
-        if (u.faction === 'enemy' && !u.isDead) {
-          u.hasActed = false;
-        }
-      }
-    }
+    this.state = {
+      ...this.state,
+      activePhase: newPhase,
+      selectedUnitId: null,
+      reachableTiles: null,
+      turnNumber: newPhase === 'player_phase' ? this.state.turnNumber + 1 : this.state.turnNumber,
+      units,
+    };
   }
 }
