@@ -31,7 +31,7 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
     expect(skillIdsOf(find(units, 'draug'))).toContain('pavise');
   });
 
-  it('swordfaire adds damage and pavise reduces damage taken in the forecast', () => {
+  it('swordfaire adds +5 damage; armored blow only when initiating; pavise is a proc (PLAN item 152)', () => {
     const units = freshUnits();
     const marth = find(units, 'marth');
     const draug = find(units, 'draug');
@@ -39,8 +39,11 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
     const all = units.map((u) => u.unit);
     const marthMods = getSkillModifiers(skillIdsOf(marth), marth.unit, marth.stats, marth.weapon, draug.weapon, true, all, allySkillIds);
     const draugMods = getSkillModifiers(skillIdsOf(draug), draug.unit, draug.stats, draug.weapon, marth.weapon, false, all, allySkillIds);
-    expect(marthMods.damage).toBe(2);
-    expect(draugMods.damageTaken).toBe(-4); // bulwark (defending) + pavise
+    expect(marthMods.damage).toBe(5); // Swordfaire FE13 +5
+    expect(draugMods.damageTaken).toBe(0); // Armored Blow needs initiation
+    expect(draugMods.paviseChance).toBe(draug.stats.skill); // Pavise FE13 proc
+    const draugAttacking = getSkillModifiers(skillIdsOf(draug), draug.unit, draug.stats, draug.weapon, marth.weapon, true, all, allySkillIds);
+    expect(draugAttacking.damageTaken).toBe(-10); // Armored Blow FE14
 
     const plain = calculateCombatForecast(
       marth.unit, marth.stats, marth.weapon, draug.unit, draug.stats, draug.weapon,
@@ -51,7 +54,7 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
       1, defaultTerrainRegistry, 'plains', 'plains', all, undefined,
       { attacker: marthMods, defender: draugMods },
     );
-    expect(skilled.attacker.damage).toBe(Math.max(0, plain.attacker.damage + 2 - 4));
+    expect(skilled.attacker.damage).toBe(Math.max(0, plain.attacker.damage + 5));
   });
 
   it('charisma grants nearby allies +10 Hit and Avoid', () => {
@@ -69,9 +72,10 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
     expect(farMods.hit).toBe(0);
   });
 
-  it('heal skills add +5 each', () => {
+  it('healtouch adds +5 and does not stack with itself (PLAN item 152)', () => {
     expect(getHealBonus(['gentle'])).toBe(5);
-    expect(getHealBonus(['gentle', 'healer'])).toBe(10);
+    expect(getHealBonus(['gentle', 'healer'])).toBe(5);
+    expect(getHealBonus(['healer'])).toBe(5);
     expect(getHealBonus([])).toBe(0);
     void itemById;
   });

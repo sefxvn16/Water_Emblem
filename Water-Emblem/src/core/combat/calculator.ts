@@ -195,7 +195,7 @@ export function calculateCombatSide(
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? balanceConfig.pincer.crit : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? balanceConfig.pincer.crit : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge + (opponentSkillMods?.dodge ?? 0));
   let critRate = Math.min(100, Math.max(0, rawCrit));
   // PLAN items 123, 154: Triangle Attack — only the three sisters
   // declared in data/balance.json (trioUnitIds) can use it: when all
@@ -222,6 +222,8 @@ export function calculateCombatSide(
     attackSpeed: as,
     attackCount: 1, // Sẽ tính double attack sau khi so sánh AS cả 2 bên
     canCounter: inRange,
+    sureStrikeChance: skillMods?.sureStrikeChance ?? 0,
+    paviseChance: skillMods?.paviseChance ?? 0,
   };
 }
 
@@ -379,13 +381,25 @@ export function executeCombat(
       }
     }
 
-    const isHit = rng.rollHit(side.hitRate, mode);
+    // PLAN item 152 (FE8 Sure Strike): Level% chance the attack cannot miss.
+    const sureStrike = (side.sureStrikeChance ?? 0) > 0 && rng.roll1RN(side.sureStrikeChance!);
+    const isHit = sureStrike || rng.rollHit(side.hitRate, mode);
     let damage = 0;
     let isCrit = false;
+    let isPavise = false;
 
     if (isHit) {
       isCrit = rng.rollCrit(side.critRate);
       damage = isCrit ? side.damage * balanceConfig.critMultiplier : side.damage;
+      // PLAN item 152 (FE13 Pavise): Skill% chance to halve damage from
+      // swords, lances and axes.
+      const targetSide = isDefenderTarget ? forecast.defender : forecast.attacker;
+      if (damage > 0 && (targetSide.paviseChance ?? 0) > 0
+        && (side.weapon?.type === 'sword' || side.weapon?.type === 'lance' || side.weapon?.type === 'axe')
+        && rng.roll1RN(targetSide.paviseChance!)) {
+        damage = Math.floor(damage / 2);
+        isPavise = true;
+      }
     }
 
     if (isDefenderTarget) {
@@ -401,6 +415,7 @@ export function executeCombat(
       isCrit,
       damageDealt: damage,
       defenderHpAfter: isDefenderTarget ? defenderHp : attackerHp,
+      ...(isPavise ? { isPavise: true } : {}),
     });
 
     if (isDefenderTarget && defenderHp <= 0) {

@@ -4,11 +4,15 @@ import type { ItemDefinition, UnitCombatStats } from './types';
 import { getManhattanDistance } from './calculator';
 
 /**
- * Skills (PLAN items 112/113, N01/N02): personal skills come from the
- * character, class skills from the class. Effects are combat modifiers
- * applied in the forecast: hit/crit/avoid/damage dealt/damage taken,
- * plus a heal bonus for staff users. Definitions and effect numbers are
- * declared in data/skills.json (PLAN item 134); values are [Giả định].
+ * Skills (PLAN items 112/113, N01/N02; FE forms per PLAN item 152, owner
+ * 2026-11-20): personal skills come from the character, class skills from
+ * the class. Effects are combat modifiers applied in the forecast:
+ * hit/crit/avoid/dodge/damage dealt/damage taken, plus proc chances
+ * (Sure Strike, Pavise) rolled at execution and a heal bonus for staff
+ * users. Definitions and effect numbers are declared in data/skills.json
+ * (PLAN item 134) and follow their Fire Emblem namesakes (FE8/FE10/FE13/
+ * FE14). Skill ids stay stable for save compatibility; display names in
+ * data carry the FE names.
  */
 
 export interface SkillDefinition {
@@ -25,6 +29,7 @@ interface SkillDataEntry extends SkillDefinition {
   readonly damageTaken?: number;
   readonly healBonus?: number;
   readonly aura?: { readonly range: number; readonly hit: number; readonly avoid: number };
+  readonly anathema?: { readonly range: number; readonly avoid: number; readonly dodge: number };
 }
 
 const skillDataById = new Map<string, SkillDataEntry>(
@@ -43,11 +48,19 @@ export interface SkillModifiers {
   hit: number;
   crit: number;
   avoid: number;
+  /** Crit Avoid modifier (Anathema lowers it). */
+  dodge: number;
   damage: number;
   damageTaken: number;
+  /** Sure Strike (FE8): % chance the attack cannot miss (= unit level). */
+  sureStrikeChance: number;
+  /** Pavise (FE13): % chance to halve sword/lance/axe damage (= Skill). */
+  paviseChance: number;
 }
 
-export const NO_SKILL_MODIFIERS: SkillModifiers = { hit: 0, crit: 0, avoid: 0, damage: 0, damageTaken: 0 };
+export const NO_SKILL_MODIFIERS: SkillModifiers = {
+  hit: 0, crit: 0, avoid: 0, dodge: 0, damage: 0, damageTaken: 0, sureStrikeChance: 0, paviseChance: 0,
+};
 
 export function getSkillModifiers(
   skillIds: readonly string[],
@@ -58,30 +71,37 @@ export function getSkillModifiers(
   isAttacker: boolean,
   allUnits: readonly GridUnit[],
   allySkillIds: ReadonlyMap<string, readonly string[]>,
+  level = 0,
 ): SkillModifiers {
   const mods: SkillModifiers = { ...NO_SKILL_MODIFIERS };
   const weaponType = weapon?.type;
   for (const id of skillIds) {
     switch (id) {
-      case 'winged_grace':
-        if (opponentWeapon?.type === 'axe') mods.avoid += skillNumber(id, 'avoid');
+      case 'winged_grace': // Axebreaker (FE13): +50 Hit/Avoid vs axes
+        if (opponentWeapon?.type === 'axe') {
+          mods.hit += skillNumber(id, 'hit');
+          mods.avoid += skillNumber(id, 'avoid');
+        }
         break;
-      case 'veteran':
+      case 'veteran': // Hit Rate +20 (FE13)
         mods.hit += skillNumber(id, 'hit');
         break;
-      case 'hot_blood':
-        if (stats.hp * 2 < stats.maxHp) mods.crit += skillNumber(id, 'crit');
+      case 'hot_blood': // Wrath (FE13): +20 Crit at or below half HP
+        if (stats.hp * 2 <= stats.maxHp) mods.crit += skillNumber(id, 'crit');
         break;
-      case 'calm':
-        if (stats.hp >= stats.maxHp) mods.hit += skillNumber(id, 'hit');
+      case 'calm': // Perfectionist (FE14): +15 Hit/Avoid at full HP
+        if (stats.hp >= stats.maxHp) {
+          mods.hit += skillNumber(id, 'hit');
+          mods.avoid += skillNumber(id, 'avoid');
+        }
         break;
-      case 'bulwark':
-        if (!isAttacker) mods.damageTaken += skillNumber(id, 'damageTaken');
+      case 'bulwark': // Armored Blow (FE14): −10 physical damage when initiating
+        if (isAttacker && opponentWeapon?.isMagic !== true) mods.damageTaken += skillNumber(id, 'damageTaken');
         break;
-      case 'deadeye':
-        if (weaponType === 'bow') mods.crit += skillNumber(id, 'crit');
+      case 'deadeye': // Critical +10 (FE10)
+        mods.crit += skillNumber(id, 'crit');
         break;
-      case 'nimble':
+      case 'nimble': // Avoid +10 (FE13)
         mods.avoid += skillNumber(id, 'avoid');
         break;
       case 'swordfaire':
@@ -99,17 +119,27 @@ export function getSkillModifiers(
       case 'tomefaire':
         if (weaponType === 'tome') mods.damage += skillNumber(id, 'damage');
         break;
-      case 'sureshot':
-        if (weaponType === 'bow') mods.hit += skillNumber(id, 'hit');
+      case 'sureshot': // Sure Strike (FE8): Level% guaranteed hit with bows
+        if (weaponType === 'bow') mods.sureStrikeChance = Math.max(mods.sureStrikeChance, level);
         break;
-      case 'pavise':
-        mods.damageTaken += skillNumber(id, 'damageTaken');
-        break;
-      case 'focus':
-        if (weaponType === 'tome') mods.hit += skillNumber(id, 'hit');
+      case 'pavise': // Pavise (FE13): Skill% to halve sword/lance/axe damage
+        mods.paviseChance = Math.max(mods.paviseChance, stats.skill);
         break;
       default:
         break;
+    }
+  }
+  // Anathema (FE13): enemies within range suffer −10 Avoid / −10 Crit Avoid.
+  const anathema = skillDataById.get('focus')?.anathema;
+  if (anathema) {
+    for (const other of allUnits) {
+      if (other.id === unit.id || other.isDead || other.faction === unit.faction) continue;
+      if (!allySkillIds.get(other.id)?.includes('focus')) continue;
+      if (getManhattanDistance(other.position, unit.position) <= anathema.range) {
+        mods.avoid += anathema.avoid;
+        mods.dodge += anathema.dodge;
+        break;
+      }
     }
   }
   // Charisma aura: Hit/Avoid from a nearby ally (not self); range and
@@ -129,10 +159,10 @@ export function getSkillModifiers(
   return mods;
 }
 
-/** Extra healing from staff skills (gentle/healer), declared in data. */
+/** Healtouch (FE13, PLAN item 152): +5 healing with staves; the personal
+ * (gentle) and class (healer) forms are the same skill and do not stack. */
 export function getHealBonus(skillIds: readonly string[]): number {
-  let bonus = 0;
-  if (skillIds.includes('gentle')) bonus += skillNumber('gentle', 'healBonus');
-  if (skillIds.includes('healer')) bonus += skillNumber('healer', 'healBonus');
-  return bonus;
+  if (skillIds.includes('gentle')) return skillNumber('gentle', 'healBonus');
+  if (skillIds.includes('healer')) return skillNumber('healer', 'healBonus');
+  return 0;
 }

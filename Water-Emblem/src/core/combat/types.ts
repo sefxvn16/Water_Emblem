@@ -57,6 +57,10 @@ export interface CombatSideForecast {
   readonly attackSpeed: number;
   readonly attackCount: number;
   readonly canCounter: boolean;
+  /** Sure Strike proc chance (PLAN item 152), rolled at execution. */
+  readonly sureStrikeChance?: number;
+  /** Pavise proc chance (PLAN item 152), rolled at execution. */
+  readonly paviseChance?: number;
 }
 
 export interface CombatForecast {
@@ -74,6 +78,8 @@ export interface SingleAttackEvent {
   readonly defenderHpAfter: number;
   /** Devil-weapon backfire (PLAN item 153): the strike hit its own user. */
   readonly isBackfire?: boolean;
+  /** Pavise proc (PLAN item 152): damage was halved. */
+  readonly isPavise?: boolean;
 }
 
 export interface CombatResult {

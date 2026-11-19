@@ -650,8 +650,8 @@ export const App: React.FC = () => {
       // PLAN items 112/113: skill modifiers for both sides.
       const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
       const allGridUnits = extendedUnits.map((u) => u.unit);
-      const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds);
-      const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds);
+      const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds, selectedExtUnit.level);
+      const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds, target.level);
       const holds = (entry: ExtendedUnitState, itemId: string) => entry.inventory.some((i) => i.itemId === itemId);
       setCombatForecast(calculateCombatForecast(
         selectedExtUnit.unit,
@@ -1614,6 +1614,7 @@ export const App: React.FC = () => {
         unitStatsMap: statsMap,
         unitWeaponsMap: weaponsMap,
         unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+        unitLevelsMap: new Map(phaseUnits.map((u) => [u.unit.id, u.level])),
         sphereHolders: {
           light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
           dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),

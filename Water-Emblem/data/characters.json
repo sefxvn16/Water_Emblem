@@ -503,7 +503,8 @@
         "lck": 40,
         "def": 15,
         "res": 5
-      }
+      },
+      "personalSkill": "deadeye"
     },
     {
       "id": "barst",
@@ -549,7 +550,8 @@
         "lck": 40,
         "def": 15,
         "res": 0
-      }
+      },
+      "personalSkill": "hot_blood"
     },
     {
       "id": "bord",
@@ -595,7 +597,8 @@
         "lck": 35,
         "def": 10,
         "res": 0
-      }
+      },
+      "personalSkill": "bulwark"
     },
     {
       "id": "cord",
@@ -641,7 +644,8 @@
         "lck": 40,
         "def": 10,
         "res": 10
-      }
+      },
+      "personalSkill": "calm"
     },
     {
       "id": "castor",
@@ -686,7 +690,8 @@
         "lck": 20,
         "def": 15,
         "res": 0
-      }
+      },
+      "personalSkill": "veteran"
     },
     {
       "id": "darros",
@@ -732,7 +737,8 @@
         "lck": 40,
         "def": 30,
         "res": 0
-      }
+      },
+      "personalSkill": "nimble"
     },
     {
       "id": "wrys",
@@ -778,7 +784,8 @@
         "lck": 40,
         "def": 5,
         "res": 15
-      }
+      },
+      "personalSkill": "gentle"
     },
     {
       "id": "gomer",
@@ -1010,7 +1017,8 @@
         "lck": 40,
         "def": 5,
         "res": 5
-      }
+      },
+      "personalSkill": "deadeye"
     },
     {
       "id": "enemy_cavalier",
@@ -1439,7 +1447,8 @@
         "lck": 90,
         "def": 10,
         "res": 12
-      }
+      },
+      "personalSkill": "pavise"
     },
     {
       "id": "feena",
@@ -1474,7 +1483,8 @@
       "startingWeapons": [
         "iron_sword"
       ],
-      "avatarUrl": "/avatars/feena.png"
+      "avatarUrl": "/avatars/feena.png",
+      "personalSkill": "charisma"
     },
     {
       "id": "xane",
@@ -1519,7 +1529,8 @@
         "lck": 20,
         "def": 0,
         "res": 17
-      }
+      },
+      "personalSkill": "nimble"
     }
   ]
 }

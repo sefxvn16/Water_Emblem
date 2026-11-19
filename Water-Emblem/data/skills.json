@@ -11,106 +11,110 @@
       "name": "Charisma"
     },
     {
-      "avoid": 10,
-      "description": "+10 Avoid against axes.",
+      "avoid": 50,
+      "description": "+50 Hit and Avoid against axes.",
       "id": "winged_grace",
-      "name": "Winged Grace"
+      "name": "Axebreaker",
+      "hit": 50
     },
     {
-      "description": "+10 Hit.",
-      "hit": 10,
+      "description": "+20 Hit.",
+      "hit": 20,
       "id": "veteran",
-      "name": "Veteran"
+      "name": "Hit Rate +20"
     },
     {
-      "crit": 10,
-      "description": "+10 Crit when HP is below half.",
+      "crit": 20,
+      "description": "+20 Crit when HP is at or below half.",
       "id": "hot_blood",
-      "name": "Hot Blood"
+      "name": "Wrath"
     },
     {
-      "description": "+10 Hit at full HP.",
-      "hit": 10,
+      "description": "+15 Hit and Avoid at full HP.",
+      "hit": 15,
       "id": "calm",
-      "name": "Calm"
+      "name": "Perfectionist",
+      "avoid": 15
     },
     {
-      "damageTaken": -2,
-      "description": "Takes 2 less damage when defending.",
+      "damageTaken": -10,
+      "description": "Takes 10 less physical damage when initiating combat.",
       "id": "bulwark",
-      "name": "Bulwark"
+      "name": "Armored Blow"
     },
     {
       "crit": 10,
-      "description": "+10 Crit with bows.",
+      "description": "+10 Crit.",
       "id": "deadeye",
-      "name": "Deadeye"
+      "name": "Critical +10"
     },
     {
       "avoid": 10,
       "description": "+10 Avoid.",
       "id": "nimble",
-      "name": "Nimble"
+      "name": "Avoid +10"
     },
     {
       "description": "Heals 5 more HP with staves.",
       "healBonus": 5,
       "id": "gentle",
-      "name": "Gentle"
+      "name": "Healtouch"
     },
     {
-      "damage": 2,
-      "description": "+2 damage with swords.",
+      "damage": 5,
+      "description": "+5 damage with swords.",
       "id": "swordfaire",
       "name": "Swordfaire"
     },
     {
-      "damage": 2,
-      "description": "+2 damage with lances.",
+      "damage": 5,
+      "description": "+5 damage with lances.",
       "id": "lancefaire",
       "name": "Lancefaire"
     },
     {
-      "damage": 2,
-      "description": "+2 damage with axes.",
+      "damage": 5,
+      "description": "+5 damage with axes.",
       "id": "axefaire",
       "name": "Axefaire"
     },
     {
-      "damage": 2,
-      "description": "+2 damage with bows.",
+      "damage": 5,
+      "description": "+5 damage with bows.",
       "id": "bowfaire",
       "name": "Bowfaire"
     },
     {
-      "damage": 2,
-      "description": "+2 damage with tomes.",
+      "damage": 5,
+      "description": "+5 damage with tomes.",
       "id": "tomefaire",
       "name": "Tomefaire"
     },
     {
-      "description": "+15 Hit with bows.",
-      "hit": 15,
+      "description": "Level% chance an attack cannot miss.",
       "id": "sureshot",
-      "name": "Sureshot"
+      "name": "Sure Strike"
     },
     {
-      "damageTaken": -2,
-      "description": "Takes 2 less damage.",
+      "description": "Skill% chance to halve damage from swords, lances and axes.",
       "id": "pavise",
       "name": "Pavise"
     },
     {
-      "description": "+10 Hit with tomes.",
-      "hit": 10,
+      "description": "Enemies within 3 tiles suffer -10 Avoid and -10 Crit Avoid.",
       "id": "focus",
-      "name": "Focus"
+      "name": "Anathema",
+      "anathema": {
+        "range": 3,
+        "avoid": -10,
+        "dodge": -10
+      }
     },
     {
       "description": "Heals 5 more HP with staves.",
       "healBonus": 5,
       "id": "healer",
-      "name": "Healer"
+      "name": "Healtouch"
     },
     {
       "description": "Can open chests and doors without a key.",

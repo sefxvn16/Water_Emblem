@@ -41,6 +41,8 @@ export interface AIContext {
   readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
   /** Skill ids per unit (PLAN items 112/113). */
   readonly unitSkillsMap?: ReadonlyMap<string, readonly string[]>;
+  /** Unit levels for level-based skills (PLAN item 152, Sure Strike). */
+  readonly unitLevelsMap?: ReadonlyMap<string, number>;
   /** Sphere holders by unit id (PLAN item 120). */
   readonly sphereHolders?: { readonly light: ReadonlySet<string>; readonly dark: ReadonlySet<string> };
   readonly villageTargets?: readonly Position[];
@@ -171,8 +173,8 @@ export function evaluateAITurn(
           projectedUnits,
           { attacker: getElevation(map, tile), defender: getElevation(map, target.position) },
           context.unitSkillsMap ? {
-            attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap),
-            defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap),
+            attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(enemyUnit.id) ?? 0),
+            defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(target.id) ?? 0),
           } : undefined,
           context.sphereHolders ? {
             attackerHasLight: context.sphereHolders.light.has(enemyUnit.id),
