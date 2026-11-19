@@ -183,6 +183,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
   - Kiểm bởi: tôi
 
+- [ ] 79. Thiết kế lại trang thông tin chi tiết nhân vật theo mẫu J2 (navy hiện đại, Japanese minimalist, icon vũ khí/vật phẩm lớn).
+  - Nguồn: yêu cầu của chủ dự án 2026-11-19 ("Design lại trang thông tin chi tiết nhân vật đi, xấu quá..."); chủ dự án chọn mẫu J2 ngày 2026-11-19 14:16 ("J2 nhé. Code đi"). Mockup: `~/workspace/water-emblem/work/water-inspector-redesign/mockup-j2.html` (+ `mockup-j2.png`). Nhánh `cs/water-inspector-j2` từ `cs/water-ui-redesign` @ `32429a4` (mục 78 nằm trên nhánh riêng `cs/move-arrow-avatar` nên số 79 không trùng).
+  - Tiêu chí xong: (1) Inspector theo đúng mẫu J2 đã duyệt: panel navy `#101a2e`, viền vàng nhạt `#c9a227`, phe thể hiện bằng vạch accent trên + chip (không còn nền theo phe); avatar 112px, tên serif 23px, HP dạng thanh; ô Weapons riêng (lưới 2×2, mỗi ô icon FE3 26px + tên + số lần dùng); ô Items riêng (4 ô icon, ô trống viền đứt nét); ô Vitals riêng (Max HP, Move); Combat/Attributes hai cột; đóng bằng nút Close, bấm ngoài, Escape. (2) Không đổi nội dung hay con số nào (R1): đúng dữ liệu chương, không tính toán combat mới. (3) Cập nhật spec (`specs/unit-inspector.md` R2/R3/R7/R8/A4/A6, `specs/design-system.md` R1/R10/A1/A2) + `DESIGN.md` trước khi code; lý do sửa test ghi trong `work/water-inspector-j2/01-brief.md` (mẫu J2 đã duyệt thay thế cách thể hiện inspector của mục 76 — test không bị làm yếu, chỉ đổi giá trị kỳ vọng theo thiết kế mới). (4) Vitest PASS; Playwright (`uiRedesign.spec.ts` đã cập nhật + `inspectorJ2.spec.ts` mới) PASS trên 2D; ảnh trước/sau tại 1366x768. (5) Gate `node .studio/gate.mjs` Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).

@@ -34,17 +34,24 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
 | Primary text | `#ffffff` | existing code |
 | Muted text | `#cbd5e1` | existing code |
 | Caption text | `#94a3b8` | existing code |
-| Ally faction hue | `#3b82f6` | existing code (`UnitInspectorWindow.tsx:126`, `Grid2D.tsx:190-191`) |
+| Ally faction hue | `#3b82f6` | existing code (inspector accent bar + chip, `Grid2D.tsx:190-191`) |
 | Enemy faction hue | `#ef4444` | existing code (same) |
 | HP remaining | `#22c55e` (bar) / `#4ade80` (text) | existing code |
 | HP loss | `#ef4444` | existing code |
-| Inspector ally background | `#1d4ed8` | [Giả định] — darkened ally hue; see "Unconfirmed" below |
-| Inspector enemy background | `#7f1d1d` | [Giả định] — darkened enemy hue ("đỏ đậm"); see "Unconfirmed" below |
+| Inspector panel (both factions) | `#101a2e` | owner decision 2026-11-19 (mockup J2, PLAN item 79) |
+| Inspector frame (muted gold) | `#c9a227` | owner decision 2026-11-19 (mockup J2) |
+| Inspector inner box | `#131f36` | owner decision 2026-11-19 (mockup J2) |
+| Inspector icon tile | `#16233f` | owner decision 2026-11-19 (mockup J2) |
+| Inspector hairline divider | `#22304d` | owner decision 2026-11-19 (mockup J2) |
+| Inspector muted gold (titles) | `#b49b5e` | owner decision 2026-11-19 (mockup J2) |
+| Inspector label | `#8fa3bf` | owner decision 2026-11-19 (mockup J2) |
 
 - Every panel in the four areas uses the navy background with a gold frame, except the
-  inspector, which keeps the gold frame but uses a faction background (ally blue,
-  enemy dark red) per owner decision 2026-11-19. This supersedes `art_ui.md:43`'s navy
-  background for the inspector only; the dark `#1b1b22` inspector background is gone.
+  inspector, which uses a navy `#101a2e` panel with a muted-gold `#c9a227` frame and
+  shows the faction as a 3px accent bar + chip (owner decision 2026-11-19, mockup J2,
+  PLAN item 79). This supersedes the item-76 faction backgrounds (ally blue, enemy
+  dark red) and `art_ui.md:43`'s navy background for the inspector only; the dark
+  `#1b1b22` inspector background is gone.
 - The settings panel never uses `#262626`/`#444` (removed by this task).
 - Danger treatment (red) is reserved for destructive actions. Attack is the single
   primary action of the forecast and never uses danger treatment.
@@ -58,7 +65,8 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
   Save Files, Save Game, Load Game) sit in one group under one heading; Save Game
   carries the primary treatment, the other four share the secondary treatment.
 - The primary action in the forecast is **Attack**; Cancel is secondary.
-- The primary action in the inspector is **Close** (the only action there).
+- The inspector has a single action, **Close**, with the ghost treatment (not a gold
+  primary) per mockup J2 (owner decision 2026-11-19).
 - Every interactive control in the four areas has a target of at least **44px** in
   both dimensions (the project's own bar; WCAG minimum is 24px).
 
@@ -67,15 +75,16 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
 |---|---|---|
 | Title | 15px / bold | Panel titles ("COMBAT FORECAST", "Unit Details", group headings 14px/bold) |
 | Name | 15px / bold | Unit names |
+| Inspector name | 23px / bold serif (Georgia) | Inspector unit name (mockup J2) |
 | Body | 13px | Main text, buttons (13–14px) |
 | Label | 12px | Class, LV/EX, stat labels |
 | Caption | 10–11px | Hints ("Tap for full stats"), small values |
 
 ### Spacing, radii
-- Spacing scale (px): 2, 4, 6, 8, 10, 12, 14, 16. Panel padding 12–14px; gaps
-  between sections 8–12px; gaps inside rows 4–8px.
+- Spacing scale (px): 2, 4, 6, 8, 10, 12, 14, 16. Panel padding 12–16px; gaps
+  between sections 8–16px; gaps inside rows 4–8px.
 - Radii: 4px (small wells, chips), 6px (cards, buttons), 8px (panels),
-  10px (inspector panel).
+  10px (inner boxes), 12px (inspector panel).
 - Stat rows: labels share one left edge, values share one right-aligned column
   across all panels of a window.
 
@@ -122,15 +131,12 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
 - Display precedence: pinned unit, then hovered unit, then selected unit.
 
 ## Unconfirmed current state
-- **Inspector background shades.** The FE3 original reference (screenshots in
-  `Original/04_Battle_Backgrounds/`, on the owner's OneDrive) is not reachable from
-  this machine, so the exact FE3 status-window shades could not be sampled. The
-  shades used (`#1d4ed8` ally, `#7f1d1d` enemy) are the established in-code faction
-  hues (`#3b82f6` / `#ef4444`) darkened to panel backgrounds that keep white body
-  text at ≥4.5:1 contrast. The owner should confirm them from the after screenshots
-  (`work/water-ui-redesign/after/03-inspector-ally.png`,
-  `04-inspector-enemy.png`); if the original shades differ, they replace these two
-  values only.
+- **Inspector background shades — superseded by J2.** The FE3 original reference
+  (screenshots in `Original/04_Battle_Backgrounds/`, on the owner's OneDrive) is
+  still not reachable from this machine, so the exact FE3 status-window shades were
+  never sampled. The owner picked mockup J2 instead (2026-11-19): a navy panel for
+  both factions with a faction accent bar, so the [Giả định] shades (`#1d4ed8`
+  ally, `#7f1d1d` enemy) are retired and this note is closed.
 - **Settings-menu primary action.** The spec requires exactly one primary action in
   the menu but does not name it; Save Game was chosen as [Giả định]. The owner may
   pick a different one (e.g. none, or Title) without changing anything else.
