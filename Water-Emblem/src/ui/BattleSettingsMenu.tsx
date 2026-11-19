@@ -264,7 +264,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             <div style={{ backgroundColor: DS_COLORS.navyDark, padding: '10px', borderRadius: DS_RADII.panel, border: `1px solid ${DS_COLORS.secondaryBorder}` }}>
               <div style={{ maxHeight: '160px', overflowY: 'auto', fontSize: '12px', lineHeight: '1.5', color: '#e2e8f0' }}>
                 {props.combatLog.length === 0 ? (
-                  <span style={{ color: '#777' }}>No battle engagements yet.</span>
+                  <span style={{ color: DS_COLORS.caption }}>No battle engagements yet.</span>
                 ) : (
                   props.combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '4px' }}>{log}</div>)
                 )}

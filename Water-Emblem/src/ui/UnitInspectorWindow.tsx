@@ -247,7 +247,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             ))}
             {weaponList.length < 4 &&
               Array.from({ length: 4 - weaponList.length }).map((_, idx) => (
-                <div key={`empty-w-${idx}`} style={{ color: '#4b5563', fontSize: '11px' }}>
+                <div key={`empty-w-${idx}`} style={{ color: '#94a3b8', fontSize: '11px' }}>
                   —
                 </div>
               ))}
@@ -308,7 +308,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
               </div>
             ))}
             {itemList.length === 0 && (
-              <div style={{ color: '#6b7280', fontSize: '11px' }}>No items</div>
+              <div style={{ color: '#94a3b8', fontSize: '11px' }}>No items</div>
             )}
           </div>
           <div style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>

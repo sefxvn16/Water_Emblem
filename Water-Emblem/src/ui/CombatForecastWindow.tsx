@@ -173,10 +173,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             {renderStatRow('Hit:', `${hitRate}%`)}
             {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
             {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}
-            <div style={{ ...statRowStyle, fontSize: '11px', color: '#64748b' }}>
-              <span>AS:</span>
-              <span style={{ ...statValueStyle }}>{as} {attackCount > 1 ? '· Double Attack' : ''}</span>
-            </div>
+            {renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}
           </div>
         )}
       </div>
