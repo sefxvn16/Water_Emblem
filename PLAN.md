@@ -177,7 +177,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 - [ ] 77. Menu hành động sau di chuyển: bỏ dấu tích V trước Wait; thêm nút Attack khi có địch trong tầm đánh.
   - Nguồn: yêu cầu của chủ dự án 2026-11-19.
   - Tiêu chí xong: (1) Popup hành động sau di chuyển không còn dấu tích V trước chữ Wait. (2) Nút Attack chỉ hiện khi có địch nằm trong phạm vi tầm đánh của quân vừa di chuyển; bấm Attack đưa người chơi tới bước chọn mục tiêu/dự báo chiến đấu như khi bấm trực tiếp ô địch; không hiện nút khi không có địch trong tầm. (3) Không đổi luật chơi hay con số nào. (4) Kiểm trên trình duyệt thật (2D): di chuyển tới chỗ có địch trong tầm thì popup có Attack, di chuyển tới chỗ không có địch trong tầm thì popup không có Attack; chụp ảnh kiểm chứng. (5) Gate `node .studio/gate.mjs` Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kết quả: PASS: (1) Wait không còn dấu ✓ (`ActionMenuWindow.tsx`; kiểm bằng textContent === 'Wait' trên trình duyệt thật + test uiRender assert `>Wait<` và không chứa '✓ Wait'). (2) Nút Attack chỉ hiện khi có địch trong tầm (`handleAttack` mở dự báo qua `handleTileClick` — dùng lại luồng bấm ô đỏ); kiểm trên trình duyệt thật 2D: địch kề Marth → menu có Attack → bấm Attack → COMBAT FORECAST hiện → Cancel → menu lại có Attack; Caeda di chuyển tới chỗ không có địch trong tầm → menu không có Attack. Ảnh: `work/water-action-menu-77/item77-attack-visible.png`, `item77-forecast.png`, `item77-no-attack.png`. Vitest 24 files/154 tests PASS; build PASS.
+    - Nhiều mục tiêu trong tầm: Attack mở dự báo cho mục tiêu đầu tiên; hủy dự báo để quay lại menu rồi bấm ô đỏ khác (chủ dự án có thể yêu cầu danh sách chọn mục tiêu sau).
+    - App.tsx +4 dòng (1183→1187) do handler `handleAttack` mới; không nhân đôi logic dự báo.
+    - Gate: chưa chạy trên nhánh này.
   - Kiểm bởi: tôi
 
 ## Giai đoạn 4 trở đi: mở rộng
