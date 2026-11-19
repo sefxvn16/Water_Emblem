@@ -4,7 +4,7 @@
 // STAGE CLEAR. Game rules are covered by unit tests in tests/core/; this spec
 // checks the 2D flow: title -> preparation -> actions -> seize -> next chapter.
 import { expect, test, type Page } from '@playwright/test';
-import { closeSettings, expectPlayerPhase, openSettings } from './settingsMenu';
+import { closeSettings, dismissRewardPopup, expectPlayerPhase, openSettings } from './settingsMenu';
 import { readFileSync } from 'node:fs';
 
 // Recorded buttons that now live in the Settings menu (PLAN.md item 71).
@@ -41,6 +41,9 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
   let savedOnce = false;
   for (const [index, step] of fixture.steps.entries()) {
     const where = `step ${index}: ${JSON.stringify(step)}`;
+    // PLAN item 131: a village visit / recruit / chest from the previous
+    // step may have opened the reward popup; dismiss it before clicking.
+    await dismissRewardPopup(page);
     if (step.kind === 'tile') {
       // Enemy phase must be over before the player selects tiles again.
       await openSettings(page);

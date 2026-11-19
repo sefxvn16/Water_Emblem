@@ -34,3 +34,13 @@ export async function expectPlayerPhase(page: Page): Promise<void> {
     .poll(async () => page.evaluate(() => (window as any).__WATER_EMBLEM_STATE__?.turnState?.activePhase), { timeout: 15000 })
     .toBe('player_phase');
 }
+
+// PLAN item 131: the centered reward popup (item/gold/recruit) is a
+// full-screen overlay; tests dismiss it before continuing to click.
+export async function dismissRewardPopup(page: Page): Promise<void> {
+  const popup = page.getByTestId('reward-popup');
+  if ((await popup.count()) > 0 && (await popup.isVisible())) {
+    await popup.getByRole('button', { name: 'OK', exact: true }).click();
+    await expect(popup).toBeHidden();
+  }
+}

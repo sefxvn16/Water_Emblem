@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { expectPlayerPhase, openSettings } from './settingsMenu';
+import { expectPlayerPhase, expectTurnNumber, openSettings } from './settingsMenu';
 
 test.describe('Game Error Tolerance & Resilience Suite', () => {
   test('handles invalid rapid clicks and out-of-bounds selections gracefully', async ({ page }) => {
@@ -32,8 +32,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Ensure no fatal page crashes or uncaught exceptions
     expect(consoleErrors.filter((e) => !e.includes('favicon'))).toEqual([]);
-    await openSettings(page);
-    await expect(page.locator('text=Turn:').first()).toBeVisible();
+    // PLAN item 128: Settings no longer shows Turn/Phase text; read state.
+    await expectTurnNumber(page, 1);
     await expectPlayerPhase(page);
   });
 
@@ -49,7 +49,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     const slider = page.getByLabel('Volume');
     await expect(slider).toBeVisible();
     await slider.fill('0');
-    await expect(page.getByText('0%')).toBeVisible();
+    // Scoped to the settings menu: a bare '0%' also matches "Avoid : 0%".
+    await expect(page.getByTestId('settings-menu').getByText('0%', { exact: true })).toBeVisible();
 
     // Check localStorage
     const isMutedInStorage = await page.evaluate(() => localStorage.getItem('we_sound_muted'));
@@ -68,7 +69,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Raise the volume again to unmute
     await page.getByLabel('Volume').fill('50');
-    await expect(page.getByText('50%')).toBeVisible();
+    await expect(page.getByTestId('settings-menu').getByText('50%', { exact: true })).toBeVisible();
     const isUnmutedInStorage = await page.evaluate(() => localStorage.getItem('we_sound_muted'));
     expect(isUnmutedInStorage).toBe('false');
   });
@@ -118,8 +119,8 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
 
     // Dialog should report failure, app does not crash
     await expect.poll(() => alertSeen).toBe(true);
-    await openSettings(page);
+    // PLAN item 128: Settings no longer shows Turn text; read state.
     await expectPlayerPhase(page);
-    await expect(page.getByText(/Turn:\s*1/)).toBeVisible();
+    await expectTurnNumber(page, 1);
   });
 });

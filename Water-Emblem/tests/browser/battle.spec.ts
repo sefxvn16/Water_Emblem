@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { closeSettings, expectPlayerPhase, expectTurnNumber, openSettings } from './settingsMenu';
+import { closeSettings, dismissRewardPopup, expectPlayerPhase, expectTurnNumber, openSettings } from './settingsMenu';
 
 async function dismissTitle(page: Page) {
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
@@ -27,6 +27,8 @@ async function enterBattle(page: Page) {
 // 2D tile clicks use the grid's data-testid, the same pattern as
 // chapterReplay.spec.ts (dispatchEvent avoids overlay hit-testing).
 async function clickTile(page: Page, x: number, y: number) {
+  // PLAN item 131: dismiss the reward popup first; it covers the screen.
+  await dismissRewardPopup(page);
   await page.getByTestId(`tile-${x}-${y}`).dispatchEvent('click');
 }
 
@@ -360,6 +362,8 @@ test('Caeda recruits Castor through a talk action and can save afterward', async
   await clickTile(page, 5, 5);
   await clickTile(page, 5, 5);
   await page.getByRole('button', { name: /(?:Talk: Castor|Nói chuyện: Castor)/i }).click();
+  // PLAN item 131: recruiting opens the reward popup; dismiss it.
+  await dismissRewardPopup(page);
   await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
