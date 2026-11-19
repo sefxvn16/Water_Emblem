@@ -168,8 +168,8 @@ export function calculateCombatSide(
   let effectiveMight = isEffective
     ? weapon.might * balanceConfig.effectiveMultiplier
     : weapon.might;
-  // PLAN item 122 (A14): ballista shots hit harder [Giả định +6 Might].
-  if (_terrainId === 'ballista' && weapon.type === 'bow') effectiveMight += 6;
+  // PLAN item 122 (A14): ballista shots hit harder (bonus in data/balance.json).
+  if (_terrainId === 'ballista' && weapon.type === 'bow') effectiveMight += balanceConfig.ballista.mightBonus;
 
   const attackPower = (weapon.isMagic ? stats.mag : stats.str) + effectiveMight + triangle.damage + rankBonus.might;
 
@@ -183,19 +183,19 @@ export function calculateCombatSide(
     : Math.max(0, attackPower - defense + (skillMods?.damage ?? 0) + (opponentSkillMods?.damageTaken ?? 0));
 
   // Tính Hit
-  // PLAN item 104 (V07): height advantage — ±10 Hit per elevation level,
-  // capped at ±20 [Giả định].
-  const heightBonus = Math.max(-20, Math.min(20, heightDiff * 10));
+  // PLAN item 104 (V07): height advantage — Hit per elevation level,
+  // capped (values in data/balance.json, PLAN item 134).
+  const heightBonus = Math.max(-balanceConfig.height.maxHitBonus, Math.min(balanceConfig.height.maxHitBonus, heightDiff * balanceConfig.height.hitPerLevel));
   // PLAN item 103 (V05): pincer — an ally of the attacker stands on the
-  // far side of the opponent; +15 Hit, +10 Crit [Giả định].
+  // far side of the opponent (bonus in data/balance.json).
   const pincer = allUnits ? hasPincerAlly(unit, opponentUnit, allUnits) : false;
-  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? 15 : 0) + (skillMods?.hit ?? 0);
+  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? balanceConfig.pincer.hit : 0) + (skillMods?.hit ?? 0);
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
   const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid + (opponentSkillMods?.avoid ?? 0);
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? balanceConfig.pincer.crit : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
   let critRate = Math.min(100, Math.max(0, rawCrit));
   // PLAN item 123 (A15): Triangle Attack — three allied fliers adjacent
   // to the opponent make the attacking flier's strike a guaranteed crit.
@@ -203,7 +203,7 @@ export function calculateCombatSide(
     const adjacentFliers = allUnits.filter((ally) =>
       !ally.isDead && ally.faction === unit.faction && ally.moveType === 'flier'
       && Math.abs(ally.position.x - opponentUnit.position.x) + Math.abs(ally.position.y - opponentUnit.position.y) === 1);
-    if (adjacentFliers.length >= 3) critRate = 100;
+    if (adjacentFliers.length >= balanceConfig.triangleAttack.requiredFliers) critRate = 100;
   }
 
   const as = calculateAttackSpeed(stats, weapon);

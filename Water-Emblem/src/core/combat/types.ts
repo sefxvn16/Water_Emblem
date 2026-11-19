@@ -18,6 +18,8 @@ export interface ItemDefinition {
   readonly healBase?: number;
   readonly healMagDivisor?: number;
   readonly healAmount?: number;
+  /** Item role declared in data/items.json (PLAN item 134): healing consumable, door key, or the lord's chest key. */
+  readonly itemRole?: 'healing' | 'doorKey' | 'lordChestKey';
   /** Shop price in gold (PLAN item 91; FE11 values in data/items.json). */
   readonly price?: number;
   /** False = never sold in shops (personal weapons, Master Seal, Warp, Devil Axe). */

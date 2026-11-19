@@ -10,7 +10,7 @@ import { SKILLS } from '../core/combat/skills';
 import type { ItemDefinition } from '../core/combat/types';
 import { chapters, type ExtendedUnitState, type InventoryEntry } from '../core/data/chapterData';
 import type { GamePhase } from '../core/turn/turnManager';
-import { getClassDefinition } from '../core/class/classRules';
+import { getClassDefinition, getDismountedClassId, isGroundDismountedForm } from '../core/class/classRules';
 
 const mapsById: Record<string, { width: number; height: number }> = {
   chapter_01_talys: talysMapJson,
@@ -211,10 +211,11 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
     if (!currentClass || !originalClass) return false;
     const progressClassId = mountedClass?.id ?? currentClass.id;
     if (progressClassId !== originalClass.id && !originalClass.promotions.includes(progressClassId)) return false;
+    // PLAN item 134 (R7): the dismount rule is shared with core class rules.
     if (mountedClass) {
       if (mountedClass.mountKind !== 'ground'
-        || currentClass.id !== (mountedClass.id === 'warlord' ? 'lord' : 'paladin')) return false;
-    } else if (currentClass.id === 'paladin') return false;
+        || currentClass.id !== getDismountedClassId(mountedClass.id)) return false;
+    } else if (isGroundDismountedForm(currentClass.id)) return false;
     if (unit.moveType !== currentClass.moveType) return false;
     const expectedMov = currentClass.id === originalClass.id && !mountedClass
       ? original.unit.mov

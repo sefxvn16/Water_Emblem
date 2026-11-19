@@ -1,4 +1,5 @@
 import classesJson from '../../../data/classes.json' with { type: 'json' };
+import balanceConfig from '../../../data/balance.json';
 import type { ItemDefinition } from '../combat/types';
 import type { GridUnit, MoveType } from '../grid/types';
 import type { ExtendedUnitState } from '../data/chapterData';
@@ -16,6 +17,19 @@ export interface ClassDefinition {
   readonly mountKind?: 'ground' | 'flying';
   /** Thief-line classes open chests and doors without a key (PLAN item 92). */
   readonly canOpenLocks?: boolean;
+  /** Class this mounted class becomes when dismounted (PLAN item 134). */
+  readonly dismountedClassId?: string;
+  /** Per-weapon-type attack range override (PLAN item 134). */
+  readonly weaponRangeOverrides?: Readonly<Record<string, { readonly min: number; readonly max: number }>>;
+  /** Archer-line classes may man a ballista (PLAN items 122, 134). */
+  readonly canUseBallista?: boolean;
+  /** Extra kill EXP awarded for defeating this class (PLAN item 134). */
+  readonly killExpBonus?: number;
+  /** Manakete transformation (PLAN items 121, 134). */
+  readonly canTransform?: boolean;
+  readonly transformWeaponId?: string;
+  /** Chameleon imitation (PLAN items 124, 134). */
+  readonly canImitate?: boolean;
   readonly hitBonus?: number;
   readonly critBonus?: number;
   /** Class skill id (PLAN item 113, N02). */
@@ -28,8 +42,38 @@ const classById = new Map<string, ClassDefinition>(
   (classesJson.classes as ClassDefinition[]).map((entry) => [entry.id, entry]),
 );
 
+// PLAN item 134 (R8): a mounted class must declare its dismounted form in
+// data; fail loudly at load instead of silently falling back to a fixed class.
+for (const definition of classById.values()) {
+  if (definition.mountKind && !definition.dismountedClassId) {
+    throw new Error(`Class ${definition.id} is mounted but declares no dismountedClassId in data/classes.json`);
+  }
+  if (definition.dismountedClassId && !classById.has(definition.dismountedClassId)) {
+    throw new Error(`Class ${definition.id} declares unknown dismountedClassId ${definition.dismountedClassId}`);
+  }
+}
+
 export function getClassDefinition(classId: string | undefined): ClassDefinition | undefined {
   return classId === undefined ? undefined : classById.get(classId);
+}
+
+/** The dismounted form declared for a mounted class (PLAN item 134). */
+export function getDismountedClassId(mountedClassId: string | undefined): string | undefined {
+  return getClassDefinition(mountedClassId)?.dismountedClassId;
+}
+
+/**
+ * True when the class exists only as the dismounted form of a
+ * ground-mounted class (tier 'dismounted' and declared by a ground class).
+ * Lord does not qualify: it is also a normal base class.
+ */
+export function isGroundDismountedForm(classId: string | undefined): boolean {
+  const form = getClassDefinition(classId);
+  if (!form || form.tier !== 'dismounted') return false;
+  for (const definition of classById.values()) {
+    if (definition.mountKind === 'ground' && definition.dismountedClassId === classId) return true;
+  }
+  return false;
 }
 
 /** All skill ids of a unit: personal skill + current class skill (PLAN 112/113). */
@@ -87,13 +131,14 @@ export function isWeaponUsable(unit: GridUnit, weapon: ItemDefinition): boolean 
 
 export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined, terrainId?: string): { min: number; max: number } {
   if (!weapon || weapon.type === 'staff' || !isWeaponUsable(unit, weapon)) return { min: 1, max: 0 };
+  const definition = getClassDefinition(unit.classId);
   // PLAN item 122 (A14): an archer-line unit manning a ballista shoots 3-10.
-  if (terrainId === 'ballista' && weapon.type === 'bow'
-    && ['archer', 'sniper', 'hunter', 'mangudai'].includes(unit.classId ?? '')) {
-    return { min: 3, max: 10 };
+  if (terrainId === 'ballista' && weapon.type === 'bow' && definition?.canUseBallista) {
+    return { min: balanceConfig.ballista.minRange, max: balanceConfig.ballista.maxRange };
   }
-  if (weapon.type === 'bow' && unit.classId === 'sniper') return { min: 2, max: 3 };
-  if (weapon.type === 'bow' && unit.classId === 'mangudai') return { min: 2, max: 2 };
+  // PLAN item 134: per-class range overrides come from class data.
+  const override = definition?.weaponRangeOverrides?.[weapon.type];
+  if (override) return { min: override.min, max: override.max };
   return { min: weapon.minRange, max: weapon.maxRange };
 }
 
@@ -102,13 +147,11 @@ export function changeMountedState(entry: ExtendedUnitState, mounted: boolean): 
   const currentClass = getClassDefinition(unit.classId);
   if (!currentClass) return null;
   if (!mounted && currentClass.mountKind) {
-    // PLAN item 129: every mounted class can dismount — ground mounts to
-    // lord/paladin, flying mounts to the dismounted pegasus form.
-    const destination = getClassDefinition(
-      currentClass.mountKind === 'flying'
-        ? 'dismounted_pegasus'
-        : unit.classId === 'warlord' ? 'lord' : 'paladin',
-    );
+    // PLAN item 129: every mounted class can dismount. PLAN item 134: the
+    // destination class is declared per mounted class in classes.json
+    // (ground mounts to lord/paladin, flying mounts to the dismounted
+    // pegasus form).
+    const destination = getClassDefinition(currentClass.dismountedClassId);
     if (!destination) return null;
     return {
       ...entry,
@@ -146,15 +189,16 @@ export function promoteUnit(
   const { unit, stats } = entry;
   const currentClass = getClassDefinition(unit.classId);
   const targetClass = getClassDefinition(targetClassId);
-  // FE11 item.cpp:182-215 requires a promotion item and level 10.
-  if (!hasPromotionItem || entry.level < 10 || !currentClass || !targetClass
+  // FE11 item.cpp:182-215 requires a promotion item and level 10
+  // (level threshold in data/balance.json, PLAN item 134).
+  if (!hasPromotionItem || entry.level < balanceConfig.promotionLevel || !currentClass || !targetClass
     || !currentClass.promotions.includes(targetClassId)) return null;
   const nextStats = { ...stats };
   for (const key of ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const) {
-    nextStats[key] = Math.min(30, stats[key] + Math.max(0, (targetClass.baseStats[key] ?? 0) - (currentClass.baseStats[key] ?? 0)));
+    nextStats[key] = Math.min(balanceConfig.statCaps.stat, stats[key] + Math.max(0, (targetClass.baseStats[key] ?? 0) - (currentClass.baseStats[key] ?? 0)));
   }
   const hpGain = Math.max(0, (targetClass.baseStats.hp ?? 0) - (currentClass.baseStats.hp ?? 0));
-  nextStats.maxHp = Math.min(60, stats.maxHp + hpGain);
+  nextStats.maxHp = Math.min(balanceConfig.statCaps.hp, stats.maxHp + hpGain);
   nextStats.hp = Math.min(nextStats.maxHp, stats.hp + hpGain);
   return {
     ...entry,
@@ -181,7 +225,8 @@ function spendItem(entry: ExtendedUnitState, itemId: string): ExtendedUnitState 
 }
 
 export function useVulnerary(entry: ExtendedUnitState, item: ItemDefinition): ExtendedUnitState | null {
-  if (item.id !== 'vulnerary' || item.type !== 'consumable' || !item.healAmount
+  // PLAN item 134: the healing consumable is declared by itemRole in data.
+  if (item.itemRole !== 'healing' || item.type !== 'consumable' || !item.healAmount
     || entry.unit.isDead || entry.stats.hp >= entry.stats.maxHp) return null;
   const spent = spendItem(entry, item.id);
   if (!spent) return null;
