@@ -112,14 +112,14 @@ describe('ballista (PLAN item 122, A14)', () => {
   });
 });
 
-describe('triangle attack (PLAN item 123, A15)', () => {
-  it('three allied fliers around the target guarantee a crit', () => {
+describe('triangle attack (PLAN items 123, 154)', () => {
+  it('only the three sisters (Palla/Catria/Est) guarantee a crit; other fliers do not', () => {
     const units = structuredClone(initialChapterData.units);
-    const caeda = find(units, 'caeda'); // pegasus knight (flier)
+    const caeda = find(units, 'caeda'); // pegasus knight (flier), not a sister
     const pirate = find(units, 'enemy_pirate_5');
     pirate.unit.position = { x: 5, y: 5 };
     caeda.unit.position = { x: 5, y: 4 };
-    // Two more allied fliers: clone caeda as wingmates.
+    // Two more allied fliers around the target: not enough (item 154).
     const wing1 = structuredClone(caeda);
     wing1.unit = { ...wing1.unit, id: 'wing1', position: { x: 4, y: 5 } };
     const wing2 = structuredClone(caeda);
@@ -129,9 +129,22 @@ describe('triangle attack (PLAN item 123, A15)', () => {
       caeda.unit, caeda.stats, caeda.weapon, pirate.unit, pirate.stats, pirate.weapon,
       1, defaultTerrainRegistry, 'plains', 'plains', all,
     );
-    expect(forecast.attacker.critRate).toBe(100);
+    expect(forecast.attacker.critRate).toBeLessThan(100);
+    // The three sisters surrounding the target: guaranteed crit.
+    const palla = structuredClone(caeda);
+    palla.unit = { ...palla.unit, id: 'palla', position: { x: 5, y: 4 } };
+    const catria = structuredClone(caeda);
+    catria.unit = { ...catria.unit, id: 'catria', position: { x: 4, y: 5 } };
+    const est = structuredClone(caeda);
+    est.unit = { ...est.unit, id: 'est', position: { x: 6, y: 5 } };
+    const sisters = [...units.map((u) => u.unit), palla.unit, catria.unit, est.unit];
+    const triangle = calculateCombatForecast(
+      palla.unit, palla.stats, palla.weapon, pirate.unit, pirate.stats, pirate.weapon,
+      1, defaultTerrainRegistry, 'plains', 'plains', sisters,
+    );
+    expect(triangle.attacker.critRate).toBe(100);
     const solo = calculateCombatForecast(
-      caeda.unit, caeda.stats, caeda.weapon, pirate.unit, pirate.stats, pirate.weapon,
+      palla.unit, palla.stats, palla.weapon, pirate.unit, pirate.stats, pirate.weapon,
       1, defaultTerrainRegistry, 'plains', 'plains', units.map((u) => u.unit),
     );
     expect(solo.attacker.critRate).toBeLessThan(100);

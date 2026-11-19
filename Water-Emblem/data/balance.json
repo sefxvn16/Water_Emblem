@@ -174,7 +174,7 @@
     "maxHitBonus": 20
   },
   "triangleAttack": {
-    "requiredFliers": 3
+    "trioUnitIds": ["palla", "catria", "est"]
   },
   "ballista": {
     "maxRange": 10,

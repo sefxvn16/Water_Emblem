@@ -197,13 +197,17 @@ export function calculateCombatSide(
   // Tính Crit
   const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? balanceConfig.pincer.crit : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
   let critRate = Math.min(100, Math.max(0, rawCrit));
-  // PLAN item 123 (A15): Triangle Attack — three allied fliers adjacent
-  // to the opponent make the attacking flier's strike a guaranteed crit.
-  if (unit.moveType === 'flier' && allUnits) {
-    const adjacentFliers = allUnits.filter((ally) =>
+  // PLAN items 123, 154: Triangle Attack — only the three sisters
+  // declared in data/balance.json (trioUnitIds) can use it: when all
+  // three are adjacent to the opponent, the attacking sister's strike
+  // is a guaranteed crit. Any other fliers do not count.
+  const trioUnitIds: readonly string[] = balanceConfig.triangleAttack.trioUnitIds;
+  if (unit.moveType === 'flier' && allUnits && trioUnitIds.includes(unit.id)) {
+    const adjacentSisters = allUnits.filter((ally) =>
       !ally.isDead && ally.faction === unit.faction && ally.moveType === 'flier'
+      && trioUnitIds.includes(ally.id)
       && Math.abs(ally.position.x - opponentUnit.position.x) + Math.abs(ally.position.y - opponentUnit.position.y) === 1);
-    if (adjacentFliers.length >= balanceConfig.triangleAttack.requiredFliers) critRate = 100;
+    if (adjacentSisters.length >= trioUnitIds.length) critRate = 100;
   }
 
   const as = calculateAttackSpeed(stats, weapon);
