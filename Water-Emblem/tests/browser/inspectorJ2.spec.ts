@@ -51,10 +51,12 @@ test('unit-inspector/J2 weapons and items show their icons', async ({ page }) =>
   await openInspector(page, 24, 5);
   const inspector = page.getByTestId('inspector');
 
-  // Weapons: 2×2 grid; Marth carries 3 weapons, so 3 filled cells + 1 empty.
+  // Weapons: 2×2 grid; Marth carries 2 weapons (Rapier + Iron Sword), so
+  // 2 filled cells + 2 empty. (Before PLAN item 82 the equipped Rapier was
+  // shown twice, filling 3 cells.)
   const cells = inspector.getByTestId('inspector-weapons').locator(':scope > div');
   await expect(cells).toHaveCount(4);
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 2; i++) {
     const img = cells.nth(i).locator('img');
     await expect(img).toHaveCount(1);
     const naturalWidth = await img.evaluate((el) => (el as HTMLImageElement).naturalWidth);
@@ -64,6 +66,7 @@ test('unit-inspector/J2 weapons and items show their icons', async ({ page }) =>
     expect(Math.round(box!.height)).toBe(26);
   }
   await expect(cells.nth(0).locator('img')).toHaveAttribute('src', /Is_fe03_rapier\.png$/);
+  await expect(cells.nth(2)).toHaveText('—');
   await expect(cells.nth(3)).toHaveText('—');
 
   // Items: Marth carries none — four dashed empty slots.

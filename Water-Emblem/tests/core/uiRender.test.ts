@@ -179,6 +179,10 @@ describe('UI rendering tests', () => {
     expect(html).toContain('Unit Details');
     expect(html).toContain('src="/avatars/marth.png"');
     expect(html).toContain('Rapier');
+    // The equipped weapon (slot 1) shows exactly once — its own inventory
+    // entry is not repeated (PLAN item 82). Count the visible name text
+    // (the icon's alt attribute also carries the name).
+    expect((html.match(/>Rapier</g) ?? []).length).toBe(1);
     expect(html).toContain('/icons/items/Is_fe03_rapier.png');
     expect(html).toContain('Vulnerary');
     expect(html).toContain('/icons/items/Is_fe03_vulnerary.png');
