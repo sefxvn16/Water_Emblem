@@ -83,6 +83,11 @@ export function healUnitsOnTerrain(
 
 export const defaultTerrainRegistry = new TerrainRegistry();
 
+/** Elevation of a tile (PLAN item 104); maps without elevation data are flat. */
+export function getElevation(map: MapData, pos: Position): number {
+  return map.elevations?.[pos.y]?.[pos.x] ?? 0;
+}
+
 export interface MapObstacleSummary {
   readonly impassableTiles: Position[];
   readonly difficultTiles: Position[];

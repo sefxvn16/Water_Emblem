@@ -1,6 +1,6 @@
 import balanceConfig from '../../../data/balance.json';
 import { calculateMovementRange } from '../grid/pathfinding';
-import { TerrainRegistry } from '../grid/terrain';
+import { getElevation, TerrainRegistry } from '../grid/terrain';
 import { GridUnit, MapData, Position } from '../grid/types';
 import {
   calculateCombatForecast,
@@ -41,6 +41,8 @@ export interface AIContext {
   readonly villageTargets?: readonly Position[];
   /** Opened door tiles as "x,y" keys (PLAN item 92). */
   readonly openedDoors?: ReadonlySet<string>;
+  /** Destroyed destructible-object tiles as "x,y" keys (PLAN item 101). */
+  readonly destroyedObjects?: ReadonlySet<string>;
 }
 
 export function evaluateAITurn(
@@ -63,6 +65,7 @@ export function evaluateAITurn(
     terrains,
     units,
     openedDoors: context.openedDoors,
+    destroyedObjects: context.destroyedObjects,
   });
 
   // FE3 thieves head for unvisited villages before seeking combat.
@@ -117,7 +120,8 @@ export function evaluateAITurn(
           terrains,
           attackerTerrainId,
           defenderTerrainId,
-          projectedUnits
+          projectedUnits,
+          { attacker: getElevation(map, tile), defender: getElevation(map, target.position) }
         );
 
         // Chấm điểm theo trọng số cấu hình trong data/balance.json

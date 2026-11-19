@@ -112,7 +112,8 @@ export function calculateCombatSide(
   terrainRegistry: TerrainRegistry,
   _terrainId: string,
   opponentTerrainId: string,
-  allUnits?: readonly GridUnit[]
+  allUnits?: readonly GridUnit[],
+  heightDiff = 0
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -171,13 +172,19 @@ export function calculateCombatSide(
   const damage = Math.max(0, attackPower - defense);
 
   // Tính Hit
-  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0);
+  // PLAN item 104 (V07): height advantage — ±10 Hit per elevation level,
+  // capped at ±20 [Giả định].
+  const heightBonus = Math.max(-20, Math.min(20, heightDiff * 10));
+  // PLAN item 103 (V05): pincer — an ally of the attacker stands on the
+  // far side of the opponent; +15 Hit, +10 Crit [Giả định].
+  const pincer = allUnits ? hasPincerAlly(unit, opponentUnit, allUnits) : false;
+  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? 15 : 0);
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
   const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid;
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) - (opponentStats.lck + opponentSupport.dodge);
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) - (opponentStats.lck + opponentSupport.dodge);
   const critRate = Math.min(100, Math.max(0, rawCrit));
 
   const as = calculateAttackSpeed(stats, weapon);
@@ -195,6 +202,26 @@ export function calculateCombatSide(
   };
 }
 
+/**
+ * PLAN item 103 (V05 pincer): true when a living ally of `unit` stands on
+ * the far side of `opponent` relative to `unit` — adjacent to the opponent
+ * in the half-plane away from the attacker.
+ */
+export function hasPincerAlly(unit: GridUnit, opponent: GridUnit, allUnits: readonly GridUnit[]): boolean {
+  const dx = opponent.position.x - unit.position.x;
+  const dy = opponent.position.y - unit.position.y;
+  if (dx === 0 && dy === 0) return false;
+  return allUnits.some((ally) => {
+    if (ally.id === unit.id || ally.id === opponent.id || ally.isDead) return false;
+    if (ally.faction !== unit.faction) return false;
+    const ax = ally.position.x - opponent.position.x;
+    const ay = ally.position.y - opponent.position.y;
+    if (Math.abs(ax) + Math.abs(ay) !== 1) return false;
+    // Far side: the ally step from the opponent points away from the attacker.
+    return ax * dx + ay * dy > 0;
+  });
+}
+
 export function calculateCombatForecast(
   attackerUnit: GridUnit,
   attackerStats: UnitCombatStats,
@@ -206,8 +233,10 @@ export function calculateCombatForecast(
   terrainRegistry: TerrainRegistry,
   attackerTerrainId: string,
   defenderTerrainId: string,
-  allUnits?: readonly GridUnit[]
+  allUnits?: readonly GridUnit[],
+  elevations?: { readonly attacker: number; readonly defender: number }
 ): CombatForecast {
+  const heightDiff = elevations ? elevations.attacker - elevations.defender : 0;
   let attackerSide = calculateCombatSide(
     attackerUnit,
     attackerStats,
@@ -219,7 +248,8 @@ export function calculateCombatForecast(
     terrainRegistry,
     attackerTerrainId,
     defenderTerrainId,
-    allUnits
+    allUnits,
+    heightDiff
   );
 
   let defenderSide = calculateCombatSide(
@@ -233,7 +263,8 @@ export function calculateCombatForecast(
     terrainRegistry,
     defenderTerrainId,
     attackerTerrainId,
-    allUnits
+    allUnits,
+    -heightDiff
   );
 
   // Đánh 2 lần (Double Attack)

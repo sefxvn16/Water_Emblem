@@ -7,6 +7,9 @@ export interface PathfindingContext {
   readonly units: readonly GridUnit[];
   /** Opened door tiles as "x,y" keys (PLAN item 92); closed doors block. */
   readonly openedDoors?: ReadonlySet<string>;
+  /** Destroyed destructible-object tiles as "x,y" keys (PLAN item 101);
+      rubble costs 1 to cross. */
+  readonly destroyedObjects?: ReadonlySet<string>;
 }
 
 function posKey(pos: Position): string {
@@ -93,7 +96,8 @@ export function calculateMovementRange(
         continue;
       }
 
-      const moveCost = terrainId === 'door' && context.openedDoors?.has(posKey(nextPos))
+      const moveCost = (terrainId === 'door' && context.openedDoors?.has(posKey(nextPos)))
+        || context.destroyedObjects?.has(posKey(nextPos))
         ? 1
         : terrains.getMovementCost(terrainId, unit.moveType, unit.classId);
       if (moveCost === null) {

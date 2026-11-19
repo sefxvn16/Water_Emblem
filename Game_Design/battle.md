@@ -144,3 +144,10 @@ B10 cho địch nhiều vai trò: canh giữ, truy đuổi, tuần tra, rút lui
 B02 cho người chơi thấy mục tiêu địch đang dự kiến tấn công; B03 báo trước đòn hoặc vùng tác động. Cần phân biệt dự đoán có thể đổi (B02) với hành động đã khóa (B03), thời điểm cập nhật và trường hợp người chơi thay đổi vị trí. AI không được đọc thông tin Fog of War bị che và không được biết trước kết quả RNG. B04 về viện binh và B05–B06 về điều kiện chương thuộc `campaign.md`; `art_ui.md` quy định cách hiển thị B01–B03.
 
 Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Báo cáo giải thích lựa chọn từ nhiều game; mọi con số và nhận định chưa được xác minh độc lập vẫn giữ nhãn Chờ chốt.
+
+## Đợt A cơ chế đã chốt (2026-11-19, PLAN mục 101/103/104/105)
+
+- **C12 Phá vật che chắn (mục 101):** ô địa hình `destructible` (vd Wall 20 HP) đánh được như mục tiêu thường qua dự báo; vật không phản đòn, không cho EXP, độ bền + WEx vẫn tính. Vỡ (0 HP) thì ô thành đống đổ nát đi qua tốn 1. HP vật lưu trong save (`objectStates`). Địch AI không đánh vật [Giả định].
+- **V05 Đánh kẹp (mục 103):** khi quân ta đánh địch mà có quân ta khác đứng kề phía đối diện của địch (so với quân đánh) thì quân đánh được **+15 Hit, +10 Crit** [Giả định]. Áp dụng cả hai phía giao tranh theo đồng minh của từng phía.
+- **V07 Lợi thế cao độ (mục 104):** cao độ ô lấy từ `elevations` của bản đồ; chênh cao độ cho **±10 Hit mỗi bậc, tối đa ±20** [Giả định] (cao hơn đánh trúng hơn, thấp hơn bị trừ tương ứng).
+- **V08 Bẫy (mục 105):** chương khai báo `traps` (ô + sát thương). Quân kết thúc di chuyển trên ô bẫy thì bẫy kích hoạt 1 lần, gây sát thương cố định nhưng **không giảm HP dưới 1** [Giả định]; bẫy đã kích hoạt lưu trong save (`triggeredTraps`).

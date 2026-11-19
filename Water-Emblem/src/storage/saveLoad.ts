@@ -36,6 +36,10 @@ export interface GameSnapshot {
   doorStates?: Record<string, 'opened'>;
   /** Reinforcement groups already spawned (PLAN item 94); absent = none yet. */
   spawnedReinforcements?: string[];
+  /** Remaining HP of damaged destructible objects by "x,y" key (PLAN item 101). */
+  objectStates?: Record<string, number>;
+  /** Traps already triggered (PLAN item 105); absent = none yet. */
+  triggeredTraps?: string[];
 }
 
 export interface SaveGameData extends GameSnapshot {
@@ -160,6 +164,14 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   if (!Array.isArray(spawnedReinforcements)) return false;
   const reinforcementGroupIds = new Set((chapter.reinforcements ?? []).map(({ id }) => id));
   if (spawnedReinforcements.some((id: unknown) => typeof id !== 'string' || !reinforcementGroupIds.has(id))) return false;
+  const objectStates = value.objectStates === undefined ? {} : value.objectStates;
+  if (!isRecord(objectStates)) return false;
+  if (Object.entries(objectStates).some(([key, hp]) =>
+    !/^\d+,\d+$/.test(key) || !isNonnegativeInteger(hp))) return false;
+  const triggeredTraps = value.triggeredTraps === undefined ? [] : value.triggeredTraps;
+  if (!Array.isArray(triggeredTraps)) return false;
+  const trapIds = new Set((chapter.traps ?? []).map(({ id }) => id));
+  if (triggeredTraps.some((id: unknown) => typeof id !== 'string' || !trapIds.has(id))) return false;
   const reinforcementUnits = (chapter.reinforcements ?? []).flatMap((group) => group.units);
   const reserveUnits = value.reserveUnits === undefined ? [] : value.reserveUnits;
   if (!Array.isArray(reserveUnits) || !reserveUnits.every(isSavedUnit)) return false;
@@ -237,6 +249,8 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
   migrated.chestStates ??= {};
   migrated.doorStates ??= {};
   migrated.spawnedReinforcements ??= [];
+  migrated.objectStates ??= {};
+  migrated.triggeredTraps ??= [];
   const savedIds = new Set([...migrated.extendedUnits as unknown[],
     ...(Array.isArray(migrated.reserveUnits) ? migrated.reserveUnits as unknown[] : [])]
     .filter(isRecord).map((entry) => isRecord(entry.unit) ? entry.unit.id : undefined));

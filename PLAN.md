@@ -363,10 +363,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/forecast-bottom-center`. `overlayAnchor` thêm kiểu neo `bottom-center`: mặc định căn giữa dưới; nếu che ô quân đánh/quân thủ thì dịch trái vừa đủ tránh, dịch trái không đủ chỗ thì dịch phải; cả hai phía đều không tránh hết thì lấy phía ít che hơn. `CombatForecastWindow` đổi `prefer` sang `bottom-center`. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/234 test PASS (3 test mới cho bottom-center); Playwright phần dự báo (A2/A5/A6) PASS; gate đầy đủ 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
-- [ ] 101. C12 Phá vật che chắn: vật cản có HP, đánh vỡ được.
+- [x] 101. C12 Phá vật che chắn: vật cản có HP, đánh vỡ được.
   - Nguồn: cơ chế đã chọn C12 (`decisions.md`); dữ liệu địa hình đã có field `destructible`/`maxHp` nhưng chưa code đọc. Chủ dự án 2026-11-19 18:26: làm toàn bộ cơ chế đã chốt cho xong.
   - Tiêu chí xong: (1) Ô địa hình phá được có HP; quân đánh vào ô đó như đánh mục tiêu (dự báo hiện), vỡ thì ô thành địa hình thường đi qua được; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ô `destructible` (Wall 20 HP) đánh được qua dự báo như mục tiêu thường (vật giả lập `object:x,y`, không phản đòn, không EXP, độ bền + WEx vẫn tính); vỡ thì đi qua tốn 1; `objectStates` lưu trong save. Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS (test mới `tests/core/batchA.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [ ] 102. V04 Canto: kỵ binh/bay đi tiếp phần di chuyển còn lại sau khi hành động.
@@ -375,22 +375,22 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 103. V05 Đánh kẹp: thưởng khi kẹp địch giữa 2 quân ta.
+- [x] 103. V05 Đánh kẹp: thưởng khi kẹp địch giữa 2 quân ta.
   - Nguồn: cơ chế đã chọn V05 (đòn phối hợp do đánh kẹp vị trí, không phải Chain Attack). Vị trí kích hoạt + mức thưởng chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Khi quân ta đánh địch đang bị kẹp (có quân ta ở phía đối diện địch so với quân đánh) thì được thưởng chỉ số chiến đấu ghi rõ trong `battle.md`. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `hasPincerAlly` trong calculator: đồng minh đứng kề phía đối diện của địch → +15 Hit, +10 Crit [Giả định]. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 104. V07 Lợi thế cao độ: địa hình cao thấp ảnh hưởng chiến đấu.
+- [x] 104. V07 Lợi thế cao độ: địa hình cao thấp ảnh hưởng chiến đấu.
   - Nguồn: cơ chế đã chọn V07. Mức cao độ + thưởng chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Địa hình có cao độ; quân ở cao hơn được thưởng Hit/Avoid (hoặc theo chốt khi làm) khi đánh quân thấp hơn và ngược lại; dự báo hiển thị đúng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `getElevation` đọc `elevations` của bản đồ; dự báo cộng ±10 Hit/bậc cao độ, tối đa ±20 [Giả định]; App + AI đều truyền cao độ. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 105. V08 Bẫy/chặn lối: ô bẫy trên bản đồ.
+- [x] 105. V08 Bẫy/chặn lối: ô bẫy trên bản đồ.
   - Nguồn: cơ chế đã chọn V08. Loại bẫy + sát thương chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Dữ liệu chương đặt được ô bẫy; quân bước vào chịu hiệu ứng (sát thương/trạng thái) một lần, bẫy lộ ra sau khi kích hoạt; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Chương khai báo `traps`; quân kết thúc di chuyển trên ô bẫy thì chịu sát thương (không dưới 1 HP [Giả định]), kích hoạt 1 lần; `triggeredTraps` lưu trong save; áp dụng cả quân người chơi lẫn địch. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [ ] 106. B02 Đường mục tiêu địch: hiện đường địch dự kiến đi/đánh.
@@ -505,6 +505,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Nguồn: chủ dự án chốt A16.
   - Tiêu chí xong: (1) Dancer có lệnh Dance: quân ta kề bên đã hành động được hành động lại. (2) Xane có lệnh Imitate: sao chép chỉ số/vũ khí của quân ta kề bên trong số lượt ghi rõ. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [x] 125. Nút Cancel của bảng dự báo nằm ngay dưới nút Attack; 2 nút tròn 3D bóng bẩy.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:28 (kèm ảnh): "nút huỷ ở bảng thông tin dự báo chiến đấu nằm ngay dưới nút attack chứ không phải nằm ở góc. Và thiết kế lại các nút này dạng hình tròn, có độ sâu dạng 3D, hiệu ứng bóng bẩy đi". Thay vị trí nút Cancel ở góc trên phải của mục 96.
+  - Tiêu chí xong: (1) Nút Cancel nằm ngay dưới nút Attack ở cột giữa bảng dự báo, bỏ nút ở góc. (2) Cả 2 nút dạng tròn, có độ sâu 3D + bóng bẩy (gradient hướng sáng, bóng trong/ngoài). (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút Cancel chuyển xuống ngay dưới nút Attack ở cột giữa; cả 2 nút tròn 3D bóng bẩy (gradient hướng sáng + bóng trong/ngoài). Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)

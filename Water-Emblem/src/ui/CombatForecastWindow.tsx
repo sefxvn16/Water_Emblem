@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { CombatForecast } from '../core/combat/types';
 import type { ExtendedUnitState } from '../core/data/chapterData';
-import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sharedPanelStyle, statRowStyle, statValueStyle } from './designSystem';
+import { DS_COLORS, DS_RADII, DS_Z, sharedPanelStyle, statRowStyle, statValueStyle } from './designSystem';
 import { useAnchoredOverlay } from './overlayAnchor';
 import { getItemIcon } from './itemIcon';
 
@@ -232,32 +232,10 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         borderRadius: DS_RADII.panel,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
         <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.03em' }}>
           ⚔️ COMBAT FORECAST
         </div>
-        <button
-          type="button"
-          aria-label="Cancel"
-          title="Cancel"
-          onClick={onCancel}
-          onMouseEnter={() => setCancelHover(true)}
-          onMouseLeave={() => setCancelHover(false)}
-          style={{
-            ...secondaryButtonStyle(),
-            width: '44px',
-            height: '44px',
-            borderRadius: '50%',
-            padding: 0,
-            flexShrink: 0,
-            border: `2px solid ${cancelHover ? DS_COLORS.enemy : DS_COLORS.secondaryBorder}`,
-            boxShadow: cancelHover ? '0 0 10px rgba(239,68,68,0.55)' : '0 2px 6px rgba(0,0,0,0.5)',
-            transform: cancelHover ? 'scale(1.08)' : 'scale(1)',
-            transition: 'transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease',
-          }}
-        >
-          <CrossGlyph />
-        </button>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -278,30 +256,64 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           attUses,
         )}
 
-        <button
-          type="button"
-          aria-label="⚔️ Attack!"
-          title="Attack"
-          onClick={onConfirm}
-          onMouseEnter={() => setSwordHover(true)}
-          onMouseLeave={() => setSwordHover(false)}
-          style={{
-            ...primaryButtonStyle(),
-            width: '60px',
-            height: '60px',
-            borderRadius: '50%',
-            padding: 0,
-            flexShrink: 0,
-            border: `2px solid ${DS_COLORS.goldText}`,
-            boxShadow: swordHover
-              ? '0 0 16px rgba(234,179,8,0.8), 0 4px 10px rgba(0,0,0,0.6)'
-              : '0 0 8px rgba(234,179,8,0.45), 0 4px 10px rgba(0,0,0,0.6)',
-            transform: swordHover ? 'scale(1.1) rotate(-6deg)' : 'scale(1)',
-            transition: 'transform 0.12s ease, box-shadow 0.12s ease',
-          }}
-        >
-          <SwordGlyph />
-        </button>
+        {/* PLAN item 125: round 3D glossy buttons — Attack on top, Cancel
+            directly below it in the center column. */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
+          <button
+            type="button"
+            aria-label="⚔️ Attack!"
+            title="Attack"
+            onClick={onConfirm}
+            onMouseEnter={() => setSwordHover(true)}
+            onMouseLeave={() => setSwordHover(false)}
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'radial-gradient(circle at 32% 28%, #fef9c3 0%, #facc15 38%, #eab308 62%, #a16207 100%)',
+              border: `2px solid ${DS_COLORS.goldText}`,
+              boxShadow: swordHover
+                ? 'inset 0 3px 5px rgba(255,255,255,0.85), inset 0 -8px 12px rgba(120,53,15,0.55), 0 0 18px rgba(234,179,8,0.85), 0 6px 14px rgba(0,0,0,0.65)'
+                : 'inset 0 3px 5px rgba(255,255,255,0.75), inset 0 -8px 12px rgba(120,53,15,0.5), 0 0 10px rgba(234,179,8,0.5), 0 5px 12px rgba(0,0,0,0.6)',
+              transform: swordHover ? 'scale(1.1) rotate(-6deg)' : 'scale(1)',
+              transition: 'transform 0.12s ease, box-shadow 0.12s ease',
+            }}
+          >
+            <SwordGlyph />
+          </button>
+          <button
+            type="button"
+            aria-label="Cancel"
+            title="Cancel"
+            onClick={onCancel}
+            onMouseEnter={() => setCancelHover(true)}
+            onMouseLeave={() => setCancelHover(false)}
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'radial-gradient(circle at 32% 28%, #64748b 0%, #334155 45%, #1e293b 75%, #0f172a 100%)',
+              border: `2px solid ${cancelHover ? DS_COLORS.enemy : '#94a3b8'}`,
+              boxShadow: cancelHover
+                ? 'inset 0 2px 4px rgba(255,255,255,0.5), inset 0 -6px 9px rgba(0,0,0,0.6), 0 0 12px rgba(239,68,68,0.6), 0 5px 10px rgba(0,0,0,0.6)'
+                : 'inset 0 2px 4px rgba(255,255,255,0.45), inset 0 -6px 9px rgba(0,0,0,0.55), 0 4px 9px rgba(0,0,0,0.55)',
+              transform: cancelHover ? 'scale(1.1)' : 'scale(1)',
+              transition: 'transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease',
+            }}
+          >
+            <CrossGlyph />
+          </button>
+        </div>
 
         {renderSidePanel(
           defender,
