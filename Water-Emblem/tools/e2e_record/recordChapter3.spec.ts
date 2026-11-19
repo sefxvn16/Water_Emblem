@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { SEED, recordOn, saveRecording } from './recorder';
+import { closeSettings, dismissRewardPopup, expectPlayerPhase, expectTurnNumber, openSettings } from '../../tests/browser/settingsMenu';
 test.beforeEach(async ({ page }) => { await recordOn(page); });
 test.afterEach(async ({ page }, info) => { await saveRecording(page, info, 'chapter3'); });
 import mapJson from '../../data/maps/chapter_03_devil_mountain.json' with { type: 'json' };
@@ -71,6 +72,24 @@ function routeDistance(start: Position, goal: Position, moveType: ExtendedUnitSt
   return 999;
 }
 
+
+// The unit walks to its destination (item 98); wait for the action bar
+// before clicking further, otherwise clicks land mid-walk.
+async function waitActionMenu(page: Page): Promise<void> {
+  await page.getByTestId('action-menu').waitFor({ state: 'visible', timeout: 8000 }).catch(() => undefined);
+}
+
+async function confirmAttack(page: Page, target: Position): Promise<void> {
+  const forecast = page.getByTestId('forecast-window');
+  const opened = await forecast.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+  if (!opened) {
+    await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click().catch(() => undefined);
+    await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
+    await forecast.waitFor({ state: 'visible', timeout: 8000 });
+  }
+  await forecast.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
+}
+
 test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and seize gate', async ({ page }) => {
   test.setTimeout(360_000);
   await page.goto('/?seed=' + SEED);
@@ -78,12 +97,15 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
   if (await resumeBtn.isVisible()) await resumeBtn.click();
 
   // Switch to Chapter 3
+  await openSettings(page);
   await page.locator('select').first().selectOption('chapter_03');
   await page.getByRole('button', { name: /(?:Start Chapter|Bắt đầu chương)/i }).click();
   await expect(page.getByRole('heading', { name: /Chapter 3: The Devil Mountain/i })).toBeVisible();
 
   await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
+  await openSettings(page);
   await page.getByRole('button', { name: /2D Grid/ }).click();
+  await closeSettings(page);
   const tile = (position: Position) => page.getByText(`${position.x},${position.y}`, { exact: true }).dispatchEvent('click');
 
   const order = [
@@ -93,6 +115,7 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
 
   for (let turn = 1; turn <= 40; turn++) {
     for (const id of order) {
+      await dismissRewardPopup(page);
       const { units } = await readBattle(page);
       const actor = units.find(({ unit }) => unit.id === id);
       if (!actor || actor.unit.isDead || actor.unit.hasActed || actor.unit.faction !== 'player') continue;
@@ -148,7 +171,7 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
             return { position, target, score };
           }
 
-          if (canCounter) {
+          if (canCounter && enemies.length > 1) {
             if (counterDmg >= actor.stats.hp) return null;
             if (actor.stats.hp <= 8 && counterDmg > 0) return null;
           }
@@ -247,9 +270,15 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
         destination = scored[0]?.pos ?? actor.unit.position;
       } else {
         // Move towards nearest enemy or Navarre if Caeda
+        // Attack positions are tiles next to an enemy (see recordChapter1).
         const goals = (id === 'caeda' && navarreEnemy)
           ? [navarreEnemy.unit.position]
-          : enemies.map(({ unit }) => unit.position);
+          : enemies.flatMap(({ unit }) => [
+              { x: unit.position.x + 1, y: unit.position.y },
+              { x: unit.position.x - 1, y: unit.position.y },
+              { x: unit.position.x, y: unit.position.y + 1 },
+              { x: unit.position.x, y: unit.position.y - 1 },
+            ]);
 
         destination = destinations.sort((a, b) => {
           const distA = Math.min(...goals.map((goal) => routeDistance(a, goal, actor.unit.moveType, actor.unit.classId)));
@@ -264,6 +293,7 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
 
       await tile(actor.unit.position);
       await tile(destination);
+      await waitActionMenu(page);
       console.log(`[CH3-T${turn}] ${id} -> (${destination.x},${destination.y}) ${isTalkMove ? 'talking to Navarre' : attackCandidate ? `attacks ${attackCandidate.target.unit.id}` : 'waits'}`);
 
       // Seize check
@@ -281,7 +311,7 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
         console.log(`[CH3-T${turn}] Navarre recruited by Caeda!`);
       } else if (attackCandidate) {
         await tile(attackCandidate.target.unit.position);
-        await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
+        await confirmAttack(page, attackCandidate.target.unit.position);
       } else {
         await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
       }
@@ -290,10 +320,12 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
     if (await page.getByRole('heading', { name: /(?:GAME OVER|THẤT BẠI)/i }).isVisible()) {
       throw new Error(`Marth was defeated in Chapter 3 on turn ${turn}`);
     }
-    if (await page.getByText('PLAYER PHASE').isVisible()) {
+    const phase = await page.evaluate(() => (window as any).__WATER_EMBLEM_STATE__?.turnState?.activePhase);
+    if (phase === 'player_phase') {
+      await dismissRewardPopup(page);
       await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
     }
-    await expect(page.getByText(`Turn: ${turn + 1}`)).toBeVisible({ timeout: 15000 });
+    await expectTurnNumber(page, turn + 1);
   }
   throw new Error('Chapter 3 was not completed within 40 turns');
 });
