@@ -6,8 +6,9 @@ import { getClassDefinition } from '../core/class/classRules';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
-import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, statRowStyle, statValueStyle } from './designSystem';
+import { DS_COLORS, DS_FONTS, DS_RADII, DS_SPACING, DS_Z } from './designSystem';
 import { getItemDisplayName, getItemIcon } from './itemIcon';
+import { ItemSlot, SectionTitle, StatBox, StatRow, WeaponCell } from './UnitInspectorParts';
 
 interface UnitInspectorWindowProps {
   unit: ExtendedUnitState;
@@ -16,29 +17,6 @@ interface UnitInspectorWindowProps {
   tile: Position;
   onClose: () => void;
 }
-
-const StatBox: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
-  <div
-    style={{
-      backgroundColor: '#141418',
-      border: '1px solid rgba(255,255,255,0.15)',
-      borderRadius: DS_RADII.medium,
-      padding: '8px 10px',
-      boxSizing: 'border-box',
-      ...style,
-    }}
-  >
-    {children}
-  </div>
-);
-
-/** One label–value row: the value sits in a right-aligned column shared by all panels. */
-const StatRow: React.FC<{ label: string; value: React.ReactNode; valueColor?: string }> = ({ label, value, valueColor }) => (
-  <div style={statRowStyle}>
-    <span>{label}</span>
-    <strong style={{ ...statValueStyle, color: valueColor ?? DS_COLORS.text }}>{value}</strong>
-  </div>
-);
 
 export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   unit: u,
@@ -113,6 +91,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
     }
   }
 
+  const hpPct = u.stats.maxHp > 0 ? Math.min(100, (u.stats.hp / u.stats.maxHp) * 100) : 0;
+
   return (
     <div
       ref={rootRef}
@@ -129,29 +109,36 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
         overflowY: 'auto',
         boxSizing: 'border-box',
         zIndex: DS_Z.inspector,
-        // Gold frame with a faction background (owner decision 2026-11-19):
-        // ally blue, enemy dark red. Shades in DESIGN.md.
-        backgroundColor: isPlayer ? DS_COLORS.allyBg : DS_COLORS.enemyBg,
-        padding: '12px',
-        borderRadius: DS_RADII.large,
-        border: `2px solid ${DS_COLORS.gold}`,
-        boxShadow: '0 12px 32px rgba(0,0,0,0.75)',
-        color: '#f3f4f6',
+        // Mockup J2 (PLAN item 79): navy panel, thin muted-gold frame; the faction
+        // is the accent bar + chip, not a faction background.
+        backgroundColor: DS_COLORS.inspectorPanel,
+        border: `1px solid ${DS_COLORS.inspectorFrame}`,
+        borderRadius: DS_RADII.xlarge,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+        color: '#f8fafc',
         fontSize: '13px',
         lineHeight: 1.45,
       }}
     >
-      {/* Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', gap: '8px' }}>
+      {/* Faction accent bar */}
+      <div
+        data-testid="inspector-accent"
+        style={{ height: 3, backgroundColor: isPlayer ? DS_COLORS.ally : DS_COLORS.enemy }}
+      />
+
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 16px 12px', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-          <h3 style={{ margin: 0, fontSize: '15px', color: '#f3f4f6', fontWeight: 600 }}>Unit Details</h3>
+          <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, letterSpacing: 3, textTransform: 'uppercase', color: DS_COLORS.mutedGold }}>
+            Unit Details
+          </h3>
           <span
             style={{
               fontSize: '11px',
-              padding: '2px 6px',
-              borderRadius: '4px',
+              padding: '2px 9px',
+              borderRadius: '10px',
               fontWeight: 500,
-              backgroundColor: isPlayer ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+              backgroundColor: isPlayer ? 'rgba(59, 130, 246, 0.16)' : 'rgba(239, 68, 68, 0.16)',
               color: isPlayer ? '#93c5fd' : '#fca5a5',
               border: `1px solid ${isPlayer ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
               flexShrink: 0,
@@ -164,7 +151,6 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           onClick={onClose}
           aria-label="Close unit details"
           style={{
-            ...primaryButtonStyle(),
             width: '44px',
             height: '44px',
             minWidth: '44px',
@@ -172,148 +158,159 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             flexShrink: 0,
             fontSize: '15px',
             lineHeight: 1,
+            backgroundColor: 'transparent',
+            border: `1px solid ${DS_COLORS.inspectorHairline}`,
+            borderRadius: DS_RADII.panel,
+            color: DS_COLORS.inspectorLabel,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxSizing: 'border-box',
           }}
         >
           ✕
         </button>
       </div>
 
-      {/* Top Section: Identity, Portrait, Weapons */}
-      <StatBox style={{ marginBottom: '8px', padding: '10px' }}>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          {/* Unit Identity */}
-          <div style={{ minWidth: 0, flex: '1 1 105px', lineHeight: 1.5, fontSize: '12px' }}>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#fff', overflowWrap: 'break-word' }}>{u.unit.name}</div>
-            <div style={{ color: '#93c5fd' }}>{className}</div>
-            <div style={{ color: '#9ca3af' }}>
-              LV {u.level} · EXP {u.exp < 100 ? u.exp : '--'}
-            </div>
-            <div style={{ color: '#4ade80', fontWeight: 'bold', marginTop: '2px' }}>
-              HP {u.stats.hp} / {u.stats.maxHp}
-            </div>
+      {/* Hero: portrait + identity + HP bar */}
+      <div style={{ display: 'flex', gap: DS_SPACING.xxxl, padding: '4px 16px 16px', alignItems: 'flex-start' }}>
+        <div
+          style={{
+            width: '112px',
+            height: '112px',
+            flexShrink: 0,
+            backgroundColor: '#0b1220',
+            borderRadius: DS_RADII.large,
+            border: `1px solid ${DS_COLORS.inspectorFrame}`,
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {u.avatarUrl ? (
+            <img
+              src={u.avatarUrl}
+              alt={u.unit.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            />
+          ) : (
+            <span style={{ fontSize: '22px' }}>👤</span>
+          )}
+        </div>
+        <div style={{ minWidth: 0, flex: 1, paddingTop: '4px' }}>
+          <div style={{ fontFamily: DS_FONTS.serif, fontSize: '23px', fontWeight: 'bold', lineHeight: 1.15, overflowWrap: 'break-word' }}>
+            {u.unit.name}
           </div>
-
-          {/* Avatar Portrait */}
+          <div style={{ fontSize: '13px', color: DS_COLORS.inspectorLabel, marginTop: '5px' }}>{className}</div>
+          <div style={{ fontSize: '12px', color: DS_COLORS.inspectorLabel, marginTop: '4px' }}>
+            LV {u.level} · EXP {u.exp < 100 ? u.exp : '--'}
+          </div>
           <div
             style={{
-              width: '64px',
-              height: '64px',
-              flexShrink: 0,
-              backgroundColor: '#0f172a',
-              borderRadius: '6px',
-              border: `2px solid ${isPlayer ? '#3b82f6' : '#ef4444'}`,
+              marginTop: '12px',
+              height: '10px',
+              backgroundColor: '#0b1220',
+              border: `1px solid ${DS_COLORS.inspectorHairline}`,
+              borderRadius: DS_RADII.medium,
               overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              position: 'relative',
             }}
           >
-            {u.avatarUrl ? (
-              <img
-                src={u.avatarUrl}
-                alt={u.unit.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
-            ) : (
-              <span style={{ fontSize: '22px' }}>👤</span>
-            )}
+            <div style={{ height: '100%', width: `${hpPct}%`, background: 'linear-gradient(90deg, #16a34a, #22c55e)' }} />
+            <span
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '9px',
+                fontWeight: 'bold',
+                color: '#fff',
+              }}
+            >
+              HP {u.stats.hp} / {u.stats.maxHp}
+            </span>
           </div>
+        </div>
+      </div>
 
-          {/* Weapons List */}
-          <div style={{ flex: 1, minWidth: 0, fontSize: '12px', lineHeight: 1.6 }}>
-            <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Weapons</div>
-            {weaponList.map((w, idx) => (
+      {/* Weapons box */}
+      <StatBox style={{ margin: '0 16px 16px' }}>
+        <SectionTitle>Weapons</SectionTitle>
+        <div data-testid="inspector-weapons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: DS_SPACING.lg }}>
+          {weaponList.map((w, idx) => (
+            <WeaponCell key={idx} name={w.name} uses={w.uses} icon={w.icon} />
+          ))}
+          {weaponList.length < 4 &&
+            Array.from({ length: 4 - weaponList.length }).map((_, idx) => (
               <div
-                key={idx}
+                key={`empty-w-${idx}`}
                 style={{
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: '4px',
+                  justifyContent: 'center',
+                  backgroundColor: DS_COLORS.inspectorPanel,
+                  border: `1px solid ${DS_COLORS.inspectorHairline}`,
+                  borderRadius: DS_RADII.panel,
+                  padding: '8px 12px',
+                  color: '#5b6b85',
+                  fontSize: '12px',
                 }}
               >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {w.name}
-                </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
-                  <span style={{ color: '#9ca3af' }}>/{w.uses}</span>
-                  <img
-                    src={w.icon}
-                    alt=""
-                    style={{ width: '16px', height: '16px', imageRendering: 'pixelated', verticalAlign: 'middle' }}
-                  />
-                </span>
+                —
               </div>
             ))}
-            {weaponList.length < 4 &&
-              Array.from({ length: 4 - weaponList.length }).map((_, idx) => (
-                <div key={`empty-w-${idx}`} style={{ color: '#94a3b8', fontSize: '11px' }}>
-                  —
-                </div>
-              ))}
-          </div>
         </div>
       </StatBox>
 
-      {/* Bottom 3-Panel Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px', marginBottom: '8px' }}>
-        {/* Panel 1: Combat Stats */}
-        <StatBox style={{ fontSize: '12px', lineHeight: 1.65 }}>
-          <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Combat</div>
-          <StatRow label="Atk:" value={combat.atk} valueColor="#facc15" />
-          <StatRow label="Hit:" value={combat.hit} valueColor="#facc15" />
-          <StatRow label="Avo:" value={combat.avoid} valueColor="#facc15" />
-          <StatRow label="Crit:" value={combat.crit} valueColor="#facc15" />
-          <StatRow label="AS:" value={combat.as} valueColor="#facc15" />
-          <StatRow label="Eff:" value={u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(',') : '—'} valueColor="#9ca3af" />
-        </StatBox>
-
-        {/* Panel 2: Base Stats */}
-        <StatBox style={{ fontSize: '12px', lineHeight: 1.65 }}>
-          <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Attributes</div>
+      {/* Combat + Attributes columns */}
+      <div style={{ display: 'flex', gap: DS_SPACING.xxxl, padding: '0 16px 16px' }}>
+        <div data-testid="inspector-col-combat" style={{ flex: 1, minWidth: 0 }}>
+          <SectionTitle>Combat</SectionTitle>
+          <StatRow label="Atk:" value={combat.atk} />
+          <StatRow label="Hit:" value={combat.hit} />
+          <StatRow label="Avo:" value={combat.avoid} />
+          <StatRow label="Crit:" value={combat.crit} />
+          <StatRow label="AS:" value={combat.as} />
+          <StatRow
+            label="Eff:"
+            value={u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(', ') : '—'}
+            valueColor="#9ca3af"
+            divider={false}
+          />
+        </div>
+        <div data-testid="inspector-col-attributes" style={{ flex: 1, minWidth: 0 }}>
+          <SectionTitle>Attributes</SectionTitle>
           <StatRow label="Str:" value={u.stats.str} />
           <StatRow label="Skl:" value={u.stats.skill} />
           <StatRow label="Spd:" value={u.stats.spd} />
           <StatRow label="Lck:" value={u.stats.lck} />
           <StatRow label="Mag:" value={u.stats.mag} />
           <StatRow label="Def:" value={u.stats.def} />
-          <StatRow label="Res:" value={u.stats.res} />
-        </StatBox>
+          <StatRow label="Res:" value={u.stats.res} divider={false} />
+        </div>
+      </div>
 
-        {/* Panel 3: Items & Movement */}
-        <StatBox style={{ fontSize: '12px', lineHeight: 1.65, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Items</div>
+      {/* Items + Vitals boxes */}
+      <div style={{ display: 'flex', gap: DS_SPACING.xl, padding: '0 16px 16px' }}>
+        <StatBox style={{ flex: 2, minWidth: 0 }}>
+          <SectionTitle>Items</SectionTitle>
+          <div data-testid="inspector-items" style={{ display: 'flex', gap: DS_SPACING.lg }}>
             {itemList.slice(0, 4).map((it, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {it.name}
-                </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
-                  <span style={{ color: '#9ca3af' }}>/{it.uses}</span>
-                  <img
-                    src={it.icon}
-                    alt=""
-                    style={{ width: '16px', height: '16px', imageRendering: 'pixelated' }}
-                  />
-                </span>
-              </div>
+              <ItemSlot key={idx} item={it} />
             ))}
-            {itemList.length === 0 && (
-              <div style={{ color: '#94a3b8', fontSize: '11px' }}>No items</div>
-            )}
+            {itemList.length < 4 &&
+              Array.from({ length: 4 - itemList.length }).map((_, idx) => <ItemSlot key={`empty-i-${idx}`} />)}
           </div>
-          <div style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+        </StatBox>
+        <StatBox style={{ flex: 1, minWidth: 0 }}>
+          <div data-testid="inspector-box-vitals">
+            <SectionTitle>Vitals</SectionTitle>
             <StatRow label="Max HP:" value={u.stats.maxHp} />
-            <StatRow label="Move:" value={u.unit.mov} />
+            <StatRow label="Move:" value={u.unit.mov} divider={false} />
           </div>
         </StatBox>
       </div>
@@ -325,20 +322,27 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             backgroundColor: 'rgba(59, 130, 246, 0.15)',
             border: '1px solid rgba(59, 130, 246, 0.35)',
             padding: '6px 10px',
-            borderRadius: '6px',
+            borderRadius: DS_RADII.medium,
             fontSize: '12px',
             color: '#bfdbfe',
-            marginBottom: '6px',
+            margin: '0 16px 12px',
           }}
         >
-          💙 Support Bonus: +{sup.hit}% Hit · +{sup.avoid}% Avo · +{sup.crit}% Crit
+          Support Bonus: +{sup.hit}% Hit · +{sup.avoid}% Avo · +{sup.crit}% Crit
         </div>
       )}
 
       {/* Terrain info if available */}
       {hoveredTerrain && (
-        <div style={{ fontSize: '11px', color: '#86efac', textAlign: 'center', marginTop: '4px' }}>
-          🗺️ Tile ({tile.x}, {tile.y}): {hoveredTerrain.name} · Avoid +{hoveredTerrain.avoidBonus}% · Def +{hoveredTerrain.defenseBonus}
+        <div
+          style={{
+            fontSize: '11.5px',
+            color: '#7c8db0',
+            padding: '12px 16px 14px',
+            borderTop: `1px solid ${DS_COLORS.inspectorHairline}`,
+          }}
+        >
+          Tile ({tile.x}, {tile.y}): {hoveredTerrain.name} · Avoid +{hoveredTerrain.avoidBonus}% · Def +{hoveredTerrain.defenseBonus}
         </div>
       )}
     </div>

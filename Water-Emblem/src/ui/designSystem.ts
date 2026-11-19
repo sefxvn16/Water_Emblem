@@ -5,6 +5,8 @@ import type { CSSProperties } from 'react';
  * Values come from `Game_Design/art_ui.md` (navy `#0c1e5b` + gold `#eab308`) and from
  * the faction hues already in the code (`#3b82f6` ally, `#ef4444` enemy). Nothing
  * here invents a new palette. Areas outside the four keep their own styles.
+ * Inspector tokens (`inspector*`) come from the owner-approved mockup J2
+ * (PLAN item 79); the item-76 faction backgrounds were retired with it.
  */
 export const DS_COLORS = {
   navy: '#0c1e5b',
@@ -16,15 +18,24 @@ export const DS_COLORS = {
   caption: '#94a3b8',
   ally: '#3b82f6',
   enemy: '#ef4444',
-  /** Inspector backgrounds: established faction hues darkened to panel backgrounds
-   * (FE3 reference not reachable on this machine — see DESIGN.md "Unconfirmed"). */
-  allyBg: '#1d4ed8',
-  enemyBg: '#7f1d1d',
   hpRemaining: '#22c55e',
   hpRemainingText: '#4ade80',
   hpLoss: '#ef4444',
   secondaryBg: '#1e293b',
   secondaryBorder: '#475569',
+  /** Inspector (mockup J2, PLAN item 79): navy panel, muted-gold frame. */
+  inspectorPanel: '#101a2e',
+  inspectorBox: '#131f36',
+  inspectorTile: '#16233f',
+  inspectorHairline: '#22304d',
+  inspectorFrame: '#c9a227',
+  mutedGold: '#b49b5e',
+  inspectorLabel: '#8fa3bf',
+} as const;
+
+/** Serif face for the inspector unit name (mockup J2, PLAN item 79). */
+export const DS_FONTS = {
+  serif: "Georgia, 'Times New Roman', serif",
 } as const;
 
 export const DS_SPACING = {
@@ -42,6 +53,7 @@ export const DS_RADII = {
   medium: 6,
   panel: 8,
   large: 10,
+  xlarge: 12,
 } as const;
 
 /** Z-order for the four areas; full table in DESIGN.md. */
