@@ -20,6 +20,18 @@ export interface InventoryEntry {
   uses: number;
 }
 
+/** One stage of a multi-phase boss (PLAN item 111). */
+export interface BossPhase {
+  /** Trigger when HP% falls to or below this value (1-99). */
+  hpPercent: number;
+  /** Stat bonuses added when the phase starts (not HP). */
+  statBonus?: Partial<Record<'str' | 'mag' | 'skill' | 'spd' | 'lck' | 'def' | 'res', number>>;
+  /** Weapon to equip when the phase starts. */
+  weaponId?: string;
+  /** AI role to switch to when the phase starts. */
+  aiRole?: AIRole;
+}
+
 export interface ExtendedUnitState {
   unit: GridUnit;
   stats: UnitCombatStats;
@@ -31,6 +43,12 @@ export interface ExtendedUnitState {
   exp: number;
   isBoss?: boolean;
   aiRole?: AIRole;
+  /** Waypoints for the patrol AI role (PLAN item 110). */
+  patrolPoints?: Position[];
+  /** Multi-phase boss stages (PLAN item 111); applied as HP falls. */
+  bossPhases?: BossPhase[];
+  /** Highest boss phase already applied (PLAN item 111). */
+  bossPhase?: number;
   dropItemId?: string;
   title?: string;
   avatarUrl?: string;
@@ -133,7 +151,7 @@ function requireInteger(value: unknown, label: string, min = 0): number {
 
 const MOVE_TYPES: readonly MoveType[] = ['foot', 'armor', 'cavalry', 'flier', 'mage', 'bandit'];
 const FACTIONS: readonly UnitFaction[] = ['player', 'enemy', 'ally'];
-const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue', 'pillage'];
+const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'];
 const WEAPON_RANKS: readonly WeaponRank[] = ['E', 'D', 'C', 'B', 'A'];
 const WEAPON_TYPES = ['sword', 'lance', 'axe', 'bow', 'tome', 'staff'] as const;
 
@@ -310,6 +328,48 @@ export function loadChapterData(
       exp: 0,
       ...(character.isBoss === undefined ? {} : { isBoss: character.isBoss === true }),
       ...(item.aiRole === undefined ? {} : { aiRole: requireChoice(item.aiRole, AI_ROLES, `${label}.aiRole`) }),
+      ...(item.patrolPoints === undefined ? {} : {
+        patrolPoints: (() => {
+          if (!Array.isArray(item.patrolPoints) || item.patrolPoints.length === 0) {
+            throw new Error(`${label}.patrolPoints must be a nonempty array`);
+          }
+          return item.patrolPoints.map((point: unknown, pointIndex: number) =>
+            readPosition(point, map, `${label}.patrolPoints[${pointIndex}]`));
+        })(),
+      }),
+      ...(item.bossPhases === undefined ? {} : {
+        bossPhases: (() => {
+          if (!Array.isArray(item.bossPhases) || item.bossPhases.length === 0) {
+            throw new Error(`${label}.bossPhases must be a nonempty array`);
+          }
+          return item.bossPhases.map((phaseValue: unknown, phaseIndex: number): BossPhase => {
+            const phase = requireRecord(phaseValue, `${label}.bossPhases[${phaseIndex}]`);
+            const statBonusRaw = phase.statBonus === undefined
+              ? undefined
+              : requireRecord(phase.statBonus, `${label}.bossPhases[${phaseIndex}].statBonus`);
+            const statBonus: BossPhase['statBonus'] = {};
+            if (statBonusRaw) {
+              for (const key of ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const) {
+                if (statBonusRaw[key] !== undefined) {
+                  statBonus[key] = requireInteger(statBonusRaw[key], `${label}.bossPhases[${phaseIndex}].statBonus.${key}`);
+                }
+              }
+            }
+            return {
+              hpPercent: requireInteger(phase.hpPercent, `${label}.bossPhases[${phaseIndex}].hpPercent`, 1),
+              ...(statBonusRaw ? { statBonus } : {}),
+              ...(phase.weaponId === undefined ? {} : {
+                weaponId: (() => {
+                  const weaponId = requireString(phase.weaponId, `${label}.bossPhases[${phaseIndex}].weaponId`);
+                  if (!itemById.has(weaponId)) throw new Error(`Boss phase references unknown item ${weaponId}`);
+                  return weaponId;
+                })(),
+              }),
+              ...(phase.aiRole === undefined ? {} : { aiRole: requireChoice(phase.aiRole, AI_ROLES, `${label}.bossPhases[${phaseIndex}].aiRole`) }),
+            };
+          });
+        })(),
+      }),
       ...(dropItemId === undefined ? {} : { dropItemId }),
       title: requireString(character.title, `character ${characterId}.title`),
       avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),

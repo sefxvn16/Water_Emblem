@@ -369,10 +369,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ô `destructible` (Wall 20 HP) đánh được qua dự báo như mục tiêu thường (vật giả lập `object:x,y`, không phản đòn, không EXP, độ bền + WEx vẫn tính); vỡ thì đi qua tốn 1; `objectStates` lưu trong save. Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS (test mới `tests/core/batchA.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 102. V04 Canto: kỵ binh/bay đi tiếp phần di chuyển còn lại sau khi hành động.
+- [x] 102. V04 Canto: kỵ binh/bay đi tiếp phần di chuyển còn lại sau khi hành động.
   - Nguồn: cơ chế đã chọn V04. Giới hạn Canto chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Quân cưỡi/bay sau khi đánh/dùng đồ/trượng được đi tiếp số ô di chuyển còn dư (tổng không vượt MOV), rồi mới kết thúc lượt. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Quân cưỡi/bay sau hành động được đi tiếp phần di chuyển còn dư (`waitWithCanto` thay 12 điểm kết thúc hành động; Wait thuần không kích hoạt); bẫy vẫn kích hoạt khi tới ô Canto; chỉ quân người chơi [Giả định]. Kiểm chứng: `tsc --noEmit` PASS; Vitest 38 file/251 test PASS (test mới `tests/core/batchB.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 103. V05 Đánh kẹp: thưởng khi kẹp địch giữa 2 quân ta.
@@ -417,16 +417,16 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 110. B10 Vai trò AI còn thiếu: tuần tra, rút lui, trộm, bỏ chạy.
+- [x] 110. B10 Vai trò AI còn thiếu: tuần tra, rút lui, trộm, bỏ chạy.
   - Nguồn: cơ chế đã chọn B10 (hiện mới stationary/pursue/pillage).
   - Tiêu chí xong: (1) Thêm vai trò patrol (đi tuần theo tuyến), retreat (rút về điểm an toàn khi yếu máu), thief (tới rương/làng trộm rồi bỏ chạy), flee (chạy khỏi quân ta); dữ liệu chương dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Thêm vai trò `patrol` (theo `patrolPoints`), `retreat` (dưới 50% HP rút lui [Giả định]), `thief` (cướp rương/làng, hết mục tiêu thì chạy), `flee`; trộm đứng trên rương thì cướp rương. Kiểm chứng: Vitest 38 file/251 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 111. B11 Boss nhiều pha: boss đổi trạng thái theo ngưỡng HP.
+- [x] 111. B11 Boss nhiều pha: boss đổi trạng thái theo ngưỡng HP.
   - Nguồn: cơ chế đã chọn B11.
   - Tiêu chí xong: (1) Dữ liệu chương khai báo pha boss (ngưỡng HP → cộng chỉ số/đổi vũ khí/đổi vai trò AI); qua ngưỡng thì áp dụng ngay và ghi nhật ký. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `bossPhases` trong dữ liệu chương (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò), áp dụng 1 lần mỗi pha sau giao tranh cả hai phía, ghi nhật ký; `bossPhase` lưu trong save. Kiểm chứng: Vitest 38 file/251 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [ ] 112. N01 Kỹ năng cá nhân: kỹ năng riêng từng nhân vật.

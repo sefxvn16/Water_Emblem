@@ -78,6 +78,8 @@ import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type 
 import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
 import { buildObjectDefender, damageObject, destroyedObjectKeys, isDestructibleTile, objectHpAt } from './core/chapter/objects';
 import { applyTrapDamage, trapAt } from './core/chapter/traps';
+import { canCanto } from './core/combat/canto';
+import { applyBossPhases } from './core/chapter/bossPhases';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -183,16 +185,25 @@ export const App: React.FC = () => {
   const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
   const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
 
+  // PLAN item 102 (Canto): after acting, mounted/flying units may move the
+  // movement they had left when they arrived at their action tile.
+  const [cantoActive, setCantoActive] = useState(false);
+  const cantoRemainingRef = useRef(0);
+  const cantoUsedRef = useRef(false);
+
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
-    if (!attackTargeting && !weaponPickerOpen && !staffTargeting) return;
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !cantoActive) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); }
+      if (event.key === 'Escape') {
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null);
+        if (cantoActive) { setCantoActive(false); turnManager.waitSelectedUnit(); syncState(); }
+      }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting, weaponPickerOpen, staffTargeting]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting, cantoActive]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
@@ -283,6 +294,9 @@ export const App: React.FC = () => {
     setSpawnedReinforcements([]);
     setObjectStates({});
     setTriggeredTraps([]);
+    setCantoActive(false);
+    cantoRemainingRef.current = 0;
+    cantoUsedRef.current = false;
     setMoveCommitted(false);
     setMoveOrigin(null);
     // PLAN item 94: warn about reinforcements arriving at the end of turn 1.
@@ -484,6 +498,33 @@ export const App: React.FC = () => {
   }, [pendingMovePos, selectedExtUnit, currentChapter.doors, doorStates]);
 
   // Click vào ô trên bản đồ
+  // PLAN item 102: end the selected unit's action, or offer Canto movement
+  // first when a mounted/flying unit still has movement left.
+  const waitWithCanto = () => {
+    const unit = turnManager.getSelectedUnit();
+    if (unit && canCanto(unit) && !unit.isDead && cantoRemainingRef.current > 0 && !cantoUsedRef.current) {
+      cantoUsedRef.current = true;
+      const range = calculateMovementRange({ ...unit, mov: cantoRemainingRef.current }, {
+        map: mapData,
+        terrains: defaultTerrainRegistry,
+        units: extendedUnits.map((u) => u.unit),
+        openedDoors: openedDoorKeys,
+        destroyedObjects: destroyedKeys,
+      });
+      if (range.size > 1 && turnManager.selectUnit(unit.id, range)) {
+        setCantoActive(true);
+        setPendingMovePos(null);
+        setPlannedPath(null);
+        setMoveCommitted(false);
+        setMoveOrigin(null);
+        showNotice('🐎 Canto: move the remaining tiles, or click the unit to stay.');
+        syncState();
+        return;
+      }
+    }
+    turnManager.waitSelectedUnit();
+  };
+
   const handleTileClick = (x: number, y: number) => {
     if (animCleanupRef.current) {
       animCleanupRef.current();
@@ -510,6 +551,44 @@ export const App: React.FC = () => {
     }
     // PLAN item 93: the arena window is modal.
     if (arenaOpen) {
+      return;
+    }
+
+    // PLAN item 102: Canto movement — click a highlighted tile to move
+    // there and end the unit's turn; any other click stays in place.
+    if (cantoActive) {
+      const cantoUnit = turnManager.getSelectedUnit();
+      const moveData = turnState.reachableTiles?.get(`${x},${y}`);
+      setCantoActive(false);
+      if (cantoUnit && moveData && (x !== cantoUnit.position.x || y !== cantoUnit.position.y)) {
+        const dest = { x, y };
+        const unitId = cantoUnit.id;
+        const finishCanto = () => {
+          turnManager.moveSelectedUnit(dest);
+          const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
+          if (trap) {
+            setExtendedUnits((prev) => applyTrapDamage(prev, unitId, trap.damage));
+            setTriggeredTraps((prev) => [...prev, trap.id]);
+            setCombatLog((prev) => [`🪤 ${cantoUnit.name} springs a trap and takes ${trap.damage} damage!`, ...prev]);
+          } else {
+            setExtendedUnits([...extendedUnits]);
+          }
+          setActiveMovingUnit(null);
+          turnManager.waitSelectedUnit();
+          syncState();
+        };
+        if (moveData.path.length <= 1) {
+          finishCanto();
+        } else {
+          animCleanupRef.current = runMovementAnimation(moveData.path, cantoUnit.moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+            animCleanupRef.current = null;
+            finishCanto();
+          });
+        }
+      } else {
+        turnManager.waitSelectedUnit();
+        syncState();
+      }
       return;
     }
 
@@ -560,7 +639,7 @@ export const App: React.FC = () => {
           if (!result) return;
           soundManager.playSfx('heal');
           turnManager.replaceUnits(result.units.map(({ unit }) => unit));
-          turnManager.waitSelectedUnit();
+          waitWithCanto();
           setExtendedUnits(result.units);
           setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
           syncState();
@@ -629,6 +708,7 @@ export const App: React.FC = () => {
 
       const arriveAtDest = () => {
         turnManager.moveSelectedUnit(dest);
+        cantoRemainingRef.current = turnState.reachableTiles?.get(`${dest.x},${dest.y}`)?.costRemaining ?? 0;
         // PLAN item 105: ending movement on a trap tile springs it.
         const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
         if (trap) {
@@ -680,6 +760,8 @@ export const App: React.FC = () => {
         destroyedObjects: destroyedKeys,
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
+      cantoRemainingRef.current = 0;
+      cantoUsedRef.current = false;
       setPinnedUnitId(clickedExt.unit.id);
       setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
       setPendingMovePos(null);
@@ -767,7 +849,7 @@ export const App: React.FC = () => {
         let updatedUnits = applyCombatDurability(extendedUnits, result, ITEM_BY_ID);
         updatedUnits = applyCombatWeaponExp(updatedUnits, result);
         turnManager.replaceUnits(updatedUnits.map(({ unit }) => unit));
-        turnManager.waitSelectedUnit();
+        waitWithCanto();
         setExtendedUnits(updatedUnits);
         soundManager.playWeaponHit(attacker.weapon?.type ?? 'sword');
         setCombatLog((prev) => [
@@ -822,6 +904,11 @@ export const App: React.FC = () => {
       updatedUnits = experience.entries;
       updatedUnits = applyCombatDurability(updatedUnits, result, ITEM_BY_ID);
       updatedUnits = applyCombatWeaponExp(updatedUnits, result);
+      const bossPhases = applyBossPhases(updatedUnits, ITEM_BY_ID);
+      updatedUnits = bossPhases.units;
+      for (const event of bossPhases.events) {
+        logs.push(`👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
+      }
       logs.push(...experience.messages);
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
@@ -830,7 +917,7 @@ export const App: React.FC = () => {
       const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
       if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -857,7 +944,7 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -873,7 +960,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('item_get');
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -890,7 +977,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('heal');
       const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
       turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setExtendedUnits(nextUnits);
       setCombatLog((prev) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...prev].slice(0, 20));
       syncState();
@@ -905,7 +992,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('levelup');
       const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
       turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setExtendedUnits(nextUnits);
       setCombatLog((prev) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...prev].slice(0, 20));
       syncState();
@@ -974,7 +1061,7 @@ export const App: React.FC = () => {
       commitChapterState(result.state);
       queueOverflows(result.events);
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setChapterOutcome('victory');
       syncState();
     });
@@ -988,7 +1075,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('item_get');
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       syncState();
     });
@@ -1010,7 +1097,7 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -1136,7 +1223,7 @@ export const App: React.FC = () => {
   const handleShopClose = () => {
     setShopOpen(false);
     executeWithMove(() => {
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -1186,7 +1273,7 @@ export const App: React.FC = () => {
     setArenaOpen(false);
     handleArenaAgain();
     executeWithMove(() => {
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -1347,6 +1434,11 @@ export const App: React.FC = () => {
         villageTargets: currentChapter.villages?.filter(
           (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
         ).map((v) => v.position),
+        chestTargets: (currentChapter.chests ?? [])
+          .filter((c) => chestStates[c.id] !== 'opened')
+          .map((c) => c.position),
+        patrolTargets: enemy.patrolPoints,
+        turnNumber: turnState.turnNumber,
         openedDoors: openedDoorKeys,
         destroyedObjects: destroyedKeys,
       });
@@ -1400,6 +1492,11 @@ export const App: React.FC = () => {
         phaseUnits = experience.entries;
         phaseUnits = applyCombatDurability(phaseUnits, result, ITEM_BY_ID);
         phaseUnits = applyCombatWeaponExp(phaseUnits, result);
+        const bossPhases = applyBossPhases(phaseUnits, ITEM_BY_ID);
+        phaseUnits = bossPhases.units;
+        for (const event of bossPhases.events) {
+          logs.push(`  👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
+        }
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
         logs.push(...experience.messages);
@@ -1415,6 +1512,17 @@ export const App: React.FC = () => {
         const raid = pillageVillage({ units: phaseUnits, gold, villageStates: nextVillageStates }, enemy.unit.id, currentChapter);
         nextVillageStates = { ...raid.state.villageStates };
         logs.push(...eventLogLines(raid.events));
+      }
+
+      // PLAN item 110: a thief standing on a chest loots it.
+      if (enemy.aiRole === 'thief' && !enemy.unit.isDead) {
+        const chest = (currentChapter.chests ?? []).find((c) =>
+          chestStates[c.id] !== 'opened'
+          && c.position.x === enemy.unit.position.x && c.position.y === enemy.unit.position.y);
+        if (chest) {
+          setChestStates((prev) => ({ ...prev, [chest.id]: 'opened' }));
+          logs.push(`  💰 ${enemy.unit.name} loots the chest!`);
+        }
       }
 
       enemy.unit.hasActed = true;
@@ -1485,6 +1593,9 @@ export const App: React.FC = () => {
     setSpawnedReinforcements(data.spawnedReinforcements ?? []);
     setObjectStates(data.objectStates ?? {});
     setTriggeredTraps(data.triggeredTraps ?? []);
+    setCantoActive(false);
+    cantoRemainingRef.current = 0;
+    cantoUsedRef.current = false;
     setMoveCommitted(false);
     setMoveOrigin(null);
     setActiveVillageDialogue(null);
@@ -1543,6 +1654,7 @@ export const App: React.FC = () => {
 
   const handleEndTurn = () => {
     soundManager.playSfx('enemy_phase');
+    setCantoActive(false);
     turnManager.switchPhase('enemy_phase');
     syncState();
   };

@@ -130,7 +130,7 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
         && (entry.uses as number) >= 1 && (entry.uses as number) <= item.maxUses;
     })
     && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
-    && (value.aiRole === undefined || value.aiRole === 'stationary' || value.aiRole === 'pursue' || value.aiRole === 'pillage');
+    && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string));
 }
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {

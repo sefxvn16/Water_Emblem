@@ -112,7 +112,16 @@
       "mov": 0,
       "weaponId": "steel_axe",
       "aiRole": "stationary",
-      "characterId": "gazzak"
+      "characterId": "gazzak",
+      "bossPhases": [
+        {
+          "hpPercent": 50,
+          "statBonus": {
+            "str": 3,
+            "def": 2
+          }
+        }
+      ]
     },
     {
       "id": "enemy_pirate_1",
@@ -146,8 +155,18 @@
         "y": 5
       },
       "weaponId": "iron_bow",
-      "aiRole": "pursue",
-      "characterId": "galder_hunter"
+      "aiRole": "patrol",
+      "characterId": "galder_hunter",
+      "patrolPoints": [
+        {
+          "x": 2,
+          "y": 5
+        },
+        {
+          "x": 6,
+          "y": 5
+        }
+      ]
     }
   ],
   "reinforcements": [

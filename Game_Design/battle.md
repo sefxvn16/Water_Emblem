@@ -151,3 +151,9 @@ Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Bá
 - **V05 Đánh kẹp (mục 103):** khi quân ta đánh địch mà có quân ta khác đứng kề phía đối diện của địch (so với quân đánh) thì quân đánh được **+15 Hit, +10 Crit** [Giả định]. Áp dụng cả hai phía giao tranh theo đồng minh của từng phía.
 - **V07 Lợi thế cao độ (mục 104):** cao độ ô lấy từ `elevations` của bản đồ; chênh cao độ cho **±10 Hit mỗi bậc, tối đa ±20** [Giả định] (cao hơn đánh trúng hơn, thấp hơn bị trừ tương ứng).
 - **V08 Bẫy (mục 105):** chương khai báo `traps` (ô + sát thương). Quân kết thúc di chuyển trên ô bẫy thì bẫy kích hoạt 1 lần, gây sát thương cố định nhưng **không giảm HP dưới 1** [Giả định]; bẫy đã kích hoạt lưu trong save (`triggeredTraps`).
+
+## Đợt B cơ chế đã chốt (2026-11-19, PLAN mục 102/110/111)
+
+- **V04 Canto (mục 102):** quân cưỡi/bay sau khi hành động (đánh/trượng/đồ/mở rương-cửa/cửa hàng/đấu trường/phá vật) được đi tiếp số ô di chuyển còn dư lúc tới ô hành động; tổng không vượt MOV. Chỉ quân người chơi [Giả định], AI địch không dùng Canto. Lệnh Wait thuần không kích hoạt Canto.
+- **B10 Vai trò AI (mục 110):** thêm `patrol` (đi tuần theo `patrolPoints`, vẫn đánh khi có quân trong tầm), `retreat` (dưới 50% HP thì rút xa quân ta [Giả định], còn lại như pursue), `thief` (tới rương/làng chưa mở để cướp; hết mục tiêu thì bỏ chạy), `flee` (luôn chạy xa quân ta, không đánh). Ô rút lui chọn theo khoảng cách xa nhất + thưởng né địa hình.
+- **B11 Boss nhiều pha (mục 111):** chương khai báo `bossPhases` cho boss (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò AI). Mỗi pha áp dụng 1 lần khi HP xuống ngưỡng, ghi nhật ký; tiến độ pha (`bossPhase`) lưu cùng quân trong save.
