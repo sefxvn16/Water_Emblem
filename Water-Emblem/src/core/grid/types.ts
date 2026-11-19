@@ -46,6 +46,13 @@ export interface GridUnit {
   supportPoints?: Readonly<Record<string, number>>;
   isDead?: boolean;
   hasActed?: boolean;
+  /**
+   * Display-only origin marker (PLAN item 79): true when the unit arrived as
+   * a reinforcement, so the inspector and map tokens render it in the
+   * reinforcement tone. The faction still governs behaviour; this flag
+   * changes no rule.
+   */
+  isReinforcement?: boolean;
 }
 
 export interface MoveTileResult {

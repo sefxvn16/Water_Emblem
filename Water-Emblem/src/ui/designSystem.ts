@@ -5,8 +5,9 @@ import type { CSSProperties } from 'react';
  * Values come from `Game_Design/art_ui.md` (navy `#0c1e5b` + gold `#eab308`) and from
  * the faction hues already in the code (`#3b82f6` ally, `#ef4444` enemy). Nothing
  * here invents a new palette. Areas outside the four keep their own styles.
- * Inspector tokens (`inspector*`) come from the owner-approved mockup J2
- * (PLAN item 79); the item-76 faction backgrounds were retired with it.
+ * Inspector faction tones (panel/box/tile/hairline/track per faction) live in
+ * `src/core/grid/factionTones.ts` (owner-approved mockup J2 + treatment B,
+ * PLAN item 79); only the shared frame/label tokens stay here.
  */
 export const DS_COLORS = {
   navy: '#0c1e5b',
@@ -23,11 +24,7 @@ export const DS_COLORS = {
   hpLoss: '#ef4444',
   secondaryBg: '#1e293b',
   secondaryBorder: '#475569',
-  /** Inspector (mockup J2, PLAN item 79): navy panel, muted-gold frame. */
-  inspectorPanel: '#101a2e',
-  inspectorBox: '#131f36',
-  inspectorTile: '#16233f',
-  inspectorHairline: '#22304d',
+  /** Inspector frame + titles (mockup J2, PLAN item 79): muted gold, shared by all faction tones. */
   inspectorFrame: '#c9a227',
   mutedGold: '#b49b5e',
   inspectorLabel: '#8fa3bf',

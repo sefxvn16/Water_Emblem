@@ -304,6 +304,7 @@ export const App: React.FC = () => {
       faction: entry.unit.faction,
       hasActed: Boolean(entry.unit.hasActed),
       avatarUrl: entry.avatarUrl,
+      isReinforcement: entry.unit.isReinforcement,
     };
   };
 

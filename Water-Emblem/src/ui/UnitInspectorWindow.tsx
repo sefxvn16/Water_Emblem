@@ -4,6 +4,7 @@ import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
 import { getClassDefinition } from '../core/class/classRules';
 import type { ExtendedUnitState } from '../core/data/chapterData';
+import { getFactionTone } from '../core/grid/factionTones';
 import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
 import { DS_COLORS, DS_FONTS, DS_RADII, DS_SPACING, DS_Z } from './designSystem';
@@ -53,7 +54,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   const hoveredTerrain = defaultTerrainRegistry.get(terrainId);
   const sup = u.unit.faction === 'player' ? calculateSupportBonus(u.unit, units) : null;
   const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';
-  const isPlayer = u.unit.faction === 'player';
+  // Faction tone (treatment B): muted faction-tinted panel + accent + chip.
+  const tone = getFactionTone(u.unit.faction, u.unit.isReinforcement);
 
   // Separate inventory into weapons and items
   const inventoryItems = u.inventory.map((entry) => {
@@ -109,9 +111,9 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
         overflowY: 'auto',
         boxSizing: 'border-box',
         zIndex: DS_Z.inspector,
-        // Mockup J2 (PLAN item 79): navy panel, thin muted-gold frame; the faction
-        // is the accent bar + chip, not a faction background.
-        backgroundColor: DS_COLORS.inspectorPanel,
+        // Mockup J2 + treatment B (PLAN item 79): panel background tinted by
+        // faction (muted), thin muted-gold frame, 3px faction accent bar + chip.
+        backgroundColor: tone.panel,
         border: `1px solid ${DS_COLORS.inspectorFrame}`,
         borderRadius: DS_RADII.xlarge,
         boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
@@ -121,10 +123,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
       }}
     >
       {/* Faction accent bar */}
-      <div
-        data-testid="inspector-accent"
-        style={{ height: 3, backgroundColor: isPlayer ? DS_COLORS.ally : DS_COLORS.enemy }}
-      />
+      <div data-testid="inspector-accent" style={{ height: 3, backgroundColor: tone.accent }} />
 
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 16px 12px', gap: '8px' }}>
@@ -133,18 +132,19 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             Unit Details
           </h3>
           <span
+            data-testid="inspector-chip"
             style={{
               fontSize: '11px',
               padding: '2px 9px',
               borderRadius: '10px',
               fontWeight: 500,
-              backgroundColor: isPlayer ? 'rgba(59, 130, 246, 0.16)' : 'rgba(239, 68, 68, 0.16)',
-              color: isPlayer ? '#93c5fd' : '#fca5a5',
-              border: `1px solid ${isPlayer ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+              backgroundColor: tone.chipBg,
+              color: tone.chipText,
+              border: `1px solid ${tone.chipBorder}`,
               flexShrink: 0,
             }}
           >
-            {isPlayer ? 'Player' : 'Enemy'}
+            {tone.label}
           </span>
         </div>
         <button
@@ -159,7 +159,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             fontSize: '15px',
             lineHeight: 1,
             backgroundColor: 'transparent',
-            border: `1px solid ${DS_COLORS.inspectorHairline}`,
+            border: `1px solid ${tone.hairline}`,
             borderRadius: DS_RADII.panel,
             color: DS_COLORS.inspectorLabel,
             cursor: 'pointer',
@@ -180,7 +180,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             width: '112px',
             height: '112px',
             flexShrink: 0,
-            backgroundColor: '#0b1220',
+            backgroundColor: tone.track,
             borderRadius: DS_RADII.large,
             border: `1px solid ${DS_COLORS.inspectorFrame}`,
             overflow: 'hidden',
@@ -211,8 +211,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             style={{
               marginTop: '12px',
               height: '10px',
-              backgroundColor: '#0b1220',
-              border: `1px solid ${DS_COLORS.inspectorHairline}`,
+              backgroundColor: tone.track,
+              border: `1px solid ${tone.hairline}`,
               borderRadius: DS_RADII.medium,
               overflow: 'hidden',
               position: 'relative',
@@ -238,11 +238,11 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
       </div>
 
       {/* Weapons box */}
-      <StatBox style={{ margin: '0 16px 16px' }}>
+      <StatBox tone={tone} style={{ margin: '0 16px 16px' }}>
         <SectionTitle>Weapons</SectionTitle>
         <div data-testid="inspector-weapons" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: DS_SPACING.lg }}>
           {weaponList.map((w, idx) => (
-            <WeaponCell key={idx} name={w.name} uses={w.uses} icon={w.icon} />
+            <WeaponCell key={idx} name={w.name} uses={w.uses} icon={w.icon} tone={tone} />
           ))}
           {weaponList.length < 4 &&
             Array.from({ length: 4 - weaponList.length }).map((_, idx) => (
@@ -252,8 +252,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: DS_COLORS.inspectorPanel,
-                  border: `1px solid ${DS_COLORS.inspectorHairline}`,
+                  backgroundColor: tone.panel,
+                  border: `1px solid ${tone.hairline}`,
                   borderRadius: DS_RADII.panel,
                   padding: '8px 12px',
                   color: '#5b6b85',
@@ -270,47 +270,48 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
       <div style={{ display: 'flex', gap: DS_SPACING.xxxl, padding: '0 16px 16px' }}>
         <div data-testid="inspector-col-combat" style={{ flex: 1, minWidth: 0 }}>
           <SectionTitle>Combat</SectionTitle>
-          <StatRow label="Atk:" value={combat.atk} />
-          <StatRow label="Hit:" value={combat.hit} />
-          <StatRow label="Avo:" value={combat.avoid} />
-          <StatRow label="Crit:" value={combat.crit} />
-          <StatRow label="AS:" value={combat.as} />
+          <StatRow label="Atk:" value={combat.atk} tone={tone} />
+          <StatRow label="Hit:" value={combat.hit} tone={tone} />
+          <StatRow label="Avo:" value={combat.avoid} tone={tone} />
+          <StatRow label="Crit:" value={combat.crit} tone={tone} />
+          <StatRow label="AS:" value={combat.as} tone={tone} />
           <StatRow
             label="Eff:"
             value={u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(', ') : '—'}
             valueColor="#9ca3af"
             divider={false}
+            tone={tone}
           />
         </div>
         <div data-testid="inspector-col-attributes" style={{ flex: 1, minWidth: 0 }}>
           <SectionTitle>Attributes</SectionTitle>
-          <StatRow label="Str:" value={u.stats.str} />
-          <StatRow label="Skl:" value={u.stats.skill} />
-          <StatRow label="Spd:" value={u.stats.spd} />
-          <StatRow label="Lck:" value={u.stats.lck} />
-          <StatRow label="Mag:" value={u.stats.mag} />
-          <StatRow label="Def:" value={u.stats.def} />
-          <StatRow label="Res:" value={u.stats.res} divider={false} />
+          <StatRow label="Str:" value={u.stats.str} tone={tone} />
+          <StatRow label="Skl:" value={u.stats.skill} tone={tone} />
+          <StatRow label="Spd:" value={u.stats.spd} tone={tone} />
+          <StatRow label="Lck:" value={u.stats.lck} tone={tone} />
+          <StatRow label="Mag:" value={u.stats.mag} tone={tone} />
+          <StatRow label="Def:" value={u.stats.def} tone={tone} />
+          <StatRow label="Res:" value={u.stats.res} divider={false} tone={tone} />
         </div>
       </div>
 
       {/* Items + Vitals boxes */}
       <div style={{ display: 'flex', gap: DS_SPACING.xl, padding: '0 16px 16px' }}>
-        <StatBox style={{ flex: 2, minWidth: 0 }}>
+        <StatBox tone={tone} style={{ flex: 2, minWidth: 0 }}>
           <SectionTitle>Items</SectionTitle>
           <div data-testid="inspector-items" style={{ display: 'flex', gap: DS_SPACING.lg }}>
             {itemList.slice(0, 4).map((it, idx) => (
-              <ItemSlot key={idx} item={it} />
+              <ItemSlot key={idx} item={it} tone={tone} />
             ))}
             {itemList.length < 4 &&
-              Array.from({ length: 4 - itemList.length }).map((_, idx) => <ItemSlot key={`empty-i-${idx}`} />)}
+              Array.from({ length: 4 - itemList.length }).map((_, idx) => <ItemSlot key={`empty-i-${idx}`} tone={tone} />)}
           </div>
         </StatBox>
-        <StatBox style={{ flex: 1, minWidth: 0 }}>
+        <StatBox tone={tone} style={{ flex: 1, minWidth: 0 }}>
           <div data-testid="inspector-box-vitals">
             <SectionTitle>Vitals</SectionTitle>
-            <StatRow label="Max HP:" value={u.stats.maxHp} />
-            <StatRow label="Move:" value={u.unit.mov} divider={false} />
+            <StatRow label="Max HP:" value={u.stats.maxHp} tone={tone} />
+            <StatRow label="Move:" value={u.unit.mov} divider={false} tone={tone} />
           </div>
         </StatBox>
       </div>
@@ -339,7 +340,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
             fontSize: '11.5px',
             color: '#7c8db0',
             padding: '12px 16px 14px',
-            borderTop: `1px solid ${DS_COLORS.inspectorHairline}`,
+            borderTop: `1px solid ${tone.hairline}`,
           }}
         >
           Tile ({tile.x}, {tile.y}): {hoveredTerrain.name} · Avoid +{hoveredTerrain.avoidBonus}% · Def +{hoveredTerrain.defenseBonus}

@@ -81,6 +81,11 @@ function requireString(value: unknown, label: string): string {
   return value;
 }
 
+function requireBoolean(value: unknown, label: string): boolean {
+  if (typeof value !== 'boolean') throw new Error(`${label} must be a boolean`);
+  return value;
+}
+
 function requireNumber(value: unknown, label: string, min = 0): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < min) {
     throw new Error(`${label} must be a finite number >= ${min}`);
@@ -260,6 +265,9 @@ export function loadChapterData(
       supportPoints: initialSupportPoints(requireString(item.id, `${label}.id`)),
       hasActed: false,
       isDead: false,
+      ...(item.isReinforcement === undefined
+        ? {}
+        : { isReinforcement: requireBoolean(item.isReinforcement, `${label}.isReinforcement`) }),
     };
     return {
       unit,

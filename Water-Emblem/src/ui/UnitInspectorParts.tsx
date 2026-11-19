@@ -1,4 +1,5 @@
 import React from 'react';
+import { FACTION_TONES, type FactionTone } from '../core/grid/factionTones';
 import { DS_COLORS, DS_RADII, DS_SPACING, statRowStyle, statValueStyle } from './designSystem';
 
 /** Muted-gold section title (mockup J2): small, letter-spaced, uppercase. */
@@ -18,12 +19,16 @@ export const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children
   </h3>
 );
 
-/** One inner box (Weapons, Items, Vitals): soft navy on the panel. */
-export const StatBox: React.FC<{ children: React.ReactNode; style?: React.CSSProperties }> = ({ children, style }) => (
+/** One inner box (Weapons, Items, Vitals): the faction tone's box colour. */
+export const StatBox: React.FC<{
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  tone?: FactionTone;
+}> = ({ children, style, tone = FACTION_TONES.player }) => (
   <div
     style={{
-      backgroundColor: DS_COLORS.inspectorBox,
-      border: `1px solid ${DS_COLORS.inspectorHairline}`,
+      backgroundColor: tone.box,
+      border: `1px solid ${tone.hairline}`,
       borderRadius: DS_RADII.large,
       padding: '14px 16px',
       boxSizing: 'border-box',
@@ -35,17 +40,18 @@ export const StatBox: React.FC<{ children: React.ReactNode; style?: React.CSSPro
 );
 
 /** One label–value row: the value sits in a right-aligned column. */
-export const StatRow: React.FC<{ label: string; value: React.ReactNode; valueColor?: string; divider?: boolean }> = ({
-  label,
-  value,
-  valueColor,
-  divider = true,
-}) => (
+export const StatRow: React.FC<{
+  label: string;
+  value: React.ReactNode;
+  valueColor?: string;
+  divider?: boolean;
+  tone?: FactionTone;
+}> = ({ label, value, valueColor, divider = true, tone = FACTION_TONES.player }) => (
   <div
     style={{
       ...statRowStyle,
       padding: '6px 0',
-      borderBottom: divider ? `1px solid ${DS_COLORS.inspectorHairline}` : 'none',
+      borderBottom: divider ? `1px solid ${tone.hairline}` : 'none',
     }}
   >
     <span style={{ color: DS_COLORS.inspectorLabel }}>{label}</span>
@@ -54,14 +60,18 @@ export const StatRow: React.FC<{ label: string; value: React.ReactNode; valueCol
 );
 
 /** Soft tile holding one 26px FE3 icon. */
-export const IconTile: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
+export const IconTile: React.FC<{ src: string; alt: string; tone?: FactionTone }> = ({
+  src,
+  alt,
+  tone = FACTION_TONES.player,
+}) => (
   <div
     style={{
       width: 40,
       height: 40,
       flexShrink: 0,
-      backgroundColor: DS_COLORS.inspectorTile,
-      border: `1px solid ${DS_COLORS.inspectorHairline}`,
+      backgroundColor: tone.tile,
+      border: `1px solid ${tone.hairline}`,
       borderRadius: DS_RADII.panel,
       display: 'flex',
       alignItems: 'center',
@@ -73,20 +83,25 @@ export const IconTile: React.FC<{ src: string; alt: string }> = ({ src, alt }) =
 );
 
 /** One weapon in the 2×2 grid: icon leading, name + uses beside it. */
-export const WeaponCell: React.FC<{ name: string; uses: number | string; icon: string }> = ({ name, uses, icon }) => (
+export const WeaponCell: React.FC<{
+  name: string;
+  uses: number | string;
+  icon: string;
+  tone?: FactionTone;
+}> = ({ name, uses, icon, tone = FACTION_TONES.player }) => (
   <div
     style={{
       display: 'flex',
       alignItems: 'center',
       gap: DS_SPACING.lg,
-      backgroundColor: DS_COLORS.inspectorPanel,
-      border: `1px solid ${DS_COLORS.inspectorHairline}`,
+      backgroundColor: tone.panel,
+      border: `1px solid ${tone.hairline}`,
       borderRadius: DS_RADII.panel,
       padding: '8px 12px',
       minWidth: 0,
     }}
   >
-    <IconTile src={icon} alt={name} />
+    <IconTile src={icon} alt={name} tone={tone} />
     <div style={{ minWidth: 0 }}>
       <div style={{ fontSize: 12.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</div>
       <div style={{ fontSize: 11, color: DS_COLORS.inspectorLabel, marginTop: 1 }}>/{uses}</div>
@@ -94,12 +109,12 @@ export const WeaponCell: React.FC<{ name: string; uses: number | string; icon: s
   </div>
 );
 
-const itemSlotStyle: React.CSSProperties = {
+const itemSlotStyle = (tone: FactionTone): React.CSSProperties => ({
   flex: 1,
   height: 58,
   minWidth: 0,
-  backgroundColor: DS_COLORS.inspectorPanel,
-  border: `1px solid ${DS_COLORS.inspectorHairline}`,
+  backgroundColor: tone.panel,
+  border: `1px solid ${tone.hairline}`,
   borderRadius: DS_RADII.panel,
   display: 'flex',
   flexDirection: 'column',
@@ -108,15 +123,18 @@ const itemSlotStyle: React.CSSProperties = {
   gap: 2,
   padding: '4px 2px',
   boxSizing: 'border-box',
-};
+});
 
 /** One item slot: icon + name + uses; a dashed empty slot when nothing is carried. */
-export const ItemSlot: React.FC<{ item?: { name: string; uses: number | string; icon: string } }> = ({ item }) => {
+export const ItemSlot: React.FC<{
+  item?: { name: string; uses: number | string; icon: string };
+  tone?: FactionTone;
+}> = ({ item, tone = FACTION_TONES.player }) => {
   if (!item) {
-    return <div style={{ ...itemSlotStyle, borderStyle: 'dashed', color: '#5b6b85', fontSize: 11 }}>—</div>;
+    return <div style={{ ...itemSlotStyle(tone), borderStyle: 'dashed', color: '#5b6b85', fontSize: 11 }}>—</div>;
   }
   return (
-    <div style={itemSlotStyle} title={item.name}>
+    <div style={itemSlotStyle(tone)} title={item.name}>
       <img src={item.icon} alt={item.name} style={{ width: 26, height: 26, imageRendering: 'pixelated' }} />
       <div
         style={{

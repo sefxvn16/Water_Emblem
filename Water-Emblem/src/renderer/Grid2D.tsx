@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import type { BoardView } from '../core/grid/boardView';
+import { getFactionTone } from '../core/grid/factionTones';
 import type { Position, UnitFaction } from '../core/grid/types';
 import { TERRAIN_COLORS } from './terrainStyle2d';
 import { MovementArrow } from './MovementArrow';
@@ -11,6 +12,8 @@ export interface UnitDisplay {
   readonly faction: UnitFaction;
   readonly hasActed: boolean;
   readonly avatarUrl?: string;
+  /** Display-only origin marker (PLAN item 79): reinforcement tone when true. */
+  readonly isReinforcement?: boolean;
 }
 
 interface Grid2DProps {
@@ -181,14 +184,14 @@ export const Grid2D: React.FC<Grid2DProps> = ({
                       boxSizing: 'border-box',
                       borderRadius: '6px',
                       overflow: 'hidden',
-                      backgroundColor: unit.hasActed ? '#4b5563' : unit.faction === 'player' ? '#1e3a8a' : '#7f1d1d',
+                      backgroundColor: unit.hasActed
+                        ? '#4b5563'
+                        : getFactionTone(unit.faction, unit.isReinforcement).tokenBg,
                       border: selected
                         ? '2px solid #FFEB3B'
                         : unit.hasActed
                         ? '2px solid #6b7280'
-                        : unit.faction === 'player'
-                        ? '2px solid #3b82f6'
-                        : '2px solid #ef4444',
+                        : `2px solid ${getFactionTone(unit.faction, unit.isReinforcement).tokenBorder}`,
                       boxShadow: selected ? '0 0 8px #facc15' : '0 2px 6px rgba(0,0,0,0.6)',
                       filter: unit.hasActed ? 'grayscale(90%) opacity(0.65)' : undefined,
                       display: 'flex',
@@ -311,8 +314,8 @@ export const Grid2D: React.FC<Grid2DProps> = ({
                 boxSizing: 'border-box',
                 borderRadius: '6px',
                 overflow: 'hidden',
-                backgroundColor: unit.faction === 'player' ? '#1e3a8a' : '#7f1d1d',
-                border: '2px solid #3b82f6',
+                backgroundColor: getFactionTone(unit.faction, unit.isReinforcement).tokenBg,
+                border: `2px solid ${getFactionTone(unit.faction, unit.isReinforcement).tokenBorder}`,
                 boxShadow: '0 4px 12px rgba(0,0,0,0.7)',
                 display: 'flex',
                 alignItems: 'center',
