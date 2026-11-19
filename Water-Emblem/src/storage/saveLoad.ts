@@ -5,6 +5,8 @@ import devilMountainMapJson from '../../data/maps/chapter_03_devil_mountain.json
 import testMapJson from '../../data/maps/test_map_01.json';
 import itemsJson from '../../data/items.json';
 import type { ChapterOutcome } from '../core/chapter/types';
+import { DIFFICULTIES, type Difficulty } from '../core/chapter/difficulty';
+import { SKILLS } from '../core/combat/skills';
 import type { ItemDefinition } from '../core/combat/types';
 import { chapters, type ExtendedUnitState, type InventoryEntry } from '../core/data/chapterData';
 import type { GamePhase } from '../core/turn/turnManager';
@@ -36,6 +38,12 @@ export interface GameSnapshot {
   doorStates?: Record<string, 'opened'>;
   /** Reinforcement groups already spawned (PLAN item 94); absent = none yet. */
   spawnedReinforcements?: string[];
+  /** Remaining HP of damaged destructible objects by "x,y" key (PLAN item 101). */
+  objectStates?: Record<string, number>;
+  /** Traps already triggered (PLAN item 105); absent = none yet. */
+  triggeredTraps?: string[];
+  /** Playthrough difficulty (PLAN item 115); absent = normal. */
+  difficulty?: Difficulty;
 }
 
 export interface SaveGameData extends GameSnapshot {
@@ -113,6 +121,7 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
     && (unit.supportPoints === undefined || (isRecord(unit.supportPoints)
       && Object.values(unit.supportPoints).every((points) => isNonnegativeInteger(points) && points <= 35)))
     && typeof unit.isDead === 'boolean'
+    && (unit.hasEscaped === undefined || typeof unit.hasEscaped === 'boolean')
     && typeof unit.hasActed === 'boolean'
     && isStats(value.stats)
     && Number.isInteger(value.level) && (value.level as number) >= 1 && (value.level as number) <= 20
@@ -126,7 +135,9 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
         && (entry.uses as number) >= 1 && (entry.uses as number) <= item.maxUses;
     })
     && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
-    && (value.aiRole === undefined || value.aiRole === 'stationary' || value.aiRole === 'pursue' || value.aiRole === 'pillage');
+    && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string))
+    && (value.personalSkill === undefined || (typeof value.personalSkill === 'string' && value.personalSkill in SKILLS))
+    && (value.imitateBackup === undefined || (isRecord(value.imitateBackup) && isStats(value.imitateBackup.stats)));
 }
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {
@@ -160,6 +171,15 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   if (!Array.isArray(spawnedReinforcements)) return false;
   const reinforcementGroupIds = new Set((chapter.reinforcements ?? []).map(({ id }) => id));
   if (spawnedReinforcements.some((id: unknown) => typeof id !== 'string' || !reinforcementGroupIds.has(id))) return false;
+  const objectStates = value.objectStates === undefined ? {} : value.objectStates;
+  if (!isRecord(objectStates)) return false;
+  if (Object.entries(objectStates).some(([key, hp]) =>
+    !/^\d+,\d+$/.test(key) || !isNonnegativeInteger(hp))) return false;
+  const triggeredTraps = value.triggeredTraps === undefined ? [] : value.triggeredTraps;
+  if (!Array.isArray(triggeredTraps)) return false;
+  const trapIds = new Set((chapter.traps ?? []).map(({ id }) => id));
+  if (triggeredTraps.some((id: unknown) => typeof id !== 'string' || !trapIds.has(id))) return false;
+  if (value.difficulty !== undefined && !DIFFICULTIES.includes(value.difficulty as Difficulty)) return false;
   const reinforcementUnits = (chapter.reinforcements ?? []).flatMap((group) => group.units);
   const reserveUnits = value.reserveUnits === undefined ? [] : value.reserveUnits;
   if (!Array.isArray(reserveUnits) || !reserveUnits.every(isSavedUnit)) return false;
@@ -237,6 +257,9 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
   migrated.chestStates ??= {};
   migrated.doorStates ??= {};
   migrated.spawnedReinforcements ??= [];
+  migrated.objectStates ??= {};
+  migrated.triggeredTraps ??= [];
+  migrated.difficulty ??= 'normal';
   const savedIds = new Set([...migrated.extendedUnits as unknown[],
     ...(Array.isArray(migrated.reserveUnits) ? migrated.reserveUnits as unknown[] : [])]
     .filter(isRecord).map((entry) => isRecord(entry.unit) ? entry.unit.id : undefined));

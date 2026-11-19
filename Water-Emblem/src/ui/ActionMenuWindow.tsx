@@ -28,6 +28,14 @@ export interface PendingActions {
   canOpenDoor: boolean;
   /** Standing on an arena tile, armed, with gold to wager (PLAN item 93). */
   canArena: boolean;
+  /** Standing on an escape tile in an escape chapter (PLAN item 109). */
+  canEscape: boolean;
+  /** Manakete ready to transform (PLAN item 121). */
+  canTransform: boolean;
+  /** Adjacent acted ally a dancer can refresh (PLAN item 124). */
+  danceTargetName: string | null;
+  /** Adjacent ally Xane can imitate (PLAN item 124). */
+  imitateTargetName: string | null;
 }
 
 interface ActionMenuWindowProps {
@@ -47,6 +55,10 @@ interface ActionMenuWindowProps {
   onOpenDoor: () => void;
   onArena: () => void;
   onSeize: () => void;
+  onEscape: () => void;
+  onTransform: () => void;
+  onDance: () => void;
+  onImitate: () => void;
   onTalk: () => void;
   onUseVulnerary: () => void;
   onPromote: (classId: string) => void;
@@ -56,24 +68,66 @@ interface ActionMenuWindowProps {
 }
 
 /**
- * Action bar (PLAN item 98): a row of circular, slightly glossy buttons at
- * the bottom-right of the screen — navy enamel with a muted-gold ring in
- * the classic European FE style. Attack is the gold primary; Cancel Move
- * carries the red ring. Labels stay as text under each button.
+ * Action bar (PLAN items 98/126/130): a row of circular, glossy 3D buttons
+ * at the bottom-right — navy enamel with a muted-gold ring in the classic
+ * European FE style. Buttons are ordered by priority; the highest-priority
+ * available action is gold and pulses. Size scales with the viewport
+ * (56px floor on small screens, 84px = 1.5× on large ones).
  */
+
+interface ActionDescriptor {
+  key: string;
+  glyph: string;
+  label: string;
+  onClick: () => void;
+  priority: number;
+  danger?: boolean;
+}
+
 export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
   const { mountLabel, actions } = props;
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   if (mountLabel === null && actions === null) return null;
 
-  const renderButton = (
-    key: string,
-    glyph: string,
-    label: string,
-    onClick: () => void,
-    variant: 'primary' | 'normal' | 'danger' = 'normal',
-  ) => {
+  const descriptors: ActionDescriptor[] = [];
+  if (actions !== null) {
+    if (actions.canSeize) descriptors.push({ key: 'seize', glyph: '👑', label: 'Seize Gate', onClick: props.onSeize, priority: 1 });
+    if (actions.canEscape) descriptors.push({ key: 'escape', glyph: '🏃', label: 'Escape', onClick: props.onEscape, priority: 2 });
+    if (actions.villageName !== null) descriptors.push({ key: 'village', glyph: '🏠', label: `Visit (${actions.villageName})`, onClick: props.onVisitVillage, priority: 3 });
+    if (actions.hasAttackTargets) descriptors.push({ key: 'attack', glyph: '⚔️', label: 'Attack', onClick: props.onAttack, priority: 4 });
+    for (const option of actions.staffOptions) {
+      descriptors.push({ key: `staff-${option.itemId}`, glyph: '✨', label: `Staff: ${option.name}`, onClick: () => props.onStaff(option.itemId), priority: 5 });
+    }
+    if (actions.talkTargetName !== null) descriptors.push({ key: 'talk', glyph: '💬', label: `Talk: ${actions.talkTargetName}`, onClick: props.onTalk, priority: 6 });
+    if (actions.canOpenChest) descriptors.push({ key: 'chest', glyph: '🎁', label: 'Open Chest', onClick: props.onOpenChest, priority: 7 });
+    if (actions.canOpenDoor) descriptors.push({ key: 'door', glyph: '🚪', label: 'Open Door', onClick: props.onOpenDoor, priority: 8 });
+    if (actions.canShop) descriptors.push({ key: 'shop', glyph: '🏪', label: 'Shop', onClick: props.onShop, priority: 9 });
+    if (actions.canArena) descriptors.push({ key: 'arena', glyph: '🏟️', label: 'Arena', onClick: props.onArena, priority: 10 });
+    if (actions.canTransform) descriptors.push({ key: 'transform', glyph: '🐉', label: 'Transform', onClick: props.onTransform, priority: 11 });
+    if (actions.danceTargetName !== null) descriptors.push({ key: 'dance', glyph: '💃', label: `Dance: ${actions.danceTargetName}`, onClick: props.onDance, priority: 12 });
+    if (actions.imitateTargetName !== null) descriptors.push({ key: 'imitate', glyph: '🎭', label: `Imitate: ${actions.imitateTargetName}`, onClick: props.onImitate, priority: 13 });
+    for (const p of actions.promotions) {
+      descriptors.push({ key: `promote-${p.id}`, glyph: '⬆️', label: `Promote: ${p.name}`, onClick: () => props.onPromote(p.id), priority: 14 });
+    }
+    if (actions.canUseVulnerary) descriptors.push({ key: 'vulnerary', glyph: '🧪', label: 'Use Vulnerary', onClick: props.onUseVulnerary, priority: 15 });
+    if (actions.canTrade) descriptors.push({ key: 'trade', glyph: '🔁', label: 'Trade', onClick: props.onTrade, priority: 16 });
+    if (actions.canStorage) descriptors.push({ key: 'storage', glyph: '📦', label: 'Storage', onClick: props.onStorage, priority: 17 });
+    for (const option of actions.equipOptions) {
+      descriptors.push({ key: `equip-${option.itemId}`, glyph: '🗡️', label: `Equip: ${option.name}`, onClick: () => props.onEquip(option.itemId), priority: 18 });
+    }
+    descriptors.push({ key: 'wait', glyph: '⏳', label: 'Wait', onClick: props.onWait, priority: 19 });
+    if (actions.canCancelMove) descriptors.push({ key: 'cancel', glyph: '↩️', label: 'Cancel Move', onClick: props.onCancelMove, priority: 20, danger: true });
+  }
+  if (mountLabel !== null) {
+    descriptors.push({ key: 'mount', glyph: '🐴', label: mountLabel, onClick: props.onToggleMount, priority: 18.5 });
+  }
+  descriptors.sort((a, b) => a.priority - b.priority);
+  const topKey = descriptors.find((d) => d.key !== 'wait' && d.key !== 'cancel')?.key;
+
+  const renderButton = (descriptor: ActionDescriptor) => {
+    const { key, glyph, label, onClick } = descriptor;
+    const variant = descriptor.danger ? 'danger' : key === topKey ? 'primary' : 'normal';
     const isHovered = hoveredKey === key;
     const ring = variant === 'danger' ? '#ef4444' : variant === 'primary' ? '#fde047' : '#c9a227';
     const face = variant === 'primary'
@@ -84,10 +138,11 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     return (
       <div
         key={key}
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', width: '64px' }}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', width: 'clamp(64px, 9vw, 96px)' }}
       >
         <button
           type="button"
+          className={variant === 'primary' ? 'we-action-primary' : undefined}
           data-testid={`action-${key}`}
           aria-label={label}
           title={label}
@@ -95,8 +150,8 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           onMouseEnter={() => setHoveredKey(key)}
           onMouseLeave={() => setHoveredKey(null)}
           style={{
-            width: '56px',
-            height: '56px',
+            width: 'clamp(56px, 8vw, 84px)',
+            height: 'clamp(56px, 8vw, 84px)',
             borderRadius: '50%',
             padding: 0,
             background: face,
@@ -110,7 +165,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '24px',
+            fontSize: 'clamp(24px, 3.4vw, 36px)',
             lineHeight: 1,
             flexShrink: 0,
           }}
@@ -119,12 +174,12 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
         </button>
         <span
           style={{
-            fontSize: '10px',
+            fontSize: 'clamp(10px, 1.5vw, 13px)',
             fontWeight: 'bold',
             color: variant === 'danger' ? '#fca5a5' : '#e2e8f0',
             textShadow: '1px 1px 0 #000, 0 0 4px rgba(0,0,0,0.8)',
             textAlign: 'center',
-            maxWidth: '72px',
+            maxWidth: 'clamp(72px, 10vw, 104px)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
@@ -139,6 +194,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
   return (
     <div
       data-testid="action-menu"
+      className="we-action-bar"
       style={{
         position: 'fixed',
         right: '16px',
@@ -151,12 +207,24 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
         maxWidth: 'calc(100vw - 32px)',
       }}
     >
+      <style>{`
+        @keyframes we-action-glow {
+          0%, 100% { box-shadow: inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 10px rgba(253,224,71,0.55), 0 4px 10px rgba(0,0,0,0.6); }
+          50% { box-shadow: inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 26px rgba(253,224,71,0.95), 0 4px 10px rgba(0,0,0,0.6); }
+        }
+        .we-action-primary { animation: we-action-glow 1.6s ease-in-out infinite; }
+        /* PLAN item 128: on narrow screens the bar sits above the unit
+           summary card instead of covering it. */
+        @media (max-width: 640px) {
+          .we-action-bar { bottom: 132px !important; }
+        }
+      `}</style>
       {actions !== null && (
         <div
           style={{
             fontWeight: 'bold',
             color: '#fde047',
-            fontSize: '12px',
+            fontSize: 'clamp(12px, 1.6vw, 15px)',
             letterSpacing: '0.02em',
             backgroundColor: 'rgba(12, 30, 91, 0.92)',
             border: '1px solid #c9a227',
@@ -178,33 +246,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           justifyContent: 'flex-end',
         }}
       >
-        {mountLabel !== null && renderButton('mount', '🐴', mountLabel, props.onToggleMount)}
-        {actions !== null && (
-          <>
-            {actions.hasAttackTargets && renderButton('attack', '⚔️', 'Attack', props.onAttack, 'primary')}
-            {actions.equipOptions.map((option) =>
-              renderButton(`equip-${option.itemId}`, '🗡️', `Equip: ${option.name}`, () => props.onEquip(option.itemId))
-            )}
-            {actions.canTrade && renderButton('trade', '🔁', 'Trade', props.onTrade)}
-            {actions.canStorage && renderButton('storage', '📦', 'Storage', props.onStorage)}
-            {actions.staffOptions.map((option) =>
-              renderButton(`staff-${option.itemId}`, '✨', `Staff: ${option.name}`, () => props.onStaff(option.itemId))
-            )}
-            {actions.canSeize && renderButton('seize', '👑', 'Seize Gate', props.onSeize)}
-            {actions.talkTargetName !== null && renderButton('talk', '💬', `Talk: ${actions.talkTargetName}`, props.onTalk)}
-            {actions.canUseVulnerary && renderButton('vulnerary', '🧪', 'Use Vulnerary', props.onUseVulnerary)}
-            {actions.promotions.map((p) =>
-              renderButton(`promote-${p.id}`, '⬆️', `Promote: ${p.name}`, () => props.onPromote(p.id))
-            )}
-            {actions.villageName !== null && renderButton('village', '🏠', `Visit (${actions.villageName})`, props.onVisitVillage)}
-            {actions.canShop && renderButton('shop', '🏪', 'Shop', props.onShop)}
-            {actions.canOpenChest && renderButton('chest', '🎁', 'Open Chest', props.onOpenChest)}
-            {actions.canOpenDoor && renderButton('door', '🚪', 'Open Door', props.onOpenDoor)}
-            {actions.canArena && renderButton('arena', '🏟️', 'Arena', props.onArena)}
-            {renderButton('wait', '⏳', 'Wait', props.onWait)}
-            {actions.canCancelMove && renderButton('cancel', '↩️', 'Cancel Move', props.onCancelMove, 'danger')}
-          </>
-        )}
+        {descriptors.map(renderButton)}
       </div>
     </div>
   );

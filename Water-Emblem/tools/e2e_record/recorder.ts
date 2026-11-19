@@ -24,7 +24,18 @@ export async function recordOn(page: Page): Promise<void> {
       }
       const button = target.closest('button');
       if (button) {
-        steps.push({ kind: 'button', name: (button.textContent ?? '').trim() });
+        // Circular action buttons carry their label in aria-label; their
+        // textContent is only the glyph (or empty). Record the accessible
+        // name so the replay can find the button by role.
+        const name = (button.getAttribute('aria-label') ?? button.textContent ?? '').trim();
+        // The bot opens/closes the Settings menu for its own navigation;
+        // the replay drives Settings itself, and a real click on the gear
+        // is intercepted by the story intro overlay. Don't record it.
+        if (name === 'Settings') return;
+        // Reward popups are dismissed by the replay at every step; a
+        // recorded OK click would race that dismissal and time out.
+        if (button.closest('[data-testid="reward-popup"]')) return;
+        steps.push({ kind: 'button', name });
         return;
       }
       steps.push({ kind: 'unknown', tag: target.tagName, text: (target.textContent ?? '').slice(0, 40) });

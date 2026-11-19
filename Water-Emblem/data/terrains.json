@@ -406,6 +406,23 @@
         "mage": 1,
         "bandit": 1
       }
+    },
+    {
+      "id": "ballista",
+      "name": "Ballista",
+      "nameVi": "Máy bắn đá",
+      "obstacleType": "structure",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 1,
+        "armor": 1,
+        "cavalry": 2,
+        "flier": 1,
+        "mage": 1,
+        "bandit": 1
+      }
     }
   ]
 }

@@ -9,7 +9,7 @@ import ch03Dialogues from '../data/dialogues/chapter_03_dialogues.json';
 import itemsJson from '../data/items.json';
 
 const ITEM_BY_ID = new Map((itemsJson.items as ItemDefinition[]).map((item) => [item.id, item]));
-import { defaultTerrainRegistry, healUnitsOnTerrain } from './core/grid/terrain';
+import { defaultTerrainRegistry, getElevation, healUnitsOnTerrain } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
@@ -27,7 +27,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
-import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
+import { runMovementAnimation, setAnimationSpeed, type ActiveMovingUnit, type AnimationSpeed } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import {
   bossStartEvent,
@@ -51,8 +51,8 @@ import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
-import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
-import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, useVulnerary } from './core/class/classRules';
+import { chapters, chapter01Data, testChapter01Data, ExtendedUnitState } from './core/data/chapterData';
+import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
@@ -67,6 +67,8 @@ import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { WeaponPickerWindow } from './ui/WeaponPickerWindow';
 import { OverflowWindow } from './ui/OverflowWindow';
+import { RewardPopup, type RewardPopupData } from './ui/RewardPopup';
+import { getItemIcon } from './ui/itemIcon';
 import { resolveOverflow, slotKind, hasRoomFor } from './core/data/inventory';
 import { TradeWindow, type TradeSide } from './ui/TradeWindow';
 import { getTradePartners, tradeMove, tradeSwap } from './core/data/trade';
@@ -76,6 +78,15 @@ import { ShopWindow } from './ui/ShopWindow';
 import { ArenaWindow } from './ui/ArenaWindow';
 import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
 import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
+import { buildObjectDefender, damageObject, destroyedObjectKeys, isDestructibleTile, objectHpAt } from './core/chapter/objects';
+import { applyTrapDamage, trapAt } from './core/chapter/traps';
+import { canCanto } from './core/combat/canto';
+import { applyBossPhases } from './core/chapter/bossPhases';
+import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
+import { generateSkirmishChapter } from './core/chapter/randomMap';
+import { computeEnemyIntents } from './core/ai/intent';
+import { getSkillModifiers } from './core/combat/skills';
+import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -158,10 +169,12 @@ export const App: React.FC = () => {
   // Attack target-lock (PLAN item 80): after pressing Attack with several
   // targets in range, only target tiles respond until one is picked.
   const [attackTargeting, setAttackTargeting] = useState(false);
+  const [tradeTargeting, setTradeTargeting] = useState(false);
   const [weaponPickerOpen, setWeaponPickerOpen] = useState(false);
   const [pendingOverflows, setPendingOverflows] = useState<
     { unitId: string; itemId: string; itemName: string }[]
   >([]);
+  const [rewardPopups, setRewardPopups] = useState<RewardPopupData[]>([]);
   const [tradeState, setTradeState] = useState<{ partnerId: string | null } | null>(null);
   const [convoy, setConvoy] = useState<InventoryEntry[]>([]);
   const [storageOpen, setStorageOpen] = useState(false);
@@ -179,18 +192,39 @@ export const App: React.FC = () => {
     }
   }, [turnState.selectedUnitId]);
   const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
+  const [prepTrade, setPrepTrade] = useState<{ unitId: string; partnerId: string | null } | null>(null);
   const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
+
+  // PLAN item 102 (Canto): after acting, mounted/flying units may move the
+  // movement they had left when they arrived at their action tile.
+  const [cantoActive, setCantoActive] = useState(false);
+  const cantoRemainingRef = useRef(0);
+  const cantoUsedRef = useRef(false);
+  // PLAN item 115: playthrough difficulty (enemy stat bonuses).
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
+  // PLAN item 117: animation speed setting, persisted locally.
+  const [animationSpeed, setAnimationSpeedState] = useState<AnimationSpeed>(() => {
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('water-emblem-anim-speed') : null;
+    return saved === 'fast' || saved === 'off' ? saved : 'normal';
+  });
+  useEffect(() => {
+    setAnimationSpeed(animationSpeed);
+    try { localStorage.setItem('water-emblem-anim-speed', animationSpeed); } catch { /* storage unavailable */ }
+  }, [animationSpeed]);
 
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
-    if (!attackTargeting && !weaponPickerOpen && !staffTargeting) return;
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !cantoActive && !tradeTargeting) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') { setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); }
+      if (event.key === 'Escape') {
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setTradeTargeting(false);
+        if (cantoActive) { setCantoActive(false); turnManager.waitSelectedUnit(); syncState(); }
+      }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting, weaponPickerOpen, staffTargeting]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting, cantoActive, tradeTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
@@ -200,6 +234,8 @@ export const App: React.FC = () => {
   const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
   const [doorStates, setDoorStates] = useState<Record<string, DoorState>>({});
   const [spawnedReinforcements, setSpawnedReinforcements] = useState<string[]>([]);
+  const [objectStates, setObjectStates] = useState<Record<string, number>>({});
+  const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
   const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
     villageName: string;
     lines: readonly DialogueLine[];
@@ -218,6 +254,16 @@ export const App: React.FC = () => {
   const handleToggleMute = () => {
     const next = soundManager.toggleMute();
     setIsMuted(next);
+  };
+
+  // PLAN item 128: master volume slider (0 = muted).
+  const [volume, setVolume] = useState(soundManager.isMuted ? 0 : soundManager.sfxVolume);
+  const handleVolume = (next: number) => {
+    setVolume(next);
+    soundManager.sfxVolume = next;
+    soundManager.bgmVolume = next * 0.6;
+    soundManager.isMuted = next <= 0;
+    setIsMuted(next <= 0);
   };
 
   useEffect(() => {
@@ -260,9 +306,9 @@ export const App: React.FC = () => {
     const participatingIds = new Set(extendedUnits
       .filter(({ unit }) => unit.faction === 'player' && !unit.isDead)
       .map(({ unit }) => unit.id));
-    const newUnits = carryoverUnits
+    const newUnits = applyDifficulty(carryoverUnits
       ? carryUnitsToChapter(carryoverUnits, targetChapter, participatingIds)
-      : structuredClone(targetChapter.units);
+      : structuredClone(targetChapter.units), difficulty);
     setExtendedUnits(newUnits);
     setReserveUnits([]);
     // The convoy carries over between chapters; a fresh game starts empty.
@@ -277,6 +323,11 @@ export const App: React.FC = () => {
     setChestStates({});
     setDoorStates({});
     setSpawnedReinforcements([]);
+    setObjectStates({});
+    setTriggeredTraps([]);
+    setCantoActive(false);
+    cantoRemainingRef.current = 0;
+    cantoUsedRef.current = false;
     setMoveCommitted(false);
     setMoveOrigin(null);
     // PLAN item 94: warn about reinforcements arriving at the end of turn 1.
@@ -331,6 +382,50 @@ export const App: React.FC = () => {
       .map((door) => `${door.position.x},${door.position.y}`),
   ), [currentChapter.doors, doorStates]);
 
+  // PLAN item 101: destroyed destructible objects become passable rubble.
+  const destroyedKeys = useMemo(() => destroyedObjectKeys(objectStates), [objectStates]);
+
+  // PLAN items 106/107 (B02/B03): enemy intent preview during player phase.
+  const enemyIntents = useMemo(() => {
+    if (turnState.activePhase !== 'player_phase' || chapterOutcome !== 'ongoing') return [];
+    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+    if (enemies.length === 0) return [];
+    return computeEnemyIntents(enemies, {
+      map: mapData,
+      terrains: defaultTerrainRegistry,
+      units: extendedUnits.map((u) => u.unit),
+      unitStatsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.stats])),
+      unitWeaponsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.weapon])),
+      unitSkillsMap: new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+      villageTargets: (currentChapter.villages ?? [])
+        .filter((v) => (villageStates[v.id] ?? 'intact') === 'intact')
+        .map((v) => v.position),
+      chestTargets: (currentChapter.chests ?? [])
+        .filter((c) => chestStates[c.id] !== 'opened')
+        .map((c) => c.position),
+      turnNumber: turnState.turnNumber,
+      openedDoors: openedDoorKeys,
+      destroyedObjects: destroyedKeys,
+    });
+  }, [extendedUnits, turnState.activePhase, turnState.turnNumber, chapterOutcome, mapData, currentChapter, villageStates, chestStates, openedDoorKeys, destroyedKeys]);
+
+  const intentTargetKeys = useMemo(() => {
+    const keys = new Set<string>();
+    for (const intent of enemyIntents) {
+      if (!intent.targetUnitId) continue;
+      const target = extendedUnits.find((u) => u.unit.id === intent.targetUnitId);
+      if (target) keys.add(`${target.unit.position.x},${target.unit.position.y}`);
+    }
+    return keys;
+  }, [enemyIntents, extendedUnits]);
+
+  const inspectedEnemyId = pinnedUnitId ?? hoveredUnitSummary?.unitId ?? null;
+  const intentPath = useMemo(() => {
+    if (!inspectedEnemyId) return null;
+    const intent = enemyIntents.find((i) => i.enemyId === inspectedEnemyId);
+    return intent ? intent.path : null;
+  }, [enemyIntents, inspectedEnemyId]);
+
   // Vùng nguy hiểm của quân địch
   const dangerZoneKeys = useMemo(() => {
     const danger = new Set<string>();
@@ -342,6 +437,7 @@ export const App: React.FC = () => {
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
         openedDoors: openedDoorKeys,
+        destroyedObjects: destroyedKeys,
       });
 
       const candidateTiles = enemy.aiRole === 'stationary'
@@ -383,7 +479,29 @@ export const App: React.FC = () => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
 
+  // PLAN item 101: destructible objects in weapon range are attack targets.
+  const objectTargets = useMemo(() => {
+    if (!selectedExtUnit || !pendingMovePos) return [];
+    const targets: ExtendedUnitState[] = [];
+    for (let y = 0; y < mapData.height; y++) {
+      for (let x = 0; x < mapData.width; x++) {
+        const pos = { x, y };
+        if (!isDestructibleTile(mapData, defaultTerrainRegistry, pos)) continue;
+        const hp = objectHpAt(objectStates, mapData, defaultTerrainRegistry, pos);
+        if (hp <= 0) continue;
+        const dist = getManhattanDistance(pendingMovePos, pos);
+        if (!canAttackAtDistance(selectedExtUnit, ITEM_BY_ID, dist)) continue;
+        targets.push(buildObjectDefender(mapData, defaultTerrainRegistry, pos, hp));
+      }
+    }
+    return targets;
+  }, [selectedExtUnit, pendingMovePos, mapData, objectStates]);
+
   // PLAN item 89: heal-staff targets from the destination tile.
+  const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
+    ? getTradePartners(extendedUnits, selectedExtUnit, pendingMovePos)
+    : [];
+
   const staffTargets = useMemo(() => {
     if (!staffTargeting || !selectedExtUnit || !pendingMovePos) return [];
     const staff = ITEM_BY_ID.get(staffTargeting.staffId);
@@ -395,12 +513,19 @@ export const App: React.FC = () => {
     return new Set(staffTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [staffTargets]);
 
+  // PLAN item 132: trade partners are picked on the map (Fire Emblem
+  // style), highlighted like attack/staff targets.
+  const tradeTargetKeys = useMemo(() => {
+    if (!tradeTargeting) return new Set<string>();
+    return new Set(tradePartners.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
+  }, [tradeTargeting, tradePartners]);
+
   const boardView = buildBoardView({
     map: mapData,
     units: extendedUnits.map(({ unit }) => unit),
     reachableKeys,
     dangerZoneKeys,
-    attackTargetKeys: staffTargeting ? staffTargetKeys : attackTargetKeys,
+    attackTargetKeys: staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
   });
 
@@ -456,6 +581,33 @@ export const App: React.FC = () => {
   }, [pendingMovePos, selectedExtUnit, currentChapter.doors, doorStates]);
 
   // Click vào ô trên bản đồ
+  // PLAN item 102: end the selected unit's action, or offer Canto movement
+  // first when a mounted/flying unit still has movement left.
+  const waitWithCanto = () => {
+    const unit = turnManager.getSelectedUnit();
+    if (unit && canCanto(unit) && !unit.isDead && cantoRemainingRef.current > 0 && !cantoUsedRef.current) {
+      cantoUsedRef.current = true;
+      const range = calculateMovementRange({ ...unit, mov: cantoRemainingRef.current }, {
+        map: mapData,
+        terrains: defaultTerrainRegistry,
+        units: extendedUnits.map((u) => u.unit),
+        openedDoors: openedDoorKeys,
+        destroyedObjects: destroyedKeys,
+      });
+      if (range.size > 1 && turnManager.selectUnit(unit.id, range)) {
+        setCantoActive(true);
+        setPendingMovePos(null);
+        setPlannedPath(null);
+        setMoveCommitted(false);
+        setMoveOrigin(null);
+        showNotice('🐎 Canto: move the remaining tiles, or click the unit to stay.');
+        syncState();
+        return;
+      }
+    }
+    turnManager.waitSelectedUnit();
+  };
+
   const handleTileClick = (x: number, y: number) => {
     if (animCleanupRef.current) {
       animCleanupRef.current();
@@ -489,6 +641,51 @@ export const App: React.FC = () => {
       (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
     );
 
+    // PLAN item 102: Canto movement — click a highlighted tile to move
+    // there and end the unit's turn; any other click stays in place. A
+    // click on another ready player unit ends Canto and then selects
+    // that unit (fall-through, so the click is not swallowed).
+    if (cantoActive) {
+      const cantoUnit = turnManager.getSelectedUnit();
+      const moveData = turnState.reachableTiles?.get(`${x},${y}`);
+      setCantoActive(false);
+      if (cantoUnit && moveData && (x !== cantoUnit.position.x || y !== cantoUnit.position.y)) {
+        const dest = { x, y };
+        const unitId = cantoUnit.id;
+        const finishCanto = () => {
+          turnManager.moveSelectedUnit(dest);
+          const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
+          if (trap) {
+            setExtendedUnits((prev) => applyTrapDamage(prev, unitId, trap.damage));
+            setTriggeredTraps((prev) => [...prev, trap.id]);
+            setCombatLog((prev) => [`🪤 ${cantoUnit.name} springs a trap and takes ${trap.damage} damage!`, ...prev]);
+          } else {
+            setExtendedUnits([...extendedUnits]);
+          }
+          setActiveMovingUnit(null);
+          turnManager.waitSelectedUnit();
+          syncState();
+        };
+        if (moveData.path.length <= 1) {
+          finishCanto();
+        } else {
+          animCleanupRef.current = runMovementAnimation(moveData.path, cantoUnit.moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+            animCleanupRef.current = null;
+            finishCanto();
+          });
+        }
+      } else {
+        turnManager.waitSelectedUnit();
+        syncState();
+        const fallThrough = clickedExt !== undefined
+          && clickedExt.unit.faction === 'player'
+          && !clickedExt.unit.hasActed
+          && clickedExt.unit.id !== cantoUnit?.id;
+        if (!fallThrough) return;
+      }
+      if (cantoUnit && moveData && (x !== cantoUnit.position.x || y !== cantoUnit.position.y)) return;
+    }
+
     const openAttackForecast = (target: ExtendedUnitState) => {
       if (!selectedExtUnit || !pendingMovePos) return;
       soundManager.playSfx('cursor');
@@ -503,6 +700,12 @@ export const App: React.FC = () => {
       }
       const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
       const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
+      // PLAN items 112/113: skill modifiers for both sides.
+      const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
+      const allGridUnits = extendedUnits.map((u) => u.unit);
+      const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds);
+      const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds);
+      const holds = (entry: ExtendedUnitState, itemId: string) => entry.inventory.some((i) => i.itemId === itemId);
       setCombatForecast(calculateCombatForecast(
         selectedExtUnit.unit,
         selectedExtUnit.stats,
@@ -514,9 +717,29 @@ export const App: React.FC = () => {
         defaultTerrainRegistry,
         attackerTerrain,
         defenderTerrain,
-        extendedUnits.map((u) => u.unit)
+        allGridUnits,
+        { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
+        { attacker: attackerMods, defender: defenderMods },
+        {
+          attackerHasLight: holds(selectedExtUnit, 'lightsphere'),
+          attackerHasDark: holds(selectedExtUnit, 'darksphere'),
+          defenderHasLight: holds(target, 'lightsphere'),
+          defenderHasDark: holds(target, 'darksphere'),
+        }
       ));
     };
+
+    // PLAN item 132: trade target lock — click a highlighted ally on the
+    // map to open the trade screen; click the unit's tile to go back.
+    if (tradeTargeting) {
+      if (clickedExt && tradePartners.some((t) => t.unit.id === clickedExt.unit.id)) {
+        setTradeTargeting(false);
+        setTradeState({ partnerId: clickedExt.unit.id });
+      } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
+        setTradeTargeting(false);
+      }
+      return;
+    }
 
     // PLAN item 89: staff target lock — click a highlighted ally to heal,
     // click the unit's destination tile to go back to the menu.
@@ -531,7 +754,7 @@ export const App: React.FC = () => {
           if (!result) return;
           soundManager.playSfx('heal');
           turnManager.replaceUnits(result.units.map(({ unit }) => unit));
-          turnManager.waitSelectedUnit();
+          waitWithCanto();
           setExtendedUnits(result.units);
           setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
           syncState();
@@ -549,6 +772,12 @@ export const App: React.FC = () => {
         && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
         setAttackTargeting(false);
         openAttackForecast(clickedExt);
+      } else if (objectTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y)) {
+        const objectTarget = objectTargets.find((t) => t.unit.position.x === x && t.unit.position.y === y);
+        if (objectTarget) {
+          setAttackTargeting(false);
+          openAttackForecast(objectTarget);
+        }
       } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
         setAttackTargeting(false);
       }
@@ -559,6 +788,12 @@ export const App: React.FC = () => {
     if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
       && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
       openAttackForecast(clickedExt);
+      return;
+    }
+    // PLAN item 101: clicking a destructible object in range opens its forecast.
+    if (pendingMovePos && objectTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y)) {
+      const objectTarget = objectTargets.find((t) => t.unit.position.x === x && t.unit.position.y === y);
+      if (objectTarget) openAttackForecast(objectTarget);
       return;
     }
 
@@ -588,7 +823,17 @@ export const App: React.FC = () => {
 
       const arriveAtDest = () => {
         turnManager.moveSelectedUnit(dest);
-        setExtendedUnits([...extendedUnits]);
+        cantoRemainingRef.current = turnState.reachableTiles?.get(`${dest.x},${dest.y}`)?.costRemaining ?? 0;
+        // PLAN item 105: ending movement on a trap tile springs it.
+        const trap = trapAt(currentChapter.traps ?? [], new Set(triggeredTraps), dest);
+        if (trap) {
+          setExtendedUnits((prev) => applyTrapDamage(prev, unitId, trap.damage));
+          setTriggeredTraps((prev) => [...prev, trap.id]);
+          setCombatLog((prev) => [`🪤 ${selectedExtUnit.unit.name} springs a trap and takes ${trap.damage} damage!`, ...prev]);
+          showNotice(`🪤 ${selectedExtUnit.unit.name} springs a trap! -${trap.damage} HP`);
+        } else {
+          setExtendedUnits([...extendedUnits]);
+        }
         setActiveMovingUnit(null);
         setMoveCommitted(true);
         syncState();
@@ -627,8 +872,11 @@ export const App: React.FC = () => {
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
         openedDoors: openedDoorKeys,
+        destroyedObjects: destroyedKeys,
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
+      cantoRemainingRef.current = 0;
+      cantoUsedRef.current = false;
       setPinnedUnitId(clickedExt.unit.id);
       setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
       setPendingMovePos(null);
@@ -704,6 +952,31 @@ export const App: React.FC = () => {
     setSelectedTarget(null);
 
     executeWithMove(() => {
+      // PLAN item 101: attacking a destructible object — no counter, no EXP;
+      // durability and weapon EXP still apply.
+      if (defender.unit.id.startsWith('object:')) {
+        const result = executeCombat(forecast, defaultRNG);
+        const totalDamage = result.events
+          .filter((ev) => ev.attackerId === attacker.unit.id && ev.isHit)
+          .reduce((sum, ev) => sum + ev.damageDealt, 0);
+        const damaged = damageObject(objectStates, mapData, defaultTerrainRegistry, defender.unit.position, totalDamage);
+        setObjectStates(damaged.states);
+        let updatedUnits = applyCombatDurability(extendedUnits, result, ITEM_BY_ID);
+        updatedUnits = applyCombatWeaponExp(updatedUnits, result);
+        turnManager.replaceUnits(updatedUnits.map(({ unit }) => unit));
+        waitWithCanto();
+        setExtendedUnits(updatedUnits);
+        soundManager.playWeaponHit(attacker.weapon?.type ?? 'sword');
+        setCombatLog((prev) => [
+          damaged.destroyed
+            ? `💥 ${attacker.unit.name} destroys the ${defender.unit.name}!`
+            : `⚔️ ${attacker.unit.name} hits the ${defender.unit.name} for ${totalDamage} (${damaged.remainingHp} HP left).`,
+          ...prev,
+        ].slice(0, 20));
+        syncState();
+        return;
+      }
+
       const hpBefore = { attacker: attacker.stats.hp, defender: defender.stats.hp };
       const result = executeCombat(forecast, defaultRNG);
       const popup = buildCombatPopup(++popupIdRef.current, attacker, defender, hpBefore, result);
@@ -746,15 +1019,20 @@ export const App: React.FC = () => {
       updatedUnits = experience.entries;
       updatedUnits = applyCombatDurability(updatedUnits, result, ITEM_BY_ID);
       updatedUnits = applyCombatWeaponExp(updatedUnits, result);
+      const bossPhases = applyBossPhases(updatedUnits, ITEM_BY_ID);
+      updatedUnits = bossPhases.units;
+      for (const event of bossPhases.events) {
+        logs.push(`👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
+      }
       logs.push(...experience.messages);
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
       setExtendedUnits(updatedUnits);
 
-      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
       if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -781,7 +1059,7 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -797,7 +1075,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('item_get');
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -814,7 +1092,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('heal');
       const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
       turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setExtendedUnits(nextUnits);
       setCombatLog((prev) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...prev].slice(0, 20));
       syncState();
@@ -829,7 +1107,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('levelup');
       const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
       turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setExtendedUnits(nextUnits);
       setCombatLog((prev) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...prev].slice(0, 20));
       syncState();
@@ -849,6 +1127,7 @@ export const App: React.FC = () => {
       terrains: defaultTerrainRegistry,
       units: nextUnits.map(({ unit }) => unit),
       openedDoors: openedDoorKeys,
+      destroyedObjects: destroyedKeys,
     });
     turnManager.selectUnit(changed.unit.id, range);
     syncState();
@@ -866,11 +1145,43 @@ export const App: React.FC = () => {
   };
 
   // PLAN item 86: full-inventory gains wait for a discard choice.
+  // PLAN item 131: item/gold gains and recruitments also pop a centered
+  // reward popup with the item icon or the character's avatar.
   const queueOverflows = (events: readonly GameEvent[]) => {
     const overflows = events
       .filter((event) => event.type === 'item_overflow')
       .map((event) => ({ unitId: event.unitId, itemId: event.itemId, itemName: event.itemName }));
     if (overflows.length > 0) setPendingOverflows((prev) => [...prev, ...overflows]);
+
+    const popups: RewardPopupData[] = [];
+    for (const event of events) {
+      if (event.type === 'item_gained') {
+        const item = ITEM_BY_ID.get(event.itemId);
+        popups.push({
+          kind: 'item',
+          title: '🎁 Item received!',
+          name: event.itemName,
+          imageUrl: item ? getItemIcon(item.id, item.type) : undefined,
+          detail: `${event.unitName} got ${event.itemName}.`,
+        });
+      } else if (event.type === 'gold_gained') {
+        popups.push({
+          kind: 'gold',
+          title: '💰 Gold received!',
+          name: `${event.amount.toLocaleString()} Gold`,
+        });
+      } else if (event.type === 'unit_recruited') {
+        const recruited = extendedUnits.find((entry) => entry.unit.id === event.unitId);
+        popups.push({
+          kind: 'recruit',
+          title: '🤝 Joined your army!',
+          name: recruited?.unit.name ?? event.unitId,
+          imageUrl: recruited?.avatarUrl,
+          detail: `${recruited?.unit.name ?? event.unitId} has become one of your allies!`,
+        });
+      }
+    }
+    if (popups.length > 0) setRewardPopups((prev) => [...prev, ...popups]);
   };
 
   const resolvePendingOverflow = (discardItemId: string | null | 'convoy') => {
@@ -897,8 +1208,87 @@ export const App: React.FC = () => {
       commitChapterState(result.state);
       queueOverflows(result.events);
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setChapterOutcome('victory');
+      syncState();
+    });
+  };
+
+  // PLAN item 109: escape from an escape tile; the unit leaves the map.
+  const handleEscape = () => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    executeWithMove(() => {
+      const updatedUnits = extendedUnits.map((entry) => entry.unit.id === selectedExtUnit.unit.id
+        ? { ...entry, unit: { ...entry.unit, hasEscaped: true, hasActed: true } }
+        : entry);
+      turnManager.replaceUnits(updatedUnits.map(({ unit }) => unit));
+      setExtendedUnits(updatedUnits);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🏃 ${selectedExtUnit.unit.name} escapes the map!`, ...prev]);
+      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
+      if (outcome !== 'ongoing') setChapterOutcome(outcome);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 121: manakete transformation (ends the unit's action).
+  const handleTransform = () => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    executeWithMove(() => {
+      const transformed = transformUnit(selectedExtUnit, ITEM_BY_ID);
+      if (!transformed) return;
+      const next = extendedUnits.map((entry) => entry.unit.id === transformed.unit.id ? transformed : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🐉 ${transformed.unit.name} transforms into a dragon!`, ...prev]);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 124: dancer refreshes an adjacent acted ally.
+  const danceTarget = selectedExtUnit?.unit.classId === 'dancer' && pendingMovePos
+    ? extendedUnits.find((entry) => entry.unit.faction === 'player' && !entry.unit.isDead
+      && entry.unit.id !== selectedExtUnit.unit.id && entry.unit.hasActed
+      && getManhattanDistance(entry.unit.position, pendingMovePos) === 1)
+    : undefined;
+
+  const handleDance = () => {
+    if (!selectedExtUnit || !danceTarget) return;
+    executeWithMove(() => {
+      const next = extendedUnits.map((entry) => entry.unit.id === danceTarget.unit.id
+        ? { ...entry, unit: { ...entry.unit, hasActed: false } }
+        : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`💃 ${selectedExtUnit.unit.name} dances for ${danceTarget.unit.name}!`, ...prev]);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 124: Xane imitates an adjacent ally for 5 turns.
+  const imitateTarget = selectedExtUnit?.unit.classId === 'chameleon' && pendingMovePos
+    && (selectedExtUnit.unit.imitateTurns ?? 0) <= 0
+    ? extendedUnits.find((entry) => entry.unit.faction === 'player' && !entry.unit.isDead
+      && entry.unit.id !== selectedExtUnit.unit.id
+      && getManhattanDistance(entry.unit.position, pendingMovePos) === 1)
+    : undefined;
+
+  const handleImitate = () => {
+    if (!selectedExtUnit || !imitateTarget) return;
+    executeWithMove(() => {
+      const imitated = imitateUnit(selectedExtUnit, imitateTarget);
+      if (!imitated) return;
+      const next = extendedUnits.map((entry) => entry.unit.id === imitated.unit.id ? imitated : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🎭 ${imitated.unit.name} imitates ${imitateTarget.unit.name}!`, ...prev]);
+      turnManager.waitSelectedUnit();
       syncState();
     });
   };
@@ -911,7 +1301,7 @@ export const App: React.FC = () => {
       soundManager.playSfx('item_get');
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       syncState();
     });
@@ -933,7 +1323,7 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
       queueOverflows(result.events);
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -952,10 +1342,13 @@ export const App: React.FC = () => {
   };
 
   const proceedAttack = () => {
-    if (attackableTargets.length === 1) {
+    if (attackableTargets.length === 1 && objectTargets.length === 0) {
       const target = attackableTargets[0];
       if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
-    } else if (attackableTargets.length > 1) {
+    } else if (attackableTargets.length === 0 && objectTargets.length === 1) {
+      const target = objectTargets[0];
+      if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
+    } else if (attackableTargets.length + objectTargets.length > 0) {
       setAttackTargeting(true);
     }
   };
@@ -978,9 +1371,6 @@ export const App: React.FC = () => {
     setStaffTargeting({ staffId });
   };
 
-  const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
-    ? getTradePartners(extendedUnits, selectedExtUnit, pendingMovePos)
-    : [];
 
   // PLAN item 88: Storage is available to Marth himself and to units
   // standing adjacent to Marth at their destination tile.
@@ -1056,7 +1446,7 @@ export const App: React.FC = () => {
   const handleShopClose = () => {
     setShopOpen(false);
     executeWithMove(() => {
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -1106,7 +1496,7 @@ export const App: React.FC = () => {
     setArenaOpen(false);
     handleArenaAgain();
     executeWithMove(() => {
-      turnManager.waitSelectedUnit();
+      waitWithCanto();
       syncState();
     });
   };
@@ -1144,7 +1534,45 @@ export const App: React.FC = () => {
 
   const handleTrade = () => {
     if (tradePartners.length === 0) return;
-    setTradeState({ partnerId: tradePartners.length === 1 ? tradePartners[0]!.unit.id : null });
+    // PLAN item 132: one partner opens the trade screen directly; with
+    // several, the player picks the partner on the map (FE style).
+    if (tradePartners.length === 1) {
+      setTradeState({ partnerId: tradePartners[0]!.unit.id });
+    } else {
+      setTradeTargeting(true);
+      showNotice('🔁 Trade: choose a partner on the map.');
+    }
+  };
+
+  // PLAN item 116: trade between any two units in battle preparation.
+  const applyPrepTrade = (fn: (units: ExtendedUnitState[]) => ExtendedUnitState[]) => {
+    const deployedIds = new Set(extendedUnits.map((u) => u.unit.id));
+    const next = fn([...extendedUnits, ...reserveUnits]);
+    setExtendedUnits(next.filter((u) => deployedIds.has(u.unit.id)));
+    setReserveUnits(next.filter((u) => !deployedIds.has(u.unit.id)));
+  };
+
+  // PLAN item 114: reclass in battle preparation (chapter 4+; test chapter
+  // allows it for testing [Giả định]).
+  const reclassAvailable = (() => {
+    if (currentChapterId === 'test_chapter_01') return true;
+    const match = /chapter_0?(\d+)/.exec(currentChapterId);
+    return match ? Number(match[1]) >= 4 : false;
+  })();
+
+  const handlePrepReclass = (unitId: string, classId: string) => {
+    const applyTo = (list: ExtendedUnitState[]) => list.map((entry) => {
+      if (entry.unit.id !== unitId) return entry;
+      return reclassUnit(entry, classId) ?? entry;
+    });
+    if (extendedUnits.some((u) => u.unit.id === unitId)) {
+      const next = applyTo(extendedUnits);
+      setExtendedUnits(next);
+      turnManager.replaceUnits(next.map((u) => u.unit));
+    } else {
+      setReserveUnits(applyTo(reserveUnits));
+    }
+    soundManager.playSfx('accept');
   };
 
   const handleTradeSwap = (leftIndex: number, rightIndex: number) => {
@@ -1248,6 +1676,14 @@ export const App: React.FC = () => {
     let nextVillageStates: Record<string, VillageState> = { ...villageStates };
 
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
+    const nextTriggeredTraps = [...triggeredTraps];
+    const springTrap = (unitId: string, pos: Position, name: string) => {
+      const trap = trapAt(currentChapter.traps ?? [], new Set(nextTriggeredTraps), pos);
+      if (!trap) return;
+      phaseUnits = applyTrapDamage(phaseUnits, unitId, trap.damage);
+      nextTriggeredTraps.push(trap.id);
+      logs.push(`  🪤 ${name} springs a trap and takes ${trap.damage} damage!`);
+    };
 
     for (const enemy of activeEnemies) {
       const decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
@@ -1256,14 +1692,26 @@ export const App: React.FC = () => {
         units: phaseUnits.map((u) => u.unit),
         unitStatsMap: statsMap,
         unitWeaponsMap: weaponsMap,
+        unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+        sphereHolders: {
+          light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
+          dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
+        },
         villageTargets: currentChapter.villages?.filter(
           (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
         ).map((v) => v.position),
+        chestTargets: (currentChapter.chests ?? [])
+          .filter((c) => chestStates[c.id] !== 'opened')
+          .map((c) => c.position),
+        patrolTargets: enemy.patrolPoints,
+        turnNumber: turnState.turnNumber,
         openedDoors: openedDoorKeys,
+        destroyedObjects: destroyedKeys,
       });
 
       if (decision.type === 'attack') {
         enemy.unit.position = { ...decision.movePosition };
+        springTrap(enemy.unit.id, decision.movePosition, enemy.unit.name);
         logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
         const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
@@ -1310,11 +1758,17 @@ export const App: React.FC = () => {
         phaseUnits = experience.entries;
         phaseUnits = applyCombatDurability(phaseUnits, result, ITEM_BY_ID);
         phaseUnits = applyCombatWeaponExp(phaseUnits, result);
+        const bossPhases = applyBossPhases(phaseUnits, ITEM_BY_ID);
+        phaseUnits = bossPhases.units;
+        for (const event of bossPhases.events) {
+          logs.push(`  👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
+        }
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
         logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
         enemy.unit.position = { ...decision.movePosition };
+        springTrap(enemy.unit.id, decision.movePosition, enemy.unit.name);
         logs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
       } else {
         logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
@@ -1326,11 +1780,23 @@ export const App: React.FC = () => {
         logs.push(...eventLogLines(raid.events));
       }
 
+      // PLAN item 110: a thief standing on a chest loots it.
+      if (enemy.aiRole === 'thief' && !enemy.unit.isDead) {
+        const chest = (currentChapter.chests ?? []).find((c) =>
+          chestStates[c.id] !== 'opened'
+          && c.position.x === enemy.unit.position.x && c.position.y === enemy.unit.position.y);
+        if (chest) {
+          setChestStates((prev) => ({ ...prev, [chest.id]: 'opened' }));
+          logs.push(`  💰 ${enemy.unit.name} loots the chest!`);
+        }
+      }
+
       enemy.unit.hasActed = true;
-      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId) !== 'ongoing') break;
+      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber }) !== 'ongoing') break;
     }
 
     setVillageStates(nextVillageStates);
+    setTriggeredTraps(nextTriggeredTraps);
 
     // PLAN item 94: reinforcements arrive at the end of the enemy phase
     // and do not act on the turn they appear.
@@ -1350,7 +1816,7 @@ export const App: React.FC = () => {
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
     // Kiểm tra kết quả chương sau lượt địch
-    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
     if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
     // Chuyển lại về Player Phase
@@ -1358,6 +1824,14 @@ export const App: React.FC = () => {
       soundManager.playSfx('player_phase');
       turnManager.switchPhase('player_phase');
       phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
+      // PLAN items 121/124: tick transformation/imitation timers.
+      const ticked = tickSpecialStates(phaseUnits, ITEM_BY_ID);
+      phaseUnits = ticked.units;
+      for (const event of ticked.events) {
+        logs.push(event.kind === 'transform_end'
+          ? `🐉 ${event.unitName} returns to human form.`
+          : `🎭 ${event.unitName}'s imitation ends.`);
+      }
       phaseUnits = phaseUnits.map((u) => u.unit.faction === 'player' && !u.unit.isDead ? { ...u, unit: { ...u.unit, hasActed: false } } : u);
       // PLAN item 94: warn about reinforcements arriving this turn.
       const arriving = announcedReinforcements(currentChapter, turnState.turnNumber + 1, nextSpawnedReinforcements);
@@ -1391,6 +1865,12 @@ export const App: React.FC = () => {
     setChestStates(data.chestStates ?? {});
     setDoorStates(data.doorStates ?? {});
     setSpawnedReinforcements(data.spawnedReinforcements ?? []);
+    setObjectStates(data.objectStates ?? {});
+    setTriggeredTraps(data.triggeredTraps ?? []);
+    setDifficulty(data.difficulty ?? 'normal');
+    setCantoActive(false);
+    cantoRemainingRef.current = 0;
+    cantoUsedRef.current = false;
     setMoveCommitted(false);
     setMoveOrigin(null);
     setActiveVillageDialogue(null);
@@ -1422,6 +1902,9 @@ export const App: React.FC = () => {
       chestStates,
       doorStates,
       spawnedReinforcements,
+      objectStates,
+      triggeredTraps,
+      difficulty,
     }, slotId);
     if (ok) {
       showNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
@@ -1447,6 +1930,7 @@ export const App: React.FC = () => {
 
   const handleEndTurn = () => {
     soundManager.playSfx('enemy_phase');
+    setCantoActive(false);
     turnManager.switchPhase('enemy_phase');
     syncState();
   };
@@ -1519,6 +2003,8 @@ export const App: React.FC = () => {
               onTileClick={handleTileClick}
               onTileHover={handleTileHover}
               onTileInspect={(x, y) => setInspectedTile({ x, y })}
+              intentTargetKeys={intentTargetKeys}
+              intentPath={intentPath}
             />
           </div>
         )}
@@ -1534,6 +2020,8 @@ export const App: React.FC = () => {
         activePhase={turnState.activePhase}
         viewMode={viewMode}
         isMuted={isMuted}
+        volume={volume}
+        onVolume={handleVolume}
         combatLog={combatLog}
         onChapterChange={loadChapter}
         onTitle={() => setActiveScreen('title')}
@@ -1545,6 +2033,8 @@ export const App: React.FC = () => {
         onSave={() => handleSave()}
         onLoad={() => handleLoad()}
         onViewMode={setViewMode}
+        animationSpeed={animationSpeed}
+        onAnimationSpeed={setAnimationSpeedState}
         onToggleMute={handleToggleMute}
         leading={turnState.activePhase === 'player_phase' && (
           <button
@@ -1576,11 +2066,11 @@ export const App: React.FC = () => {
         anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
           selectedExtUnit && !pendingMovePos && !combatForecast && !activeMovingUnit
-            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
+            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind)
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
+        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -1591,7 +2081,7 @@ export const App: React.FC = () => {
           promotions: selectedExtUnit && selectedExtUnit.level >= 10
             ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id })) : [],
           villageName: currentVillageAtPendingPos?.name ?? null,
-          hasAttackTargets: attackableTargets.length > 0,
+          hasAttackTargets: attackableTargets.length + objectTargets.length > 0,
           targetPositions: attackableTargets.map((t) => t.unit.position),
           equipOptions: selectedExtUnit
             ? getUsableWeapons(selectedExtUnit, ITEM_BY_ID)
@@ -1605,6 +2095,11 @@ export const App: React.FC = () => {
           canOpenChest: Boolean(selectedExtUnit && currentChestAtPendingPos && canOpenChest(selectedExtUnit, currentChapter)),
           canOpenDoor: Boolean(selectedExtUnit && doorAtPendingPos && canOpenDoor(selectedExtUnit)),
           canArena,
+          canEscape: chapterObjective.type === 'escape' && Boolean(pendingMovePos
+            && (chapterObjective.escapeTiles ?? []).some((t) => t.x === pendingMovePos.x && t.y === pendingMovePos.y)),
+          canTransform: Boolean(selectedExtUnit && canTransform(selectedExtUnit)),
+          danceTargetName: danceTarget?.unit.name ?? null,
+          imitateTargetName: imitateTarget?.unit.name ?? null,
           staffOptions: selectedExtUnit
             ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
               .filter((staff) => isHealStaff(staff)
@@ -1623,6 +2118,10 @@ export const App: React.FC = () => {
         onArena={() => setArenaOpen(true)}
         onStaff={handleStaff}
         onSeize={handleSeize}
+        onEscape={handleEscape}
+        onTransform={handleTransform}
+        onDance={handleDance}
+        onImitate={handleImitate}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}
         onPromote={handlePromote}
@@ -1664,6 +2163,14 @@ export const App: React.FC = () => {
           />
         );
       })()}
+
+      {/* PLAN item 131: centered reward popup (item icon / recruit avatar) */}
+      {rewardPopups.length > 0 && (
+        <RewardPopup
+          data={rewardPopups[0]!}
+          onClose={() => setRewardPopups((prev) => prev.slice(1))}
+        />
+      )}
 
       {tradeState && selectedExtUnit && pendingMovePos && (() => {
         const partner = tradeState.partnerId
@@ -1757,6 +2264,32 @@ export const App: React.FC = () => {
         );
       })()}
 
+      {prepTrade && (() => {
+        const all = [...extendedUnits, ...reserveUnits];
+        const left = all.find((u) => u.unit.id === prepTrade.unitId);
+        if (!left) return null;
+        const partner = prepTrade.partnerId ? all.find((u) => u.unit.id === prepTrade.partnerId) : undefined;
+        const partners = all.filter((u) => u.unit.faction === 'player' && !u.unit.isDead && u.unit.id !== left.unit.id);
+        return (
+          <TradeWindow
+            left={tradeSide(left)}
+            right={partner ? tradeSide(partner) : null}
+            partnerChoices={partners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name }))}
+            onPickPartner={(unitId) => setPrepTrade({ unitId: left.unit.id, partnerId: unitId })}
+            onSwap={(leftIndex, rightIndex) => {
+              if (prepTrade.partnerId) applyPrepTrade((units) => tradeSwap(units, left.unit.id, prepTrade.partnerId!, leftIndex, rightIndex, ITEM_BY_ID));
+            }}
+            onMove={(fromSide, index) => {
+              if (!prepTrade.partnerId) return;
+              const fromId = fromSide === 'left' ? left.unit.id : prepTrade.partnerId;
+              const toId = fromSide === 'left' ? prepTrade.partnerId : left.unit.id;
+              applyPrepTrade((units) => tradeMove(units, fromId, toId, index, ITEM_BY_ID));
+            }}
+            onClose={() => setPrepTrade(null)}
+          />
+        );
+      })()}
+
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
       {activeSummaryUnit && activeSummaryTile && !combatForecast && !inspectedUnit && (
         <UnitHoverWindow
@@ -1811,6 +2344,9 @@ export const App: React.FC = () => {
           onToggle={toggleDeployment}
           onStart={() => setShowPreparation(false)}
           onOpenConvoy={(unitId) => setPrepConvoyUnitId(unitId)}
+          onTrade={(unitId) => setPrepTrade({ unitId, partnerId: null })}
+          reclassAvailable={reclassAvailable}
+          onReclass={handlePrepReclass}
         />
       )}
 
@@ -1829,6 +2365,7 @@ export const App: React.FC = () => {
             </div>
           }
           onConfirm={() => setShowStoryIntro(false)}
+          onSkip={() => setShowStoryIntro(false)}
         />
       )}
 
@@ -1845,6 +2382,7 @@ export const App: React.FC = () => {
             </div>
           }
           onConfirm={() => setActiveVillageDialogue(null)}
+          onSkip={() => setActiveVillageDialogue(null)}
         />
       )}
 
@@ -1905,6 +2443,16 @@ export const App: React.FC = () => {
           onContinueGame={() => setActiveScreen('none')}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
+          difficulty={difficulty}
+          onDifficultyChange={setDifficulty}
+          onStartSkirmish={() => {
+            const seed = Math.floor(Math.random() * 100000);
+            const { chapter, map } = generateSkirmishChapter(seed, testChapter01Data);
+            chapters[chapter.id] = chapter;
+            chapterMaps[chapter.id] = map;
+            setActiveScreen('none');
+            loadChapter(chapter.id);
+          }}
         />
       )}
 

@@ -14,10 +14,23 @@ import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
 import type { GridUnit, MapData, MoveType, Position, UnitFaction, WeaponRank } from '../grid/types';
 import { initialSupportPoints } from '../combat/support';
+import { SKILLS } from '../combat/skills';
 
 export interface InventoryEntry {
   itemId: string;
   uses: number;
+}
+
+/** One stage of a multi-phase boss (PLAN item 111). */
+export interface BossPhase {
+  /** Trigger when HP% falls to or below this value (1-99). */
+  hpPercent: number;
+  /** Stat bonuses added when the phase starts (not HP). */
+  statBonus?: Partial<Record<'str' | 'mag' | 'skill' | 'spd' | 'lck' | 'def' | 'res', number>>;
+  /** Weapon to equip when the phase starts. */
+  weaponId?: string;
+  /** AI role to switch to when the phase starts. */
+  aiRole?: AIRole;
 }
 
 export interface ExtendedUnitState {
@@ -31,6 +44,16 @@ export interface ExtendedUnitState {
   exp: number;
   isBoss?: boolean;
   aiRole?: AIRole;
+  /** Waypoints for the patrol AI role (PLAN item 110). */
+  patrolPoints?: Position[];
+  /** Multi-phase boss stages (PLAN item 111); applied as HP falls. */
+  bossPhases?: BossPhase[];
+  /** Personal skill id from the character (PLAN item 112, N01). */
+  personalSkill?: string;
+  /** Stats/weapon saved while imitating another unit (PLAN item 124). */
+  imitateBackup?: { stats: UnitCombatStats; weaponId?: string };
+  /** Highest boss phase already applied (PLAN item 111). */
+  bossPhase?: number;
   dropItemId?: string;
   title?: string;
   avatarUrl?: string;
@@ -70,6 +93,14 @@ export interface ChapterReinforcement {
   units: ExtendedUnitState[];
 }
 
+/** Hidden trap tile (PLAN item 105, V08): triggers once when a unit ends
+    its movement on the tile, dealing `damage` (never lethal below 1 HP). */
+export interface ChapterTrap {
+  id: string;
+  position: { x: number; y: number };
+  damage: number;
+}
+
 export interface ChapterData {
   readonly id: string;
   readonly name: string;
@@ -85,6 +116,7 @@ export interface ChapterData {
   readonly chests?: readonly ChapterChest[];
   readonly doors?: readonly ChapterDoor[];
   readonly reinforcements?: readonly ChapterReinforcement[];
+  readonly traps?: readonly ChapterTrap[];
   readonly seizeReward?: ChapterReward;
 }
 
@@ -124,7 +156,7 @@ function requireInteger(value: unknown, label: string, min = 0): number {
 
 const MOVE_TYPES: readonly MoveType[] = ['foot', 'armor', 'cavalry', 'flier', 'mage', 'bandit'];
 const FACTIONS: readonly UnitFaction[] = ['player', 'enemy', 'ally'];
-const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue', 'pillage'];
+const AI_ROLES: readonly AIRole[] = ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'];
 const WEAPON_RANKS: readonly WeaponRank[] = ['E', 'D', 'C', 'B', 'A'];
 const WEAPON_TYPES = ['sword', 'lance', 'axe', 'bow', 'tome', 'staff'] as const;
 
@@ -218,7 +250,7 @@ export function loadChapterData(
   }
 
   const objectiveRaw = requireRecord(data.objective, 'chapter.objective');
-  const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize'], 'chapter.objective.type');
+  const objectiveType = requireChoice(objectiveRaw.type, ['defeat_boss', 'rout', 'seize', 'protect', 'escape', 'puzzle'], 'chapter.objective.type');
   const objective: ChapterObjective = {
     type: objectiveType,
     ...(typeof objectiveRaw.description === 'string' ? { description: objectiveRaw.description } : {}),
@@ -228,6 +260,46 @@ export function loadChapterData(
       : {}),
     ...(objectiveType === 'seize'
       ? { seizeTargetTile: readPosition(objectiveRaw.seizeTargetTile, map, 'chapter.objective.seizeTargetTile') }
+      : {}),
+    ...(objectiveType === 'protect'
+      ? {
+          protectUnitId: requireString(objectiveRaw.protectUnitId, 'chapter.objective.protectUnitId'),
+          surviveTurns: requireInteger(objectiveRaw.surviveTurns, 'chapter.objective.surviveTurns', 1),
+        }
+      : {}),
+    ...(objectiveType === 'escape'
+      ? {
+          escapeTiles: (() => {
+            if (!Array.isArray(objectiveRaw.escapeTiles) || objectiveRaw.escapeTiles.length === 0) {
+              throw new Error('chapter.objective.escapeTiles must be a nonempty array');
+            }
+            return objectiveRaw.escapeTiles.map((tile: unknown, tileIndex: number) =>
+              readPosition(tile, map, `chapter.objective.escapeTiles[${tileIndex}]`));
+          })(),
+        }
+      : {}),
+    ...(objectiveType === 'puzzle'
+      ? {
+          puzzle: (() => {
+            const puzzleRaw = requireRecord(objectiveRaw.puzzle, 'chapter.objective.puzzle');
+            const kind = requireChoice(puzzleRaw.kind, ['reach_tile', 'defeat_targets'], 'chapter.objective.puzzle.kind');
+            return {
+              kind,
+              maxTurns: requireInteger(puzzleRaw.maxTurns, 'chapter.objective.puzzle.maxTurns', 1),
+              ...(kind === 'reach_tile'
+                ? { tile: readPosition(puzzleRaw.tile, map, 'chapter.objective.puzzle.tile') }
+                : {
+                    targetUnitIds: (() => {
+                      if (!Array.isArray(puzzleRaw.targetUnitIds) || puzzleRaw.targetUnitIds.length === 0) {
+                        throw new Error('chapter.objective.puzzle.targetUnitIds must be a nonempty array');
+                      }
+                      return puzzleRaw.targetUnitIds.map((id: unknown, idIndex: number) =>
+                        requireString(id, `chapter.objective.puzzle.targetUnitIds[${idIndex}]`));
+                    })(),
+                  }),
+            };
+          })(),
+        }
       : {}),
   };
 
@@ -301,8 +373,57 @@ export function loadChapterData(
       exp: 0,
       ...(character.isBoss === undefined ? {} : { isBoss: character.isBoss === true }),
       ...(item.aiRole === undefined ? {} : { aiRole: requireChoice(item.aiRole, AI_ROLES, `${label}.aiRole`) }),
+      ...(item.patrolPoints === undefined ? {} : {
+        patrolPoints: (() => {
+          if (!Array.isArray(item.patrolPoints) || item.patrolPoints.length === 0) {
+            throw new Error(`${label}.patrolPoints must be a nonempty array`);
+          }
+          return item.patrolPoints.map((point: unknown, pointIndex: number) =>
+            readPosition(point, map, `${label}.patrolPoints[${pointIndex}]`));
+        })(),
+      }),
+      ...(item.bossPhases === undefined ? {} : {
+        bossPhases: (() => {
+          if (!Array.isArray(item.bossPhases) || item.bossPhases.length === 0) {
+            throw new Error(`${label}.bossPhases must be a nonempty array`);
+          }
+          return item.bossPhases.map((phaseValue: unknown, phaseIndex: number): BossPhase => {
+            const phase = requireRecord(phaseValue, `${label}.bossPhases[${phaseIndex}]`);
+            const statBonusRaw = phase.statBonus === undefined
+              ? undefined
+              : requireRecord(phase.statBonus, `${label}.bossPhases[${phaseIndex}].statBonus`);
+            const statBonus: BossPhase['statBonus'] = {};
+            if (statBonusRaw) {
+              for (const key of ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const) {
+                if (statBonusRaw[key] !== undefined) {
+                  statBonus[key] = requireInteger(statBonusRaw[key], `${label}.bossPhases[${phaseIndex}].statBonus.${key}`);
+                }
+              }
+            }
+            return {
+              hpPercent: requireInteger(phase.hpPercent, `${label}.bossPhases[${phaseIndex}].hpPercent`, 1),
+              ...(statBonusRaw ? { statBonus } : {}),
+              ...(phase.weaponId === undefined ? {} : {
+                weaponId: (() => {
+                  const weaponId = requireString(phase.weaponId, `${label}.bossPhases[${phaseIndex}].weaponId`);
+                  if (!itemById.has(weaponId)) throw new Error(`Boss phase references unknown item ${weaponId}`);
+                  return weaponId;
+                })(),
+              }),
+              ...(phase.aiRole === undefined ? {} : { aiRole: requireChoice(phase.aiRole, AI_ROLES, `${label}.bossPhases[${phaseIndex}].aiRole`) }),
+            };
+          });
+        })(),
+      }),
       ...(dropItemId === undefined ? {} : { dropItemId }),
       title: requireString(character.title, `character ${characterId}.title`),
+      ...(character.personalSkill === undefined ? {} : {
+        personalSkill: (() => {
+          const skillId = requireString(character.personalSkill, `character ${characterId}.personalSkill`);
+          if (!(skillId in SKILLS)) throw new Error(`Character ${characterId} references unknown skill ${skillId}`);
+          return skillId;
+        })(),
+      }),
       avatarUrl: requireString(character.avatarUrl, `character ${characterId}.avatarUrl`),
       growths: readGrowths(character.growths, `character ${characterId}.growths`),
     };
@@ -465,6 +586,19 @@ export function loadChapterData(
   const reinforcementIds = reinforcements.map((r) => r.id);
   if (new Set(reinforcementIds).size !== reinforcementIds.length) throw new Error('Duplicate reinforcement ID');
 
+  const trapRows = data.traps ?? [];
+  if (!Array.isArray(trapRows)) throw new Error('chapter.traps must be an array');
+  const traps: ChapterTrap[] = trapRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.traps[${index}]`);
+    return {
+      id: requireString(item.id, `chapter.traps[${index}].id`),
+      position: readPosition(item.position, map, `chapter.traps[${index}].position`),
+      damage: requireInteger(item.damage, `chapter.traps[${index}].damage`, 1),
+    };
+  });
+  const trapIds = traps.map((t) => t.id);
+  if (new Set(trapIds).size !== trapIds.length) throw new Error('Duplicate trap ID');
+
   let seizeReward: ChapterReward | undefined;
   if (data.seizeReward !== undefined) {
     const rewardRaw = requireRecord(data.seizeReward, 'chapter.seizeReward');
@@ -485,7 +619,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, seizeReward };
+  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, traps, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

@@ -112,7 +112,16 @@
       "mov": 0,
       "weaponId": "steel_axe",
       "aiRole": "stationary",
-      "characterId": "gazzak"
+      "characterId": "gazzak",
+      "bossPhases": [
+        {
+          "hpPercent": 50,
+          "statBonus": {
+            "str": 3,
+            "def": 2
+          }
+        }
+      ]
     },
     {
       "id": "enemy_pirate_1",
@@ -146,8 +155,48 @@
         "y": 5
       },
       "weaponId": "iron_bow",
-      "aiRole": "pursue",
-      "characterId": "galder_hunter"
+      "aiRole": "patrol",
+      "characterId": "galder_hunter",
+      "patrolPoints": [
+        {
+          "x": 2,
+          "y": 5
+        },
+        {
+          "x": 6,
+          "y": 5
+        }
+      ]
+    },
+    {
+      "id": "tiki",
+      "characterId": "tiki",
+      "weaponId": "dragon_breath",
+      "position": {
+        "x": 0,
+        "y": 6
+      },
+      "faction": "player"
+    },
+    {
+      "id": "feena",
+      "characterId": "feena",
+      "weaponId": "iron_sword",
+      "position": {
+        "x": 1,
+        "y": 6
+      },
+      "faction": "player"
+    },
+    {
+      "id": "xane",
+      "characterId": "xane",
+      "weaponId": "iron_sword",
+      "position": {
+        "x": 2,
+        "y": 6
+      },
+      "faction": "player"
     }
   ],
   "reinforcements": [
@@ -168,6 +217,16 @@
           "characterId": "galder_pirate"
         }
       ]
+    }
+  ],
+  "traps": [
+    {
+      "id": "test_trap",
+      "position": {
+        "x": 7,
+        "y": 5
+      },
+      "damage": 5
     }
   ]
 }

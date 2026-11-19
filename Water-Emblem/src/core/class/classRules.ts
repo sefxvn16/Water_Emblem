@@ -18,6 +18,8 @@ export interface ClassDefinition {
   readonly canOpenLocks?: boolean;
   readonly hitBonus?: number;
   readonly critBonus?: number;
+  /** Class skill id (PLAN item 113, N02). */
+  readonly classSkill?: string;
   readonly sourceClass?: string;
   readonly growths?: Readonly<Record<string, number>>;
 }
@@ -30,6 +32,50 @@ export function getClassDefinition(classId: string | undefined): ClassDefinition
   return classId === undefined ? undefined : classById.get(classId);
 }
 
+/** All skill ids of a unit: personal skill + current class skill (PLAN 112/113). */
+export function skillIdsOf(entry: ExtendedUnitState): string[] {
+  const ids: string[] = [];
+  if (entry.personalSkill) ids.push(entry.personalSkill);
+  const classSkill = getClassDefinition(entry.unit.classId)?.classSkill;
+  if (classSkill) ids.push(classSkill);
+  return ids;
+}
+
+/**
+ * Reclass (PLAN item 114, N04): change to another class of the same tier
+ * whose weapon types overlap the current class. Level/EXP/stats are kept
+ * [Giả định]; movement and class skill follow the new class.
+ */
+export function reclassUnit(entry: ExtendedUnitState, targetClassId: string): ExtendedUnitState | null {
+  const currentClass = getClassDefinition(entry.unit.classId);
+  const targetClass = getClassDefinition(targetClassId);
+  if (!currentClass || !targetClass || targetClass.id === currentClass.id) return null;
+  if (targetClass.tier !== currentClass.tier) return null;
+  if (targetClass.id === 'lord' || targetClass.id === 'dancer') return null;
+  const overlap = targetClass.usableWeapons.some((w) => currentClass.usableWeapons.includes(w));
+  if (!overlap) return null;
+  return {
+    ...entry,
+    unit: {
+      ...entry.unit,
+      classId: targetClass.id,
+      mountedClassId: undefined,
+      moveType: targetClass.moveType,
+      mov: targetClass.baseMov,
+    },
+  };
+}
+
+export function reclassOptions(entry: ExtendedUnitState): ClassDefinition[] {
+  const currentClass = getClassDefinition(entry.unit.classId);
+  if (!currentClass) return [];
+  return Array.from(classById.values()).filter((candidate) => {
+    if (candidate.id === currentClass.id || candidate.tier !== currentClass.tier) return false;
+    if (candidate.id === 'lord' || candidate.id === 'dancer') return false;
+    return candidate.usableWeapons.some((w) => currentClass.usableWeapons.includes(w));
+  });
+}
+
 export function isWeaponUsable(unit: GridUnit, weapon: ItemDefinition): boolean {
   if (weapon.type === 'consumable') return false;
   const definition = getClassDefinition(unit.classId);
@@ -39,8 +85,13 @@ export function isWeaponUsable(unit: GridUnit, weapon: ItemDefinition): boolean 
   return ranks.indexOf(held) >= ranks.indexOf(weapon.requiredRank ?? 'E');
 }
 
-export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined): { min: number; max: number } {
+export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined, terrainId?: string): { min: number; max: number } {
   if (!weapon || weapon.type === 'staff' || !isWeaponUsable(unit, weapon)) return { min: 1, max: 0 };
+  // PLAN item 122 (A14): an archer-line unit manning a ballista shoots 3-10.
+  if (terrainId === 'ballista' && weapon.type === 'bow'
+    && ['archer', 'sniper', 'hunter', 'mangudai'].includes(unit.classId ?? '')) {
+    return { min: 3, max: 10 };
+  }
   if (weapon.type === 'bow' && unit.classId === 'sniper') return { min: 2, max: 3 };
   if (weapon.type === 'bow' && unit.classId === 'mangudai') return { min: 2, max: 2 };
   return { min: weapon.minRange, max: weapon.maxRange };
@@ -50,8 +101,14 @@ export function changeMountedState(entry: ExtendedUnitState, mounted: boolean): 
   const unit = entry.unit;
   const currentClass = getClassDefinition(unit.classId);
   if (!currentClass) return null;
-  if (!mounted && currentClass.mountKind === 'ground') {
-    const destination = getClassDefinition(unit.classId === 'warlord' ? 'lord' : 'paladin');
+  if (!mounted && currentClass.mountKind) {
+    // PLAN item 129: every mounted class can dismount — ground mounts to
+    // lord/paladin, flying mounts to the dismounted pegasus form.
+    const destination = getClassDefinition(
+      currentClass.mountKind === 'flying'
+        ? 'dismounted_pegasus'
+        : unit.classId === 'warlord' ? 'lord' : 'paladin',
+    );
     if (!destination) return null;
     return {
       ...entry,
@@ -66,7 +123,7 @@ export function changeMountedState(entry: ExtendedUnitState, mounted: boolean): 
   }
   if (mounted && unit.mountedClassId) {
     const destination = getClassDefinition(unit.mountedClassId);
-    if (!destination || destination.mountKind !== 'ground') return null;
+    if (!destination || !destination.mountKind) return null;
     return {
       ...entry,
       unit: {

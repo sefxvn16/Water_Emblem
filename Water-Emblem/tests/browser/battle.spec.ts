@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { closeSettings, openSettings } from './settingsMenu';
+import { closeSettings, dismissRewardPopup, expectPlayerPhase, expectTurnNumber, openSettings } from './settingsMenu';
 
 async function dismissTitle(page: Page) {
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
@@ -27,6 +27,8 @@ async function enterBattle(page: Page) {
 // 2D tile clicks use the grid's data-testid, the same pattern as
 // chapterReplay.spec.ts (dispatchEvent avoids overlay hit-testing).
 async function clickTile(page: Page, x: number, y: number) {
+  // PLAN item 131: dismiss the reward popup first; it covers the screen.
+  await dismissRewardPopup(page);
   await page.getByTestId(`tile-${x}-${y}`).dispatchEvent('click');
 }
 
@@ -35,7 +37,7 @@ test('move and wait, two turns, and IndexedDB save/load', async ({ page }) => {
   await page.goto('/');
   await enterBattle(page);
   await openSettings(page);
-  await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+  await expectPlayerPhase(page);
   // The settings panel covers the action menu; close it before clicking tiles.
   await closeSettings(page);
   await clickTile(page, 25, 5);
@@ -45,16 +47,16 @@ test('move and wait, two turns, and IndexedDB save/load', async ({ page }) => {
   await closeSettings(page);
   await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
   await openSettings(page);
-  await expect(page.getByText('Turn: 2')).toBeVisible({ timeout: 15000 });
+  await expectTurnNumber(page, 2);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
   await closeSettings(page);
   await page.getByRole('button', { name: /(?:End Turn|Kết thúc lượt)/i }).click();
   await openSettings(page);
-  await expect(page.getByText('Turn: 3')).toBeVisible({ timeout: 15000 });
+  await expectTurnNumber(page, 3);
   await page.getByRole('button', { name: /(?:Load Game|Nạp Game)/i }).click();
   await openSettings(page);
-  await expect(page.getByText('Turn: 2')).toBeVisible();
+  await expectTurnNumber(page, 2);
   await expect(page.getByText(/(?:Save file loaded|Đã nạp lại tiến độ)/i)).toBeVisible();
 });
 
@@ -186,8 +188,8 @@ test('enemy phase starts automatically after every player unit waits', async ({ 
     await page.getByRole('button', { name: /(?:Wait|Chờ)/i }).click();
   }
   await openSettings(page);
-  await expect(page.getByText('Turn: 2')).toBeVisible({ timeout: 15000 });
-  await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+  await expectTurnNumber(page, 2);
+  await expectPlayerPhase(page);
 });
 
 test('chapter two preparation keeps reserve units in the save', async ({ page }) => {
@@ -360,6 +362,8 @@ test('Caeda recruits Castor through a talk action and can save afterward', async
   await clickTile(page, 5, 5);
   await clickTile(page, 5, 5);
   await page.getByRole('button', { name: /(?:Talk: Castor|Nói chuyện: Castor)/i }).click();
+  // PLAN item 131: recruiting opens the reward popup; dismiss it.
+  await dismissRewardPopup(page);
   await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();

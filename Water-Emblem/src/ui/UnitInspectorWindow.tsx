@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import itemsJson from '../../data/items.json';
 import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
-import { getClassDefinition } from '../core/class/classRules';
+import { getClassDefinition, skillIdsOf } from '../core/class/classRules';
+import { SKILLS } from '../core/combat/skills';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import { getFactionTone } from '../core/grid/factionTones';
 import type { Position } from '../core/grid/types';
@@ -54,6 +55,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   const hoveredTerrain = defaultTerrainRegistry.get(terrainId);
   const sup = u.unit.faction === 'player' ? calculateSupportBonus(u.unit, units) : null;
   const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';
+  const skillNames = skillIdsOf(u).map((id) => SKILLS[id]).filter((s) => s !== undefined);
   // Faction tone (treatment B): muted faction-tinted panel + accent + chip.
   const tone = getFactionTone(u.unit.faction, u.unit.isReinforcement);
 
@@ -236,7 +238,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '9px',
+                fontSize: '11px',
                 fontWeight: 'bold',
                 color: '#fff',
               }}
@@ -304,6 +306,18 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           <StatRow label="Res:" value={u.stats.res} divider={false} tone={tone} />
         </div>
       </div>
+
+      {/* Skills (PLAN items 112/113) */}
+      {skillNames.length > 0 && (
+        <StatBox tone={tone} style={{ margin: '0 16px 16px' }}>
+          <SectionTitle>Skills</SectionTitle>
+          <div data-testid="inspector-skills" style={{ fontSize: '13px', color: '#e2e8f0', lineHeight: 1.5 }}>
+            {skillNames.map((skill) => (
+              <div key={skill.id} title={skill.description}>✦ {skill.name}</div>
+            ))}
+          </div>
+        </StatBox>
+      )}
 
       {/* Items + Vitals boxes */}
       <div style={{ display: 'flex', gap: DS_SPACING.xl, padding: '0 16px 16px' }}>

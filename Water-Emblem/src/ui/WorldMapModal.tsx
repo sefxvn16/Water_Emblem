@@ -215,7 +215,7 @@ export const WorldMapModal: React.FC<WorldMapModalProps> = ({
                   color: '#e2e8f0',
                   padding: '2px 6px',
                   cursor: 'pointer',
-                  fontSize: '10px',
+                  fontSize: '11px',
                   marginLeft: '4px',
                 }}
               >

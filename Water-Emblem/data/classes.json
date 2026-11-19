@@ -44,7 +44,8 @@
         "lck": 0,
         "def": 5,
         "res": -5
-      }
+      },
+      "classSkill": "swordfaire"
     },
     {
       "id": "warlord",
@@ -88,7 +89,8 @@
         "lck": 0,
         "def": 15,
         "res": -5
-      }
+      },
+      "classSkill": "swordfaire"
     },
     {
       "id": "cavalier",
@@ -136,7 +138,8 @@
         "lck": 0,
         "def": 15,
         "res": -5
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "cataphract",
@@ -181,7 +184,8 @@
         "lck": 0,
         "def": 15,
         "res": -5
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "outrider",
@@ -226,7 +230,8 @@
         "lck": 0,
         "def": 5,
         "res": -15
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "paladin",
@@ -270,7 +275,8 @@
         "lck": 0,
         "def": 15,
         "res": -5
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "knight",
@@ -316,7 +322,8 @@
         "lck": 0,
         "def": 30,
         "res": -10
-      }
+      },
+      "classSkill": "pavise"
     },
     {
       "id": "general",
@@ -360,7 +367,8 @@
         "lck": 0,
         "def": 30,
         "res": -10
-      }
+      },
+      "classSkill": "pavise"
     },
     {
       "id": "pegasus_knight",
@@ -407,7 +415,8 @@
         "lck": 0,
         "def": 10,
         "res": 0
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "seraph_knight",
@@ -452,7 +461,8 @@
         "lck": 0,
         "def": 10,
         "res": 0
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "dragon_knight",
@@ -497,7 +507,8 @@
         "lck": 0,
         "def": 10,
         "res": 0
-      }
+      },
+      "classSkill": "lancefaire"
     },
     {
       "id": "archer",
@@ -542,7 +553,8 @@
         "lck": 0,
         "def": 10,
         "res": -10
-      }
+      },
+      "classSkill": "sureshot"
     },
     {
       "id": "sniper",
@@ -587,7 +599,8 @@
         "lck": 0,
         "def": 10,
         "res": -10
-      }
+      },
+      "classSkill": "bowfaire"
     },
     {
       "id": "hunter",
@@ -632,7 +645,8 @@
         "lck": 0,
         "def": 5,
         "res": -15
-      }
+      },
+      "classSkill": "bowfaire"
     },
     {
       "id": "mangudai",
@@ -676,7 +690,8 @@
         "lck": 0,
         "def": 5,
         "res": -15
-      }
+      },
+      "classSkill": "bowfaire"
     },
     {
       "id": "mercenary",
@@ -722,7 +737,8 @@
         "lck": 0,
         "def": 5,
         "res": -10
-      }
+      },
+      "classSkill": "swordfaire"
     },
     {
       "id": "hero",
@@ -766,7 +782,8 @@
         "lck": 0,
         "def": 5,
         "res": -10
-      }
+      },
+      "classSkill": "swordfaire"
     },
     {
       "id": "blade_dancer",
@@ -810,7 +827,8 @@
         "lck": 0,
         "def": 5,
         "res": -5
-      }
+      },
+      "classSkill": "swordfaire"
     },
     {
       "id": "thief",
@@ -856,7 +874,8 @@
         "lck": 0,
         "def": 5,
         "res": -10
-      }
+      },
+      "classSkill": "locktouch"
     },
     {
       "id": "trickster",
@@ -900,7 +919,8 @@
         "lck": 0,
         "def": 5,
         "res": -10
-      }
+      },
+      "classSkill": "locktouch"
     },
     {
       "id": "fighter",
@@ -946,7 +966,8 @@
         "lck": 0,
         "def": 0,
         "res": -15
-      }
+      },
+      "classSkill": "axefaire"
     },
     {
       "id": "marauder",
@@ -990,7 +1011,8 @@
         "lck": 0,
         "def": 0,
         "res": -15
-      }
+      },
+      "classSkill": "axefaire"
     },
     {
       "id": "axe_knight",
@@ -1034,7 +1056,8 @@
         "lck": 0,
         "def": 15,
         "res": -5
-      }
+      },
+      "classSkill": "axefaire"
     },
     {
       "id": "pirate",
@@ -1079,7 +1102,8 @@
         "lck": 0,
         "def": 0,
         "res": -15
-      }
+      },
+      "classSkill": "axefaire"
     },
     {
       "id": "berserker",
@@ -1123,7 +1147,8 @@
         "lck": 0,
         "def": 0,
         "res": -15
-      }
+      },
+      "classSkill": "axefaire"
     },
     {
       "id": "curate",
@@ -1168,7 +1193,8 @@
         "lck": 0,
         "def": -10,
         "res": 30
-      }
+      },
+      "classSkill": "healer"
     },
     {
       "id": "bishop",
@@ -1212,7 +1238,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "healer"
     },
     {
       "id": "mage_m",
@@ -1257,7 +1284,8 @@
         "lck": 0,
         "def": -15,
         "res": 10
-      }
+      },
+      "classSkill": "focus"
     },
     {
       "id": "sage",
@@ -1301,7 +1329,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "tomefaire"
     },
     {
       "id": "dark_mage",
@@ -1346,7 +1375,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "focus"
     },
     {
       "id": "warlock",
@@ -1390,7 +1420,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "tomefaire"
     },
     {
       "id": "mage_f",
@@ -1435,7 +1466,8 @@
         "lck": 0,
         "def": -15,
         "res": 10
-      }
+      },
+      "classSkill": "focus"
     },
     {
       "id": "sorceress",
@@ -1479,7 +1511,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "tomefaire"
     },
     {
       "id": "sister",
@@ -1524,7 +1557,8 @@
         "lck": 0,
         "def": -10,
         "res": 30
-      }
+      },
+      "classSkill": "healer"
     },
     {
       "id": "oracle",
@@ -1568,7 +1602,8 @@
         "lck": 0,
         "def": -15,
         "res": 20
-      }
+      },
+      "classSkill": "healer"
     },
     {
       "id": "dancer",
@@ -1636,7 +1671,139 @@
       },
       "tier": "promoted",
       "promotions": [],
-      "sourceClass": "FE12 Dancer (class analogue)"
+      "sourceClass": "FE12 Dancer (class analogue)",
+      "classSkill": "tomefaire"
+    },
+    {
+      "id": "manakete",
+      "name": "Manakete",
+      "nameVi": "Long nhân",
+      "usableWeapons": [
+        "tome"
+      ],
+      "moveType": "foot",
+      "baseMov": 5,
+      "baseStats": {
+        "hp": 18,
+        "str": 3,
+        "mag": 2,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 2
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [],
+      "sourceClass": "FE3 Manakete",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 15,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      }
+    },
+    {
+      "id": "chameleon",
+      "name": "Chameleon",
+      "nameVi": "Tắc kè hoa",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 18,
+        "str": 3,
+        "mag": 2,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 2
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [],
+      "sourceClass": "FE3 Chameleon",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 15,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      }
+    },
+    {
+      "id": "dismounted_pegasus",
+      "name": "Dismounted Pegasus",
+      "nameVi": "Thiên mã xuống ngựa",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 18,
+        "str": 4,
+        "mag": 0,
+        "skill": 4,
+        "spd": 7,
+        "lck": 0,
+        "def": 5,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "dismounted",
+      "promotions": [],
+      "sourceClass": "FE3 Dismounted Pegasus Knight",
+      "growths": {
+        "hp": 40,
+        "str": 10,
+        "mag": 0,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      },
+      "classSkill": "lancefaire"
     }
   ]
 }

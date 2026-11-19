@@ -80,3 +80,19 @@ Giao diện còn cần menu hành động, trạng thái đơn vị, thông tin 
 ## Kiểm chứng hình ảnh và hiệu năng
 
 Kiểm tay bằng bản đồ và đơn vị thực: chọn ô, xem tầm, xoay/zoom, đọc mục tiêu, giao tranh, tua hoạt cảnh. Đề án cũ nêu 60 FPS trên laptop tầm trung, 30 FPS mobile, dưới 100.000 triangles và 100 draw calls; thiết bị mục tiêu và điều kiện đo chưa được chốt. Giữ các số đó làm mốc tham khảo, đo rồi điều chỉnh trước khi biến thành tiêu chí nghiệm thu trong `PLAN.md`.
+
+## Xem trước ý định địch (2026-11-19, PLAN mục 106/107)
+
+- **B03 Đòn báo trước (mục 107):** trong pha người chơi, quân ta nào địch dự kiến tấn công ở pha địch tới sẽ có dấu ⚔️ ở góc ô. Tính bằng chính AI địch trên trạng thái hiện tại (`computeEnemyIntents`), cập nhật khi quân di chuyển — là dự đoán, không khóa.
+- **B02 Đường mục tiêu (mục 106):** khi chọn/hover một quân địch, đường di chuyển dự kiến của nó hiện bằng ô đỏ mờ trên bản đồ.
+- **Q07 Tua/bỏ qua (mục 117):** cài đặt tốc độ hoạt ảnh Normal/Fast/Off trong menu Settings (lưu localStorage); nút Skip ở hộp thoại mở màn và làng.
+
+## Nút hành động + bảng dự báo (2026-11-19, PLAN mục 126/127/130)
+
+- Nút hành động: kích thước `clamp(56px, 8vw, 84px)` (màn hình lớn 84px = 1.5 lần bản cũ, nhỏ nhất 56px), glyph/nhãn co giãn theo; phong cách tròn 3D bóng bẩy đồng bộ toàn bộ nút chức năng.
+- Thứ tự ưu tiên cố định (Seize > Escape > Visit > Attack > Staff > Talk > Chest > Door > Shop > Arena > Transform > Dance > Imitate > Promote > Vulnerary > Trade > Storage > Equip > Mount > Wait > Cancel Move); nút ưu tiên cao nhất đang khả dụng tô vàng + phát sáng nhấp nháy.
+- Bảng dự báo theo ảnh mẫu: khiên avatar lớn ở mép ngoài tràn khung, icon vũ khí hình thoi nhỏ ở góc trong, tên/HP/chỉ số ở giữa, huy hiệu Lv ở góc trong-dưới; màn hình ≤640px thu nhỏ khiên, chỉ số xếp 1 cột.
+- Trao đổi đồ chọn đối tác trên bản đồ (kiểu Fire Emblem), không dùng popup danh sách (mục 132). Nhận vật phẩm/vàng/thu phục hiện popup giữa màn hình có icon/avatar (mục 131).
+- Settings: nút đều 44px lưới 2 cột, bỏ thông tin Phase/Turn, thanh trượt âm lượng (0 = tắt), Save/Load ngang hàng, "Manage Saves" thay cho "Save Files" (mục 128).
+
+- Quyết định chủ (2026-11-19 18:59): KHÔNG scale toàn bộ giao diện theo kích thước màn hình. Giữ cách scale có giới hạn (clamp + điểm gãy đổi bố cục) đã làm ở mục 126/128.

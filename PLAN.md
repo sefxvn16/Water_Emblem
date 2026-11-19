@@ -363,6 +363,198 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/forecast-bottom-center`. `overlayAnchor` thêm kiểu neo `bottom-center`: mặc định căn giữa dưới; nếu che ô quân đánh/quân thủ thì dịch trái vừa đủ tránh, dịch trái không đủ chỗ thì dịch phải; cả hai phía đều không tránh hết thì lấy phía ít che hơn. `CombatForecastWindow` đổi `prefer` sang `bottom-center`. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/234 test PASS (3 test mới cho bottom-center); Playwright phần dự báo (A2/A5/A6) PASS; gate đầy đủ 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
+- [x] 101. C12 Phá vật che chắn: vật cản có HP, đánh vỡ được.
+  - Nguồn: cơ chế đã chọn C12 (`decisions.md`); dữ liệu địa hình đã có field `destructible`/`maxHp` nhưng chưa code đọc. Chủ dự án 2026-11-19 18:26: làm toàn bộ cơ chế đã chốt cho xong.
+  - Tiêu chí xong: (1) Ô địa hình phá được có HP; quân đánh vào ô đó như đánh mục tiêu (dự báo hiện), vỡ thì ô thành địa hình thường đi qua được; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ô `destructible` (Wall 20 HP) đánh được qua dự báo như mục tiêu thường (vật giả lập `object:x,y`, không phản đòn, không EXP, độ bền + WEx vẫn tính); vỡ thì đi qua tốn 1; `objectStates` lưu trong save. Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS (test mới `tests/core/batchA.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 102. V04 Canto: kỵ binh/bay đi tiếp phần di chuyển còn lại sau khi hành động.
+  - Nguồn: cơ chế đã chọn V04. Giới hạn Canto chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Quân cưỡi/bay sau khi đánh/dùng đồ/trượng được đi tiếp số ô di chuyển còn dư (tổng không vượt MOV), rồi mới kết thúc lượt. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Quân cưỡi/bay sau hành động được đi tiếp phần di chuyển còn dư (`waitWithCanto` thay 12 điểm kết thúc hành động; Wait thuần không kích hoạt); bẫy vẫn kích hoạt khi tới ô Canto; chỉ quân người chơi [Giả định]. Kiểm chứng: `tsc --noEmit` PASS; Vitest 38 file/251 test PASS (test mới `tests/core/batchB.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 103. V05 Đánh kẹp: thưởng khi kẹp địch giữa 2 quân ta.
+  - Nguồn: cơ chế đã chọn V05 (đòn phối hợp do đánh kẹp vị trí, không phải Chain Attack). Vị trí kích hoạt + mức thưởng chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Khi quân ta đánh địch đang bị kẹp (có quân ta ở phía đối diện địch so với quân đánh) thì được thưởng chỉ số chiến đấu ghi rõ trong `battle.md`. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `hasPincerAlly` trong calculator: đồng minh đứng kề phía đối diện của địch → +15 Hit, +10 Crit [Giả định]. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 104. V07 Lợi thế cao độ: địa hình cao thấp ảnh hưởng chiến đấu.
+  - Nguồn: cơ chế đã chọn V07. Mức cao độ + thưởng chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Địa hình có cao độ; quân ở cao hơn được thưởng Hit/Avoid (hoặc theo chốt khi làm) khi đánh quân thấp hơn và ngược lại; dự báo hiển thị đúng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `getElevation` đọc `elevations` của bản đồ; dự báo cộng ±10 Hit/bậc cao độ, tối đa ±20 [Giả định]; App + AI đều truyền cao độ. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 105. V08 Bẫy/chặn lối: ô bẫy trên bản đồ.
+  - Nguồn: cơ chế đã chọn V08. Loại bẫy + sát thương chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Dữ liệu chương đặt được ô bẫy; quân bước vào chịu hiệu ứng (sát thương/trạng thái) một lần, bẫy lộ ra sau khi kích hoạt; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Chương khai báo `traps`; quân kết thúc di chuyển trên ô bẫy thì chịu sát thương (không dưới 1 HP [Giả định]), kích hoạt 1 lần; `triggeredTraps` lưu trong save; áp dụng cả quân người chơi lẫn địch. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 106. B02 Đường mục tiêu địch: hiện đường địch dự kiến đi/đánh.
+  - Nguồn: cơ chế đã chọn B02. Địch công bố mục tiêu dự kiến (không khóa cứng) [Giả định khi làm].
+  - Tiêu chí xong: (1) Chọn/hover địch thì hiện đường di chuyển dự kiến tới mục tiêu của nó theo AI hiện tại; không dùng thông tin bị che. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Chọn/hover quân địch hiện đường di chuyển dự kiến (ô đỏ) tính bằng chính AI địch (`computeEnemyIntents`); là dự đoán, không khóa [Giả định]. Kiểm chứng: `tsc --noEmit` PASS; Vitest 40 file/266 test PASS (test mới `tests/core/batchD.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 107. B03 Đòn báo trước: hiện địch sẽ đánh ai ở pha địch tới.
+  - Nguồn: cơ chế đã chọn B03.
+  - Tiêu chí xong: (1) Trong pha người chơi, địch trong tầm đánh quân ta được đánh dấu mục tiêu dự kiến (theo AI hiện tại); dấu cập nhật khi quân ta di chuyển. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Trong pha người chơi, quân ta bị địch dự kiến tấn công có dấu ⚔️ trên ô; cập nhật theo vị trí quân. Kiểm chứng: Vitest 40 file/266 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 108. B05 Bảo vệ mục tiêu: mục tiêu chương bảo vệ quân/ô.
+  - Nguồn: cơ chế đã chọn B05 (hiện mới có defeat_boss/rout/seize).
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo được mục tiêu bảo vệ (quân NPC hoặc ô) trong số lượt hoặc tới khi hết địch; mục tiêu chết/bị chiếm thì thua chương. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `protect` (protectUnitId + surviveTurns): quân bảo vệ chết thì thua, sống sót đủ lượt hoặc diệt hết địch thì thắng; `evaluateChapterOutcome` nhận turnNumber. Kiểm chứng: `tsc --noEmit` PASS; Vitest 39 file/262 test PASS (test mới `tests/core/batchC.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 109. B06 Thoát bản đồ: mục tiêu chương thoát quân qua ô thoát.
+  - Nguồn: cơ chế đã chọn B06.
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo ô thoát; quân tới ô thoát có lệnh Escape rời bản đồ; đủ điều kiện (vd Marth thoát / toàn quân thoát) thì thắng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `escape` + lệnh Escape ở bảng chức năng; quân thoát rời bản đồ (`hasEscaped`, không vẽ/không chắn/không bị nhắm), lord thoát thì thắng. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 110. B10 Vai trò AI còn thiếu: tuần tra, rút lui, trộm, bỏ chạy.
+  - Nguồn: cơ chế đã chọn B10 (hiện mới stationary/pursue/pillage).
+  - Tiêu chí xong: (1) Thêm vai trò patrol (đi tuần theo tuyến), retreat (rút về điểm an toàn khi yếu máu), thief (tới rương/làng trộm rồi bỏ chạy), flee (chạy khỏi quân ta); dữ liệu chương dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Thêm vai trò `patrol` (theo `patrolPoints`), `retreat` (dưới 50% HP rút lui [Giả định]), `thief` (cướp rương/làng, hết mục tiêu thì chạy), `flee`; trộm đứng trên rương thì cướp rương. Kiểm chứng: Vitest 38 file/251 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 111. B11 Boss nhiều pha: boss đổi trạng thái theo ngưỡng HP.
+  - Nguồn: cơ chế đã chọn B11.
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo pha boss (ngưỡng HP → cộng chỉ số/đổi vũ khí/đổi vai trò AI); qua ngưỡng thì áp dụng ngay và ghi nhật ký. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `bossPhases` trong dữ liệu chương (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò), áp dụng 1 lần mỗi pha sau giao tranh cả hai phía, ghi nhật ký; `bossPhase` lưu trong save. Kiểm chứng: Vitest 38 file/251 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 112. N01 Kỹ năng cá nhân: kỹ năng riêng từng nhân vật.
+  - Nguồn: cơ chế đã chọn N01.
+  - Tiêu chí xong: (1) Dữ liệu nhân vật gắn được kỹ năng cá nhân; kỹ năng có hiệu lực trong chiến đấu/di chuyển theo mô tả ghi trong `characters.md`; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Kỹ năng cá nhân cho 9 nhân vật chính (`personalSkill` trong characters.json), áp dụng trong dự báo cả phía người chơi lẫn AI; hiển thị trong inspector. Kiểm chứng: `tsc --noEmit` PASS; Vitest 41 file/273 test PASS (test mới `tests/core/batchE.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 113. N02 Kỹ năng class: hệ kỹ năng theo class.
+  - Nguồn: cơ chế đã chọn N02 (hiện mới bonus chỉ số theo class).
+  - Tiêu chí xong: (1) Class gắn kỹ năng; quân thuộc class được hiệu lực kỹ năng; đổi/thăng class thì kỹ năng đổi theo; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. `classSkill` cho 36 class (Faire/Sureshot/Pavise/Focus/Healer/Locktouch); kỹ năng class đổi theo khi thăng cấp/đổi class. Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 114. N04 Reclass ở màn chuẩn bị.
+  - Nguồn: cơ chế đã chọn N04; tạm chốt FE11: reclass tại Battle Preparation từ chương 4.
+  - Tiêu chí xong: (1) Màn chuẩn bị đổi được class của quân trong nhóm class cho phép, giữ cấp/EXP theo luật FE11 ghi rõ; chương chưa mở reclass thì ẩn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Đổi class ở màn hình chuẩn bị (cùng bậc, chung loại vũ khí, giữ cấp/chỉ số [Giả định]); mở từ chương 4 theo FE11, chương test mở để kiểm thử. Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 115. Q04 Độ khó: chọn mức khó khi bắt đầu game.
+  - Nguồn: cơ chế đã chọn Q04. Số mức + mức cộng chỉ số địch chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Game mới chọn được độ khó; địch được cộng chỉ số theo mức; mức khó lưu trong save và hiện trong Settings. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. 3 mức Normal/Hard/Lunatic chọn ở màn hình tiêu đề, lưu trong save; địch +4HP/+2 (Hard), +8HP/+4 (Lunatic) [Giả định] khi nạp chương. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 116. Q06 Chuẩn bị trận còn thiếu: trao đổi đồ giữa quân ở màn chuẩn bị.
+  - Nguồn: cơ chế đã chọn Q06 (kho đồ ở màn chuẩn bị đã làm mục 88; còn trao đổi đồ trực tiếp giữa 2 quân).
+  - Tiêu chí xong: (1) Màn chuẩn bị trao đổi đồ được giữa 2 quân bất kỳ (không cần đứng cạnh), giữ giới hạn 4+4. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút Trade ở màn hình chuẩn bị: trao đổi trực tiếp giữa 2 quân bất kỳ qua cửa sổ Trade (giữ giới hạn 4+4). Kiểm chứng: Vitest 41 file/273 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 117. Q07 Tua/bỏ còn thiếu: cài đặt tốc độ hoạt cảnh + bỏ qua hội thoại.
+  - Nguồn: cơ chế đã chọn Q07 (hiện bỏ qua hoạt cảnh di chuyển được; chưa có cài đặt tốc độ, chưa bỏ qua hội thoại).
+  - Tiêu chí xong: (1) Settings có tốc độ hoạt cảnh (thường/nhanh/tắt) áp dụng cho di chuyển + chiến đấu; hội thoại có nút bỏ qua. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Cài đặt tốc độ hoạt ảnh Normal/Fast/Off trong Settings (lưu localStorage); nút Skip ở hộp thoại mở màn + làng. Kiểm chứng: Vitest 40 file/266 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 118. Q10 Bản đồ giải đố: loại chương giải đố.
+  - Nguồn: cơ chế đã chọn Q10. Điều kiện giải đố chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Có loại mục tiêu giải đố (vd tới ô đích trong giới hạn lượt / hạ đúng mục tiêu) và ít nhất 1 chương giải đố chơi được (chương test). (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `puzzle` 2 dạng reach_tile/defeat_targets với giới hạn lượt [Giả định], quá hạn thì thua. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 119. Q12 Bản đồ ngẫu nhiên: mode giao tranh sinh bản đồ theo seed.
+  - Nguồn: cơ chế đã chọn Q12 (mode riêng, không thay bản đồ FE3 chiến dịch). Quy tắc sinh bản đồ chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Mode riêng sinh bản đồ + địch theo seed (cùng seed ra cùng bản đồ), chơi tới thắng/thua được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mode Random Skirmish: sinh bản đồ 12x10 theo seed (sông + 1 cầu, fort/gate, bãi triển khai), quân từ chương test đặt lại vị trí, mục tiêu rout; nút ở màn hình tiêu đề. Save skirmish chỉ nạp trong cùng phiên [Giả định]. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 120. A12 Spheres: ngọc chỉ giữ chức năng đánh rồng/boss.
+  - Nguồn: chủ dự án chốt A12 2026-11-19 (bỏ Astral Shards; Spheres bỏ tăng chỉ số, chỉ giữ chức năng đánh rồng/boss).
+  - Tiêu chí xong: (1) Vật phẩm Lightsphere/Darksphere có trong dữ liệu; quân giữ Darksphere miễn sát thương trừ khi đối thủ giữ Lightsphere (luật FE3); không còn chức năng tăng chỉ số. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ngọc Sáng/Tối là vật phẩm mang theo (không bán, không cộng chỉ số); cầm Ngọc Tối miễn sát thương trừ khi quân đánh cầm Ngọc Sáng — áp dụng cả phía người chơi lẫn AI. Kiểm chứng: `tsc --noEmit` PASS; Vitest 42 file/281 test PASS (test mới `tests/core/batchF.test.ts`). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 121. A13 Manakete biến hình không cần đá.
+  - Nguồn: chủ dự án chốt A13 (tối đa 5 lượt, Luck cao thêm 1 lượt, nghỉ 2 lượt). Ngưỡng Luck cao chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Class manakete có lệnh biến hình: thành rồng với chỉ số rồng trong tối đa 5 lượt (+1 nếu Luck cao), hết hạn tự về dạng người và nghỉ 2 lượt mới biến lại được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Class manakete + Tiki ở chương test; Transform không cần đá, 5 lượt (+1 nếu Luck ≥15 [Giả định]), +5 Str/Def/Res +3 Spd, Dragon Breath; nghỉ 2 lượt. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 122. A14 Ballista: nỏ cố định tầm xa.
+  - Nguồn: chủ dự án chốt A14 (nội dung Book 2; làm cơ chế + dữ liệu test).
+  - Tiêu chí xong: (1) Ô ballista: quân cung đứng vào bắn được tầm xa (3–10) với sát thương theo luật ghi rõ; địch cũng dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ô ballista: quân cung đứng trên bắn 3–10 ô, +6 Might [Giả định]; địch dùng được. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 123. A15 Triangle Attack: 3 kỵ sĩ bay kẹp 1 địch thì chí mạng.
+  - Nguồn: chủ dự án chốt A15.
+  - Tiêu chí xong: (1) Khi 3 quân bay cùng phe đứng kề 1 địch (3 phía) và 1 trong 3 tấn công thì đòn đó chí mạng chắc chắn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. 3 quân bay đồng minh kề quanh địch → đòn của quân bay chắc chắn chí mạng. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 124. A16 Dancer + Xane: nhảy hồi lượt, bắt chước quân khác.
+  - Nguồn: chủ dự án chốt A16.
+  - Tiêu chí xong: (1) Dancer có lệnh Dance: quân ta kề bên đã hành động được hành động lại. (2) Xane có lệnh Imitate: sao chép chỉ số/vũ khí của quân ta kề bên trong số lượt ghi rõ. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Dance (Feena) cho đồng minh kề bên đã hành động được hành động lại; Imitate (Xane, class chameleon) sao chép chỉ số + vũ khí đồng minh kề bên 5 lượt [Giả định]. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 125. Nút Cancel của bảng dự báo nằm ngay dưới nút Attack; 2 nút tròn 3D bóng bẩy.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:28 (kèm ảnh): "nút huỷ ở bảng thông tin dự báo chiến đấu nằm ngay dưới nút attack chứ không phải nằm ở góc. Và thiết kế lại các nút này dạng hình tròn, có độ sâu dạng 3D, hiệu ứng bóng bẩy đi". Thay vị trí nút Cancel ở góc trên phải của mục 96.
+  - Tiêu chí xong: (1) Nút Cancel nằm ngay dưới nút Attack ở cột giữa bảng dự báo, bỏ nút ở góc. (2) Cả 2 nút dạng tròn, có độ sâu 3D + bóng bẩy (gradient hướng sáng, bóng trong/ngoài). (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút Cancel chuyển xuống ngay dưới nút Attack ở cột giữa; cả 2 nút tròn 3D bóng bẩy (gradient hướng sáng + bóng trong/ngoài). Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay bằng tools/e2e_record (chủ duyệt 2026-11-19; fixture cũ ghi trước đợt cơ chế 101-124 nên chuỗi nước đi không còn khớp; phát lại PASS 2 lần liên tiếp theo README của công cụ).
+  - Kiểm bởi: tôi
+
+- [x] 126. Nút hành động to hơn (~1.5 lần), co giãn theo màn hình, đồng bộ phong cách tròn 3D bóng bẩy.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41 (kèm ảnh bảng hành động): "các nút hành động cần cho to hơn, tự tính toán xem bao nhiêu là phù hợp, tôi dự kiến cho lên 1.5 lần, tuy nhiên cần tính toán làm sao để ở màn hình nhỏ cũng không che nhiều quá bản đồ. Màn hình to thì không bị bé quá" + "Thiết kế lại toàn bộ hình ảnh các nút chức năng theo phong cách bên trên tôi vừa nói. Hiện tại đang khá xấu và không đồng bộ về phong cách."
+  - Tiêu chí xong: (1) Nút hành động ~1.5 lần hiện tại trên màn hình lớn, thu nhỏ hợp lý trên màn hình nhỏ (không che quá nhiều bản đồ). (2) Toàn bộ nút chức năng đồng bộ phong cách tròn 3D bóng bẩy như nút Attack/Cancel ở mục 125. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút hành động dùng clamp(56px, 8vw, 84px) — màn hình lớn 84px (1.5 lần), màn hình nhỏ tối thiểu 56px; glyph và nhãn cũng co giãn theo. Toàn bộ nút tròn 3D bóng bẩy đồng bộ (mặt radial-gradient, viền vàng, bóng trong). Kiểm chứng: Vitest 43 file/283 test PASS; ảnh chụp 1920/1280/390 ở work/ui-review-128. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS) sau khi ghi lại 3 fixture chapterReplay (chủ duyệt 2026-11-19). Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
+- [x] 127. Thiết kế lại bảng dự báo chiến đấu theo ảnh mẫu: avatar góc ngoài vượt khung, icon vũ khí góc đối diện nhỏ hơn, thông tin ở giữa.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: "bảng thông tin chiến đấu tôi đưa bên trên, thiết kế rất đẹp: avatar nằm ở góc ngoài cùng, thậm chí còn vượt ra ngoài khung; thông tin về vũ khí (icon) nằm ở góc đối diện, nhỏ hơn; các thông tin còn lại nằm ở giữa. Hãy phân tích ảnh đó và thiết kế lại đi".
+  - Tiêu chí xong: (1) Phân tích ảnh mẫu (work/water-forecast-96/ref-forecast-bar.png) và áp dụng bố cục: avatar lớn ở góc ngoài tràn khung, icon vũ khí nhỏ ở góc đối diện, số liệu ở giữa. (2) Giữ nguyên toàn bộ số liệu dự báo + nút Attack/Cancel mục 125 + vị trí giữa-dưới mục 100. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Phân tích ảnh mẫu: 2 panel đối xứng, khiên avatar lớn ở mép ngoài tràn lên/xuống khung, icon vũ khí nhỏ hình thoi ở góc trong, tên/HP/chỉ số ở giữa, huy hiệu cấp ở góc trong-dưới. Đã áp dụng đúng bố cục đó, giữ nguyên số liệu + nút Attack/Cancel mục 125 + vị trí giữa-dưới mục 100; màn hình ≤640px thu nhỏ khiên và xếp chỉ số 1 cột. Kiểm chứng: Vitest 283 PASS; ảnh forecast-1920/390. Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
+- [x] 128. Rà soát toàn bộ giao diện (skill ui-design + blueprint): cỡ chữ, nút bị che/chồng, Settings đều nhau, thanh âm lượng, nhãn Save/Load.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: dùng skill UI-design và blueprint rà lại giao diện: chữ có nhỏ quá không; nút có bị che khuất/khó nhìn/chồng nhau không; thông tin save/load/chuyển màn/giới thiệu đủ chưa; Settings xấu, nút to nhỏ khác nhau cần đều + gióng hàng; bỏ thông tin Phase (turn 1, player phase); âm lượng là thanh trượt (nhỏ hết cỡ = tắt); 2 nút Save/Load ngang hàng nhau; "Save File" khó hiểu — ghi rõ là tải file save.
+  - Tiêu chí xong: (1) Báo cáo rà soát giao diện kèm ảnh chụp. (2) Sửa các lỗi tìm thấy: cỡ chữ tối thiểu, nút không chồng/che, Settings đều nhau + bỏ Phase, thanh trượt âm lượng, Save/Load ngang hàng + nhãn rõ ràng. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Báo cáo rà soát: work/water-ui-review-128/01-review.md. Settings: nút đều 44px lưới 2 cột, bỏ Phase/Turn, thanh trượt âm lượng (0 = tắt), Save/Load ngang hàng, 'Save Files' → 'Manage Saves'. Chữ 9-10px nâng lên 11px. Khổ 390px: thanh hành động nâng lên trên thẻ thông tin quân. Test trình duyệt cập nhật theo (đọc turn/phase từ __WATER_EMBLEM_STATE__ thay vì chữ trong Settings; test tắt tiếng chuyển sang thanh trượt). Sửa thêm 2026-11-19 sau gate FAIL: errorTolerance còn 2 chỗ đọc chữ 'Turn:' chuyển sang helper expectTurnNumber; chữ '0%'/'50%' của thanh âm lượng khoanh vùng trong settings-menu vì trùng 'Avoid : 0%'. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 129. Mọi class cưỡi (kể cả ngựa bay) đều có Dismount.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: "Ngựa bay cũng có Dismount mà? Rà lại các class cưỡi thì đều phải có Dismount."
+  - Tiêu chí xong: (1) Rà mọi class có mountKind (ground + flying) đều xuống ngựa được (dismounted form tồn tại). (2) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Class mới `dismounted_pegasus`; mọi class có mountKind (ground + flying) đều xuống ngựa/lên ngựa được; nút Mount/Dismount hiện cho cả ngựa bay. Test classRules cũ ('keeps fliers mounted') cập nhật theo quyết định mới. Kiểm chứng: Vitest 283 PASS (test mới dismount.test.ts). Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
+- [x] 130. Nút hành động xếp theo thứ tự ưu tiên; hành động ưu tiên cao nhất được phát sáng/đổi màu.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:43 (kèm ảnh): "Thứ tự hành động trong thanh chức năng cần được sắp xếp theo thứ tự ưu tiên, chứ không xếp bừa như thế này. Ví dụ như khi Marth vào thăm làng, thì nút ưu tiên trên cùng và được phát sáng/đổi màu phải là nút thăm làng chứ? Tương tự như với Attack, Hồi máu..."
+  - Tiêu chí xong: (1) Thứ tự ưu tiên cố định: Seize > Escape > Visit > Attack > Staff > Talk > Open Chest > Open Door > Shop > Arena > Transform > Dance > Imitate > Promote > Vulnerary > Trade > Storage > Equip > Mount > Wait > Cancel Move. (2) Nút ưu tiên cao nhất đang khả dụng được tô vàng + phát sáng nhấp nháy. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Thứ tự ưu tiên cố định Seize > Escape > Visit > Attack > Staff > Talk > Chest > Door > Shop > Arena > Transform > Dance > Imitate > Promote > Vulnerary > Trade > Storage > Equip > Mount > Wait > Cancel Move; nút ưu tiên cao nhất đang khả dụng tô vàng + phát sáng nhấp nháy. Kiểm chứng: Vitest 283 PASS; ảnh actions-1920 (Trade phát sáng khi không có Attack/Visit). Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
+- [x] 131. Popup giữa màn hình khi nhận vật phẩm/thu phục: thăm làng, thu phục nhân vật, mở rương.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:45: "Khi vào thăm làng, thu phục... thì phải hiện 1 popup nhỏ giữa màn hình nói về thông tin vật phẩm, nhân vật... (có biểu tượng của vật phẩm, avatar nhân vật...) nhận được hoặc thu phục thành công chứ?"
+  - Tiêu chí xong: (1) Thăm làng nhận thưởng → popup giữa màn hình có icon vật phẩm (hoặc vàng) + tên. (2) Thu phục thành công → popup có avatar + tên nhân vật. (3) Mở rương nhận vật phẩm → popup tương tự. (4) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Popup giữa màn hình (RewardPopup) khi nhận vật phẩm (icon + tên), nhận vàng, thu phục nhân vật (avatar + tên + dòng 'has become one of your allies!'). Áp dụng cho thăm làng, mở rương, thu phục, đồ rơi từ địch. Test trình duyệt (battle/chapterReplay) đóng popup qua helper dismissRewardPopup trước khi bấm tiếp (lý do: popup chặn click thật của Playwright). Chủ sửa 2026-11-19 19:02: popup không phủ mờ toàn màn hình, chỉ popup nhỏ vừa đủ, chạm ngoài popup hoặc bấm OK là đóng. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
+- [x] 132. Trao đổi đồ: chọn đối tác trực tiếp trên bản đồ (như chọn mục tiêu tấn công), bỏ popup danh sách.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:46 (kèm ảnh popup Trade): "phần trao đổi đồ, thì phải hiển thị các nhân vật có thể chọn trên bản đồ như đối với tấn công địch, chứ không phải popup như thế này. Tìm hiểu cách thiết kế của dòng game Fire Emblem đi."
+  - Tiêu chí xong: (1) Bấm Trade → các đồng minh kề bên được đánh dấu sáng trên bản đồ (kiểu Fire Emblem: chọn Trade, con trỏ nhảy tới đồng minh kề, bấm để mở màn trao đổi). (2) Bấm vào đồng minh → mở thẳng màn trao đổi 2 cột. (3) Esc/huỷ quay lại menu hành động. (4) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Bấm Trade → đồng minh kề bên sáng lên trên bản đồ (như chọn mục tiêu tấn công, đúng kiểu Fire Emblem), bấm vào đồng minh mở thẳng màn trao đổi; 1 đối tác thì mở thẳng; Esc/bấm ô quân để huỷ. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".

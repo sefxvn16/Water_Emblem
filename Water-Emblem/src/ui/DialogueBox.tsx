@@ -9,6 +9,8 @@ interface DialogueBoxProps {
   actionButtonText: string;
   summaryBox?: React.ReactNode;
   onConfirm: () => void;
+  /** Skip the whole dialogue (PLAN item 117). */
+  onSkip?: () => void;
 }
 
 const visuallyHidden: React.CSSProperties = {
@@ -30,6 +32,7 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
   actionButtonText,
   summaryBox,
   onConfirm,
+  onSkip,
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [displayedLength, setDisplayedLength] = useState(0);
@@ -233,6 +236,22 @@ export const DialogueBox: React.FC<DialogueBoxProps> = ({
           >
             {actionButtonText}
           </button>
+          {onSkip && (
+            <button
+              onClick={onSkip}
+              style={{
+                padding: '4px 12px',
+                backgroundColor: 'transparent',
+                border: '1px solid #64748b',
+                borderRadius: '4px',
+                color: '#cbd5e1',
+                fontSize: '12px',
+                cursor: 'pointer',
+              }}
+            >
+              ⏭ Skip
+            </button>
+          )}
         </div>
 
         {/* Dialogue Box (FE3 style Image 1) */}

@@ -52,7 +52,7 @@ async function openSaveSlots(page: Page): Promise<void> {
 
 async function openSaveSlotsFromSettings(page: Page): Promise<void> {
   await openSettings(page);
-  await page.getByRole('button', { name: /Save Files/i }).click();
+  await page.getByRole('button', { name: /Manage Saves/i }).click();
   await expect(page.getByRole('heading', { name: /FILE SELECT/i })).toBeVisible();
   await expect(page.getByText(/File 1/i)).toBeVisible();
 }

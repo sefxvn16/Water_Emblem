@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openSettings } from './settingsMenu';
+import { openSettings, expectPlayerPhase } from './settingsMenu';
 
 test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World Map)', () => {
   test('Title screen, Save Slots, Book Select, and World Map can be navigated seamlessly', async ({ page }) => {
@@ -43,7 +43,7 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
     await openSettings(page);
     const titleBtn = page.getByRole('button', { name: /Title/i });
     const worldMapBtn = page.getByRole('button', { name: /World Map/i });
-    const slotsBtn = page.getByRole('button', { name: /Save Files/i });
+    const slotsBtn = page.getByRole('button', { name: /Manage Saves/i });
 
     await expect(titleBtn).toBeVisible();
     await expect(worldMapBtn).toBeVisible();
@@ -79,6 +79,6 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
       await startBattleBtn2.click();
     }
     await openSettings(page);
-    await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+    await expectPlayerPhase(page);
   });
 });

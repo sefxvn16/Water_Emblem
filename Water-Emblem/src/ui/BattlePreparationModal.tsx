@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getClassDefinition } from '../core/class/classRules';
+import { getClassDefinition, reclassOptions } from '../core/class/classRules';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 
 interface BattlePreparationModalProps {
@@ -15,12 +15,18 @@ interface BattlePreparationModalProps {
   onStart: () => void;
   /** Open convoy management for a unit (PLAN item 88, prep access). */
   onOpenConvoy: (unitId: string) => void;
+  /** Open trade between two units (PLAN item 116). */
+  onTrade: (unitId: string) => void;
+  /** Reclass availability (PLAN item 114): FE11 unlocks it in chapter 4. */
+  reclassAvailable: boolean;
+  onReclass: (unitId: string, classId: string) => void;
 }
 
 /** FE3 unit-select layout: start bar on top, 3-column roster grid, info panel for the focused unit below. */
 export const BattlePreparationModal: React.FC<BattlePreparationModalProps> = (props) => {
   const { units, lordUnitId } = props;
   const [infoId, setInfoId] = useState<string>(lordUnitId);
+  const [reclassTarget, setReclassTarget] = useState<string>('');
   const info = units.find(({ unit }) => unit.id === infoId) ?? units[0];
 
   return (
@@ -162,6 +168,58 @@ export const BattlePreparationModal: React.FC<BattlePreparationModalProps> = (pr
               >
                 Items / Convoy
               </button>
+              <button
+                data-testid="prep-open-trade"
+                onClick={() => props.onTrade(info.unit.id)}
+                style={{
+                  marginTop: '4px',
+                  marginLeft: '6px',
+                  padding: '4px 12px',
+                  backgroundColor: '#2563eb',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                Trade
+              </button>
+              {props.reclassAvailable ? (
+                <div style={{ marginTop: '6px', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <select
+                    data-testid="prep-reclass-select"
+                    value={reclassTarget}
+                    onChange={(e) => setReclassTarget(e.target.value)}
+                    style={{ padding: '4px', borderRadius: '6px', fontSize: '12px' }}
+                  >
+                    <option value="">Reclass to…</option>
+                    {reclassOptions(info).map((candidate) => (
+                      <option key={candidate.id} value={candidate.id}>{candidate.name}</option>
+                    ))}
+                  </select>
+                  <button
+                    data-testid="prep-reclass-apply"
+                    disabled={!reclassTarget}
+                    onClick={() => { if (reclassTarget) { props.onReclass(info.unit.id, reclassTarget); setReclassTarget(''); } }}
+                    style={{
+                      padding: '4px 12px',
+                      backgroundColor: reclassTarget ? '#7c3aed' : '#475569',
+                      border: 'none',
+                      borderRadius: '6px',
+                      color: '#fff',
+                      fontWeight: 'bold',
+                      fontSize: '12px',
+                      cursor: reclassTarget ? 'pointer' : 'default',
+                    }}
+                  >
+                    Reclass
+                  </button>
+                </div>
+              ) : (
+                <div style={{ marginTop: '6px', fontSize: '11px', color: '#94a3b8' }}>Reclass unlocks in Chapter 4</div>
+              )}
             </div>
           </div>
         )}

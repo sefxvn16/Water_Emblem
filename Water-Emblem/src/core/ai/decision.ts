@@ -1,6 +1,6 @@
 import balanceConfig from '../../../data/balance.json';
 import { calculateMovementRange } from '../grid/pathfinding';
-import { TerrainRegistry } from '../grid/terrain';
+import { getElevation, TerrainRegistry } from '../grid/terrain';
 import { GridUnit, MapData, Position } from '../grid/types';
 import {
   calculateCombatForecast,
@@ -9,8 +9,9 @@ import {
 import { CombatForecast, ItemDefinition, UnitCombatStats } from '../combat/types';
 import { hitProbability } from '../combat/rng';
 import { getAttackRange } from '../class/classRules';
+import { getSkillModifiers } from '../combat/skills';
 
-export type AIRole = 'stationary' | 'pursue' | 'pillage';
+export type AIRole = 'stationary' | 'pursue' | 'pillage' | 'patrol' | 'retreat' | 'thief' | 'flee';
 
 export interface AIActionAttack {
   readonly type: 'attack';
@@ -38,9 +39,21 @@ export interface AIContext {
   readonly units: readonly GridUnit[];
   readonly unitStatsMap: Map<string, UnitCombatStats>;
   readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
+  /** Skill ids per unit (PLAN items 112/113). */
+  readonly unitSkillsMap?: ReadonlyMap<string, readonly string[]>;
+  /** Sphere holders by unit id (PLAN item 120). */
+  readonly sphereHolders?: { readonly light: ReadonlySet<string>; readonly dark: ReadonlySet<string> };
   readonly villageTargets?: readonly Position[];
+  /** Unopened chest tiles for the thief role (PLAN item 110). */
+  readonly chestTargets?: readonly Position[];
+  /** Waypoints for the patrol role (PLAN item 110). */
+  readonly patrolTargets?: readonly Position[];
+  /** Current turn number; patrol picks waypoint turnNumber % count. */
+  readonly turnNumber?: number;
   /** Opened door tiles as "x,y" keys (PLAN item 92). */
   readonly openedDoors?: ReadonlySet<string>;
+  /** Destroyed destructible-object tiles as "x,y" keys (PLAN item 101). */
+  readonly destroyedObjects?: ReadonlySet<string>;
 }
 
 export function evaluateAITurn(
@@ -63,7 +76,48 @@ export function evaluateAITurn(
     terrains,
     units,
     openedDoors: context.openedDoors,
+    destroyedObjects: context.destroyedObjects,
   });
+
+  // PLAN item 110 (B10): flee/retreat/thief/patrol roles.
+  const playerUnitsForRoles = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
+  const bestFleeTile = (): Position | undefined => {
+    let best: Position | undefined;
+    let bestScore = -Infinity;
+    for (const { position } of reachableTiles.values()) {
+      const minDist = playerUnitsForRoles.length === 0
+        ? 0
+        : Math.min(...playerUnitsForRoles.map((p) => getManhattanDistance(position, p.position)));
+      const terrainId = map.grid[position.y]?.[position.x] ?? 'plains';
+      const score = minDist * 10 + terrains.getAvoidBonus(terrainId, enemyUnit.moveType);
+      if (score > bestScore) {
+        bestScore = score;
+        best = position;
+      }
+    }
+    return best;
+  };
+  const fleeDecision = (): AIDecision => {
+    const tile = bestFleeTile();
+    return tile && (tile.x !== enemyUnit.position.x || tile.y !== enemyUnit.position.y)
+      ? { type: 'move_only', movePosition: tile }
+      : { type: 'wait' };
+  };
+
+  if (role === 'flee') return fleeDecision();
+  // Retreat: fall back when below half HP [Giả định], otherwise pursue.
+  if (role === 'retreat' && enemyStats.hp * 2 < enemyStats.maxHp) return fleeDecision();
+  if (role === 'thief') {
+    const lootTargets = [...(context.chestTargets ?? []), ...(context.villageTargets ?? [])];
+    if (lootTargets.length === 0) return fleeDecision();
+    const target = lootTargets.reduce((best, tile) =>
+      getManhattanDistance(enemyUnit.position, tile) < getManhattanDistance(enemyUnit.position, best)
+        ? tile : best);
+    const destination = Array.from(reachableTiles.values())
+      .map(({ position }) => position)
+      .sort((a, b) => getManhattanDistance(a, target) - getManhattanDistance(b, target))[0];
+    return destination ? { type: 'move_only', movePosition: destination } : { type: 'wait' };
+  }
 
   // FE3 thieves head for unvisited villages before seeking combat.
   if (role === 'pillage' && context.villageTargets?.length) {
@@ -77,7 +131,7 @@ export function evaluateAITurn(
   }
 
   // Tìm danh sách mục tiêu người chơi còn sống
-  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead);
+  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
   if (playerUnits.length === 0) {
     return { type: 'wait' };
   }
@@ -117,7 +171,18 @@ export function evaluateAITurn(
           terrains,
           attackerTerrainId,
           defenderTerrainId,
-          projectedUnits
+          projectedUnits,
+          { attacker: getElevation(map, tile), defender: getElevation(map, target.position) },
+          context.unitSkillsMap ? {
+            attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap),
+            defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap),
+          } : undefined,
+          context.sphereHolders ? {
+            attackerHasLight: context.sphereHolders.light.has(enemyUnit.id),
+            attackerHasDark: context.sphereHolders.dark.has(enemyUnit.id),
+            defenderHasLight: context.sphereHolders.light.has(target.id),
+            defenderHasDark: context.sphereHolders.dark.has(target.id),
+          } : undefined
         );
 
         // Chấm điểm theo trọng số cấu hình trong data/balance.json
@@ -171,6 +236,18 @@ export function evaluateAITurn(
 
   // Nếu là vai trò Stationary (đứng giữ vị trí) và không có ai trong tầm -> đứng yên
   if (role === 'stationary') {
+    return { type: 'wait' };
+  }
+
+  // PLAN item 110: patrol moves toward its current waypoint.
+  if (role === 'patrol' && context.patrolTargets && context.patrolTargets.length > 0) {
+    const waypoint = context.patrolTargets[(context.turnNumber ?? 1) % context.patrolTargets.length]!;
+    const destination = Array.from(reachableTiles.values())
+      .map(({ position }) => position)
+      .sort((a, b) => getManhattanDistance(a, waypoint) - getManhattanDistance(b, waypoint))[0];
+    if (destination && (destination.x !== enemyUnit.position.x || destination.y !== enemyUnit.position.y)) {
+      return { type: 'move_only', movePosition: destination };
+    }
     return { type: 'wait' };
   }
 

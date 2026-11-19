@@ -12,6 +12,7 @@ import { GridUnit, Position, WeaponRank } from '../grid/types';
 import { SeededRNG } from './rng';
 import { TerrainRegistry } from '../grid/terrain';
 import { calculateSupportBonus } from './support';
+import type { SkillModifiers } from './skills';
 import { getAttackRange, getClassDefinition } from '../class/classRules';
 
 export interface TriangleResult {
@@ -112,7 +113,11 @@ export function calculateCombatSide(
   terrainRegistry: TerrainRegistry,
   _terrainId: string,
   opponentTerrainId: string,
-  allUnits?: readonly GridUnit[]
+  allUnits?: readonly GridUnit[],
+  heightDiff = 0,
+  skillMods?: SkillModifiers,
+  opponentSkillMods?: SkillModifiers,
+  blockedByDarksphere = false
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -128,7 +133,7 @@ export function calculateCombatSide(
     };
   }
 
-  const range = getAttackRange(unit, weapon);
+  const range = getAttackRange(unit, weapon, _terrainId);
   const inRange = distance >= range.min && distance <= range.max;
   if (!inRange) {
     return {
@@ -160,25 +165,46 @@ export function calculateCombatSide(
 
   // Tính Effective Might
   const isEffective = isWeaponEffective(weapon, opponentUnit);
-  const effectiveMight = isEffective
+  let effectiveMight = isEffective
     ? weapon.might * balanceConfig.effectiveMultiplier
     : weapon.might;
+  // PLAN item 122 (A14): ballista shots hit harder [Giả định +6 Might].
+  if (_terrainId === 'ballista' && weapon.type === 'bow') effectiveMight += 6;
 
   const attackPower = (weapon.isMagic ? stats.mag : stats.str) + effectiveMight + triangle.damage + rankBonus.might;
 
   const opponentTerrainDef = weapon.isMagic ? 0 : terrainRegistry.getDefenseBonus(opponentTerrainId, opponentUnit.moveType);
   const defense = (weapon.isMagic ? opponentStats.res : opponentStats.def) + opponentTerrainDef;
-  const damage = Math.max(0, attackPower - defense);
+  // PLAN items 112/113: skill damage modifiers.
+  // PLAN item 120 (A12): the Darksphere negates all damage unless the
+  // attacker holds the Lightsphere.
+  const damage = blockedByDarksphere
+    ? 0
+    : Math.max(0, attackPower - defense + (skillMods?.damage ?? 0) + (opponentSkillMods?.damageTaken ?? 0));
 
   // Tính Hit
-  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0);
+  // PLAN item 104 (V07): height advantage — ±10 Hit per elevation level,
+  // capped at ±20 [Giả định].
+  const heightBonus = Math.max(-20, Math.min(20, heightDiff * 10));
+  // PLAN item 103 (V05): pincer — an ally of the attacker stands on the
+  // far side of the opponent; +15 Hit, +10 Crit [Giả định].
+  const pincer = allUnits ? hasPincerAlly(unit, opponentUnit, allUnits) : false;
+  const accuracy = weapon.hit + stats.skill + Math.floor(stats.lck / 2) + triangle.hit + unitSupport.hit + rankBonus.hit + (classDefinition?.hitBonus ?? 0) + heightBonus + (pincer ? 15 : 0) + (skillMods?.hit ?? 0);
   const opponentAs = calculateAttackSpeed(opponentStats, opponentWeapon);
-  const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid;
+  const opponentAvoid = opponentAs + Math.floor(opponentStats.lck / 2) + terrainRegistry.getAvoidBonus(opponentTerrainId, opponentUnit.moveType) + opponentSupport.avoid + (opponentSkillMods?.avoid ?? 0);
   const hitRate = Math.min(100, Math.max(0, accuracy - opponentAvoid));
 
   // Tính Crit
-  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) - (opponentStats.lck + opponentSupport.dodge);
-  const critRate = Math.min(100, Math.max(0, rawCrit));
+  const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
+  let critRate = Math.min(100, Math.max(0, rawCrit));
+  // PLAN item 123 (A15): Triangle Attack — three allied fliers adjacent
+  // to the opponent make the attacking flier's strike a guaranteed crit.
+  if (unit.moveType === 'flier' && allUnits) {
+    const adjacentFliers = allUnits.filter((ally) =>
+      !ally.isDead && ally.faction === unit.faction && ally.moveType === 'flier'
+      && Math.abs(ally.position.x - opponentUnit.position.x) + Math.abs(ally.position.y - opponentUnit.position.y) === 1);
+    if (adjacentFliers.length >= 3) critRate = 100;
+  }
 
   const as = calculateAttackSpeed(stats, weapon);
 
@@ -195,6 +221,26 @@ export function calculateCombatSide(
   };
 }
 
+/**
+ * PLAN item 103 (V05 pincer): true when a living ally of `unit` stands on
+ * the far side of `opponent` relative to `unit` — adjacent to the opponent
+ * in the half-plane away from the attacker.
+ */
+export function hasPincerAlly(unit: GridUnit, opponent: GridUnit, allUnits: readonly GridUnit[]): boolean {
+  const dx = opponent.position.x - unit.position.x;
+  const dy = opponent.position.y - unit.position.y;
+  if (dx === 0 && dy === 0) return false;
+  return allUnits.some((ally) => {
+    if (ally.id === unit.id || ally.id === opponent.id || ally.isDead) return false;
+    if (ally.faction !== unit.faction) return false;
+    const ax = ally.position.x - opponent.position.x;
+    const ay = ally.position.y - opponent.position.y;
+    if (Math.abs(ax) + Math.abs(ay) !== 1) return false;
+    // Far side: the ally step from the opponent points away from the attacker.
+    return ax * dx + ay * dy > 0;
+  });
+}
+
 export function calculateCombatForecast(
   attackerUnit: GridUnit,
   attackerStats: UnitCombatStats,
@@ -206,8 +252,12 @@ export function calculateCombatForecast(
   terrainRegistry: TerrainRegistry,
   attackerTerrainId: string,
   defenderTerrainId: string,
-  allUnits?: readonly GridUnit[]
+  allUnits?: readonly GridUnit[],
+  elevations?: { readonly attacker: number; readonly defender: number },
+  skills?: { readonly attacker?: SkillModifiers; readonly defender?: SkillModifiers },
+  spheres?: { readonly attackerHasLight?: boolean; readonly attackerHasDark?: boolean; readonly defenderHasLight?: boolean; readonly defenderHasDark?: boolean }
 ): CombatForecast {
+  const heightDiff = elevations ? elevations.attacker - elevations.defender : 0;
   let attackerSide = calculateCombatSide(
     attackerUnit,
     attackerStats,
@@ -219,7 +269,11 @@ export function calculateCombatForecast(
     terrainRegistry,
     attackerTerrainId,
     defenderTerrainId,
-    allUnits
+    allUnits,
+    heightDiff,
+    skills?.attacker,
+    skills?.defender,
+    Boolean(spheres?.defenderHasDark && !spheres?.attackerHasLight)
   );
 
   let defenderSide = calculateCombatSide(
@@ -233,7 +287,11 @@ export function calculateCombatForecast(
     terrainRegistry,
     defenderTerrainId,
     attackerTerrainId,
-    allUnits
+    allUnits,
+    -heightDiff,
+    skills?.defender,
+    skills?.attacker,
+    Boolean(spheres?.attackerHasDark && !spheres?.defenderHasLight)
   );
 
   // Đánh 2 lần (Double Attack)

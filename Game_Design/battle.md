@@ -144,3 +144,24 @@ B10 cho địch nhiều vai trò: canh giữ, truy đuổi, tuần tra, rút lui
 B02 cho người chơi thấy mục tiêu địch đang dự kiến tấn công; B03 báo trước đòn hoặc vùng tác động. Cần phân biệt dự đoán có thể đổi (B02) với hành động đã khóa (B03), thời điểm cập nhật và trường hợp người chơi thay đổi vị trí. AI không được đọc thông tin Fog of War bị che và không được biết trước kết quả RNG. B04 về viện binh và B05–B06 về điều kiện chương thuộc `campaign.md`; `art_ui.md` quy định cách hiển thị B01–B03.
 
 Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Báo cáo giải thích lựa chọn từ nhiều game; mọi con số và nhận định chưa được xác minh độc lập vẫn giữ nhãn Chờ chốt.
+
+## Đợt A cơ chế đã chốt (2026-11-19, PLAN mục 101/103/104/105)
+
+- **C12 Phá vật che chắn (mục 101):** ô địa hình `destructible` (vd Wall 20 HP) đánh được như mục tiêu thường qua dự báo; vật không phản đòn, không cho EXP, độ bền + WEx vẫn tính. Vỡ (0 HP) thì ô thành đống đổ nát đi qua tốn 1. HP vật lưu trong save (`objectStates`). Địch AI không đánh vật [Giả định].
+- **V05 Đánh kẹp (mục 103):** khi quân ta đánh địch mà có quân ta khác đứng kề phía đối diện của địch (so với quân đánh) thì quân đánh được **+15 Hit, +10 Crit** [Giả định]. Áp dụng cả hai phía giao tranh theo đồng minh của từng phía.
+- **V07 Lợi thế cao độ (mục 104):** cao độ ô lấy từ `elevations` của bản đồ; chênh cao độ cho **±10 Hit mỗi bậc, tối đa ±20** [Giả định] (cao hơn đánh trúng hơn, thấp hơn bị trừ tương ứng).
+- **V08 Bẫy (mục 105):** chương khai báo `traps` (ô + sát thương). Quân kết thúc di chuyển trên ô bẫy thì bẫy kích hoạt 1 lần, gây sát thương cố định nhưng **không giảm HP dưới 1** [Giả định]; bẫy đã kích hoạt lưu trong save (`triggeredTraps`).
+
+## Đợt B cơ chế đã chốt (2026-11-19, PLAN mục 102/110/111)
+
+- **V04 Canto (mục 102):** quân cưỡi/bay sau khi hành động (đánh/trượng/đồ/mở rương-cửa/cửa hàng/đấu trường/phá vật) được đi tiếp số ô di chuyển còn dư lúc tới ô hành động; tổng không vượt MOV. Chỉ quân người chơi [Giả định], AI địch không dùng Canto. Lệnh Wait thuần không kích hoạt Canto.
+- **B10 Vai trò AI (mục 110):** thêm `patrol` (đi tuần theo `patrolPoints`, vẫn đánh khi có quân trong tầm), `retreat` (dưới 50% HP thì rút xa quân ta [Giả định], còn lại như pursue), `thief` (tới rương/làng chưa mở để cướp; hết mục tiêu thì bỏ chạy), `flee` (luôn chạy xa quân ta, không đánh). Ô rút lui chọn theo khoảng cách xa nhất + thưởng né địa hình.
+- **B11 Boss nhiều pha (mục 111):** chương khai báo `bossPhases` cho boss (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò AI). Mỗi pha áp dụng 1 lần khi HP xuống ngưỡng, ghi nhật ký; tiến độ pha (`bossPhase`) lưu cùng quân trong save.
+
+## Đợt F cơ chế Book 2 (2026-11-19, PLAN mục 120–124)
+
+- **A12 Ngọc Sáng/Tối (mục 120):** `lightsphere`/`darksphere` là vật phẩm mang theo (không bán ở cửa hàng, không cộng chỉ số — đúng quyết định chủ: bỏ chức năng tăng chỉ số). Quân cầm Ngọc Tối không nhận sát thương, trừ khi quân đánh cầm Ngọc Sáng.
+- **A13 Manakete (mục 121):** class `manakete` + nhân vật Tiki (chương test). Lệnh Transform: không cần đá (quyết định chủ A13), biến hình 5 lượt (+1 nếu Luck ≥ 15 [Giả định]), +5 Str/Def/Res, +3 Spd [Giả định], dùng vũ khí Dragon Breath (phép 1–2 ô); hết hạn nghỉ 2 lượt mới biến hình lại.
+- **A14 Ballista (mục 122):** ô địa hình `ballista`; quân cung (archer/sniper/hunter/mangudai) đứng trên đó bắn tầm 3–10, +6 Might [Giả định]. Địch dùng được như quân ta.
+- **A15 Triangle Attack (mục 123):** 3 quân bay đồng minh kề quanh 1 địch thì đòn của quân bay tấn công chắc chắn chí mạng (Crit 100%).
+- **A16 Dancer + Xane (mục 124):** Dancer (Feena) có lệnh Dance: quân đồng minh kề bên đã hành động được hành động lại. Xane (class `chameleon`) có lệnh Imitate: sao chép chỉ số + vũ khí của đồng minh kề bên trong 5 lượt [Giả định], hết hạn trở lại như cũ.
