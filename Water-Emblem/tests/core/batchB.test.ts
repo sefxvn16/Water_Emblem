@@ -106,24 +106,27 @@ describe('AI roles (PLAN item 110, B10)', () => {
   });
 });
 
-describe('boss phases (PLAN item 111, B11)', () => {
+describe('boss phases (PLAN items 111, 150)', () => {
   it('loads boss phases from chapter data', () => {
     const gazzak = testChapter01Data.units.find((u) => u.unit.id === 'gazzak');
     expect(gazzak?.bossPhases).toHaveLength(1);
     expect(gazzak?.bossPhases?.[0]?.hpPercent).toBe(50);
+    expect(gazzak?.bossPhases?.[0]?.aiRole).toBe('pursue');
   });
 
-  it('applies stat bonuses once when HP crosses the threshold', () => {
+  it('switches AI role once when HP crosses the threshold, stats unchanged (item 150)', () => {
     const gazzak = structuredClone(testChapter01Data.units.find((u) => u.unit.id === 'gazzak')!) as ExtendedUnitState;
-    const baseStr = gazzak.stats.str;
+    const baseStats = { ...gazzak.stats };
     gazzak.stats.hp = Math.floor(gazzak.stats.maxHp / 2);
     const first = applyBossPhases([gazzak], itemById);
     expect(first.events).toHaveLength(1);
-    expect(first.units[0]?.stats.str).toBe(baseStr + 3);
+    expect(first.units[0]?.aiRole).toBe('pursue');
+    expect(first.units[0]?.stats.str).toBe(baseStats.str);
+    expect(first.units[0]?.stats.def).toBe(baseStats.def);
     expect(first.units[0]?.bossPhase).toBe(1);
     const second = applyBossPhases(first.units, itemById);
     expect(second.events).toHaveLength(0);
-    expect(second.units[0]?.stats.str).toBe(baseStr + 3);
+    expect(second.units[0]?.aiRole).toBe('pursue');
   });
 
   it('does nothing above the threshold', () => {

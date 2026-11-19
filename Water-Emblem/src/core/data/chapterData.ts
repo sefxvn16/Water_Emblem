@@ -21,12 +21,10 @@ export interface InventoryEntry {
   uses: number;
 }
 
-/** One stage of a multi-phase boss (PLAN item 111). */
+/** One stage of a multi-phase boss (PLAN items 111, 150: weapon / AI only). */
 export interface BossPhase {
   /** Trigger when HP% falls to or below this value (1-99). */
   hpPercent: number;
-  /** Stat bonuses added when the phase starts (not HP). */
-  statBonus?: Partial<Record<'str' | 'mag' | 'skill' | 'spd' | 'lck' | 'def' | 'res', number>>;
   /** Weapon to equip when the phase starts. */
   weaponId?: string;
   /** AI role to switch to when the phase starts. */
@@ -357,20 +355,8 @@ export function loadChapterData(
           }
           return item.bossPhases.map((phaseValue: unknown, phaseIndex: number): BossPhase => {
             const phase = requireRecord(phaseValue, `${label}.bossPhases[${phaseIndex}]`);
-            const statBonusRaw = phase.statBonus === undefined
-              ? undefined
-              : requireRecord(phase.statBonus, `${label}.bossPhases[${phaseIndex}].statBonus`);
-            const statBonus: BossPhase['statBonus'] = {};
-            if (statBonusRaw) {
-              for (const key of ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const) {
-                if (statBonusRaw[key] !== undefined) {
-                  statBonus[key] = requireInteger(statBonusRaw[key], `${label}.bossPhases[${phaseIndex}].statBonus.${key}`);
-                }
-              }
-            }
             return {
               hpPercent: requireInteger(phase.hpPercent, `${label}.bossPhases[${phaseIndex}].hpPercent`, 1),
-              ...(statBonusRaw ? { statBonus } : {}),
               ...(phase.weaponId === undefined ? {} : {
                 weaponId: (() => {
                   const weaponId = requireString(phase.weaponId, `${label}.bossPhases[${phaseIndex}].weaponId`);

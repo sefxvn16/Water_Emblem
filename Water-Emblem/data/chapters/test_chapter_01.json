@@ -116,10 +116,7 @@
       "bossPhases": [
         {
           "hpPercent": 50,
-          "statBonus": {
-            "str": 3,
-            "def": 2
-          }
+          "aiRole": "pursue"
         }
       ]
     },

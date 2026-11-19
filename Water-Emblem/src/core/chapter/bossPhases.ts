@@ -2,10 +2,11 @@ import type { ExtendedUnitState } from '../data/chapterData';
 import type { ItemDefinition } from '../combat/types';
 
 /**
- * Multi-phase bosses (PLAN item 111, B11): when a boss's HP% falls to a
- * phase threshold, that phase's stat bonuses / weapon / AI role apply.
- * Each phase applies once; `bossPhase` on the unit records progress and
- * is saved with the unit. Pure.
+ * Multi-phase bosses (PLAN items 111, 150): when a boss's HP% falls to a
+ * phase threshold, that phase's weapon / AI role apply. Stat bonuses
+ * were removed by owner order (item 150) — phases change weapon and AI
+ * behaviour only. Each phase applies once; `bossPhase` on the unit
+ * records progress and is saved with the unit. Pure.
  */
 
 export interface BossPhaseEvent {
@@ -32,21 +33,9 @@ export function applyBossPhases(
     for (let index = entry.bossPhase ?? 0; index < targetPhase; index++) {
       const phase = entry.bossPhases[index];
       if (!phase) continue;
-      const stats = { ...updated.stats };
-      if (phase.statBonus) {
-        for (const [key, bonus] of Object.entries(phase.statBonus)) {
-          if (typeof bonus === 'number') {
-            const statKey = key as keyof typeof stats;
-            if (typeof stats[statKey] === 'number') {
-              (stats as Record<string, number>)[statKey] = (stats[statKey] as number) + bonus;
-            }
-          }
-        }
-      }
       const weapon = phase.weaponId ? itemById.get(phase.weaponId) : undefined;
       updated = {
         ...updated,
-        stats,
         ...(weapon ? { weapon } : {}),
         ...(phase.aiRole ? { aiRole: phase.aiRole } : {}),
       };
