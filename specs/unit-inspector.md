@@ -9,14 +9,16 @@ Players of the 2D battle map (mouse, touch, keyboard) at 1366x768.
 
 ## Rules
 - R1: The inspector shows identity (name, class, level, faction, portrait), a Combat panel (Atk/Hit/Avo/Crit/AS/Effectiveness), an Attributes panel (Str/Skl/Spd/Lck/Mag/Def/Res), and Items plus Max HP and Move. It adds no data and removes none.
-- R2: The panel is navy `#101a2e` with a thin muted-gold `#c9a227` frame for both
-  factions (owner decision 2026-11-19: mockup J2 picked). The unit's faction is
-  shown by a 3px accent bar across the top of the panel (ally `#3b82f6`, enemy
-  `#ef4444`) plus the faction chip in the header — never by a faction background.
-  This supersedes the item-76 faction backgrounds (`#1d4ed8` ally / `#7f1d1d`
-  enemy, which were [Giả định] and are now retired) and `Game_Design/art_ui.md:43`'s
-  navy background for the inspector only in the sense that the panel keeps the
-  shared navy language; the dark `#1b1b22` background goes away.
+- R2: The panel background is tinted by faction, muted (owner decision
+  2026-11-19 16:07: mockup B picked — "nền theo phe (dịu)"). Player navy
+  `#101a2e`, enemy dark red `#2b1719` (muted, not vivid — the owner's own
+  memory of the FE3 original), intermediary dark green `#12241a`,
+  reinforcement dark purple `#1e1428` [Giả định]. All four keep the thin
+  muted-gold `#c9a227` frame, the 3px accent bar across the top in the
+  faction hue, and the faction chip in the header. This supersedes the J2
+  "no faction background" rule (which itself had superseded the item-76
+  faction backgrounds) — the owner decided the J2 navy-for-all treatment
+  distinguishes the sides too weakly (only the bar + chip differed).
 - R3: Close is the single action. The inspector closes from the Close button, from
   a click/touch outside the panel, and from Escape. Close uses the ghost treatment
   (transparent background, hairline border) per the approved J2 mockup — it is
@@ -33,6 +35,24 @@ Players of the 2D battle map (mouse, touch, keyboard) at 1366x768.
   section titles, hairline dividers, generous spacing, no black inner boxes. The
   treatment is restrained, not stripped — every panel and every value from R1 is
   kept.
+- R9: Faction tones (owner decisions 2026-11-19 14:34 codes, 16:07 treatment B).
+  Four tones, one per display group: player (accent `#3b82f6`, panel `#101a2e`),
+  enemy (accent `#ef4444`, panel `#2b1719`), intermediary (accent `#22c55e`,
+  panel `#12241a`), reinforcement (accent `#a855f7`, panel `#1e1428`
+  [Giả định]). Each tone also sets the inner box, icon tile, hairline, HP-bar
+  track, chip colours, and map-token background/border (see `DESIGN.md` palette
+  and `src/core/grid/factionTones.ts`). The chip labels are Player / Enemy /
+  Ally / Reinforcement. Sides are distinguished by colour, not by text alone
+  (R5: the chip text still accompanies the colour). Mechanism: a unit's display
+  group is its `faction` (`player` | `enemy` | `ally`) plus the display-only
+  flag `GridUnit.isReinforcement` — an `ally` unit marked as a reinforcement
+  renders in the reinforcement tone, any other `ally` unit in the intermediary
+  tone. The flag is origin metadata for display only; the faction still governs
+  behaviour (turn order, AI, targeting). No reinforcement system exists in the
+  code yet and no chapter fields an `ally` unit, so the reinforcement tone is
+  code-complete but dormant until chapter data marks a reinforcement unit.
+  The 2D map tokens (`Grid2D`) use the same tones (token background + border);
+  the 3D scene is frozen and untouched.
 
 ## Acceptance criteria
 ### unit-inspector/A1: content matches chapter data
@@ -81,6 +101,16 @@ Then every weapon cell and every filled item slot shows its FE3 icon (26px,
 loaded image) before the name
 Check: Playwright test "unit-inspector/J2 weapons and items show their icons" + screenshots   Test-first: no
 
+### unit-inspector/A8: faction tones distinguish the sides by colour
+Given the inspector opened for a unit of each display group (player, enemy,
+intermediary, reinforcement)
+When the panel, accent bar, and chip are inspected
+Then the panel background, accent bar, and chip match that group's tone
+(player `#101a2e` / `#3b82f6`, enemy `#2b1719` / `#ef4444`, intermediary
+`#12241a` / `#22c55e`, reinforcement `#1e1428` / `#a855f7`), and the chip
+reads Player / Enemy / Ally / Reinforcement
+Check: Playwright test "unit-inspector/B faction tones" + screenshots   Test-first: no
+
 ## Decisions
 - 2026-11-15: Language of the whole game is English (`Game_Design/decisions.md`, language section).
 - 2026-11-17: Visual direction is minimalist/Nordic with clear information hierarchy (`Game_Design/art_ui.md:13-15`).
@@ -89,6 +119,13 @@ Check: Playwright test "unit-inspector/J2 weapons and items show their icons" + 
   weapon/item icons, Weapons and Items each in their own box) over B1/B2/B3 and
   the item-76 faction-background treatment. The J2 mockup is the build target for
   PLAN item 79; the `#1d4ed8`/`#7f1d1d` [Giả định] shades are retired.
+- 2026-11-19 14:34: Owner confirmed the four faction hues: player `#3b82f6`,
+  enemy `#ef4444` (already in code), intermediary `#22c55e`, reinforcement
+  `#a855f7`.
+- 2026-11-19 16:07: Owner picked treatment B over A (muted faction-tinted panel
+  backgrounds) so the sides are distinguished by colour, not by text alone.
+  The J2 "no faction background" rule is superseded by this decision; the J2
+  layout, icons, and Japanese-minimalist treatment are unchanged.
 
 ## Out of scope
 - Changing which data the inspector shows (growth rates stay hidden; showing them is a later item).

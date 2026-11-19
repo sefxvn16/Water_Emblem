@@ -36,22 +36,32 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
 | Caption text | `#94a3b8` | existing code |
 | Ally faction hue | `#3b82f6` | existing code (inspector accent bar + chip, `Grid2D.tsx:190-191`) |
 | Enemy faction hue | `#ef4444` | existing code (same) |
+| Intermediary faction hue | `#22c55e` | owner decision 2026-11-19 14:34 (FE convention for NPC allies; hex already in the palette as HP remaining) |
+| Reinforcement faction hue | `#a855f7` | owner decision 2026-11-19 14:34 (unused in the game, distinct from blue/red/green/gold) |
 | HP remaining | `#22c55e` (bar) / `#4ade80` (text) | existing code |
 | HP loss | `#ef4444` | existing code |
-| Inspector panel (both factions) | `#101a2e` | owner decision 2026-11-19 (mockup J2, PLAN item 79) |
+| Inspector panel — player | `#101a2e` | owner decision 2026-11-19 (mockup J2, PLAN item 79) |
+| Inspector panel — enemy | `#2b1719` | owner decision 2026-11-19 16:07 (treatment B; muted red, per the owner's memory of the FE3 original) |
+| Inspector panel — intermediary | `#12241a` | owner decision 2026-11-19 16:07 (treatment B) |
+| Inspector panel — reinforcement | `#1e1428` | [Giả định — dark purple matching the other muted tints; owner to confirm from screenshots] |
 | Inspector frame (muted gold) | `#c9a227` | owner decision 2026-11-19 (mockup J2) |
-| Inspector inner box | `#131f36` | owner decision 2026-11-19 (mockup J2) |
-| Inspector icon tile | `#16233f` | owner decision 2026-11-19 (mockup J2) |
-| Inspector hairline divider | `#22304d` | owner decision 2026-11-19 (mockup J2) |
+| Inspector inner box — player / enemy / intermediary / reinforcement | `#131f36` / `#381d20` / `#162e21` / `#241a33` [reinforcement Giả định] | owner decision 2026-11-19 16:07 (treatment B) |
+| Inspector icon tile — player / enemy / intermediary / reinforcement | `#16233f` / `#3d2125` / `#1a3527` / `#2a1f3d` [reinforcement Giả định] | owner decision 2026-11-19 16:07 (treatment B) |
+| Inspector hairline divider — player / enemy / intermediary / reinforcement | `#22304d` / `#4a2b30` / `#26452f` / `#3a2d4d` [reinforcement Giả định] | owner decision 2026-11-19 16:07 (treatment B) |
+| Inspector HP-bar track — player / enemy / intermediary / reinforcement | `#0b1220` / `#1f1013` / `#0e1f15` / `#171022` [reinforcement Giả định] | owner decision 2026-11-19 16:07 (treatment B) |
+| Map token background — player / enemy / intermediary / reinforcement | `#1e3a8a` / `#7f1d1d` / `#14532d` / `#581c87` [intermediary + reinforcement Giả định] | existing code (player/enemy); treatment B extension 2026-11-19 |
 | Inspector muted gold (titles) | `#b49b5e` | owner decision 2026-11-19 (mockup J2) |
 | Inspector label | `#8fa3bf` | owner decision 2026-11-19 (mockup J2) |
 
 - Every panel in the four areas uses the navy background with a gold frame, except the
-  inspector, which uses a navy `#101a2e` panel with a muted-gold `#c9a227` frame and
-  shows the faction as a 3px accent bar + chip (owner decision 2026-11-19, mockup J2,
-  PLAN item 79). This supersedes the item-76 faction backgrounds (ally blue, enemy
-  dark red) and `art_ui.md:43`'s navy background for the inspector only; the dark
-  `#1b1b22` inspector background is gone.
+  inspector, which uses a muted-gold `#c9a227` frame and a panel background
+  tinted by faction — player navy `#101a2e`, enemy dark red `#2b1719`,
+  intermediary dark green `#12241a`, reinforcement dark purple `#1e1428`
+  [Giả định] — with a 3px faction accent bar + chip (owner decisions
+  2026-11-19: mockup J2, then treatment B 16:07, PLAN item 79). This supersedes
+  the item-76 faction backgrounds (ally blue, enemy dark red) and the J2 "no
+  faction background" rule, and `art_ui.md:43`'s navy background for the
+  inspector only; the dark `#1b1b22` inspector background is gone.
 - The settings panel never uses `#262626`/`#444` (removed by this task).
 - Danger treatment (red) is reserved for destructive actions. Attack is the single
   primary action of the forecast and never uses danger treatment.

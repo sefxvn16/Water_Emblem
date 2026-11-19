@@ -8,7 +8,7 @@ One shared visual language for the four redesigned areas, so a player recognises
 Players of the 2D battle map (mouse, trackpad, keyboard, touch) and maintainers adding or changing UI in the four areas.
 
 ## Rules
-- R1: Every panel in the four areas uses the shared treatment: navy `#0c1e5b` background with a gold `#eab308` frame. No area invents its own panel colour. (Current violation: the settings panel uses `#262626` with a `#444` border.) Exception: the inspector uses a navy `#101a2e` panel with a muted-gold `#c9a227` frame and shows the faction as an accent bar + chip, per owner decision 2026-11-19 (mockup J2 picked; see R10).
+- R1: Every panel in the four areas uses the shared treatment: navy `#0c1e5b` background with a gold `#eab308` frame. No area invents its own panel colour. (Current violation: the settings panel uses `#262626` with a `#444` border.) Exception: the inspector uses a muted-gold `#c9a227` frame and a panel background tinted by faction — player navy `#101a2e`, enemy dark red `#2b1719`, intermediary dark green `#12241a`, reinforcement dark purple `#1e1428` [Giả định] — with a 3px faction accent bar + chip, per owner decisions 2026-11-19 (mockup J2 picked, then treatment B picked; see R10).
 - R2: Spacing, type, radii, and z-order follow one scale recorded in `DESIGN.md`. Text uses 3–4 levels (title; name or heading; label; caption), distinguished by size, weight, and position, not by adding colours only to create hierarchy.
 - R3: Each decision point (one form, dialogue, card, or toolbar row) has at most one primary action; all other actions at that point share one secondary treatment. Danger treatment is reserved for destructive actions.
 - R4: Every interactive control in the four areas has a target of at least 44px (the project's own bar; the WCAG minimum is 24px). An exception needs a stated reason tied to a concrete constraint.
@@ -17,20 +17,26 @@ Players of the 2D battle map (mouse, trackpad, keyboard, touch) and maintainers 
 - R7: `DESIGN.md` at the repo root records screen types, zones, spacing scale, palette, type scale, breakpoints, and z-order. Confirmed rules are separated from unconfirmed current state; no value is invented without a source.
 - R8: Mức can thiệp cho toàn bộ task: Thiết kế lại (owner decision 2026-11-19, whole task).
 - R9: Ngôn ngữ khai báo của tài liệu: English — fix `<html lang="vi">` thành `<html lang="en">` trong task này (owner decision 2026-11-19).
-- R10: Inspector treatment (owner decision 2026-11-19, mockup J2 picked for PLAN
-  item 79): navy `#101a2e` panel for both factions with a thin muted-gold `#c9a227`
-  frame; the faction is a 3px accent bar across the top (ally `#3b82f6`, enemy
-  `#ef4444`) plus the faction chip. This supersedes the item-76 faction
-  backgrounds (enemy dark red, ally blue — the `#1d4ed8`/`#7f1d1d` shades were
-  [Giả định] and are retired) and the "gold `#eab308` frame" for the inspector
-  only. The inspector Close is the single action and uses the ghost treatment,
-  not a gold primary.
+- R10: Inspector treatment (owner decisions 2026-11-19: mockup J2 picked for PLAN
+  item 79, then treatment B picked 16:07): the panel background is tinted by
+  faction, muted — player navy `#101a2e`, enemy dark red `#2b1719`,
+  intermediary dark green `#12241a`, reinforcement dark purple `#1e1428`
+  [Giả định] — with a thin muted-gold `#c9a227` frame, a 3px accent bar across
+  the top in the faction hue (player `#3b82f6`, enemy `#ef4444`, intermediary
+  `#22c55e`, reinforcement `#a855f7`), and the faction chip. Inner boxes, icon
+  tiles, hairlines, and the HP-bar track follow the same faction tone (see
+  `DESIGN.md` palette and `src/core/grid/factionTones.ts`). This supersedes
+  both the item-76 faction backgrounds (enemy dark red, ally blue — the
+  `#1d4ed8`/`#7f1d1d` shades were [Giả định] and are retired) and the J2
+  "no faction background" rule, and the "gold `#eab308` frame" for the
+  inspector only. The inspector Close is the single action and uses the ghost
+  treatment, not a gold primary.
 
 ## Acceptance criteria
 ### design-system/A1: shared panel treatment
 Given the four areas open at 1366x768
 When each panel is inspected
-Then every panel shows the navy `#0c1e5b` background with the gold `#eab308` frame, including the settings panel — except the inspector, which shows the navy `#101a2e` background with the muted-gold `#c9a227` frame and a faction accent bar (R10).
+Then every panel shows the navy `#0c1e5b` background with the gold `#eab308` frame, including the settings panel — except the inspector, which shows a faction-tinted background (player `#101a2e`, enemy `#2b1719`, intermediary `#12241a`, reinforcement `#1e1428` [Giả định]) with the muted-gold `#c9a227` frame and a faction accent bar (R10).
 Check: Playwright test "design-system/A1 shared panel treatment" (computed styles in the four areas) + before/after screenshots   Test-first: no
 
 ### design-system/A2: one primary action per decision point
