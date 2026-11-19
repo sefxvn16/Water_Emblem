@@ -513,6 +513,48 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút Cancel chuyển xuống ngay dưới nút Attack ở cột giữa; cả 2 nút tròn 3D bóng bẩy (gradient hướng sáng + bóng trong/ngoài). Kiểm chứng: `tsc --noEmit` PASS; Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
+- [x] 126. Nút hành động to hơn (~1.5 lần), co giãn theo màn hình, đồng bộ phong cách tròn 3D bóng bẩy.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41 (kèm ảnh bảng hành động): "các nút hành động cần cho to hơn, tự tính toán xem bao nhiêu là phù hợp, tôi dự kiến cho lên 1.5 lần, tuy nhiên cần tính toán làm sao để ở màn hình nhỏ cũng không che nhiều quá bản đồ. Màn hình to thì không bị bé quá" + "Thiết kế lại toàn bộ hình ảnh các nút chức năng theo phong cách bên trên tôi vừa nói. Hiện tại đang khá xấu và không đồng bộ về phong cách."
+  - Tiêu chí xong: (1) Nút hành động ~1.5 lần hiện tại trên màn hình lớn, thu nhỏ hợp lý trên màn hình nhỏ (không che quá nhiều bản đồ). (2) Toàn bộ nút chức năng đồng bộ phong cách tròn 3D bóng bẩy như nút Attack/Cancel ở mục 125. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Nút hành động dùng clamp(56px, 8vw, 84px) — màn hình lớn 84px (1.5 lần), màn hình nhỏ tối thiểu 56px; glyph và nhãn cũng co giãn theo. Toàn bộ nút tròn 3D bóng bẩy đồng bộ (mặt radial-gradient, viền vàng, bóng trong). Kiểm chứng: Vitest 43 file/283 test PASS; ảnh chụp 1920/1280/390 ở work/ui-review-128. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 127. Thiết kế lại bảng dự báo chiến đấu theo ảnh mẫu: avatar góc ngoài vượt khung, icon vũ khí góc đối diện nhỏ hơn, thông tin ở giữa.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: "bảng thông tin chiến đấu tôi đưa bên trên, thiết kế rất đẹp: avatar nằm ở góc ngoài cùng, thậm chí còn vượt ra ngoài khung; thông tin về vũ khí (icon) nằm ở góc đối diện, nhỏ hơn; các thông tin còn lại nằm ở giữa. Hãy phân tích ảnh đó và thiết kế lại đi".
+  - Tiêu chí xong: (1) Phân tích ảnh mẫu (work/water-forecast-96/ref-forecast-bar.png) và áp dụng bố cục: avatar lớn ở góc ngoài tràn khung, icon vũ khí nhỏ ở góc đối diện, số liệu ở giữa. (2) Giữ nguyên toàn bộ số liệu dự báo + nút Attack/Cancel mục 125 + vị trí giữa-dưới mục 100. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Phân tích ảnh mẫu: 2 panel đối xứng, khiên avatar lớn ở mép ngoài tràn lên/xuống khung, icon vũ khí nhỏ hình thoi ở góc trong, tên/HP/chỉ số ở giữa, huy hiệu cấp ở góc trong-dưới. Đã áp dụng đúng bố cục đó, giữ nguyên số liệu + nút Attack/Cancel mục 125 + vị trí giữa-dưới mục 100; màn hình ≤640px thu nhỏ khiên và xếp chỉ số 1 cột. Kiểm chứng: Vitest 283 PASS; ảnh forecast-1920/390. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 128. Rà soát toàn bộ giao diện (skill ui-design + blueprint): cỡ chữ, nút bị che/chồng, Settings đều nhau, thanh âm lượng, nhãn Save/Load.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: dùng skill UI-design và blueprint rà lại giao diện: chữ có nhỏ quá không; nút có bị che khuất/khó nhìn/chồng nhau không; thông tin save/load/chuyển màn/giới thiệu đủ chưa; Settings xấu, nút to nhỏ khác nhau cần đều + gióng hàng; bỏ thông tin Phase (turn 1, player phase); âm lượng là thanh trượt (nhỏ hết cỡ = tắt); 2 nút Save/Load ngang hàng nhau; "Save File" khó hiểu — ghi rõ là tải file save.
+  - Tiêu chí xong: (1) Báo cáo rà soát giao diện kèm ảnh chụp. (2) Sửa các lỗi tìm thấy: cỡ chữ tối thiểu, nút không chồng/che, Settings đều nhau + bỏ Phase, thanh trượt âm lượng, Save/Load ngang hàng + nhãn rõ ràng. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Báo cáo rà soát: work/water-ui-review-128/01-review.md. Settings: nút đều 44px lưới 2 cột, bỏ Phase/Turn, thanh trượt âm lượng (0 = tắt), Save/Load ngang hàng, 'Save Files' → 'Manage Saves'. Chữ 9-10px nâng lên 11px. Khổ 390px: thanh hành động nâng lên trên thẻ thông tin quân. Test trình duyệt cập nhật theo (đọc turn/phase từ __WATER_EMBLEM_STATE__ thay vì chữ trong Settings; test tắt tiếng chuyển sang thanh trượt). Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 129. Mọi class cưỡi (kể cả ngựa bay) đều có Dismount.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:41: "Ngựa bay cũng có Dismount mà? Rà lại các class cưỡi thì đều phải có Dismount."
+  - Tiêu chí xong: (1) Rà mọi class có mountKind (ground + flying) đều xuống ngựa được (dismounted form tồn tại). (2) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Class mới `dismounted_pegasus`; mọi class có mountKind (ground + flying) đều xuống ngựa/lên ngựa được; nút Mount/Dismount hiện cho cả ngựa bay. Test classRules cũ ('keeps fliers mounted') cập nhật theo quyết định mới. Kiểm chứng: Vitest 283 PASS (test mới dismount.test.ts). Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 130. Nút hành động xếp theo thứ tự ưu tiên; hành động ưu tiên cao nhất được phát sáng/đổi màu.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:43 (kèm ảnh): "Thứ tự hành động trong thanh chức năng cần được sắp xếp theo thứ tự ưu tiên, chứ không xếp bừa như thế này. Ví dụ như khi Marth vào thăm làng, thì nút ưu tiên trên cùng và được phát sáng/đổi màu phải là nút thăm làng chứ? Tương tự như với Attack, Hồi máu..."
+  - Tiêu chí xong: (1) Thứ tự ưu tiên cố định: Seize > Escape > Visit > Attack > Staff > Talk > Open Chest > Open Door > Shop > Arena > Transform > Dance > Imitate > Promote > Vulnerary > Trade > Storage > Equip > Mount > Wait > Cancel Move. (2) Nút ưu tiên cao nhất đang khả dụng được tô vàng + phát sáng nhấp nháy. (3) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Thứ tự ưu tiên cố định Seize > Escape > Visit > Attack > Staff > Talk > Chest > Door > Shop > Arena > Transform > Dance > Imitate > Promote > Vulnerary > Trade > Storage > Equip > Mount > Wait > Cancel Move; nút ưu tiên cao nhất đang khả dụng tô vàng + phát sáng nhấp nháy. Kiểm chứng: Vitest 283 PASS; ảnh actions-1920 (Trade phát sáng khi không có Attack/Visit). Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 131. Popup giữa màn hình khi nhận vật phẩm/thu phục: thăm làng, thu phục nhân vật, mở rương.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:45: "Khi vào thăm làng, thu phục... thì phải hiện 1 popup nhỏ giữa màn hình nói về thông tin vật phẩm, nhân vật... (có biểu tượng của vật phẩm, avatar nhân vật...) nhận được hoặc thu phục thành công chứ?"
+  - Tiêu chí xong: (1) Thăm làng nhận thưởng → popup giữa màn hình có icon vật phẩm (hoặc vàng) + tên. (2) Thu phục thành công → popup có avatar + tên nhân vật. (3) Mở rương nhận vật phẩm → popup tương tự. (4) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Popup giữa màn hình (RewardPopup) khi nhận vật phẩm (icon + tên), nhận vàng, thu phục nhân vật (avatar + tên + dòng 'has become one of your allies!'). Áp dụng cho thăm làng, mở rương, thu phục, đồ rơi từ địch. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
+- [x] 132. Trao đổi đồ: chọn đối tác trực tiếp trên bản đồ (như chọn mục tiêu tấn công), bỏ popup danh sách.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 18:46 (kèm ảnh popup Trade): "phần trao đổi đồ, thì phải hiển thị các nhân vật có thể chọn trên bản đồ như đối với tấn công địch, chứ không phải popup như thế này. Tìm hiểu cách thiết kế của dòng game Fire Emblem đi."
+  - Tiêu chí xong: (1) Bấm Trade → các đồng minh kề bên được đánh dấu sáng trên bản đồ (kiểu Fire Emblem: chọn Trade, con trỏ nhảy tới đồng minh kề, bấm để mở màn trao đổi). (2) Bấm vào đồng minh → mở thẳng màn trao đổi 2 cột. (3) Esc/huỷ quay lại menu hành động. (4) Test + gate PASS.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Bấm Trade → đồng minh kề bên sáng lên trên bản đồ (như chọn mục tiêu tấn công, đúng kiểu Fire Emblem), bấm vào đồng minh mở thẳng màn trao đổi; 1 đối tác thì mở thẳng; Esc/bấm ô quân để huỷ. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".

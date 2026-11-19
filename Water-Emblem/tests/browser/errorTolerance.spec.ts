@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openSettings } from './settingsMenu';
+import { expectPlayerPhase, openSettings } from './settingsMenu';
 
 test.describe('Game Error Tolerance & Resilience Suite', () => {
   test('handles invalid rapid clicks and out-of-bounds selections gracefully', async ({ page }) => {
@@ -34,7 +34,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     expect(consoleErrors.filter((e) => !e.includes('favicon'))).toEqual([]);
     await openSettings(page);
     await expect(page.locator('text=Turn:').first()).toBeVisible();
-    await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+    await expectPlayerPhase(page);
   });
 
   test('preserves audio mute state across page reload', async ({ page }) => {
@@ -44,14 +44,12 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
 
-    // Sound button starts as "🔊 Sound: On"
+    // PLAN item 128: volume is a slider; dragging it to 0 mutes.
     await openSettings(page);
-    const muteButton = page.getByTitle(/(?:Mute Audio|Unmute Audio|Tắt âm thanh|Bật âm thanh)/i);
-    await expect(muteButton).toBeVisible();
-
-    // Click to mute
-    await muteButton.click({ force: true });
-    await expect(page.getByText(/(?:Muted|Tắt)/i)).toBeVisible();
+    const slider = page.getByLabel('Volume');
+    await expect(slider).toBeVisible();
+    await slider.fill('0');
+    await expect(page.getByText('0%')).toBeVisible();
 
     // Check localStorage
     const isMutedInStorage = await page.evaluate(() => localStorage.getItem('we_sound_muted'));
@@ -64,13 +62,13 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     const startBtnAfterReload = page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i });
     if (await startBtnAfterReload.isVisible()) await startBtnAfterReload.click();
 
-    // Should stay muted
+    // Should stay muted (slider at 0)
     await openSettings(page);
-    await expect(page.getByText(/(?:Muted|Tắt)/i)).toBeVisible();
+    await expect(page.getByLabel('Volume')).toHaveValue('0');
 
-    // Click to unmute again
-    await page.getByText(/(?:Muted|Tắt)/i).click({ force: true });
-    await expect(page.getByText(/(?:Sound: On|Bật)/i)).toBeVisible();
+    // Raise the volume again to unmute
+    await page.getByLabel('Volume').fill('50');
+    await expect(page.getByText('50%')).toBeVisible();
     const isUnmutedInStorage = await page.evaluate(() => localStorage.getItem('we_sound_muted'));
     expect(isUnmutedInStorage).toBe('false');
   });
@@ -82,7 +80,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
   if (await resumeBtn.isVisible()) await resumeBtn.click();
     await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
     await openSettings(page);
-    await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+    await expectPlayerPhase(page);
 
     // First save once to initialize the IndexedDB database & store
     await openSettings(page);
@@ -121,7 +119,7 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     // Dialog should report failure, app does not crash
     await expect.poll(() => alertSeen).toBe(true);
     await openSettings(page);
-    await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+    await expectPlayerPhase(page);
     await expect(page.getByText(/Turn:\s*1/)).toBeVisible();
   });
 });

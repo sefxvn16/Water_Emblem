@@ -1759,6 +1759,51 @@
         "def": 10,
         "res": 10
       }
+    },
+    {
+      "id": "dismounted_pegasus",
+      "name": "Dismounted Pegasus",
+      "nameVi": "Thiên mã xuống ngựa",
+      "usableWeapons": [
+        "sword",
+        "lance"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 18,
+        "str": 4,
+        "mag": 0,
+        "skill": 4,
+        "spd": 7,
+        "lck": 0,
+        "def": 5,
+        "res": 3
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "dismounted",
+      "promotions": [],
+      "sourceClass": "FE3 Dismounted Pegasus Knight",
+      "growths": {
+        "hp": 40,
+        "str": 10,
+        "mag": 0,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      },
+      "classSkill": "lancefaire"
     }
   ]
 }

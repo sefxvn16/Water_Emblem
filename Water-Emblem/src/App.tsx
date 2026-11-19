@@ -67,6 +67,8 @@ import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { WeaponPickerWindow } from './ui/WeaponPickerWindow';
 import { OverflowWindow } from './ui/OverflowWindow';
+import { RewardPopup, type RewardPopupData } from './ui/RewardPopup';
+import { getItemIcon } from './ui/itemIcon';
 import { resolveOverflow, slotKind, hasRoomFor } from './core/data/inventory';
 import { TradeWindow, type TradeSide } from './ui/TradeWindow';
 import { getTradePartners, tradeMove, tradeSwap } from './core/data/trade';
@@ -167,10 +169,12 @@ export const App: React.FC = () => {
   // Attack target-lock (PLAN item 80): after pressing Attack with several
   // targets in range, only target tiles respond until one is picked.
   const [attackTargeting, setAttackTargeting] = useState(false);
+  const [tradeTargeting, setTradeTargeting] = useState(false);
   const [weaponPickerOpen, setWeaponPickerOpen] = useState(false);
   const [pendingOverflows, setPendingOverflows] = useState<
     { unitId: string; itemId: string; itemName: string }[]
   >([]);
+  const [rewardPopups, setRewardPopups] = useState<RewardPopupData[]>([]);
   const [tradeState, setTradeState] = useState<{ partnerId: string | null } | null>(null);
   const [convoy, setConvoy] = useState<InventoryEntry[]>([]);
   const [storageOpen, setStorageOpen] = useState(false);
@@ -211,16 +215,16 @@ export const App: React.FC = () => {
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
-    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !cantoActive) return;
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !cantoActive && !tradeTargeting) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null);
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setTradeTargeting(false);
         if (cantoActive) { setCantoActive(false); turnManager.waitSelectedUnit(); syncState(); }
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting, weaponPickerOpen, staffTargeting, cantoActive]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting, cantoActive, tradeTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
@@ -250,6 +254,16 @@ export const App: React.FC = () => {
   const handleToggleMute = () => {
     const next = soundManager.toggleMute();
     setIsMuted(next);
+  };
+
+  // PLAN item 128: master volume slider (0 = muted).
+  const [volume, setVolume] = useState(soundManager.isMuted ? 0 : soundManager.sfxVolume);
+  const handleVolume = (next: number) => {
+    setVolume(next);
+    soundManager.sfxVolume = next;
+    soundManager.bgmVolume = next * 0.6;
+    soundManager.isMuted = next <= 0;
+    setIsMuted(next <= 0);
   };
 
   useEffect(() => {
@@ -484,6 +498,10 @@ export const App: React.FC = () => {
   }, [selectedExtUnit, pendingMovePos, mapData, objectStates]);
 
   // PLAN item 89: heal-staff targets from the destination tile.
+  const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
+    ? getTradePartners(extendedUnits, selectedExtUnit, pendingMovePos)
+    : [];
+
   const staffTargets = useMemo(() => {
     if (!staffTargeting || !selectedExtUnit || !pendingMovePos) return [];
     const staff = ITEM_BY_ID.get(staffTargeting.staffId);
@@ -495,12 +513,19 @@ export const App: React.FC = () => {
     return new Set(staffTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [staffTargets]);
 
+  // PLAN item 132: trade partners are picked on the map (Fire Emblem
+  // style), highlighted like attack/staff targets.
+  const tradeTargetKeys = useMemo(() => {
+    if (!tradeTargeting) return new Set<string>();
+    return new Set(tradePartners.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
+  }, [tradeTargeting, tradePartners]);
+
   const boardView = buildBoardView({
     map: mapData,
     units: extendedUnits.map(({ unit }) => unit),
     reachableKeys,
     dangerZoneKeys,
-    attackTargetKeys: staffTargeting ? staffTargetKeys : attackTargetKeys,
+    attackTargetKeys: staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
   });
 
@@ -612,8 +637,14 @@ export const App: React.FC = () => {
       return;
     }
 
+    const clickedExt = extendedUnits.find(
+      (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
+    );
+
     // PLAN item 102: Canto movement — click a highlighted tile to move
-    // there and end the unit's turn; any other click stays in place.
+    // there and end the unit's turn; any other click stays in place. A
+    // click on another ready player unit ends Canto and then selects
+    // that unit (fall-through, so the click is not swallowed).
     if (cantoActive) {
       const cantoUnit = turnManager.getSelectedUnit();
       const moveData = turnState.reachableTiles?.get(`${x},${y}`);
@@ -646,13 +677,14 @@ export const App: React.FC = () => {
       } else {
         turnManager.waitSelectedUnit();
         syncState();
+        const fallThrough = clickedExt !== undefined
+          && clickedExt.unit.faction === 'player'
+          && !clickedExt.unit.hasActed
+          && clickedExt.unit.id !== cantoUnit?.id;
+        if (!fallThrough) return;
       }
-      return;
+      if (cantoUnit && moveData && (x !== cantoUnit.position.x || y !== cantoUnit.position.y)) return;
     }
-
-    const clickedExt = extendedUnits.find(
-      (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
-    );
 
     const openAttackForecast = (target: ExtendedUnitState) => {
       if (!selectedExtUnit || !pendingMovePos) return;
@@ -696,6 +728,18 @@ export const App: React.FC = () => {
         }
       ));
     };
+
+    // PLAN item 132: trade target lock — click a highlighted ally on the
+    // map to open the trade screen; click the unit's tile to go back.
+    if (tradeTargeting) {
+      if (clickedExt && tradePartners.some((t) => t.unit.id === clickedExt.unit.id)) {
+        setTradeTargeting(false);
+        setTradeState({ partnerId: clickedExt.unit.id });
+      } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
+        setTradeTargeting(false);
+      }
+      return;
+    }
 
     // PLAN item 89: staff target lock — click a highlighted ally to heal,
     // click the unit's destination tile to go back to the menu.
@@ -1101,11 +1145,43 @@ export const App: React.FC = () => {
   };
 
   // PLAN item 86: full-inventory gains wait for a discard choice.
+  // PLAN item 131: item/gold gains and recruitments also pop a centered
+  // reward popup with the item icon or the character's avatar.
   const queueOverflows = (events: readonly GameEvent[]) => {
     const overflows = events
       .filter((event) => event.type === 'item_overflow')
       .map((event) => ({ unitId: event.unitId, itemId: event.itemId, itemName: event.itemName }));
     if (overflows.length > 0) setPendingOverflows((prev) => [...prev, ...overflows]);
+
+    const popups: RewardPopupData[] = [];
+    for (const event of events) {
+      if (event.type === 'item_gained') {
+        const item = ITEM_BY_ID.get(event.itemId);
+        popups.push({
+          kind: 'item',
+          title: '🎁 Item received!',
+          name: event.itemName,
+          imageUrl: item ? getItemIcon(item.id, item.type) : undefined,
+          detail: `${event.unitName} got ${event.itemName}.`,
+        });
+      } else if (event.type === 'gold_gained') {
+        popups.push({
+          kind: 'gold',
+          title: '💰 Gold received!',
+          name: `${event.amount.toLocaleString()} Gold`,
+        });
+      } else if (event.type === 'unit_recruited') {
+        const recruited = extendedUnits.find((entry) => entry.unit.id === event.unitId);
+        popups.push({
+          kind: 'recruit',
+          title: '🤝 Joined your army!',
+          name: recruited?.unit.name ?? event.unitId,
+          imageUrl: recruited?.avatarUrl,
+          detail: `${recruited?.unit.name ?? event.unitId} has become one of your allies!`,
+        });
+      }
+    }
+    if (popups.length > 0) setRewardPopups((prev) => [...prev, ...popups]);
   };
 
   const resolvePendingOverflow = (discardItemId: string | null | 'convoy') => {
@@ -1295,9 +1371,6 @@ export const App: React.FC = () => {
     setStaffTargeting({ staffId });
   };
 
-  const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
-    ? getTradePartners(extendedUnits, selectedExtUnit, pendingMovePos)
-    : [];
 
   // PLAN item 88: Storage is available to Marth himself and to units
   // standing adjacent to Marth at their destination tile.
@@ -1461,7 +1534,14 @@ export const App: React.FC = () => {
 
   const handleTrade = () => {
     if (tradePartners.length === 0) return;
-    setTradeState({ partnerId: tradePartners.length === 1 ? tradePartners[0]!.unit.id : null });
+    // PLAN item 132: one partner opens the trade screen directly; with
+    // several, the player picks the partner on the map (FE style).
+    if (tradePartners.length === 1) {
+      setTradeState({ partnerId: tradePartners[0]!.unit.id });
+    } else {
+      setTradeTargeting(true);
+      showNotice('🔁 Trade: choose a partner on the map.');
+    }
   };
 
   // PLAN item 116: trade between any two units in battle preparation.
@@ -1940,6 +2020,8 @@ export const App: React.FC = () => {
         activePhase={turnState.activePhase}
         viewMode={viewMode}
         isMuted={isMuted}
+        volume={volume}
+        onVolume={handleVolume}
         combatLog={combatLog}
         onChapterChange={loadChapter}
         onTitle={() => setActiveScreen('title')}
@@ -1984,11 +2066,11 @@ export const App: React.FC = () => {
         anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
           selectedExtUnit && !pendingMovePos && !combatForecast && !activeMovingUnit
-            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind === 'ground')
+            && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind)
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
+        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -2081,6 +2163,14 @@ export const App: React.FC = () => {
           />
         );
       })()}
+
+      {/* PLAN item 131: centered reward popup (item icon / recruit avatar) */}
+      {rewardPopups.length > 0 && (
+        <RewardPopup
+          data={rewardPopups[0]!}
+          onClose={() => setRewardPopups((prev) => prev.slice(1))}
+        />
+      )}
 
       {tradeState && selectedExtUnit && pendingMovePos && (() => {
         const partner = tradeState.partnerId

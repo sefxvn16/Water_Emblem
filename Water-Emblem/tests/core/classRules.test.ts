@@ -23,9 +23,14 @@ describe('class rules', () => {
     expect(full.stats.maxHp).toBe(22);
   });
 
-  it('keeps fliers mounted and returns Warlord to Lord', () => {
+  // PLAN item 129 (owner order 2026-11-19): fliers CAN dismount now —
+  // this test previously asserted the opposite.
+  it('dismounts fliers to the dismounted pegasus form and returns Warlord to Lord', () => {
     const caeda = chapter01Data.units.find(({ unit }) => unit.id === 'caeda')!;
-    expect(changeMountedState(caeda, false)).toBeNull();
+    const dismounted = changeMountedState(caeda, false)!;
+    expect(dismounted.unit.classId).toBe('dismounted_pegasus');
+    expect(dismounted.unit.mountedClassId).toBe('pegasus_knight');
+    expect(changeMountedState(dismounted, true)!.unit.classId).toBe('pegasus_knight');
     const marth = chapter01Data.units.find(({ unit }) => unit.id === 'marth')!;
     const promoted = promoteUnit({ ...marth, level: 10 }, 'warlord', true)!;
     const foot = changeMountedState(promoted, false)!;

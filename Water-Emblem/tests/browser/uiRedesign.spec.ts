@@ -226,10 +226,10 @@ test('design-system/A2 one primary action per decision point', async ({ page }) 
   await page.getByRole('button', { name: 'Close unit details' }).click();
   // Forecast: Attack primary (gold), Cancel secondary.
   await openForecast(page);
-  const attackBg = await page.getByRole('button', { name: '⚔️ Attack!' }).evaluate((el) => getComputedStyle(el).backgroundColor);
-  const cancelBg = await page.getByRole('button', { name: 'Cancel', exact: true }).evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(attackBg).toBe('rgb(234, 179, 8)');
-  expect(cancelBg).toBe('rgb(30, 41, 59)');
+  const attackBg = await page.getByRole('button', { name: '⚔️ Attack!' }).evaluate((el) => getComputedStyle(el).backgroundImage);
+  const cancelBg = await page.getByRole('button', { name: 'Cancel', exact: true }).evaluate((el) => getComputedStyle(el).backgroundImage);
+  expect(attackBg).toContain('rgb(234, 179, 8)');
+  expect(cancelBg).toContain('rgb(30, 41, 59)');
 });
 
 test('design-system/A3 controls meet 44px target', async ({ page }) => {
@@ -510,11 +510,11 @@ test('unit-inspector/A6 empty items state keeps its place', async ({ page }) => 
 test('combat-forecast-ui/A2 Attack is the only primary action', async ({ page }) => {
   await gotoBattle(page);
   await openForecast(page);
-  const attackBg = await page.getByRole('button', { name: '⚔️ Attack!' }).evaluate((el) => getComputedStyle(el).backgroundColor);
-  const cancelBg = await page.getByRole('button', { name: 'Cancel', exact: true }).evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(attackBg).toBe('rgb(234, 179, 8)');
-  expect(attackBg).not.toBe('rgb(220, 38, 38)');
-  expect(cancelBg).toBe('rgb(30, 41, 59)');
+  const attackBg = await page.getByRole('button', { name: '⚔️ Attack!' }).evaluate((el) => getComputedStyle(el).backgroundImage);
+  const cancelBg = await page.getByRole('button', { name: 'Cancel', exact: true }).evaluate((el) => getComputedStyle(el).backgroundImage);
+  expect(attackBg).toContain('rgb(234, 179, 8)');
+  expect(attackBg).not.toContain('rgb(220, 38, 38)');
+  expect(cancelBg).toContain('rgb(30, 41, 59)');
   await expect(page.getByTestId('forecast-window')).toBeVisible();
   await page.screenshot({ path: '/home/hatch/workspace/water-emblem/repo/work/water-ui-redesign/after/05-forecast.png' });
 });
@@ -584,7 +584,7 @@ test('settings-menu/A3 nav actions grouped under one heading', async ({ page }) 
     const out: Record<string, string> = {};
     for (const button of el.querySelectorAll('button')) {
       const name = button.textContent?.trim() ?? '';
-      if (['🏰 Title', '🗺️ World Map', '📁 Save Files', '💾 Save Game', '📂 Load Game'].includes(name)) {
+      if (['🏰 Title', '🗺️ World Map', '📁 Manage Saves', '💾 Save Game', '📂 Load Game'].includes(name)) {
         out[name] = getComputedStyle(button).backgroundColor;
       }
     }
@@ -625,8 +625,8 @@ test('settings-menu/A6 status group and empty combat log', async ({ page }) => {
   const menu = page.getByTestId('settings-menu');
   await expect(menu.getByRole('heading', { name: 'Status', exact: true })).toBeVisible();
   await expect(menu.getByText(/💰 0 G/)).toBeVisible();
-  await expect(menu.getByText('Turn: 1')).toBeVisible();
-  await expect(menu.getByText('PLAYER PHASE')).toBeVisible();
+  // PLAN item 128: Turn/Phase info was removed from Settings.
+  await expect(menu.getByText('PLAYER PHASE')).toHaveCount(0);
   await expect(menu.getByText('No battle engagements yet.')).toBeVisible();
 });
 

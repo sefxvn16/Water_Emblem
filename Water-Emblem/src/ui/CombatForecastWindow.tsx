@@ -117,14 +117,23 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     const hpAfterRatio = Math.max(0, Math.min(1, afterHp / maxHp));
     const hpCurRatio = Math.max(0, Math.min(1, currentHp / maxHp));
     const align = isPlayer ? 'left' : 'right';
+    const frameColor = isPlayer ? '#60a5fa' : '#f87171';
+    // PLAN item 127 (reference layout): the avatar sits in a tall shield
+    // frame at the OUTER edge, overflowing the panel top and bottom; the
+    // weapon icon is a small diamond badge at the INNER corner; the name,
+    // HP and stats live in the middle.
+    const shieldClip = 'polygon(50% 0%, 100% 10%, 100% 68%, 50% 100%, 0% 68%, 0% 10%)';
 
     return (
       <div
+        className="we-forecast-panel"
+        data-side={side}
         style={{
+          position: 'relative',
           backgroundColor: isPlayer ? '#0f275c' : '#450a0a',
           border: `1.5px solid ${isPlayer ? '#3b82f6' : '#ef4444'}`,
           borderRadius: '6px',
-          padding: '10px',
+          padding: isPlayer ? '10px 40px 10px 8px' : '10px 8px 10px 40px',
           display: 'flex',
           flexDirection: isPlayer ? 'row' : 'row-reverse',
           gap: '10px',
@@ -132,44 +141,105 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           minWidth: 0,
         }}
       >
-        {/* Avatar at the outer edge (mirrored for the defender) */}
+        {/* Avatar shield at the outer edge, overflowing the panel */}
         <div
+          className="we-forecast-avatar"
           style={{
-            width: '56px',
-            height: '56px',
-            borderRadius: '4px',
-            border: `1.5px solid ${isPlayer ? '#60a5fa' : '#f87171'}`,
-            overflow: 'hidden',
+            width: '78px',
+            height: '124px',
+            marginTop: '-18px',
+            marginBottom: '-18px',
+            marginLeft: isPlayer ? '-4px' : undefined,
+            marginRight: isPlayer ? undefined : '-4px',
+            clipPath: shieldClip,
+            backgroundColor: frameColor,
             flexShrink: 0,
-            backgroundColor: '#07123d',
+            alignSelf: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            alignSelf: 'flex-start',
+            filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.6))',
           }}
         >
-          {u.avatarUrl ? (
-            <img
-              src={u.avatarUrl}
-              alt={u.unit.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          ) : (
-            <span style={{ fontSize: '28px' }}>👤</span>
-          )}
+          <div
+            className="we-forecast-avatar-inner"
+            style={{
+              width: '70px',
+              height: '116px',
+              clipPath: shieldClip,
+              overflow: 'hidden',
+              backgroundColor: '#07123d',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {u.avatarUrl ? (
+              <img
+                src={u.avatarUrl}
+                alt={u.unit.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <span style={{ fontSize: '34px' }}>👤</span>
+            )}
+          </div>
+        </div>
+
+        {/* Weapon diamond badge at the inner corner */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '8px',
+            ...(isPlayer ? { right: '8px' } : { left: '8px' }),
+            width: '30px',
+            height: '30px',
+            transform: 'rotate(45deg)',
+            backgroundColor: '#0b1530',
+            border: `1.5px solid ${frameColor}`,
+            borderRadius: '5px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.55)',
+          }}
+          title={u.weapon?.name ?? 'Unarmed'}
+        >
+          <img
+            src={weaponIcon}
+            alt=""
+            style={{ width: '18px', height: '18px', imageRendering: 'pixelated', transform: 'rotate(-45deg)' }}
+          />
+        </div>
+
+        {/* Level badge at the inner-bottom corner */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '6px',
+            ...(isPlayer ? { right: '8px' } : { left: '8px' }),
+            fontSize: '11px',
+            fontWeight: 'bold',
+            color: '#fde047',
+            backgroundColor: 'rgba(0,0,0,0.45)',
+            border: '1px solid rgba(253,224,71,0.5)',
+            borderRadius: '4px',
+            padding: '0 4px',
+          }}
+        >
+          {`Lv ${u.level ?? 1}`}
         </div>
 
         <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <div style={{ textAlign: align }}>
-            <div style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div className="we-forecast-name" style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {u.unit.name}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
-              <img src={weaponIcon} alt="" style={{ width: '14px', height: '14px', imageRendering: 'pixelated', flexShrink: 0 }} />
               <span style={{ color: isPlayer ? '#93c5fd' : '#fca5a5', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {u.weapon?.name ?? 'Unarmed'}
               </span>
-              <span style={{ color: '#94a3b8', fontSize: '10px' }}>/{weaponUses}</span>
+              <span style={{ color: '#94a3b8', fontSize: '11px' }}>/{weaponUses}</span>
             </div>
           </div>
 
@@ -184,7 +254,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
                   -{hpLoss}{afterHp === 0 ? ' KO' : ''}
                 </span>
               ) : (
-                <span style={{ fontSize: '10px', color: '#94a3b8' }}>-0</span>
+                <span style={{ fontSize: '11px', color: '#94a3b8' }}>-0</span>
               )}
             </div>
             <div style={{ width: '100%', height: '7px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
@@ -202,7 +272,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
+              <div className="we-forecast-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
                 {renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}
                 {renderStatRow('Hit:', `${hitRate}%`)}
                 {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
@@ -228,10 +298,23 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         maxHeight: 'calc(100vh - 40px)',
         overflowY: 'auto',
         zIndex: DS_Z.forecast,
-        padding: '10px',
+        padding: '20px 10px',
         borderRadius: DS_RADII.panel,
       }}
     >
+      <style>{`
+        /* PLAN item 128: narrow screens shrink the forecast shields and
+           stack the stats so nothing is clipped. */
+        @media (max-width: 640px) {
+          .we-forecast-panel { padding: 10px 6px !important; gap: 6px !important; }
+          .we-forecast-panel[data-side="attacker"] { padding-right: 34px !important; }
+          .we-forecast-panel[data-side="defender"] { padding-left: 34px !important; }
+          .we-forecast-avatar { width: 52px !important; height: 84px !important; margin-top: -10px !important; margin-bottom: -10px !important; }
+          .we-forecast-avatar-inner { width: 45px !important; height: 77px !important; }
+          .we-forecast-stats { grid-template-columns: 1fr !important; }
+          .we-forecast-name { font-size: 12px !important; }
+        }
+      `}</style>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
         <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.03em' }}>
           ⚔️ COMBAT FORECAST

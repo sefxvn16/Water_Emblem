@@ -4,11 +4,11 @@
 // STAGE CLEAR. Game rules are covered by unit tests in tests/core/; this spec
 // checks the 2D flow: title -> preparation -> actions -> seize -> next chapter.
 import { expect, test, type Page } from '@playwright/test';
-import { closeSettings, openSettings } from './settingsMenu';
+import { closeSettings, expectPlayerPhase, openSettings } from './settingsMenu';
 import { readFileSync } from 'node:fs';
 
 // Recorded buttons that now live in the Settings menu (PLAN.md item 71).
-const SETTINGS_BUTTONS = /(2D Grid|3D View|Save Game|Load Game|Save Files|World Map|Title|Sound: On|Muted)/;
+const SETTINGS_BUTTONS = /(2D Grid|3D View|Save Game|Load Game|Manage Saves|World Map|Title)/;
 
 type ReplayStep =
   | { kind: 'tile'; testId: string }
@@ -33,7 +33,7 @@ async function saveAndLoad(page: Page): Promise<void> {
   await page.getByRole('button', { name: /Load Game/i }).click();
   await expect(page.getByText(/Save file loaded/i)).toBeVisible();
   await openSettings(page);
-  await expect(page.getByText('PLAYER PHASE')).toBeVisible();
+  await expectPlayerPhase(page);
 }
 
 async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
@@ -44,7 +44,7 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
     if (step.kind === 'tile') {
       // Enemy phase must be over before the player selects tiles again.
       await openSettings(page);
-      await expect(page.getByText('PLAYER PHASE'), where).toBeVisible({ timeout: 15000 });
+      await expectPlayerPhase(page);
       await page.getByTestId(step.testId).dispatchEvent('click');
     } else if (step.kind === 'select') {
       await openSettings(page);
@@ -63,7 +63,7 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
         await expect(page.getByRole('heading', { name: /Battle Preparation/i }), where).toBeVisible();
       } else if (/Start Battle/i.test(step.name)) {
         await openSettings(page);
-        await expect(page.getByText('PLAYER PHASE'), where).toBeVisible({ timeout: 15000 });
+        await expectPlayerPhase(page);
         if (!savedOnce) {
           await saveAndLoad(page);
           savedOnce = true;

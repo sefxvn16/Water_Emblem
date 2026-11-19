@@ -13,6 +13,9 @@ interface BattleSettingsMenuProps {
   activePhase: string;
   viewMode: '3d' | '2d';
   isMuted: boolean;
+  /** Master volume 0..1 (PLAN item 128); 0 = muted. */
+  volume: number;
+  onVolume: (volume: number) => void;
   combatLog: readonly string[];
   onChapterChange: (chapterId: string) => void;
   onTitle: () => void;
@@ -32,8 +35,11 @@ interface BattleSettingsMenuProps {
 const navButtonStyle = (primary: boolean): React.CSSProperties => ({
   ...(primary ? primaryButtonStyle() : secondaryButtonStyle()),
   padding: '10px 13px',
-  fontSize: '13px',
+  fontSize: '14px',
   gap: '6px',
+  minHeight: 44,
+  width: '100%',
+  justifyContent: 'center',
 });
 
 const viewButtonStyle = (active: boolean): React.CSSProperties => ({
@@ -85,7 +91,6 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
     setOpen(false);
     action();
   };
-  const playerPhase = props.activePhase === 'player_phase';
 
   return (
     <div ref={rootRef}>
@@ -176,7 +181,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             </span>
           </section>
 
-          {/* Status */}
+          {/* Status: gold only (PLAN item 128: phase/turn info removed). */}
           <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <h3 style={sectionHeadingStyle}>Status</h3>
             <div
@@ -186,7 +191,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                 border: '1px solid #d97706',
                 borderRadius: DS_RADII.medium,
                 color: '#fef08a',
-                fontSize: '13px',
+                fontSize: '14px',
                 fontWeight: 'bold',
                 minHeight: 44,
                 display: 'flex',
@@ -196,42 +201,27 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             >
               💰 {props.gold.toLocaleString()} G
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
-                Turn: <span style={{ color: '#FFD54F' }}>{props.turnNumber}</span>
-              </div>
-              <div
-                style={{
-                  padding: '10px 15px',
-                  borderRadius: '20px',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  backgroundColor: playerPhase ? '#1976D2' : '#C62828',
-                }}
-              >
-                {playerPhase ? '🛡️ PLAYER PHASE' : '⚔️ ENEMY PHASE'}
-              </div>
-            </div>
           </section>
 
-          {/* Navigation: one group, one treatment; Save Game is the single primary action. */}
+          {/* Navigation: uniform 44px buttons in a 2-column grid; Save/Load
+              side by side (PLAN item 128). */}
           <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <h3 style={sectionHeadingStyle}>Navigation</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              <button onClick={navigate(props.onTitle)} title="Title Screen & Main Menu" style={navButtonStyle(false)}>
-                🏰 Title
-              </button>
-              <button onClick={navigate(props.onWorldMap)} title="View Continent of Archanea World Map" style={navButtonStyle(false)}>
-                🗺️ World Map
-              </button>
-              <button onClick={navigate(props.onSaveFiles)} title="Open Save Files Manager" style={navButtonStyle(false)}>
-                📁 Save Files
-              </button>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <button onClick={navigate(props.onSave)} style={navButtonStyle(true)}>
                 💾 Save Game
               </button>
               <button onClick={navigate(props.onLoad)} style={navButtonStyle(false)}>
                 📂 Load Game
+              </button>
+              <button onClick={navigate(props.onSaveFiles)} title="Manage save slots" style={navButtonStyle(false)}>
+                📁 Manage Saves
+              </button>
+              <button onClick={navigate(props.onWorldMap)} title="View Continent of Archanea World Map" style={navButtonStyle(false)}>
+                🗺️ World Map
+              </button>
+              <button onClick={navigate(props.onTitle)} title="Title Screen & Main Menu" style={{ ...navButtonStyle(false), gridColumn: '1 / -1' }}>
+                🏰 Title
               </button>
             </div>
           </section>
@@ -255,17 +245,22 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                   </button>
                 ))}
               </div>
-              <button
-                onClick={props.onToggleMute}
-                title={props.isMuted ? 'Unmute Audio' : 'Mute Audio'}
-                style={{
-                  ...navButtonStyle(false),
-                  backgroundColor: props.isMuted ? '#C62828' : DS_COLORS.secondaryBg,
-                  border: `1px solid ${props.isMuted ? '#ef4444' : DS_COLORS.secondaryBorder}`,
-                }}
-              >
-                {props.isMuted ? '🔇 Muted' : '🔊 Sound: On'}
-              </button>
+            </div>
+            {/* Volume slider (PLAN item 128): drag to 0 = muted. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: 44, padding: '0 4px' }}>
+              <span aria-hidden="true" style={{ fontSize: '18px' }}>{props.volume <= 0 ? '🔇' : props.volume < 0.5 ? '🔉' : '🔊'}</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={Math.round(props.volume * 100)}
+                aria-label="Volume"
+                onChange={(event) => props.onVolume(Number(event.target.value) / 100)}
+                style={{ flex: 1, accentColor: DS_COLORS.gold, height: '6px', cursor: 'pointer' }}
+              />
+              <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#e2e8f0', minWidth: '38px', textAlign: 'right' }}>
+                {Math.round(props.volume * 100)}%
+              </span>
             </div>
           </section>
 

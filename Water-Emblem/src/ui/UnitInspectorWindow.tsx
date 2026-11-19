@@ -238,7 +238,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '9px',
+                fontSize: '11px',
                 fontWeight: 'bold',
                 color: '#fff',
               }}

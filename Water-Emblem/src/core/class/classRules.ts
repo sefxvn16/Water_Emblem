@@ -101,8 +101,14 @@ export function changeMountedState(entry: ExtendedUnitState, mounted: boolean): 
   const unit = entry.unit;
   const currentClass = getClassDefinition(unit.classId);
   if (!currentClass) return null;
-  if (!mounted && currentClass.mountKind === 'ground') {
-    const destination = getClassDefinition(unit.classId === 'warlord' ? 'lord' : 'paladin');
+  if (!mounted && currentClass.mountKind) {
+    // PLAN item 129: every mounted class can dismount — ground mounts to
+    // lord/paladin, flying mounts to the dismounted pegasus form.
+    const destination = getClassDefinition(
+      currentClass.mountKind === 'flying'
+        ? 'dismounted_pegasus'
+        : unit.classId === 'warlord' ? 'lord' : 'paladin',
+    );
     if (!destination) return null;
     return {
       ...entry,
@@ -117,7 +123,7 @@ export function changeMountedState(entry: ExtendedUnitState, mounted: boolean): 
   }
   if (mounted && unit.mountedClassId) {
     const destination = getClassDefinition(unit.mountedClassId);
-    if (!destination || destination.mountKind !== 'ground') return null;
+    if (!destination || !destination.mountKind) return null;
     return {
       ...entry,
       unit: {

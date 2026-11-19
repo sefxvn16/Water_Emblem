@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 // Battle controls outside FE3's layout live in the Settings (⚙) menu (PLAN.md item 71).
@@ -18,4 +19,18 @@ export async function closeSettings(page: Page): Promise<void> {
   if ((await button.count()) > 0 && (await button.getAttribute('aria-expanded')) === 'true') {
     await button.dispatchEvent('click');
   }
+}
+
+// PLAN item 128: Turn/Phase text was removed from the Settings menu, so
+// tests read the turn state from the exposed game state instead.
+export async function expectTurnNumber(page: Page, turn: number): Promise<void> {
+  await expect
+    .poll(async () => page.evaluate(() => (window as any).__WATER_EMBLEM_STATE__?.turnState?.turnNumber), { timeout: 15000 })
+    .toBe(turn);
+}
+
+export async function expectPlayerPhase(page: Page): Promise<void> {
+  await expect
+    .poll(async () => page.evaluate(() => (window as any).__WATER_EMBLEM_STATE__?.turnState?.activePhase), { timeout: 15000 })
+    .toBe('player_phase');
 }
