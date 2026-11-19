@@ -7,6 +7,7 @@ import { getHealBonus } from './skills';
 import { awardExperience } from '../progression/experience';
 import { getUsableWeapons } from './equip';
 import { STAFF_WEX_BY_RANK, gainWeaponExp } from './weaponExp';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Staff use (PLAN item 89, C10; rules in Game_Design/battle.md
@@ -17,8 +18,9 @@ import { STAFF_WEX_BY_RANK, gainWeaponExp } from './weaponExp';
  * conflict, ROM verification is still owed.
  *
  * Pure helpers: inputs are not mutated; invalid uses return null.
+ * Healer EXP per use is declared in data/balance.json (PLAN item 134).
  */
-export const STAFF_EXP_PER_USE = 14;
+export const STAFF_EXP_PER_USE: number = balanceConfig.staffExpPerUse;
 
 export function isHealStaff(definition: ItemDefinition): boolean {
   return definition.type === 'staff' && definition.healBase !== undefined;

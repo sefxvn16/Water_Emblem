@@ -1,30 +1,21 @@
 import type { CombatResult } from './types';
 import type { ExtendedUnitState } from '../data/chapterData';
 import type { WeaponRank } from '../grid/types';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Weapon experience (PLAN item 90; FE5 rules in Game_Design/battle.md
  * "Rank vũ khí (WEx)"): 1 WEx per strike that hits, thresholds
  * E→D 50, D→C 100, C→B 150, B→A 200. This game's ranks cap at A (no
  * S/★ weapons in data). Staff WEx per use by staff rank is a [Giả định]
- * within the researched FE5 range of 1–10.
+ * within the researched FE5 range of 1–10. Thresholds are declared in
+ * data/balance.json (PLAN item 134).
  *
  * Pure helpers: inputs are not mutated.
  */
-export const WEX_THRESHOLDS: Partial<Record<WeaponRank, number>> = {
-  E: 50,
-  D: 100,
-  C: 150,
-  B: 200,
-};
+export const WEX_THRESHOLDS: Partial<Record<WeaponRank, number>> = balanceConfig.weaponExp.thresholds;
 
-export const STAFF_WEX_BY_RANK: Record<WeaponRank, number> = {
-  E: 1,
-  D: 2,
-  C: 4,
-  B: 6,
-  A: 10,
-};
+export const STAFF_WEX_BY_RANK: Record<WeaponRank, number> = balanceConfig.weaponExp.staffWexByRank;
 
 const RANK_ORDER: WeaponRank[] = ['E', 'D', 'C', 'B', 'A'];
 
