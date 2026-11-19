@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import itemsJson from '../../data/items.json';
+import itemsJson from '../../data/items.json' with { type: 'json' };
 import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
 import { getClassDefinition, skillIdsOf } from '../core/class/classRules';

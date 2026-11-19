@@ -2,7 +2,7 @@ import type { ItemDefinition } from '../combat/types';
 import type { ExtendedUnitState, InventoryEntry } from './chapterData';
 import { CONVOY_SLOTS, reequipAfterRemoval } from './convoy';
 import { hasRoomFor } from './inventory';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Shops (PLAN item 91; FE3 rules in Game_Design/battle.md "Tiệm"):

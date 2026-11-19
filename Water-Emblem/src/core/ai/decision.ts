@@ -1,4 +1,4 @@
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 import { calculateMovementRange } from '../grid/pathfinding';
 import { getElevation, TerrainRegistry } from '../grid/terrain';
 import { GridUnit, MapData, Position } from '../grid/types';

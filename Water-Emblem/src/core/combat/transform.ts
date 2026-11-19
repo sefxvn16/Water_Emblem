@@ -1,7 +1,7 @@
 import type { ExtendedUnitState } from '../data/chapterData';
 import type { ItemDefinition, UnitCombatStats } from './types';
 import { getClassDefinition } from '../class/classRules';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Manakete transformation (PLAN item 121, A13) and Xane imitation

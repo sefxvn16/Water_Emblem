@@ -1,9 +1,9 @@
 import Dexie, { type Table } from 'dexie';
-import talysMapJson from '../../data/maps/chapter_01_talys.json';
-import galderMapJson from '../../data/maps/chapter_02_galder.json';
-import devilMountainMapJson from '../../data/maps/chapter_03_devil_mountain.json';
-import testMapJson from '../../data/maps/test_map_01.json';
-import itemsJson from '../../data/items.json';
+import talysMapJson from '../../data/maps/chapter_01_talys.json' with { type: 'json' };
+import galderMapJson from '../../data/maps/chapter_02_galder.json' with { type: 'json' };
+import devilMountainMapJson from '../../data/maps/chapter_03_devil_mountain.json' with { type: 'json' };
+import testMapJson from '../../data/maps/test_map_01.json' with { type: 'json' };
+import itemsJson from '../../data/items.json' with { type: 'json' };
 import type { ChapterOutcome } from '../core/chapter/types';
 import { DIFFICULTIES, type Difficulty } from '../core/chapter/difficulty';
 import { SKILLS } from '../core/combat/skills';

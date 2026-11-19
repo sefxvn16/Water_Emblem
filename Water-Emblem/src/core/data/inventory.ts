@@ -1,5 +1,5 @@
 import type { ExtendedUnitState } from './chapterData';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Split inventory limits (PLAN item 86; rules in Game_Design/battle.md

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import worldMapData from '../../data/world_map.json';
+import worldMapData from '../../data/world_map.json' with { type: 'json' };
 import { soundManager } from '../audio/soundManager';
 
 interface WorldMapModalProps {

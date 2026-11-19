@@ -109,7 +109,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-21-3"
+   "testId": "tile-24-6"
   },
   {
    "kind": "button",
@@ -121,7 +121,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-3"
+   "testId": "tile-21-4"
   },
   {
    "kind": "button",
@@ -133,15 +133,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-17-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-16-3"
+   "testId": "tile-19-1"
   },
   {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
   },
   {
    "kind": "tile",
@@ -149,11 +145,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-4"
+   "testId": "tile-17-3"
   },
   {
    "kind": "tile",
-   "testId": "tile-13-4"
+   "testId": "tile-17-4"
   },
   {
    "kind": "button",
@@ -165,6 +161,22 @@
   },
   {
    "kind": "tile",
+   "testId": "tile-16-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-17-4"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-18-4"
+  },
+  {
+   "kind": "tile",
    "testId": "tile-14-6"
   },
   {
@@ -177,27 +189,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-18-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-4"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-27-7"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-4"
+   "testId": "tile-27-8"
   },
   {
    "kind": "button",
@@ -205,11 +201,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-21-3"
+   "testId": "tile-24-6"
   },
   {
    "kind": "tile",
-   "testId": "tile-18-4"
+   "testId": "tile-24-6"
   },
   {
    "kind": "button",
@@ -217,19 +213,91 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-3"
+   "testId": "tile-21-4"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-5"
+   "testId": "tile-16-2"
   },
   {
    "kind": "tile",
-   "testId": "tile-13-5"
+   "testId": "tile-16-3"
   },
   {
    "kind": "button",
    "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-1"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-18-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-17-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-12-7"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-12-6"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-16-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-11-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-12-6"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-8"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-3"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-24-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-24-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-16-2"
   },
   {
    "kind": "tile",
@@ -237,11 +305,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-15-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-6"
+   "testId": "tile-17-5"
   },
   {
    "kind": "button",
@@ -249,15 +313,15 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-4"
+   "testId": "tile-12-7"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-6"
+   "testId": "tile-10-7"
   },
   {
    "kind": "tile",
-   "testId": "tile-13-6"
+   "testId": "tile-10-8"
   },
   {
    "kind": "button",
@@ -265,11 +329,163 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-4"
+   "testId": "tile-11-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-7"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-8"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
   },
   {
    "kind": "tile",
    "testId": "tile-27-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-24-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-24-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-17-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-23-4"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-24-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-23-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-3"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-23-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-3"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-23-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-21-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-20-4"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-18-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-17-4"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-21-4"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-18-6"
   },
   {
    "kind": "button",
@@ -281,7 +497,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-15-2"
+   "testId": "tile-11-7"
   },
   {
    "kind": "button",
@@ -289,35 +505,51 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-5"
+   "testId": "tile-26-9"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-1"
+   "testId": "tile-26-9"
   },
   {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
   },
   {
    "kind": "tile",
-   "testId": "tile-15-6"
+   "testId": "tile-18-6"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-2"
+   "testId": "tile-14-6"
   },
   {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-11-7"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-8-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
   },
   {
    "kind": "tile",
@@ -325,162 +557,6 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-17-6"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-15-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-5"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-5"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-5"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-3"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-17-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-3"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-7"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-5"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-5"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-4"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-4"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-15-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-5"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-13-8"
   },
   {
@@ -489,111 +565,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-13-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-10-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-15-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-18-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-13-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-12-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-11-4"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-10-7"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-7-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-7-7"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-18-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-18-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-26-9"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-12-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-12-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-7-8"
+   "testId": "tile-8-9"
   },
   {
    "kind": "tile",
@@ -609,18 +581,6 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-18-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-26-9"
   },
   {
@@ -633,7 +593,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-12-7"
+   "testId": "tile-13-8"
   },
   {
    "kind": "tile",
@@ -649,6 +609,66 @@
   },
   {
    "kind": "tile",
+   "testId": "tile-8-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-8-8"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-8-9"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-6"
+  },
+  {
+   "kind": "tile",
    "testId": "tile-3-5"
   },
   {
@@ -661,11 +681,23 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-2"
+   "testId": "tile-26-9"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-2"
+   "testId": "tile-26-9"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -685,35 +717,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-3-5"
   },
   {
    "kind": "tile",
    "testId": "tile-3-5"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
   },
   {
    "kind": "button",
@@ -733,35 +741,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-3-5"
   },
   {
    "kind": "tile",
    "testId": "tile-3-5"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
   },
   {
    "kind": "button",
@@ -781,35 +765,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-3-5"
   },
   {
    "kind": "tile",
    "testId": "tile-3-5"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
   },
   {
    "kind": "button",
@@ -821,18 +781,6 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-10-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-8-8"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-8-8"
   },
   {
@@ -853,35 +801,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-10-7"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-6-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-8-8"
   },
   {
    "kind": "tile",
-   "testId": "tile-8-8"
+   "testId": "tile-5-5"
   },
   {
    "kind": "button",
@@ -901,19 +825,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-14-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-6-7"
+   "testId": "tile-5-5"
   },
   {
    "kind": "tile",

@@ -1,12 +1,12 @@
 ﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
-import talysMapRaw from '../data/maps/chapter_01_talys.json';
-import galderMapRaw from '../data/maps/chapter_02_galder.json';
-import devilMountainMapRaw from '../data/maps/chapter_03_devil_mountain.json';
-import testMapRaw from '../data/maps/test_map_01.json';
-import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json';
-import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json';
-import ch03Dialogues from '../data/dialogues/chapter_03_dialogues.json';
-import itemsJson from '../data/items.json';
+import talysMapRaw from '../data/maps/chapter_01_talys.json' with { type: 'json' };
+import galderMapRaw from '../data/maps/chapter_02_galder.json' with { type: 'json' };
+import devilMountainMapRaw from '../data/maps/chapter_03_devil_mountain.json' with { type: 'json' };
+import testMapRaw from '../data/maps/test_map_01.json' with { type: 'json' };
+import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json' with { type: 'json' };
+import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json' with { type: 'json' };
+import ch03Dialogues from '../data/dialogues/chapter_03_dialogues.json' with { type: 'json' };
+import itemsJson from '../data/items.json' with { type: 'json' };
 
 const ITEM_BY_ID = new Map((itemsJson.items as ItemDefinition[]).map((item) => [item.id, item]));
 import { defaultTerrainRegistry, getElevation, healUnitsOnTerrain } from './core/grid/terrain';

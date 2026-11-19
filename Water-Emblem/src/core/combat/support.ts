@@ -1,4 +1,4 @@
-import supportsData from '../../../data/supports.json';
+import supportsData from '../../../data/supports.json' with { type: 'json' };
 import type { GridUnit } from '../grid/types';
 
 export interface SupportBonus {

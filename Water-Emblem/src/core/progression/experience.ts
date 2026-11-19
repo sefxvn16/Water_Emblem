@@ -3,7 +3,7 @@ import type { SeededRNG } from '../combat/rng';
 import type { CombatResult } from '../combat/types';
 import { getClassDefinition } from '../class/classRules';
 import charactersJson from '../../../data/characters.json' with { type: 'json' };
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 const STAT_KEYS = ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const;
 const GROWTH_KEYS = ['hp', ...STAT_KEYS] as const;

@@ -1,5 +1,5 @@
 import type { ExtendedUnitState } from '../data/chapterData';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Difficulty levels (PLAN item 115, Q04). Chosen for a playthrough and

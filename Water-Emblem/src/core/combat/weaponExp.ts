@@ -1,7 +1,7 @@
 import type { CombatResult } from './types';
 import type { ExtendedUnitState } from '../data/chapterData';
 import type { WeaponRank } from '../grid/types';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Weapon experience (PLAN item 90; FE5 rules in Game_Design/battle.md

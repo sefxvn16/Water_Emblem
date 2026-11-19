@@ -7,7 +7,7 @@ import { defaultTerrainRegistry } from '../grid/terrain';
 import { getClassDefinition } from '../class/classRules';
 import type { ItemDefinition, SingleAttackEvent } from './types';
 import type { SeededRNG } from './rng';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 import charactersJson from '../../../data/characters.json' with { type: 'json' };
 
 /**

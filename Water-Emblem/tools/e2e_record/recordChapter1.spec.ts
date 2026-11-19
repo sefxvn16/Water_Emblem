@@ -125,8 +125,14 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
           const canCounter = distance >= target.weapon.minRange && distance <= target.weapon.maxRange;
           const counterDmg = canCounter ? Math.max(0, target.stats.str + target.weapon.might - actor.stats.def) : 0;
 
-          // Marth stays safe and never attacks while field enemies exist
-          if (id === 'marth') {
+          // Marth stays safe and never attacks while field enemies exist,
+          // unless he is effectively alone (PLAN 147-157: stronger enemy
+          // class skills can wipe the rest of the army, which stalled the
+          // recorder forever with Marth hiding).
+          const livingAllies = units.filter(({ unit }) => unit.faction === 'player' && !unit.isDead && unit.id !== 'marth');
+          const marthAlone = livingAllies.length === 0
+            || (livingAllies.length === 1 && livingAllies[0].stats.hp <= 8);
+          if (id === 'marth' && !marthAlone) {
             if (fieldEnemies.length > 0) return null;
             if (isLethal || !canCounter) {
               return { position, target, score: 300 - target.stats.hp };
@@ -141,7 +147,7 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
             return { position, target, score };
           }
 
-          if (canCounter && enemies.length > 1) {
+          if (canCounter) {
             if (counterDmg >= actor.stats.hp) return null;
             if (actor.stats.hp <= 8 && counterDmg > 0) return null;
           }
@@ -165,10 +171,14 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
       attacks.sort((a, b) => b.score - a.score);
       const bestAttack = attacks[0];
 
+      const livingAlliesNow = units.filter(({ unit }) => unit.faction === 'player' && !unit.isDead && unit.id !== 'marth');
+      const marthAloneNow = livingAlliesNow.length === 0
+        || (livingAlliesNow.length === 1 && livingAlliesNow[0].stats.hp <= 8);
+
       let destination: Position;
       if (bestAttack) {
         destination = bestAttack.position;
-      } else if (id === 'marth') {
+      } else if (id === 'marth' && !marthAloneNow) {
         if (fieldEnemies.length > 0) {
           // Marth prioritizes zero-threat tiles, maximizing distance to all field enemies
           const scored = destinations.map((pos) => {
@@ -194,8 +204,10 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
       } else if (enemies.length === 0) {
         // All enemies defeated, allies hold position
         destination = actor.unit.position;
-      } else if (actor.stats.hp <= 8) {
-        // Low HP ally stays safe or seeks defensive terrain
+      } else if (actor.stats.hp <= 8 && enemies.some((e) => Math.abs(actor.unit.position.x - e.unit.position.x) + Math.abs(actor.unit.position.y - e.unit.position.y) <= (e.unit.mov ?? 5) + (e.weapon.maxRange ?? 1))) {
+        // Low HP ally stays safe or seeks defensive terrain (only when
+        // actually threatened; otherwise it must keep advancing or the
+        // chapter stalls with the last units waiting forever)
         const scored = destinations.map((pos) => {
           const threats = enemies.filter((e) => {
             const dist = Math.abs(pos.x - e.unit.position.x) + Math.abs(pos.y - e.unit.position.y);

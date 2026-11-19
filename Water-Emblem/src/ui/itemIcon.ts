@@ -1,4 +1,4 @@
-import itemsJson from '../../data/items.json';
+import itemsJson from '../../data/items.json' with { type: 'json' };
 
 const CUSTOM_ITEM_ICON_MAP: Record<string, string> = {
   wing_spear: 'killer_lance',

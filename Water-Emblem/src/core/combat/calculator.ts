@@ -1,4 +1,4 @@
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 import {
   CombatForecast,
   CombatResult,

@@ -8,7 +8,7 @@ import { getHealBonus } from './skills';
 import { awardExperience } from '../progression/experience';
 import { getUsableWeapons } from './equip';
 import { STAFF_WEX_BY_RANK, gainWeaponExp } from './weaponExp';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Staff use (PLAN item 89, C10; rules in Game_Design/battle.md

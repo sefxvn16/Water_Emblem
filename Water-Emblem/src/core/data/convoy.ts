@@ -2,7 +2,7 @@ import type { ItemDefinition } from '../combat/types';
 import { getUsableWeapons } from '../combat/equip';
 import type { ExtendedUnitState, InventoryEntry } from './chapterData';
 import { hasRoomFor } from './inventory';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Convoy through Marth (PLAN item 88; FE3 rules in Game_Design/battle.md

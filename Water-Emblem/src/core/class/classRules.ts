@@ -1,5 +1,5 @@
 import classesJson from '../../../data/classes.json' with { type: 'json' };
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 import type { ItemDefinition } from '../combat/types';
 import type { GridUnit, MoveType } from '../grid/types';
 import type { ExtendedUnitState } from '../data/chapterData';

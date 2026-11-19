@@ -1,7 +1,7 @@
 import type { ChapterData, ChapterReinforcement, ExtendedUnitState } from '../data/chapterData';
 import type { MapData, Position } from '../grid/types';
 import type { TerrainRegistry } from '../grid/terrain';
-import balanceConfig from '../../../data/balance.json';
+import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 /**
  * Reinforcements (PLAN item 94, B04): announced in advance, they arrive at
