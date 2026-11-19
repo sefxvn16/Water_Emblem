@@ -37,7 +37,7 @@ export interface AIContext {
   readonly terrains: TerrainRegistry;
   readonly units: readonly GridUnit[];
   readonly unitStatsMap: Map<string, UnitCombatStats>;
-  readonly unitWeaponsMap: Map<string, ItemDefinition>;
+  readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
   readonly villageTargets?: readonly Position[];
 }
 

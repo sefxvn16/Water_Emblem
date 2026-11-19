@@ -19,7 +19,7 @@ describe('save validation', () => {
     const snapshot = makeSnapshot();
     expect(isGameSnapshot(snapshot)).toBe(true);
     expect(isGameSnapshot({ ...snapshot, rngSeed: -123456 })).toBe(true);
-    expect(isSaveGameData({ ...snapshot, version: '5.0.0', timestamp: 1000 })).toBe(true);
+    expect(isSaveGameData({ ...snapshot, version: '6.0.0', timestamp: 1000 })).toBe(true);
   });
 
   it('accepts a Chapter 3 snapshot for saving', () => {
@@ -39,6 +39,24 @@ describe('save validation', () => {
     expect(isGameSnapshot({ ...snapshot, villageStates: { unknown: 'visited' } })).toBe(false);
   });
 
+  it('migrates a 5.0.0 save to 6.0.0 (weapon became optional)', () => {
+    const snapshot = makeSnapshot();
+    const old = { ...snapshot, version: '5.0.0', timestamp: 1000 };
+    const migrated = migrateSaveGameData(old);
+    expect(migrated?.version).toBe('6.0.0');
+    expect(migrated?.extendedUnits).toHaveLength(snapshot.extendedUnits.length);
+    expect(migrated?.extendedUnits[0]?.weapon?.id).toBe('rapier');
+  });
+
+  it('accepts an unarmed unit in a save (last weapon broke)', () => {
+    const snapshot = makeSnapshot();
+    const marth = snapshot.extendedUnits.find(({ unit }) => unit.id === 'marth')!;
+    marth.weapon = undefined;
+    marth.inventory = [];
+    expect(isGameSnapshot(snapshot)).toBe(true);
+    expect(isSaveGameData({ ...snapshot, version: '6.0.0', timestamp: 1000 })).toBe(true);
+  });
+
   it('keeps village rewards in a save and migrates an older chapter layout', () => {
     const snapshot = makeSnapshot();
     snapshot.gold = 5000;
@@ -50,7 +68,7 @@ describe('save validation', () => {
     delete (old as unknown as Record<string, unknown>).gold;
     delete (old as unknown as Record<string, unknown>).villageStates;
     const migrated = migrateSaveGameData(old);
-    expect(migrated?.version).toBe('5.0.0');
+    expect(migrated?.version).toBe('6.0.0');
     expect(migrated?.gold).toBe(0);
     expect(migrated?.villageStates).toEqual({});
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'enemy_pirate_11')?.unit.isDead).toBe(true);
@@ -69,7 +87,7 @@ describe('save validation', () => {
   it('rejects a changed weapon definition or movement type in a save', () => {
     const tamperedWeapon = makeSnapshot();
     tamperedWeapon.extendedUnits[0]!.weapon = {
-      ...tamperedWeapon.extendedUnits[0]!.weapon,
+      ...tamperedWeapon.extendedUnits[0]!.weapon!,
       might: 999,
     };
     expect(isGameSnapshot(tamperedWeapon)).toBe(false);
@@ -84,7 +102,7 @@ describe('save validation', () => {
     const marth = snapshot.extendedUnits.find(({ unit }) => unit.id === 'marth')!;
     marth.inventory.push({ itemId: 'master_seal', uses: 1 });
     expect(isGameSnapshot(snapshot)).toBe(true);
-    const roundTrip = JSON.parse(JSON.stringify({ ...snapshot, version: '5.0.0', timestamp: 1000 }));
+    const roundTrip = JSON.parse(JSON.stringify({ ...snapshot, version: '6.0.0', timestamp: 1000 }));
     expect(isSaveGameData(roundTrip)).toBe(true);
     expect(roundTrip.extendedUnits.find((entry: { unit: { id: string } }) => entry.unit.id === 'marth').inventory)
       .toContainEqual({ itemId: 'master_seal', uses: 1 });
@@ -155,7 +173,7 @@ describe('save validation', () => {
       delete (entry.unit as unknown as Record<string, unknown>).classId;
     }
     const migrated = migrateSaveGameData(old);
-    expect(migrated?.version).toBe('5.0.0');
+    expect(migrated?.version).toBe('6.0.0');
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'marth')?.stats.hp).toBe(marth.stats.hp);
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'marth')?.unit.position).toEqual({ x: 3, y: 5 });
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'marth')?.stats.skill).toBe(3);
@@ -177,7 +195,7 @@ describe('save validation', () => {
     const migrated = migrateSaveGameData(old);
     expect(migrated?.reserveUnits?.map(({ unit }) => unit.id)).toEqual(['abel']);
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'castor')?.unit.faction).toBe('player');
-    expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'castor')?.weapon.id).toBe(castor.weapon.id);
+    expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'castor')?.weapon?.id).toBe(castor.weapon?.id);
   });
 
   it('migrates v3 inventory while preserving HP, EXP, equipment, and recruits', () => {
@@ -204,11 +222,11 @@ describe('save validation', () => {
     }
     const migrated = migrateSaveGameData(old);
     const restoredMarth = migrated?.extendedUnits.find(({ unit }) => unit.id === 'marth');
-    expect(migrated?.version).toBe('5.0.0');
+    expect(migrated?.version).toBe('6.0.0');
     expect(restoredMarth?.stats.hp).toBe(marth.stats.hp);
     expect(restoredMarth?.level).toBe(3);
     expect(restoredMarth?.exp).toBe(42);
-    expect(restoredMarth?.weapon.id).toBe('iron_sword');
+    expect(restoredMarth?.weapon?.id).toBe('iron_sword');
     expect(restoredMarth?.inventory.some(({ itemId }) => itemId === 'iron_sword')).toBe(true);
     expect(migrated?.extendedUnits.find(({ unit }) => unit.id === 'castor')?.unit.faction).toBe('player');
     expect(migrated?.reserveUnits?.map(({ unit }) => unit.id)).toEqual(['abel']);

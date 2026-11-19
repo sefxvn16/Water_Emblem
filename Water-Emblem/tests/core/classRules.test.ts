@@ -48,8 +48,8 @@ describe('class rules', () => {
   it('checks weapon rank and class before an attack', () => {
     const jagen = chapter01Data.units.find(({ unit }) => unit.id === 'jagen')!;
     const marth = chapter01Data.units.find(({ unit }) => unit.id === 'marth')!;
-    expect(isWeaponUsable(jagen.unit, jagen.weapon)).toBe(true);
-    expect(isWeaponUsable(marth.unit, jagen.weapon)).toBe(false);
+    expect(isWeaponUsable(jagen.unit, jagen.weapon!)).toBe(true);
+    expect(isWeaponUsable(marth.unit, jagen.weapon!)).toBe(false);
     expect(getAttackRange(marth.unit, jagen.weapon)).toEqual({ min: 1, max: 0 });
   });
 

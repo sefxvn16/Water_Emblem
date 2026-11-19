@@ -25,7 +25,7 @@ async function seedSlot(page: Page, slot: string): Promise<void> {
       combatLog: [],
       gold: 0,
       villageStates: {},
-      version: '5.0.0',
+      version: '6.0.0',
       timestamp: Date.now(),
       slot: slotId,
     };

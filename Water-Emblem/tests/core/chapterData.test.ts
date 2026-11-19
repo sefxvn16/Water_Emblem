@@ -84,17 +84,17 @@ describe('chapter data', () => {
     expect(galderChapter.units.length).toBeGreaterThanOrEqual(15);
     const ogma = galderChapter.units.find((u) => u.unit.id === 'ogma');
     expect(ogma?.unit.position).toEqual({ x: 20, y: 6 });
-    expect(ogma?.weapon.id).toBe('iron_sword');
+    expect(ogma?.weapon?.id).toBe('iron_sword');
     expect(ogma?.unit.moveType).toBe('foot');
     const gomer = galderChapter.units.find((u) => u.unit.id === 'gomer');
     expect(gomer?.unit.position).toEqual({ x: 2, y: 4 });
-    expect(gomer?.weapon.id).toBe('hand_axe');
+    expect(gomer?.weapon?.id).toBe('hand_axe');
     expect(galderChapter.objective.seizeTargetTile).toEqual({ x: 2, y: 2 });
   });
 
   it('loads referenced units, weapons and objective', () => {
     expect(initialChapterData.units).toHaveLength(21);
-    expect(initialChapterData.units[0]?.weapon.id).toBe('rapier');
+    expect(initialChapterData.units[0]?.weapon?.id).toBe('rapier');
     expect(initialChapterData.units[0]?.inventory).toEqual([
       { itemId: 'rapier', uses: 28 },
       { itemId: 'iron_sword', uses: 40 },
@@ -188,7 +188,7 @@ describe('chapter data', () => {
     const cavaliers = galderChapter.units.filter((u) => u.unit.id.startsWith('grust_cavalier'));
     expect(cavaliers.length).toBe(2);
     expect(cavaliers[0]?.level).toBe(3);
-    expect(cavaliers[0]?.weapon.id).toBe('iron_lance');
+    expect(cavaliers[0]?.weapon?.id).toBe('iron_lance');
 
     // 2 Thieves
     const thieves = galderChapter.units.filter((u) => u.unit.id.includes('thief'));
@@ -197,13 +197,13 @@ describe('chapter data', () => {
     // 1 Pirate Lv3
     const pirateLv3 = galderChapter.units.find((u) => u.unit.id === 'galder_pirate_1');
     expect(pirateLv3?.level).toBe(3);
-    expect(pirateLv3?.weapon.id).toBe('hand_axe');
+    expect(pirateLv3?.weapon?.id).toBe('hand_axe');
 
     // Boss Gomer
     const gomer = galderChapter.units.find((u) => u.unit.id === 'gomer');
     expect(gomer?.unit.position).toEqual({ x: 2, y: 4 });
     expect(gomer?.isBoss).toBe(true);
-    expect(gomer?.weapon.id).toBe('hand_axe');
+    expect(gomer?.weapon?.id).toBe('hand_axe');
     expect(gomer?.dropItemId).toBe('steel_sword');
 
     // Recruitable Castor
@@ -283,7 +283,7 @@ describe('chapter data', () => {
     // Navarre
     const navarre = ch3.units.find((u) => u.unit.id === 'navarre');
     expect(navarre?.unit.position).toEqual({ x: 20, y: 5 });
-    expect(navarre?.weapon.id).toBe('killing_edge');
+    expect(navarre?.weapon?.id).toBe('killing_edge');
     expect(ch3.recruitments).toEqual([
       { speakerUnitId: 'caeda', targetUnitId: 'navarre', maxDistance: 1 }
     ]);

@@ -32,6 +32,13 @@ Dữ liệu vũ khí bản thử hiện dùng số FE11 cho 17 vũ khí có đ�
 - C10: trượng có tác dụng hỗ trợ ngoài hồi HP. Cần chốt tập hiệu ứng, tầm, số lần dùng, đối tượng hợp lệ, độ chính xác và thời điểm tác dụng. Đề án cũ chưa mô tả đủ.
 - V05, V07, V08, C12 có thể thay dự báo và kết quả. Thứ tự ưu tiên giữa đòn chính, đánh kẹp, bẫy, cover và hiệu ứng trượng **chờ chốt**; không tự suy diễn từ FE hoặc Triangle Strategy.
 
+### Độ bền vũ khí (PLAN mục 84, chốt 2026-11-19)
+
+- Vũ khí vật lý mất 1 độ bền cho mỗi đòn **trúng** (đòn trượt không mất độ bền — chuẩn đa số dòng FE). Vũ khí phép (tome) mất 1 độ bền cho mỗi đòn tung ra, kể cả trượt. Trượng mất 1 độ bền mỗi lần dùng (mục 89).
+- Độ bền về 0 thì vũ khí **biến mất** khỏi túi (chủ dự án chốt 2026-11-19; game không có rèn đồ). Quân tự trang bị vũ khí dùng được tiếp theo trong túi; không còn vũ khí dùng được thì quân ở trạng thái không vũ khí (không tấn công/phản đòn được).
+- Độ bền áp dụng **sau khi giao tranh kết thúc** (đơn giản hóa đã ghi nhận: vũ khí còn 1 độ bền vẫn đánh đủ số đòn của giao tranh đó rồi mới vỡ; chưa mô phỏng vỡ giữa giao tranh).
+- Falchion không vỡ (FE3) — áp dụng khi vật phẩm này xuất hiện trong dữ liệu.
+
 ## Công thức đề xuất cũ, chưa được duyệt
 
 Các chỉ số đề án dùng: HP, STR, MAG, DEX, SPD, LCK, DEF, RES, BLD và MOV. Công thức dưới đây chỉ ghi lại bản đề án để tránh thất lạc khi thay file cũ:

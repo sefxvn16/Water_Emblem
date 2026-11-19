@@ -68,14 +68,16 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
     };
   });
 
-  const equippedInv = u.inventory.find((inv) => inv.itemId === u.weapon.id);
-  const weaponList: Array<{ name: string; uses: number | string; icon: string }> = [
-    {
-      name: u.weapon.name,
-      uses: equippedInv ? equippedInv.uses : (u.weapon.maxUses ?? 40),
-      icon: getItemIcon(u.weapon.id, u.weapon.type),
-    },
-  ];
+  const equippedInv = u.weapon ? u.inventory.find((inv) => inv.itemId === u.weapon!.id) : undefined;
+  const weaponList: Array<{ name: string; uses: number | string; icon: string }> = u.weapon
+    ? [
+        {
+          name: u.weapon.name,
+          uses: equippedInv ? equippedInv.uses : (u.weapon.maxUses ?? 40),
+          icon: getItemIcon(u.weapon.id, u.weapon.type),
+        },
+      ]
+    : [];
 
   const itemList: Array<{ name: string; uses: number | string; icon: string }> = [];
 
@@ -85,7 +87,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
     // The equipped weapon already heads the list; skip its own inventory
     // entry so slot 1 is not shown twice (PLAN item 82). A second copy of
     // the same weapon still shows.
-    if (isWeapon && !equippedSkipped && inv.id === u.weapon.id) {
+    if (isWeapon && !equippedSkipped && inv.id === u.weapon?.id) {
       equippedSkipped = true;
       continue;
     }
@@ -285,7 +287,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           <StatRow label="AS:" value={combat.as} tone={tone} />
           <StatRow
             label="Eff:"
-            value={u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(', ') : '—'}
+            value={u.weapon?.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(', ') : '—'}
             valueColor="#9ca3af"
             divider={false}
             tone={tone}

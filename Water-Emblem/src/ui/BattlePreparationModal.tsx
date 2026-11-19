@@ -142,7 +142,7 @@ export const BattlePreparationModal: React.FC<BattlePreparationModalProps> = (pr
             <div style={{ fontSize: '13px', lineHeight: 1.6 }}>
               <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#fff' }}>{info.unit.name}</div>
               <div>{getClassDefinition(info.unit.classId)?.name ?? info.unit.classId ?? '—'} · LV {info.level}</div>
-              <div>HP {info.stats.hp} / {info.stats.maxHp} · {info.weapon.name}</div>
+              <div>HP {info.stats.hp} / {info.stats.maxHp} · {info.weapon?.name ?? 'Unarmed'}</div>
             </div>
           </div>
         )}

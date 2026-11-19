@@ -123,9 +123,9 @@ function characterModelFor(unit: ExtendedUnitState): CharacterModel {
   const charId = (unit.unit.id || '').toLowerCase();
   if (charId.includes('skeleton')) return 'skeleton';
   if (charId.includes('thief') || charId.includes('mercenary') || charId === 'ogma' || charId === 'navarre' || charId === 'julian') return 'rogue';
-  if (unit.weapon.type === 'bow') return 'ranger';
-  if (unit.weapon.type === 'tome' || unit.weapon.type === 'staff' || unit.unit.moveType === 'mage') return 'mage';
-  if (unit.weapon.type === 'axe' || unit.unit.moveType === 'bandit') return 'barbarian';
+  if (unit.weapon?.type === 'bow') return 'ranger';
+  if (unit.weapon?.type === 'tome' || unit.weapon?.type === 'staff' || unit.unit.moveType === 'mage') return 'mage';
+  if (unit.weapon?.type === 'axe' || unit.unit.moveType === 'bandit') return 'barbarian';
   return 'knight';
 }
 

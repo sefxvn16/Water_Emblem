@@ -31,7 +31,7 @@ function side(entry: ExtendedUnitState, hpBefore: number, hpAfter: number, resul
     name: entry.unit.name,
     faction: entry.unit.faction,
     className: getClassDefinition(entry.unit.classId)?.name ?? entry.unit.classId ?? '—',
-    weaponName: entry.weapon.name,
+    weaponName: entry.weapon?.name ?? 'Unarmed',
     level: entry.level,
     maxHp: entry.stats.maxHp,
     hpBefore,

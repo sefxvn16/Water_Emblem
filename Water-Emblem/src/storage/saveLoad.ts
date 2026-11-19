@@ -39,7 +39,7 @@ interface SaveRecord extends SaveGameData {
   slot: string;
 }
 
-const SAVE_VERSION = '5.0.0';
+const SAVE_VERSION = '6.0.0';
 const SAVE_SLOT = 'main';
 
 class WaterEmblemDatabase extends Dexie {
@@ -87,9 +87,10 @@ function isStats(value: unknown): boolean {
 }
 
 function isSavedUnit(value: unknown): value is ExtendedUnitState {
-  if (!isRecord(value) || !isRecord(value.unit) || !isRecord(value.weapon)) return false;
+  // weapon may be absent: an unarmed unit (last weapon broke — PLAN item 84).
+  if (!isRecord(value) || !isRecord(value.unit) || (value.weapon !== undefined && !isRecord(value.weapon))) return false;
   const unit = value.unit;
-  const weaponId = value.weapon.id;
+  const weaponId = isRecord(value.weapon) ? value.weapon.id : undefined;
   if (!isRecord(unit.position)) return false;
   return typeof unit.id === 'string'
     && unit.id.length > 0
@@ -108,7 +109,7 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
     && isStats(value.stats)
     && Number.isInteger(value.level) && (value.level as number) >= 1 && (value.level as number) <= 20
     && isNonnegativeInteger(value.exp) && (value.exp as number) < 100
-    && typeof weaponId === 'string'
+    && (weaponId === undefined || typeof weaponId === 'string')
     && Array.isArray(value.inventory)
     && value.inventory.every((entry: unknown) => {
       if (!isRecord(entry) || typeof entry.itemId !== 'string') return false;
@@ -116,7 +117,7 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
       return item !== undefined && Number.isInteger(entry.uses)
         && (entry.uses as number) >= 1 && (entry.uses as number) <= item.maxUses;
     })
-    && value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId)
+    && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
     && (value.aiRole === undefined || value.aiRole === 'stationary' || value.aiRole === 'pursue' || value.aiRole === 'pillage');
 }
 
@@ -151,8 +152,8 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   const positions = new Set<string>();
   for (const { unit, stats, weapon, isBoss } of savedUnits) {
     const original = expected.get(unit.id);
-    const catalogWeapon = itemById.get(weapon.id);
-    if (ids.has(unit.id) || !original || !catalogWeapon || !matchesWeapon(weapon, catalogWeapon)) return false;
+    const catalogWeapon = weapon ? itemById.get(weapon.id) : undefined;
+    if (ids.has(unit.id) || !original || (weapon !== undefined && (!catalogWeapon || !matchesWeapon(weapon, catalogWeapon)))) return false;
     if (isBoss !== original.isBoss) return false;
     const currentClass = getClassDefinition(unit.classId);
     const originalClass = getClassDefinition(original.unit.classId);
@@ -195,7 +196,7 @@ export function isSaveGameData(value: unknown): value is SaveGameData {
 
 export function migrateSaveGameData(value: unknown): SaveGameData | null {
   if (isSaveGameData(value)) return value;
-  if (!isRecord(value) || !['2.0.0', '3.0.0', '4.0.0'].includes(value.version as string) || !isNonnegativeInteger(value.timestamp)
+  if (!isRecord(value) || !['2.0.0', '3.0.0', '4.0.0', '5.0.0'].includes(value.version as string) || !isNonnegativeInteger(value.timestamp)
     || !Array.isArray(value.extendedUnits)) return null;
   const chapter = chapters[value.chapterId as string];
   if (!chapter) return null;

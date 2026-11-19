@@ -37,10 +37,10 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
     prefer,
     avoidHudCluster: true,
   });
-  const weaponIcon = getItemIcon(u.weapon.id, u.weapon.type);
+  const weaponIcon = u.weapon ? getItemIcon(u.weapon.id, u.weapon.type) : '';
   const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';
-  const equippedInv = u.inventory.find((inv) => inv.itemId === u.weapon.id);
-  const weaponUses = equippedInv ? equippedInv.uses : (u.weapon.maxUses ?? 40);
+  const equippedInv = u.weapon ? u.inventory.find((inv) => inv.itemId === u.weapon!.id) : undefined;
+  const weaponUses = equippedInv ? equippedInv.uses : (u.weapon?.maxUses ?? 0);
 
   return (
     <div
@@ -109,14 +109,16 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '62px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
           <span style={{ fontWeight: 'bold', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {u.weapon.name}
+            {u.weapon?.name ?? 'Unarmed'}
           </span>
           <span style={{ color: DS_COLORS.muted, fontSize: '13px' }}>/{weaponUses}</span>
-          <img
-            src={weaponIcon}
-            alt=""
-            style={{ width: '18px', height: '18px', imageRendering: 'pixelated', verticalAlign: 'middle', flexShrink: 0 }}
-          />
+          {weaponIcon && (
+            <img
+              src={weaponIcon}
+              alt=""
+              style={{ width: '18px', height: '18px', imageRendering: 'pixelated', verticalAlign: 'middle', flexShrink: 0 }}
+            />
+          )}
         </div>
 
         {onInspect && (

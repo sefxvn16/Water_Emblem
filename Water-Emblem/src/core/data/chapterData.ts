@@ -23,7 +23,9 @@ export interface InventoryEntry {
 export interface ExtendedUnitState {
   unit: GridUnit;
   stats: UnitCombatStats;
-  weapon: ItemDefinition;
+  /** Equipped weapon definition; undefined when the unit is unarmed
+      (e.g. its last weapon broke — PLAN item 84). */
+  weapon?: ItemDefinition;
   inventory: InventoryEntry[];
   level: number;
   exp: number;

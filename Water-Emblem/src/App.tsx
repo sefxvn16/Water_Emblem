@@ -7,12 +7,15 @@ import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json';
 import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json';
 import ch03Dialogues from '../data/dialogues/chapter_03_dialogues.json';
 import itemsJson from '../data/items.json';
+
+const ITEM_BY_ID = new Map((itemsJson.items as ItemDefinition[]).map((item) => [item.id, item]));
 import { defaultTerrainRegistry, healUnitsOnTerrain } from './core/grid/terrain';
 import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
 import { CombatForecast, type ItemDefinition } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
+import { applyCombatDurability } from './core/combat/durability';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
@@ -504,7 +507,7 @@ export const App: React.FC = () => {
         } else {
           if (ev.isCrit) soundManager.playSfx('crit');
           else if (ev.damageDealt === 0) soundManager.playSfx('nodamage');
-          else soundManager.playWeaponHit(extendedUnits.find((u) => u.unit.id === ev.attackerId)?.weapon.type ?? 'sword');
+          else soundManager.playWeaponHit(extendedUnits.find((u) => u.unit.id === ev.attackerId)?.weapon?.type ?? 'sword');
           const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
           logs.push(`${atk} hit ${def} for ${ev.damageDealt} damage!${critText} (${def} remaining HP: ${ev.defenderHpAfter})`);
         }
@@ -525,6 +528,7 @@ export const App: React.FC = () => {
       }
       const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
       updatedUnits = experience.entries;
+      updatedUnits = applyCombatDurability(updatedUnits, result, ITEM_BY_ID);
       logs.push(...experience.messages);
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
@@ -731,7 +735,7 @@ export const App: React.FC = () => {
               soundManager.playSfx('nodamage');
             } else {
               const attackerUnit = phaseUnits.find((u) => u.unit.id === ev.attackerId);
-              soundManager.playWeaponHit(attackerUnit?.weapon.type ?? 'axe');
+              soundManager.playWeaponHit(attackerUnit?.weapon?.type ?? 'axe');
             }
             const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
             logs.push(`  ${atk} strikes ${def} for ${ev.damageDealt} damage!${critText}`);
@@ -752,7 +756,9 @@ export const App: React.FC = () => {
         }
         const experience = applyCombatExperience(phaseUnits, result, defaultRNG);
         phaseUnits = experience.entries;
+        phaseUnits = applyCombatDurability(phaseUnits, result, ITEM_BY_ID);
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
+        for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
         logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
         enemy.unit.position = { ...decision.movePosition };

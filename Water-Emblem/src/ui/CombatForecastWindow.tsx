@@ -40,9 +40,9 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   const attAvoid = forecast.attacker.attackSpeed + Math.floor(attacker.stats.lck / 2);
   const defAvoid = forecast.defender.attackSpeed + Math.floor(defender.stats.lck / 2);
 
-  // Weapon icons
-  const attWeaponIcon = getItemIcon(attacker.weapon.id, attacker.weapon.type);
-  const defWeaponIcon = getItemIcon(defender.weapon.id, defender.weapon.type);
+  // Weapon icons (empty when unarmed — PLAN item 84)
+  const attWeaponIcon = attacker.weapon ? getItemIcon(attacker.weapon.id, attacker.weapon.type) : '';
+  const defWeaponIcon = defender.weapon ? getItemIcon(defender.weapon.id, defender.weapon.type) : '';
 
   // Top-left by default (FE3: forecast overlays the left edge); flips to
   // another corner when it would cover the attacker or defender tile (R6).
@@ -62,9 +62,13 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     </div>
   );
 
-  // Weapon uses
-  const attUses = attacker.inventory.find((i) => i.itemId === attacker.weapon.id)?.uses ?? (attacker.weapon.maxUses ?? 40);
-  const defUses = defender.inventory.find((i) => i.itemId === defender.weapon.id)?.uses ?? (defender.weapon.maxUses ?? 40);
+  // Weapon uses (0 when unarmed)
+  const attUses = attacker.weapon
+    ? attacker.inventory.find((i) => i.itemId === attacker.weapon!.id)?.uses ?? (attacker.weapon.maxUses ?? 40)
+    : 0;
+  const defUses = defender.weapon
+    ? defender.inventory.find((i) => i.itemId === defender.weapon!.id)?.uses ?? (defender.weapon.maxUses ?? 40)
+    : 0;
 
   const renderSideCard = (
     u: ExtendedUnitState,
@@ -133,7 +137,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
               <img src={weaponIcon} alt="" style={{ width: '14px', height: '14px', imageRendering: 'pixelated', flexShrink: 0 }} />
               <span style={{ color: isPlayer ? '#93c5fd' : '#fca5a5', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {u.weapon.name}
+                {u.weapon?.name ?? 'Unarmed'}
               </span>
               <span style={{ color: '#94a3b8', fontSize: '10px' }}>/{weaponUses}</span>
             </div>

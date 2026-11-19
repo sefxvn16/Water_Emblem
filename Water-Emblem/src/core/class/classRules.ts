@@ -37,8 +37,8 @@ export function isWeaponUsable(unit: GridUnit, weapon: ItemDefinition): boolean 
   return ranks.indexOf(held) >= ranks.indexOf(weapon.requiredRank ?? 'E');
 }
 
-export function getAttackRange(unit: GridUnit, weapon: ItemDefinition): { min: number; max: number } {
-  if (weapon.type === 'staff' || !isWeaponUsable(unit, weapon)) return { min: 1, max: 0 };
+export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined): { min: number; max: number } {
+  if (!weapon || weapon.type === 'staff' || !isWeaponUsable(unit, weapon)) return { min: 1, max: 0 };
   if (weapon.type === 'bow' && unit.classId === 'sniper') return { min: 2, max: 3 };
   if (weapon.type === 'bow' && unit.classId === 'mangudai') return { min: 2, max: 2 };
   return { min: weapon.minRange, max: weapon.maxRange };

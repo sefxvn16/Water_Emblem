@@ -13,7 +13,7 @@ describe('chapter transition', () => {
     const next = carryUnitsToChapter(current, chapter02Data);
     const carriedMarth = next.find(({ unit }) => unit.id === 'marth')!;
     expect(carriedMarth.stats.hp).toBe(7);
-    expect(carriedMarth.weapon.id).toBe('iron_sword');
+    expect(carriedMarth.weapon?.id).toBe('iron_sword');
     expect(carriedMarth.unit.position).toEqual({ x: 18, y: 9 });
     expect(carriedMarth.unit.supportPoints?.caeda).toBe(5);
     expect(next.some(({ unit }) => unit.id === 'wrys')).toBe(false);
