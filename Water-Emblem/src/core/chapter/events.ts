@@ -96,7 +96,7 @@ function dialogueLines(value: unknown): DialogueLine[] | undefined {
 /** Default village lines when a chapter defines none (data/dialogues/default_dialogues.json, PLAN item 134). */
 const DEFAULT_VILLAGE_LINES: DialogueLine[] = dialogueLines(defaultDialoguesJson.defaultVillage) ?? [];
 
-/** Item roles declared in data/items.json (PLAN item 134): door key, lord's chest key. */
+/** Item roles declared in data/items.json (PLAN item 134): master key, lord's chest key. */
 const itemRoleById = new Map<string, string>(
   (itemsJson.items as readonly { id: string; itemRole?: string }[])
     .filter((item) => item.itemRole !== undefined)
@@ -302,15 +302,28 @@ export function opensLocksInately(entry: ExtendedUnitState): boolean {
   return getClassDefinition(entry.unit.classId)?.canOpenLocks === true;
 }
 
-/** FE3: the lord opens chests only while carrying the Fire Emblem (itemRole 'lordChestKey'). */
+/** FE3: the lord opens chests only while carrying the Fire Emblem (itemRole 'lordChestKey').
+ * PLAN item 155: a Master Key (itemRole 'masterKey', one use per lock) opens chests too. */
 export function canOpenChest(entry: ExtendedUnitState, chapter: ChapterData): boolean {
   if (opensLocksInately(entry)) return true;
-  return entry.unit.id === chapter.lordUnitId && holdsItemRole(entry, 'lordChestKey');
+  if (entry.unit.id === chapter.lordUnitId && holdsItemRole(entry, 'lordChestKey')) return true;
+  return holdsItemRole(entry, 'masterKey');
 }
 
-/** Thief-line classes or a Door Key (itemRole 'doorKey', consumed on use) open doors. */
+/** Thief-line classes or a Master Key (itemRole 'masterKey', one use per lock) open doors. */
 export function canOpenDoor(entry: ExtendedUnitState): boolean {
-  return opensLocksInately(entry) || holdsItemRole(entry, 'doorKey');
+  return opensLocksInately(entry) || holdsItemRole(entry, 'masterKey');
+}
+
+/** Spend one Master Key use (PLAN item 155); innate lockpickers spend nothing. */
+function spendMasterKeyUse(units: readonly ExtendedUnitState[], unitId: string): ExtendedUnitState[] {
+  return mapUnit(units, unitId, (entry) => ({
+    ...entry,
+    inventory: entry.inventory.flatMap((item) => {
+      if (itemRoleById.get(item.itemId) !== 'masterKey') return [item];
+      return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
+    }),
+  }));
 }
 
 /** Open the chest the unit stands on; the reward follows village rules. */
@@ -329,8 +342,13 @@ export function openChest(
   if (!canOpenChest(opener, chapter)) return unchanged(state);
   const reward = applyReward(state, unitId, chest.reward, 'chest', items);
   if (!reward) return unchanged(state);
+  // PLAN item 155: opening with a Master Key spends one use (thief-line
+  // classes and the lord with the Fire Emblem open for free).
+  const usesKey = !opensLocksInately(opener)
+    && !(opener.unit.id === chapter.lordUnitId && holdsItemRole(opener, 'lordChestKey'));
+  const units = usesKey ? spendMasterKeyUse(reward.state.units, unitId) : reward.state.units;
   return {
-    state: { ...reward.state, chestStates: { ...state.chestStates, [chest.id]: 'opened' } },
+    state: { ...reward.state, units, chestStates: { ...state.chestStates, [chest.id]: 'opened' } },
     events: [
       ...reward.events,
       { type: 'chest_opened', unitId, unitName: opener.unit.name, chestId: chest.id },
@@ -338,7 +356,7 @@ export function openChest(
   };
 }
 
-/** Open a door from an adjacent tile; a non-thief spends one Door Key use. */
+/** Open a door from an adjacent tile; a non-thief spends one Master Key use. */
 export function openDoor(
   state: ChapterState,
   unitId: string,
@@ -348,16 +366,7 @@ export function openDoor(
   if (!opener || (state.doorStates?.[door.id] ?? 'closed') !== 'closed') return unchanged(state);
   if (getManhattanDistance(opener.unit.position, door.position) !== 1) return unchanged(state);
   if (!canOpenDoor(opener)) return unchanged(state);
-  let units = state.units;
-  if (!opensLocksInately(opener)) {
-    units = mapUnit(state.units, unitId, (entry) => ({
-      ...entry,
-      inventory: entry.inventory.flatMap((item) => {
-        if (itemRoleById.get(item.itemId) !== 'doorKey') return [item];
-        return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
-      }),
-    }));
-  }
+  const units = opensLocksInately(opener) ? state.units : spendMasterKeyUse(state.units, unitId);
   return {
     state: { ...state, units, doorStates: { ...state.doorStates, [door.id]: 'opened' } },
     events: [{ type: 'door_opened', unitId, unitName: opener.unit.name, doorId: door.id }],

@@ -437,17 +437,17 @@
       "crit": 0,
       "effectiveAgainst": [],
       "hit": 0,
-      "id": "door_key",
+      "id": "master_key",
       "maxRange": 1,
-      "maxUses": 1,
+      "maxUses": 5,
       "might": 0,
       "minRange": 1,
-      "name": "Door Key",
-      "price": 500,
+      "name": "Master Key",
+      "price": 2400,
       "sourceGame": "FE11",
       "type": "consumable",
       "weight": 0,
-      "itemRole": "doorKey"
+      "itemRole": "masterKey"
     },
     {
       "buyable": false,

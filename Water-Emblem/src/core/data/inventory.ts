@@ -6,7 +6,7 @@ import balanceConfig from '../../../data/balance.json';
  * "Giới hạn túi đồ"): FE3 gives each unit two stores — 4 weapon slots
  * and 4 item slots. Staves occupy the item store, not weapon slots
  * (research 2026-11-19, FE3 §1.22). Consumables and key items
- * (door_key, master_seal) are item-store entries too.
+ * (master_key, master_seal) are item-store entries too.
  *
  * Pure helpers: inputs are not mutated. The item lookup only needs each
  * item's `type`, so callers may pass full ItemDefinitions or lighter

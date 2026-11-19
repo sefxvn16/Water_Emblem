@@ -86,6 +86,21 @@ describe('chests and doors (PLAN item 92)', () => {
     expect(canOpenChest(cain, testChapter)).toBe(false);
   });
 
+  it('any unit with a Master Key opens a chest, spending one use (PLAN item 155)', () => {
+    const state = stateOf(testChapter);
+    const cain = find(state.units, 'cain');
+    cain.unit.position = { x: 7, y: 4 };
+    cain.inventory = [...cain.inventory, { itemId: 'master_key', uses: 5 }];
+    const chest = testChapter.chests![0]!;
+
+    expect(canOpenChest(cain, testChapter)).toBe(true);
+    const result = openChest(state, 'cain', chest, testChapter, itemsJson.items);
+    expect(result.state.chestStates).toEqual({ test_chest: 'opened' });
+    expect(result.state.gold).toBe(1000);
+    const keyAfter = find(result.state.units, 'cain').inventory.find((i) => i.itemId === 'master_key');
+    expect(keyAfter?.uses).toBe(4);
+  });
+
   it('a thief opens a door without a key; a key holder spends the key', () => {
     const state = stateOf(chapter03);
     const julian = find(state.units, 'julian');
@@ -102,11 +117,11 @@ describe('chests and doors (PLAN item 92)', () => {
     expect(canOpenDoor(marth)).toBe(false);
     expect(openDoor(state, 'marth', door).events).toEqual([]);
 
-    marth.inventory = [...marth.inventory, { itemId: 'door_key', uses: 1 }];
+    marth.inventory = [...marth.inventory, { itemId: 'master_key', uses: 1 }];
     expect(canOpenDoor(marth)).toBe(true);
     const byKey = openDoor(state, 'marth', door);
     expect(byKey.state.doorStates).toEqual({ door_castle: 'opened' });
-    expect(find(byKey.state.units, 'marth').inventory.map((i) => i.itemId)).not.toContain('door_key');
+    expect(find(byKey.state.units, 'marth').inventory.map((i) => i.itemId)).not.toContain('master_key');
 
     // Not adjacent: no opening.
     const far = stateOf(chapter03);

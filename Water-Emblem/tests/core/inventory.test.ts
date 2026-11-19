@@ -33,7 +33,7 @@ describe('split inventory limits (PLAN item 86)', () => {
     expect(slotKind(itemById.get('iron_sword')!)).toBe('weapon');
     expect(slotKind(itemById.get('heal_staff')!)).toBe('item');
     expect(slotKind(itemById.get('vulnerary')!)).toBe('item');
-    expect(slotKind(itemById.get('door_key')!)).toBe('item');
+    expect(slotKind(itemById.get('master_key')!)).toBe('item');
     expect(slotKind(itemById.get('master_seal')!)).toBe('item');
   });
 

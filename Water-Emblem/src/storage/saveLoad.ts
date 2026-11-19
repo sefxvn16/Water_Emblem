@@ -249,6 +249,18 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
   migrated.villageStates ??= {};
   migrated.chestStates ??= {};
   migrated.doorStates ??= {};
+  // PLAN item 155: the Door Key became the Master Key; rewrite old saves.
+  const rewriteKey = (list: unknown): void => {
+    if (!Array.isArray(list)) return;
+    for (const entry of list) {
+      if (isRecord(entry) && entry.itemId === 'door_key') entry.itemId = 'master_key';
+    }
+  };
+  for (const raw of [...(migrated.extendedUnits as unknown[]),
+    ...(Array.isArray(migrated.reserveUnits) ? migrated.reserveUnits as unknown[] : [])]) {
+    if (isRecord(raw)) rewriteKey(raw.inventory);
+  }
+  rewriteKey(migrated.convoy);
   migrated.spawnedReinforcements ??= [];
   migrated.difficulty ??= 'normal';
   const savedIds = new Set([...migrated.extendedUnits as unknown[],
