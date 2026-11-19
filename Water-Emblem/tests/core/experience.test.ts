@@ -64,6 +64,7 @@ describe('experience and growth', () => {
       }
       checked += 1;
     }
-    expect(checked).toBe(17);
+    // PLAN item 157: Tiki and Xane gained FE11 personal growths (17 -> 19).
+    expect(checked).toBe(19);
   });
 });

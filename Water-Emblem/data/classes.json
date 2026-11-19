@@ -272,7 +272,7 @@
       "sourceClass": "FE11 Dismounted Knight",
       "growths": {
         "hp": 40,
-        "str": 5,
+        "str": 15,
         "mag": -10,
         "skill": 25,
         "spd": 10,
@@ -1734,14 +1734,14 @@
       "promotions": [],
       "sourceClass": "FE3 Manakete",
       "growths": {
-        "hp": 40,
-        "str": 15,
+        "hp": 50,
+        "str": 20,
         "mag": 10,
-        "skill": 15,
-        "spd": 15,
+        "skill": 30,
+        "spd": 20,
         "lck": 0,
         "def": 10,
-        "res": 10
+        "res": -10
       },
       "canTransform": true,
       "transformWeaponId": "dragon_breath"
@@ -1780,13 +1780,13 @@
       "sourceClass": "FE3 Chameleon",
       "growths": {
         "hp": 40,
-        "str": 15,
-        "mag": 10,
-        "skill": 15,
-        "spd": 15,
+        "str": 30,
+        "mag": -20,
+        "skill": 30,
+        "spd": 30,
         "lck": 0,
-        "def": 10,
-        "res": 10
+        "def": 15,
+        "res": -15
       },
       "canImitate": true
     },
