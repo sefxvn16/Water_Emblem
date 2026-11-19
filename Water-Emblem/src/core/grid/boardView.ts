@@ -41,7 +41,7 @@ export function buildBoardView(input: BoardViewInput): BoardView {
   const { map, units, reachableKeys, dangerZoneKeys, attackTargetKeys, selected } = input;
   const unitAt = new Map<string, string>();
   for (const unit of units) {
-    if (!unit.isDead) unitAt.set(tileKey(unit.position.x, unit.position.y), unit.id);
+    if (!unit.isDead && !unit.hasEscaped) unitAt.set(tileKey(unit.position.x, unit.position.y), unit.id);
   }
   const tiles = map.grid.map((row, y) =>
     row.map((terrainId, x): BoardTile => {

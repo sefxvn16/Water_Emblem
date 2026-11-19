@@ -36,7 +36,7 @@ export function getTerrainAt(pos: Position, map: MapData): string | undefined {
 }
 
 export function getUnitAt(pos: Position, units: readonly GridUnit[]): GridUnit | undefined {
-  return units.find((u) => !u.isDead && u.position.x === pos.x && u.position.y === pos.y);
+  return units.find((u) => !u.isDead && !u.hasEscaped && u.position.x === pos.x && u.position.y === pos.y);
 }
 
 export function calculateMovementRange(

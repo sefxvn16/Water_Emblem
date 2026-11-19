@@ -28,6 +28,8 @@ export interface PendingActions {
   canOpenDoor: boolean;
   /** Standing on an arena tile, armed, with gold to wager (PLAN item 93). */
   canArena: boolean;
+  /** Standing on an escape tile in an escape chapter (PLAN item 109). */
+  canEscape: boolean;
 }
 
 interface ActionMenuWindowProps {
@@ -47,6 +49,7 @@ interface ActionMenuWindowProps {
   onOpenDoor: () => void;
   onArena: () => void;
   onSeize: () => void;
+  onEscape: () => void;
   onTalk: () => void;
   onUseVulnerary: () => void;
   onPromote: (classId: string) => void;
@@ -191,6 +194,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
               renderButton(`staff-${option.itemId}`, '✨', `Staff: ${option.name}`, () => props.onStaff(option.itemId))
             )}
             {actions.canSeize && renderButton('seize', '👑', 'Seize Gate', props.onSeize)}
+            {actions.canEscape && renderButton('escape', '🏃', 'Escape', props.onEscape, 'primary')}
             {actions.talkTargetName !== null && renderButton('talk', '💬', `Talk: ${actions.talkTargetName}`, props.onTalk)}
             {actions.canUseVulnerary && renderButton('vulnerary', '🧪', 'Use Vulnerary', props.onUseVulnerary)}
             {actions.promotions.map((p) =>

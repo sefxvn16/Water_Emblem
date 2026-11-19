@@ -75,7 +75,7 @@ export function evaluateAITurn(
   });
 
   // PLAN item 110 (B10): flee/retreat/thief/patrol roles.
-  const playerUnitsForRoles = units.filter((u) => u.faction === 'player' && !u.isDead);
+  const playerUnitsForRoles = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
   const bestFleeTile = (): Position | undefined => {
     let best: Position | undefined;
     let bestScore = -Infinity;
@@ -126,7 +126,7 @@ export function evaluateAITurn(
   }
 
   // Tìm danh sách mục tiêu người chơi còn sống
-  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead);
+  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
   if (playerUnits.length === 0) {
     return { type: 'wait' };
   }

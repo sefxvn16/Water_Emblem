@@ -51,7 +51,7 @@ import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
-import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
+import { chapters, chapter01Data, testChapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
@@ -80,6 +80,8 @@ import { buildObjectDefender, damageObject, destroyedObjectKeys, isDestructibleT
 import { applyTrapDamage, trapAt } from './core/chapter/traps';
 import { canCanto } from './core/combat/canto';
 import { applyBossPhases } from './core/chapter/bossPhases';
+import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
+import { generateSkirmishChapter } from './core/chapter/randomMap';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -190,6 +192,8 @@ export const App: React.FC = () => {
   const [cantoActive, setCantoActive] = useState(false);
   const cantoRemainingRef = useRef(0);
   const cantoUsedRef = useRef(false);
+  // PLAN item 115: playthrough difficulty (enemy stat bonuses).
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
 
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
@@ -275,9 +279,9 @@ export const App: React.FC = () => {
     const participatingIds = new Set(extendedUnits
       .filter(({ unit }) => unit.faction === 'player' && !unit.isDead)
       .map(({ unit }) => unit.id));
-    const newUnits = carryoverUnits
+    const newUnits = applyDifficulty(carryoverUnits
       ? carryUnitsToChapter(carryoverUnits, targetChapter, participatingIds)
-      : structuredClone(targetChapter.units);
+      : structuredClone(targetChapter.units), difficulty);
     setExtendedUnits(newUnits);
     setReserveUnits([]);
     // The convoy carries over between chapters; a fresh game starts empty.
@@ -914,7 +918,7 @@ export const App: React.FC = () => {
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
       setExtendedUnits(updatedUnits);
 
-      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
       if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
       waitWithCanto();
@@ -1063,6 +1067,24 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       waitWithCanto();
       setChapterOutcome('victory');
+      syncState();
+    });
+  };
+
+  // PLAN item 109: escape from an escape tile; the unit leaves the map.
+  const handleEscape = () => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    executeWithMove(() => {
+      const updatedUnits = extendedUnits.map((entry) => entry.unit.id === selectedExtUnit.unit.id
+        ? { ...entry, unit: { ...entry.unit, hasEscaped: true, hasActed: true } }
+        : entry);
+      turnManager.replaceUnits(updatedUnits.map(({ unit }) => unit));
+      setExtendedUnits(updatedUnits);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🏃 ${selectedExtUnit.unit.name} escapes the map!`, ...prev]);
+      const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
+      if (outcome !== 'ongoing') setChapterOutcome(outcome);
+      turnManager.waitSelectedUnit();
       syncState();
     });
   };
@@ -1526,7 +1548,7 @@ export const App: React.FC = () => {
       }
 
       enemy.unit.hasActed = true;
-      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId) !== 'ongoing') break;
+      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber }) !== 'ongoing') break;
     }
 
     setVillageStates(nextVillageStates);
@@ -1550,7 +1572,7 @@ export const App: React.FC = () => {
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
     // Kiểm tra kết quả chương sau lượt địch
-    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId);
+    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
     if (outcome !== 'ongoing') setChapterOutcome(outcome);
 
     // Chuyển lại về Player Phase
@@ -1593,6 +1615,7 @@ export const App: React.FC = () => {
     setSpawnedReinforcements(data.spawnedReinforcements ?? []);
     setObjectStates(data.objectStates ?? {});
     setTriggeredTraps(data.triggeredTraps ?? []);
+    setDifficulty(data.difficulty ?? 'normal');
     setCantoActive(false);
     cantoRemainingRef.current = 0;
     cantoUsedRef.current = false;
@@ -1629,6 +1652,7 @@ export const App: React.FC = () => {
       spawnedReinforcements,
       objectStates,
       triggeredTraps,
+      difficulty,
     }, slotId);
     if (ok) {
       showNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
@@ -1813,6 +1837,8 @@ export const App: React.FC = () => {
           canOpenChest: Boolean(selectedExtUnit && currentChestAtPendingPos && canOpenChest(selectedExtUnit, currentChapter)),
           canOpenDoor: Boolean(selectedExtUnit && doorAtPendingPos && canOpenDoor(selectedExtUnit)),
           canArena,
+          canEscape: chapterObjective.type === 'escape' && Boolean(pendingMovePos
+            && (chapterObjective.escapeTiles ?? []).some((t) => t.x === pendingMovePos.x && t.y === pendingMovePos.y)),
           staffOptions: selectedExtUnit
             ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
               .filter((staff) => isHealStaff(staff)
@@ -1831,6 +1857,7 @@ export const App: React.FC = () => {
         onArena={() => setArenaOpen(true)}
         onStaff={handleStaff}
         onSeize={handleSeize}
+        onEscape={handleEscape}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}
         onPromote={handlePromote}
@@ -2113,6 +2140,16 @@ export const App: React.FC = () => {
           onContinueGame={() => setActiveScreen('none')}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
+          difficulty={difficulty}
+          onDifficultyChange={setDifficulty}
+          onStartSkirmish={() => {
+            const seed = Math.floor(Math.random() * 100000);
+            const { chapter, map } = generateSkirmishChapter(seed, testChapter01Data);
+            chapters[chapter.id] = chapter;
+            chapterMaps[chapter.id] = map;
+            setActiveScreen('none');
+            loadChapter(chapter.id);
+          }}
         />
       )}
 

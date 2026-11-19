@@ -405,16 +405,16 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 108. B05 Bảo vệ mục tiêu: mục tiêu chương bảo vệ quân/ô.
+- [x] 108. B05 Bảo vệ mục tiêu: mục tiêu chương bảo vệ quân/ô.
   - Nguồn: cơ chế đã chọn B05 (hiện mới có defeat_boss/rout/seize).
   - Tiêu chí xong: (1) Dữ liệu chương khai báo được mục tiêu bảo vệ (quân NPC hoặc ô) trong số lượt hoặc tới khi hết địch; mục tiêu chết/bị chiếm thì thua chương. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `protect` (protectUnitId + surviveTurns): quân bảo vệ chết thì thua, sống sót đủ lượt hoặc diệt hết địch thì thắng; `evaluateChapterOutcome` nhận turnNumber. Kiểm chứng: `tsc --noEmit` PASS; Vitest 39 file/262 test PASS (test mới `tests/core/batchC.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 109. B06 Thoát bản đồ: mục tiêu chương thoát quân qua ô thoát.
+- [x] 109. B06 Thoát bản đồ: mục tiêu chương thoát quân qua ô thoát.
   - Nguồn: cơ chế đã chọn B06.
   - Tiêu chí xong: (1) Dữ liệu chương khai báo ô thoát; quân tới ô thoát có lệnh Escape rời bản đồ; đủ điều kiện (vd Marth thoát / toàn quân thoát) thì thắng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `escape` + lệnh Escape ở bảng chức năng; quân thoát rời bản đồ (`hasEscaped`, không vẽ/không chắn/không bị nhắm), lord thoát thì thắng. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 110. B10 Vai trò AI còn thiếu: tuần tra, rút lui, trộm, bỏ chạy.
@@ -447,10 +447,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 115. Q04 Độ khó: chọn mức khó khi bắt đầu game.
+- [x] 115. Q04 Độ khó: chọn mức khó khi bắt đầu game.
   - Nguồn: cơ chế đã chọn Q04. Số mức + mức cộng chỉ số địch chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Game mới chọn được độ khó; địch được cộng chỉ số theo mức; mức khó lưu trong save và hiện trong Settings. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. 3 mức Normal/Hard/Lunatic chọn ở màn hình tiêu đề, lưu trong save; địch +4HP/+2 (Hard), +8HP/+4 (Lunatic) [Giả định] khi nạp chương. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [ ] 116. Q06 Chuẩn bị trận còn thiếu: trao đổi đồ giữa quân ở màn chuẩn bị.
@@ -465,16 +465,16 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 118. Q10 Bản đồ giải đố: loại chương giải đố.
+- [x] 118. Q10 Bản đồ giải đố: loại chương giải đố.
   - Nguồn: cơ chế đã chọn Q10. Điều kiện giải đố chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Có loại mục tiêu giải đố (vd tới ô đích trong giới hạn lượt / hạ đúng mục tiêu) và ít nhất 1 chương giải đố chơi được (chương test). (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mục tiêu `puzzle` 2 dạng reach_tile/defeat_targets với giới hạn lượt [Giả định], quá hạn thì thua. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 119. Q12 Bản đồ ngẫu nhiên: mode giao tranh sinh bản đồ theo seed.
+- [x] 119. Q12 Bản đồ ngẫu nhiên: mode giao tranh sinh bản đồ theo seed.
   - Nguồn: cơ chế đã chọn Q12 (mode riêng, không thay bản đồ FE3 chiến dịch). Quy tắc sinh bản đồ chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Mode riêng sinh bản đồ + địch theo seed (cùng seed ra cùng bản đồ), chơi tới thắng/thua được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mode Random Skirmish: sinh bản đồ 12x10 theo seed (sông + 1 cầu, fort/gate, bãi triển khai), quân từ chương test đặt lại vị trí, mục tiêu rout; nút ở màn hình tiêu đề. Save skirmish chỉ nạp trong cùng phiên [Giả định]. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [ ] 120. A12 Spheres: ngọc chỉ giữ chức năng đánh rồng/boss.

@@ -59,6 +59,8 @@ export interface GridUnit {
    * changes no rule.
    */
   isReinforcement?: boolean;
+  /** Escaped the map (PLAN item 109); no longer on the battlefield. */
+  hasEscaped?: boolean;
 }
 
 export interface MoveTileResult {

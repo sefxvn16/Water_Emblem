@@ -123,3 +123,10 @@ Nguồn độc lập để kiểm số lượng/trang bị/sự kiện: [GCGX Ch
 
 **Giới hạn nguồn:** Các kết luận trên được hai hoặc ba nguồn cộng đồng độc lập xác nhận; chưa so trực tiếp ROM. Ba ảnh nền bản đồ được liệt kê ở [The Spriters Resource](https://www.spriters-resource.com/snes/fireemblemmysteryoftheemblem/) mục Backgrounds và có thể dùng **để đối chiếu**, không nhập ảnh vào game khi chưa kiểm quyền. Ảnh nền không chứng minh vị trí quân và hành vi lượt đầu. Hướng dẫn Nhật `chirimenzeyo` có sơ đồ quân nhưng ký hiệu có thể lệch ô; một hướng dẫn khác còn gọi nhầm Navarre là Ogma, nên không dùng riêng các hướng dẫn đó làm căn cứ tọa độ. [Video chơi FE3 Book 1 Ch1–7](https://www.youtube.com/watch?v=TszKTQOHwIk) có mốc Ch1 03:45, Ch2 10:33, Ch3 24:12 để đối chiếu vị trí/sự kiện trong phiên sau. Không ghi tọa độ nào là chính xác nếu chưa kiểm khung hình hoặc dữ liệu game.
 
+## Đợt C cơ chế đã chốt (2026-11-19, PLAN mục 108/109/115/118/119)
+
+- **B05 Bảo vệ mục tiêu (mục 108):** mục tiêu chương `protect` (`protectUnitId` + `surviveTurns`): quân được bảo vệ chết thì thua; sống sót qua số lượt quy định hoặc diệt hết địch thì thắng.
+- **B06 Thoát bản đồ (mục 109):** mục tiêu chương `escape` (`escapeTiles`): quân đứng trên ô thoát có lệnh Escape rời bản đồ; Marth (lord) thoát thì thắng. Quân đã thoát không còn trên bản đồ, không bị địch nhắm, không chắn đường.
+- **Q04 Độ khó (mục 115):** 3 mức Normal/Hard/Lunatic chọn ở màn hình tiêu đề, lưu trong save. Địch được cộng chỉ số khi nạp chương [Giả định]: Hard +4 HP/+2 mọi chỉ số khác, Lunatic +8 HP/+4.
+- **Q10 Bản đồ giải đố (mục 118):** mục tiêu chương `puzzle` với 2 dạng [Giả định]: `reach_tile` (quân ta tới ô đích trong `maxTurns` lượt) và `defeat_targets` (hạ các quân đích trong `maxTurns` lượt); quá hạn thì thua.
+- **Q12 Bản đồ ngẫu nhiên (mục 119):** mode Random Skirmish ở màn hình tiêu đề: sinh bản đồ 12×10 theo seed (cùng seed cùng bản đồ) — đồng bằng/rừng/núi/đỉnh, sông ngang giữa với 1 cầu, fort + gate phía địch, 2 hàng dưới là bãi triển khai. Quân lấy từ chương test đặt lại vị trí, mục tiêu rout. Save của skirmish chỉ nạp lại được trong cùng phiên [Giả định] (chương sinh lúc chạy).

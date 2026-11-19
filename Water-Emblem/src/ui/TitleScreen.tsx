@@ -1,5 +1,6 @@
 import React from 'react';
 import { soundManager } from '../audio/soundManager';
+import { DIFFICULTIES, type Difficulty } from '../core/chapter/difficulty';
 
 interface TitleScreenProps {
   onStartNewGame: () => void;
@@ -8,6 +9,11 @@ interface TitleScreenProps {
   onContinueGame: () => void;
   isMuted: boolean;
   onToggleMute: () => void;
+  /** Difficulty for a new game (PLAN item 115). */
+  difficulty: Difficulty;
+  onDifficultyChange: (difficulty: Difficulty) => void;
+  /** Start a random-map skirmish (PLAN item 119). */
+  onStartSkirmish: () => void;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -17,6 +23,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onContinueGame,
   isMuted,
   onToggleMute,
+  difficulty,
+  onDifficultyChange,
+  onStartSkirmish,
 }) => {
   return (
     <div
@@ -127,6 +136,48 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           gap: '12px',
         }}
       >
+        {/* Difficulty picker (PLAN item 115) */}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontSize: '13px', color: '#94a3b8', letterSpacing: '1px' }}>DIFFICULTY</span>
+          {DIFFICULTIES.map((level) => (
+            <button
+              key={level}
+              type="button"
+              aria-pressed={difficulty === level}
+              onClick={() => { soundManager.playSfx('cursor'); onDifficultyChange(level); }}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '16px',
+                border: `1px solid ${difficulty === level ? '#facc15' : 'rgba(255,255,255,0.2)'}`,
+                backgroundColor: difficulty === level ? 'rgba(250,204,21,0.18)' : 'rgba(255,255,255,0.05)',
+                color: difficulty === level ? '#facc15' : '#cbd5e1',
+                fontSize: '13px',
+                fontWeight: difficulty === level ? 'bold' : 'normal',
+                cursor: 'pointer',
+                textTransform: 'capitalize',
+              }}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => {
+            soundManager.playSfx('accept');
+            onStartSkirmish();
+          }}
+          style={{
+            padding: '10px 24px',
+            backgroundColor: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            borderRadius: '10px',
+            color: '#e2e8f0',
+            fontSize: '14px',
+            cursor: 'pointer',
+          }}
+        >
+          🎲 Random Skirmish
+        </button>
         <button
           onClick={() => {
             soundManager.playSfx('accept');
