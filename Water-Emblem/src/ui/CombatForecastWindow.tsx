@@ -1,6 +1,8 @@
 import React from 'react';
 import type { CombatForecast } from '../core/combat/types';
 import type { ExtendedUnitState } from '../core/data/chapterData';
+import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sharedPanelStyle, statRowStyle, statValueStyle } from './designSystem';
+import { useAnchoredOverlay } from './overlayAnchor';
 import { getItemIcon } from './itemIcon';
 
 interface CombatForecastWindowProps {
@@ -41,6 +43,24 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   // Weapon icons
   const attWeaponIcon = getItemIcon(attacker.weapon.id, attacker.weapon.type);
   const defWeaponIcon = getItemIcon(defender.weapon.id, defender.weapon.type);
+
+  // Top-left by default (FE3: forecast overlays the left edge); flips to
+  // another corner when it would cover the attacker or defender tile (R6).
+  const { ref, style: anchorStyle } = useAnchoredOverlay({
+    tile: attacker.unit.position,
+    avoidTiles: [defender.unit.position],
+    width: 340,
+    prefer: 'top-left',
+    avoidHudCluster: true,
+  });
+
+  // One label–value row: labels share a left edge, values a right-aligned column (R5).
+  const renderStatRow = (label: string, value: React.ReactNode, valueColor?: string) => (
+    <div style={statRowStyle}>
+      <span style={{ color: '#94a3b8' }}>{label}</span>
+      <strong style={{ ...statValueStyle, color: valueColor ?? '#ffffff' }}>{value}</strong>
+    </div>
+  );
 
   // Weapon uses
   const attUses = attacker.inventory.find((i) => i.itemId === attacker.weapon.id)?.uses ?? (attacker.weapon.maxUses ?? 40);
@@ -148,27 +168,14 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             Cannot counter
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 8px', fontSize: '12px', marginTop: '2px' }}>
-            <div>
-              <span style={{ color: '#94a3b8' }}>Dmg: </span>
-              <strong style={{ color: '#fde047' }}>
-                {damage} {attackCount > 1 ? `×${attackCount}` : ''}
-              </strong>
-            </div>
-            <div>
-              <span style={{ color: '#94a3b8' }}>Hit: </span>
-              <strong style={{ color: '#ffffff' }}>{hitRate}%</strong>
-            </div>
-            <div>
-              <span style={{ color: '#94a3b8' }}>Avo: </span>
-              <strong style={{ color: '#cbd5e1' }}>{avoidRate}%</strong>
-            </div>
-            <div>
-              <span style={{ color: '#94a3b8' }}>Crit: </span>
-              <strong style={{ color: critRate > 0 ? '#fde047' : '#cbd5e1' }}>{critRate}%</strong>
-            </div>
-            <div style={{ gridColumn: 'span 2', fontSize: '11px', color: '#64748b' }}>
-              AS: {as} {attackCount > 1 ? '· Double Attack' : ''}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px', marginTop: '2px' }}>
+            {renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}
+            {renderStatRow('Hit:', `${hitRate}%`)}
+            {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
+            {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}
+            <div style={{ ...statRowStyle, fontSize: '11px', color: '#64748b' }}>
+              <span>AS:</span>
+              <span style={{ ...statValueStyle }}>{as} {attackCount > 1 ? '· Double Attack' : ''}</span>
             </div>
           </div>
         )}
@@ -178,25 +185,21 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
 
   return (
     <div
+      ref={ref}
+      data-testid="forecast-window"
       style={{
-        position: 'fixed',
-        top: '20px',
-        left: '20px',
+        ...sharedPanelStyle,
+        ...anchorStyle,
         width: '340px',
         maxHeight: 'calc(100vh - 40px)',
         overflowY: 'auto',
-        boxSizing: 'border-box',
-        zIndex: 900,
-        backgroundColor: '#0c1e5b',
+        zIndex: DS_Z.forecast,
         padding: '14px',
-        borderRadius: '8px',
-        border: '2px solid #eab308',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
-        color: '#ffffff',
+        borderRadius: DS_RADII.panel,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-        <div style={{ fontWeight: 'bold', color: '#fde047', fontSize: '15px', letterSpacing: '0.03em' }}>
+        <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.03em' }}>
           ⚔️ COMBAT FORECAST
         </div>
       </div>
@@ -240,17 +243,10 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         <button
           onClick={onConfirm}
           style={{
+            ...primaryButtonStyle(),
             flex: 1,
             padding: '9px 12px',
-            backgroundColor: '#dc2626',
-            border: '1px solid #ef4444',
-            borderRadius: '5px',
-            color: '#fff',
-            fontWeight: 'bold',
             fontSize: '14px',
-            cursor: 'pointer',
-            boxShadow: '0 2px 6px rgba(220,38,38,0.4)',
-            transition: 'background-color 0.15s ease',
           }}
         >
           ⚔️ Attack!
@@ -258,14 +254,9 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         <button
           onClick={onCancel}
           style={{
+            ...secondaryButtonStyle(),
             padding: '9px 16px',
-            backgroundColor: '#1e293b',
-            border: '1px solid #475569',
-            borderRadius: '5px',
-            color: '#cbd5e1',
-            fontWeight: 600,
             fontSize: '13px',
-            cursor: 'pointer',
           }}
         >
           Cancel

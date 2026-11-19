@@ -1,8 +1,9 @@
 import React from 'react';
 import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
-import { HUD_EDGE } from './BattleSettingsMenu';
-import { HUD_CLEAR_BOTTOM, getTileRect } from './tileAnchor';
+import { DS_COLORS, DS_RADII, DS_Z, sharedPanelStyle } from './designSystem';
+import { getTileRect } from './tileAnchor';
+import { useAnchoredOverlay, type OverlayCorner } from './overlayAnchor';
 
 interface TerrainInfoWindowProps {
   terrainId: string;
@@ -12,29 +13,36 @@ interface TerrainInfoWindowProps {
 /** FE3-style terrain info popup: compact box showing terrain name and avoid bonus (Image 2). */
 export const TerrainInfoWindow: React.FC<TerrainInfoWindowProps> = ({ terrainId, tile }) => {
   const terrain = defaultTerrainRegistry.get(terrainId);
+  // Same side rule as the hover banner; flips when the map scrolls or resizes.
   const rect = getTileRect(tile);
   const tileCenterX = rect ? (rect.left + rect.right) / 2 : null;
-  const onLeft = tileCenterX === null || typeof window === 'undefined' || tileCenterX >= window.innerWidth / 2;
+  const prefer: OverlayCorner =
+    tileCenterX === null || typeof window === 'undefined' || tileCenterX >= window.innerWidth / 2
+      ? 'bottom-left'
+      : 'bottom-right';
+  const { ref, style: anchorStyle } = useAnchoredOverlay({
+    tile,
+    width: 160,
+    prefer,
+    avoidHudCluster: true,
+  });
 
   if (!terrain) return null;
 
   return (
     <div
+      ref={ref}
+      data-testid="terrain-window"
       role="status"
       aria-label={`Terrain: ${terrain.name}, Avoid: ${terrain.avoidBonus}%`}
       style={{
-        position: 'fixed',
-        ...(onLeft ? { left: '16px', bottom: '16px' } : { right: `${HUD_EDGE}px`, bottom: `${HUD_CLEAR_BOTTOM}px` }),
+        ...sharedPanelStyle,
+        ...anchorStyle,
         minWidth: '120px',
-        boxSizing: 'border-box',
-        zIndex: 800,
+        zIndex: DS_Z.hover,
         pointerEvents: 'none',
-        padding: '8px 12px',
-        backgroundColor: '#0c1e5b',
-        borderRadius: '6px',
-        border: '2px solid #eab308',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.6)',
-        color: '#ffffff',
+        padding: '12px',
+        borderRadius: DS_RADII.panel,
         fontSize: '13px',
         lineHeight: 1.5,
         display: 'flex',
@@ -42,10 +50,10 @@ export const TerrainInfoWindow: React.FC<TerrainInfoWindowProps> = ({ terrainId,
         gap: '2px',
       }}
     >
-      <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#ffffff' }}>
+      <div style={{ fontWeight: 'bold', fontSize: '15px', color: DS_COLORS.text }}>
         {terrain.name}
       </div>
-      <div style={{ color: '#fde047', fontSize: '13px' }}>
+      <div style={{ color: DS_COLORS.goldText, fontSize: '13px' }}>
         {`Avoid : ${terrain.avoidBonus}%`}{terrain.defenseBonus > 0 ? ` · Def : +${terrain.defenseBonus}` : ''}
       </div>
     </div>

@@ -6,6 +6,7 @@ import { getClassDefinition } from '../core/class/classRules';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
+import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, statRowStyle, statValueStyle } from './designSystem';
 import { getItemDisplayName, getItemIcon } from './itemIcon';
 
 interface UnitInspectorWindowProps {
@@ -20,14 +21,22 @@ const StatBox: React.FC<{ children: React.ReactNode; style?: React.CSSProperties
   <div
     style={{
       backgroundColor: '#141418',
-      border: '1px solid #2e2e38',
-      borderRadius: '6px',
+      border: '1px solid rgba(255,255,255,0.15)',
+      borderRadius: DS_RADII.medium,
       padding: '8px 10px',
       boxSizing: 'border-box',
       ...style,
     }}
   >
     {children}
+  </div>
+);
+
+/** One label–value row: the value sits in a right-aligned column shared by all panels. */
+const StatRow: React.FC<{ label: string; value: React.ReactNode; valueColor?: string }> = ({ label, value, valueColor }) => (
+  <div style={statRowStyle}>
+    <span>{label}</span>
+    <strong style={{ ...statValueStyle, color: valueColor ?? DS_COLORS.text }}>{value}</strong>
   </div>
 );
 
@@ -107,6 +116,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   return (
     <div
       ref={rootRef}
+      data-testid="inspector"
       role="dialog"
       aria-label={`${u.unit.name} details`}
       style={{
@@ -118,11 +128,13 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
         maxHeight: 'calc(100vh - 24px)',
         overflowY: 'auto',
         boxSizing: 'border-box',
-        zIndex: 960,
-        backgroundColor: '#1b1b22',
+        zIndex: DS_Z.inspector,
+        // Gold frame with a faction background (owner decision 2026-11-19):
+        // ally blue, enemy dark red. Shades in DESIGN.md.
+        backgroundColor: isPlayer ? DS_COLORS.allyBg : DS_COLORS.enemyBg,
         padding: '12px',
-        borderRadius: '10px',
-        border: `1px solid ${isPlayer ? '#3b82f6' : '#ef4444'}`,
+        borderRadius: DS_RADII.large,
+        border: `2px solid ${DS_COLORS.gold}`,
         boxShadow: '0 12px 32px rgba(0,0,0,0.75)',
         color: '#f3f4f6',
         fontSize: '13px',
@@ -130,8 +142,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
       }}
     >
       {/* Header Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <h3 style={{ margin: 0, fontSize: '15px', color: '#f3f4f6', fontWeight: 600 }}>Unit Details</h3>
           <span
             style={{
@@ -142,6 +154,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
               backgroundColor: isPlayer ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)',
               color: isPlayer ? '#93c5fd' : '#fca5a5',
               border: `1px solid ${isPlayer ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+              flexShrink: 0,
             }}
           >
             {isPlayer ? 'Player' : 'Enemy'}
@@ -151,20 +164,14 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           onClick={onClose}
           aria-label="Close unit details"
           style={{
-            minWidth: '32px',
-            minHeight: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            ...primaryButtonStyle(),
+            width: '44px',
+            height: '44px',
+            minWidth: '44px',
             padding: 0,
-            backgroundColor: '#27272e',
-            border: '1px solid #3f3f46',
-            color: '#d1d5db',
+            flexShrink: 0,
             fontSize: '15px',
-            cursor: 'pointer',
-            borderRadius: '6px',
             lineHeight: 1,
-            transition: 'background-color 0.15s ease',
           }}
         >
           ✕
@@ -175,8 +182,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
       <StatBox style={{ marginBottom: '8px', padding: '10px' }}>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           {/* Unit Identity */}
-          <div style={{ minWidth: '105px', lineHeight: 1.5, fontSize: '12px' }}>
-            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#fff' }}>{u.unit.name}</div>
+          <div style={{ minWidth: 0, flex: '1 1 105px', lineHeight: 1.5, fontSize: '12px' }}>
+            <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#fff', overflowWrap: 'break-word' }}>{u.unit.name}</div>
             <div style={{ color: '#93c5fd' }}>{className}</div>
             <div style={{ color: '#9ca3af' }}>
               LV {u.level} · EXP {u.exp < 100 ? u.exp : '--'}
@@ -253,24 +260,24 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
         {/* Panel 1: Combat Stats */}
         <StatBox style={{ fontSize: '12px', lineHeight: 1.65 }}>
           <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Combat</div>
-          <div>Atk: <strong style={{ color: '#facc15' }}>{combat.atk}</strong></div>
-          <div>Hit: <strong style={{ color: '#facc15' }}>{combat.hit}</strong></div>
-          <div>Avo: <strong style={{ color: '#facc15' }}>{combat.avoid}</strong></div>
-          <div>Crit: <strong style={{ color: '#facc15' }}>{combat.crit}</strong></div>
-          <div>AS: <strong style={{ color: '#facc15' }}>{combat.as}</strong></div>
-          <div>Eff: <span style={{ color: '#9ca3af' }}>{u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(',') : '—'}</span></div>
+          <StatRow label="Atk:" value={combat.atk} valueColor="#facc15" />
+          <StatRow label="Hit:" value={combat.hit} valueColor="#facc15" />
+          <StatRow label="Avo:" value={combat.avoid} valueColor="#facc15" />
+          <StatRow label="Crit:" value={combat.crit} valueColor="#facc15" />
+          <StatRow label="AS:" value={combat.as} valueColor="#facc15" />
+          <StatRow label="Eff:" value={u.weapon.effectiveAgainst?.length ? u.weapon.effectiveAgainst.join(',') : '—'} valueColor="#9ca3af" />
         </StatBox>
 
         {/* Panel 2: Base Stats */}
         <StatBox style={{ fontSize: '12px', lineHeight: 1.65 }}>
           <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 600, marginBottom: '2px' }}>Attributes</div>
-          <div>Str: <strong>{u.stats.str}</strong></div>
-          <div>Skl: <strong>{u.stats.skill}</strong></div>
-          <div>Spd: <strong>{u.stats.spd}</strong></div>
-          <div>Lck: <strong>{u.stats.lck}</strong></div>
-          <div>Mag: <strong>{u.stats.mag}</strong></div>
-          <div>Def: <strong>{u.stats.def}</strong></div>
-          <div>Res: <strong>{u.stats.res}</strong></div>
+          <StatRow label="Str:" value={u.stats.str} />
+          <StatRow label="Skl:" value={u.stats.skill} />
+          <StatRow label="Spd:" value={u.stats.spd} />
+          <StatRow label="Lck:" value={u.stats.lck} />
+          <StatRow label="Mag:" value={u.stats.mag} />
+          <StatRow label="Def:" value={u.stats.def} />
+          <StatRow label="Res:" value={u.stats.res} />
         </StatBox>
 
         {/* Panel 3: Items & Movement */}
@@ -304,9 +311,9 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
               <div style={{ color: '#6b7280', fontSize: '11px' }}>No items</div>
             )}
           </div>
-          <div style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px solid #27272a' }}>
-            <div>Max HP: <strong>{u.stats.maxHp}</strong></div>
-            <div>Move: <strong>{u.unit.mov}</strong></div>
+          <div style={{ marginTop: '4px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.15)' }}>
+            <StatRow label="Max HP:" value={u.stats.maxHp} />
+            <StatRow label="Move:" value={u.unit.mov} />
           </div>
         </StatBox>
       </div>
