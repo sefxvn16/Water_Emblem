@@ -31,6 +31,121 @@ interface Grid2DProps {
 const LONG_PRESS_MS = 500;
 const FALLBACK_TERRAIN = { bg: '#333', icon: '' };
 
+/** Avatar + HP bar for one unit. Stationary units render in the overlay layer
+    above the movement arrow; the traveling unit renders at its animated
+    position — so the arrow never covers a unit. */
+const UnitToken: React.FC<{ unit: UnitDisplay; selected: boolean; traveling: boolean }> = ({
+  unit,
+  selected,
+  traveling,
+}) => {
+  const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
+  const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
+  const tone = getFactionTone(unit.faction, unit.isReinforcement);
+  const avatarBg = !traveling && unit.hasActed ? '#4b5563' : tone.tokenBg;
+  const avatarBorder = traveling
+    ? `2px solid ${tone.tokenBorder}`
+    : selected
+      ? '2px solid #FFEB3B'
+      : unit.hasActed
+        ? '2px solid #6b7280'
+        : `2px solid ${tone.tokenBorder}`;
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '2px',
+        pointerEvents: 'none',
+      }}
+    >
+      {/* Character Avatar */}
+      <div
+        style={{
+          width: '42px',
+          height: '42px',
+          boxSizing: 'border-box',
+          borderRadius: '6px',
+          overflow: 'hidden',
+          backgroundColor: avatarBg,
+          border: avatarBorder,
+          boxShadow: selected
+            ? '0 0 8px #facc15'
+            : traveling
+              ? '0 4px 12px rgba(0,0,0,0.7)'
+              : '0 2px 6px rgba(0,0,0,0.6)',
+          filter: !traveling && unit.hasActed ? 'grayscale(90%) opacity(0.65)' : undefined,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {unit.avatarUrl ? (
+          <img
+            src={unit.avatarUrl}
+            alt={unit.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        ) : (
+          <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#fff' }}>
+            {unit.name.substring(0, 3)}
+          </div>
+        )}
+      </div>
+
+      {/* HP Bar */}
+      <div
+        style={{
+          width: '46px',
+          height: '10px',
+          boxSizing: 'border-box',
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          border: '1px solid rgba(0, 0, 0, 0.95)',
+          borderRadius: '2px',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.6)',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            width: `${Math.max(0, Math.min(100, hpRatio * 100))}%`,
+            backgroundColor: hpColor,
+            transition: 'width 0.2s ease',
+          }}
+        />
+        <span
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '8.5px',
+            fontWeight: 'bold',
+            lineHeight: 1,
+            color: '#ffffff',
+            textShadow: '0 0 2px #000, 1px 1px 1px #000',
+            letterSpacing: '-0.3px',
+            userSelect: 'none',
+          }}
+        >
+          {`${unit.hp}/${unit.maxHp}`}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const Grid2D: React.FC<Grid2DProps> = ({
   board,
   movementPath,
@@ -76,11 +191,8 @@ export const Grid2D: React.FC<Grid2DProps> = ({
         row.map(({ x, y, key, terrainId, unitId, overlay }) => {
           const terrain = TERRAIN_COLORS[terrainId] ?? FALLBACK_TERRAIN;
           const unit = unitId === null ? undefined : getUnitDisplay(unitId);
-          const isTraveling = activeMovingUnit && unitId === activeMovingUnit.unitId;
           const isPendingDest = pendingDestination && pendingDestination.x === x && pendingDestination.y === y;
           const { reachable, danger, attackTarget, selected } = overlay;
-          const hpRatio = unit && unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
-          const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
 
           return (
             <div
@@ -160,107 +272,6 @@ export const Grid2D: React.FC<Grid2DProps> = ({
 
               <span style={{ fontSize: '18px', opacity: 0.7, zIndex: 1 }}>{terrain.icon}</span>
 
-              {unit && !isTraveling && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '2px',
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {/* Character Avatar */}
-                  <div
-                    style={{
-                      width: '42px',
-                      height: '42px',
-                      boxSizing: 'border-box',
-                      borderRadius: '6px',
-                      overflow: 'hidden',
-                      backgroundColor: unit.hasActed
-                        ? '#4b5563'
-                        : getFactionTone(unit.faction, unit.isReinforcement).tokenBg,
-                      border: selected
-                        ? '2px solid #FFEB3B'
-                        : unit.hasActed
-                        ? '2px solid #6b7280'
-                        : `2px solid ${getFactionTone(unit.faction, unit.isReinforcement).tokenBorder}`,
-                      boxShadow: selected ? '0 0 8px #facc15' : '0 2px 6px rgba(0,0,0,0.6)',
-                      filter: unit.hasActed ? 'grayscale(90%) opacity(0.65)' : undefined,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {unit.avatarUrl ? (
-                      <img
-                        src={unit.avatarUrl}
-                        alt={unit.name}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block',
-                        }}
-                      />
-                    ) : (
-                      <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#fff' }}>
-                        {unit.name.substring(0, 3)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* HP Bar */}
-                  <div
-                    style={{
-                      width: '46px',
-                      height: '10px',
-                      boxSizing: 'border-box',
-                      backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                      border: '1px solid rgba(0, 0, 0, 0.95)',
-                      borderRadius: '2px',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.6)',
-                    }}
-                  >
-                    <div
-                      style={{
-                        height: '100%',
-                        width: `${Math.max(0, Math.min(100, hpRatio * 100))}%`,
-                        backgroundColor: hpColor,
-                        transition: 'width 0.2s ease',
-                      }}
-                    />
-                    <span
-                      style={{
-                        position: 'absolute',
-                        inset: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '8.5px',
-                        fontWeight: 'bold',
-                        lineHeight: 1,
-                        color: '#ffffff',
-                        textShadow: '0 0 2px #000, 1px 1px 1px #000',
-                        letterSpacing: '-0.3px',
-                        userSelect: 'none',
-                      }}
-                    >
-                      {`${unit.hp}/${unit.maxHp}`}
-                    </span>
-                  </div>
-                </div>
-              )}
-
               <span
                 style={{
                   position: 'absolute',
@@ -278,7 +289,35 @@ export const Grid2D: React.FC<Grid2DProps> = ({
         }),
       )}
 
-      {/* 3. Traveling unit avatar with smooth position transition */}
+      {/* 3. Stationary unit avatars: a separate layer above the movement
+          arrow (z 1), so the arrow never covers a unit. Pointer-events none
+          so tile clicks pass through to the tiles below. */}
+      {board.tiles.flatMap((row) =>
+        row.map(({ x, y, unitId, overlay }) => {
+          if (unitId === null) return null;
+          if (activeMovingUnit && unitId === activeMovingUnit.unitId) return null;
+          const unit = getUnitDisplay(unitId);
+          if (!unit) return null;
+          return (
+            <div
+              key={`unit-token-${unitId}`}
+              data-testid={`unit-token-${unitId}`}
+              style={{
+                position: 'absolute',
+                left: `${4 + x * 66 + 32}px`,
+                top: `${4 + y * 66 + 32}px`,
+                transform: 'translate(-50%, -50%)',
+                zIndex: 25,
+                pointerEvents: 'none',
+              }}
+            >
+              <UnitToken unit={unit} selected={overlay.selected} traveling={false} />
+            </div>
+          );
+        }),
+      )}
+
+      {/* 4. Traveling unit avatar with smooth position transition */}
       {activeMovingUnit && (() => {
         const unit = getUnitDisplay(activeMovingUnit.unitId);
         if (!unit) return null;
@@ -286,8 +325,6 @@ export const Grid2D: React.FC<Grid2DProps> = ({
           x: 4 + activeMovingUnit.pos.x * 66 + 32,
           y: 4 + activeMovingUnit.pos.y * 66 + 32,
         };
-        const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
-        const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
 
         return (
           <div
@@ -299,81 +336,10 @@ export const Grid2D: React.FC<Grid2DProps> = ({
               transform: 'translate(-50%, -50%)',
               transition: 'left 60ms linear, top 60ms linear',
               zIndex: 25,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2px',
               pointerEvents: 'none',
             }}
           >
-            <div
-              style={{
-                width: '42px',
-                height: '42px',
-                boxSizing: 'border-box',
-                borderRadius: '6px',
-                overflow: 'hidden',
-                backgroundColor: getFactionTone(unit.faction, unit.isReinforcement).tokenBg,
-                border: `2px solid ${getFactionTone(unit.faction, unit.isReinforcement).tokenBorder}`,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.7)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              {unit.avatarUrl ? (
-                <img
-                  src={unit.avatarUrl}
-                  alt={unit.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              ) : (
-                <div style={{ fontSize: '11px', fontWeight: 'bold', color: '#fff' }}>
-                  {unit.name.substring(0, 3)}
-                </div>
-              )}
-            </div>
-
-            <div
-              style={{
-                width: '46px',
-                height: '10px',
-                boxSizing: 'border-box',
-                backgroundColor: 'rgba(0, 0, 0, 0.85)',
-                border: '1px solid rgba(0, 0, 0, 0.95)',
-                borderRadius: '2px',
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.6)',
-              }}
-            >
-              <div
-                style={{
-                  height: '100%',
-                  width: `${Math.max(0, Math.min(100, hpRatio * 100))}%`,
-                  backgroundColor: hpColor,
-                }}
-              />
-              <span
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '8.5px',
-                  fontWeight: 'bold',
-                  lineHeight: 1,
-                  color: '#ffffff',
-                  textShadow: '0 0 2px #000, 1px 1px 1px #000',
-                  letterSpacing: '-0.3px',
-                  userSelect: 'none',
-                }}
-              >
-                {`${unit.hp}/${unit.maxHp}`}
-              </span>
-            </div>
+            <UnitToken unit={unit} selected={false} traveling />
           </div>
         );
       })()}

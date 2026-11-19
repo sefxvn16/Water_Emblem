@@ -492,7 +492,7 @@ describe('UI rendering tests', () => {
   });
 
   describe('MovementArrow & movementAnimation', () => {
-    it('renders SVG polyline and destination marker when path has >= 2 waypoints', () => {
+    it('renders a thin white solid line with an origin node', () => {
       const html = renderToString(
         React.createElement(MovementArrow, {
           path: [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
@@ -502,9 +502,20 @@ describe('UI rendering tests', () => {
       );
 
       expect(html).toContain('data-testid="movement-arrow-svg"');
-      expect(html).toContain('feDropShadow');
       expect(html).toContain('polyline');
-      expect(html).toContain('stroke-dasharray="6 6"');
+      expect(html).not.toContain('feDropShadow');
+      expect(html).not.toContain('#38bdf8');
+      expect(html).not.toContain('stroke-dasharray');
+      // Thin white solid line (3px) on a dark underlay (5px) — PLAN item 81.
+      expect(html).toContain('stroke="#ffffff"');
+      expect(html).toContain('stroke-width="3"');
+      expect(html).toContain('stroke="#0f172a"');
+      expect(html).toContain('stroke-width="5"');
+      // No more thick shaft, block arrowhead or destination ring.
+      expect(html).not.toContain('stroke-width="18"');
+      expect(html).not.toContain('M 20,0 L -14,-22 L -7,0 L -14,22 Z');
+      // Origin node: diameter = 1/3 of the 64px tile → r = 10.67.
+      expect(html).toContain('r="10.67"');
     });
 
     it('returns null when path has fewer than 2 waypoints', () => {
