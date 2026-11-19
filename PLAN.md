@@ -573,6 +573,42 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
+- [] 136. Sửa bảng dự báo chiến đấu: khung rộng hơn, vũ khí hiện nổi bật như ảnh mẫu, hết đè chữ/hình.
+  - Nguồn: chủ dự án 2026-11-19 22:10 (ảnh 1): "lỗi hình rồi, chữ hình đè lên nhau. Mà làm cái khung hình rộng ra, để cái vũ khí nó hiện đúng kiểu như ảnh tôi đưa (khác là bên đấy là spell), chứ nhét lom dom trên góc vừa xấu vừa không thể hiện tầm quan trọng của vũ khí. Đã bảo phân tích cái ảnh đó rồi mà".
+  - Tiêu chí xong: (1) Khung dự báo rộng hơn 660px hiện tại (giá trị cụ thể trình chủ duyệt trước khi làm). (2) Vũ khí hiện nổi bật kiểu ảnh mẫu: huy hiệu kim cương lớn + tên vũ khí + độ bền, có khoảng trống riêng, không đè chữ. (3) Hết mọi chỗ đè trong ảnh 1 (tên vũ khí/độ bền, số sát thương, badge Lv với AS). (4) Giữ đủ số liệu dự báo + nút Attack/Cancel của mục 125. (5) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 137. Thiết kế lại giao diện Trade và Storage: có avatar để biết ai với ai.
+  - Nguồn: chủ dự án 2026-11-19 22:10 (ảnh 2): "Lúc trade vẫn không có chọn nhân vật, giao diện trade cần có avatar để biết ai với ai chứ? Thiết kế lại giao diện mục này đi. Tương tự với mục Storage."
+  - Tiêu chí xong: (1) Trade: 2 cột đều có avatar + tên quân rõ ràng ở đầu cột. (2) Storage (convoy): tương tự, có avatar quân đang thao tác. (3) Giữ nguyên thao tác + giới hạn 4+4 (mục 86–88). (4) Thiết kế trình chủ duyệt trước khi làm. (5) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 138. Không tự qua lượt địch khi hết quân hành động; thêm tùy chọn tự động kết thúc lượt trong Settings.
+  - Nguồn: chủ dự án 2026-11-19 22:10: "Các nhân vật đi hết lượt không tự động qua lượt địch. Vì người chơi có thể dừng lại xem thông số, thông tin khác thì sao? Chỉ qua lượt khi bấm End Turn. Thêm chế độ trong Settings, là Tự động qua lượt đi khi hết (bật/tắt) để người chơi lựa chọn. Từ ngữ nào cho hợp game là được."
+  - Tiêu chí xong: (1) Quân ta hành động hết KHÔNG tự chuyển pha địch; chỉ bấm End Turn mới qua. (2) Settings có công tắc bật/tắt tự động qua lượt (tên hợp game), mặc định tắt [Giả định]; bật thì giữ hành vi tự qua như cũ. (3) Lựa chọn được lưu. (4) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 139. Thứ tự nút chức năng cố định + bổ sung nút Cancel.
+  - Nguồn: chủ dự án 2026-11-19 22:10: "Thứ tự các nút chức năng cần giữ cố định, không đổi lung tung: Attack/Hồi máu → Wait → Đổi vũ khí → Trade → ... → Cancel (hiện đang thiếu)".
+  - Tiêu chí xong: (1) Thứ tự nút cố định theo danh sách chủ duyệt (thay thứ tự ưu tiên của mục 130); nút không khả dụng thì ẩn nhưng thứ tự tương đối không đổi. (2) Có nút Cancel. (3) Danh sách đầy đủ trình chủ duyệt trước khi làm. (4) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 140. Pha địch hiển thị hành động: quân địch đi từng ô, chọn mục tiêu rồi đánh, có hoạt cảnh.
+  - Nguồn: chủ dự án 2026-11-19 22:10: "Các lượt đi của địch cũng phải hiển thị để người chơi còn thấy (bật hiển thị hành động): đi cũng cần di chuyển từ ô đi đến ô đích, chọn quân ta để đánh, rồi đánh. Hiện không rõ địch lượt vừa rồi đi như thế nào, đánh ai, thấy mỗi kết quả nên toàn phải đoán."
+  - Tiêu chí xong: (1) Mỗi quân địch di chuyển theo đường đi bằng hoạt cảnh bước như quân ta. (2) Hiện rõ quân địch đánh quân nào (theo thứ tự từng quân, kèm popup kết quả). (3) Tốc độ theo cài đặt tốc độ hoạt ảnh (mục 117). (4) Test + gate PASS. Làm sau mục 135 (tách lớp mô phỏng) để nối vào đúng chỗ.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 141. Bấm vào quân địch trong tầm để tấn công trực tiếp.
+  - Nguồn: chủ dự án 2026-11-19 22:10: "Có thể chọn tấn công bằng cách bấm vào quân địch trong phạm vi, không nhất thiết cứ phải bấm vào nút attack".
+  - Tiêu chí xong: (1) Sau khi di chuyển, bấm vào ô quân địch trong tầm vũ khí → mở dự báo tấn công (không cần nút Attack). (2) Kiểm tra hành vi hiện tại (mục 80 từng có bấm ô đỏ mở dự báo) và sửa nếu đã hỏng. (3) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
