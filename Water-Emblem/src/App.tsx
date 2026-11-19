@@ -52,7 +52,7 @@ import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
-import { chapters, chapter01Data, testChapter01Data, ExtendedUnitState } from './core/data/chapterData';
+import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
@@ -83,7 +83,6 @@ import { applyTrapDamage, trapAt } from './core/chapter/traps';
 import { canCanto } from './core/combat/canto';
 import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
-import { generateSkirmishChapter } from './core/chapter/randomMap';
 import { getSkillModifiers } from './core/combat/skills';
 import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
@@ -2355,14 +2354,6 @@ export const App: React.FC = () => {
           onToggleMute={handleToggleMute}
           difficulty={difficulty}
           onDifficultyChange={setDifficulty}
-          onStartSkirmish={() => {
-            const seed = Math.floor(Math.random() * 100000);
-            const { chapter, map } = generateSkirmishChapter(seed, testChapter01Data);
-            chapters[chapter.id] = chapter;
-            chapterMaps[chapter.id] = map;
-            setActiveScreen('none');
-            loadChapter(chapter.id);
-          }}
         />
       )}
 

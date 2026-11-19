@@ -237,16 +237,5 @@
     "sellBackDivisor": 2
   },
   "trapMinHp": 1,
-  "reinforcementSearchRadius": 2,
-  "skirmish": {
-    "forestThreshold": 0.14,
-    "gateElevation": 1,
-    "height": 10,
-    "mountainElevation": 1,
-    "mountainThreshold": 0.2,
-    "peakElevation": 2,
-    "peakThreshold": 0.23,
-    "riverElevation": -1,
-    "width": 12
-  }
+  "reinforcementSearchRadius": 2
 }

@@ -12,8 +12,6 @@ interface TitleScreenProps {
   /** Difficulty for a new game (PLAN item 115). */
   difficulty: Difficulty;
   onDifficultyChange: (difficulty: Difficulty) => void;
-  /** Start a random-map skirmish (PLAN item 119). */
-  onStartSkirmish: () => void;
 }
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({
@@ -25,7 +23,6 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   onToggleMute,
   difficulty,
   onDifficultyChange,
-  onStartSkirmish,
 }) => {
   return (
     <div
@@ -161,23 +158,6 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
             </button>
           ))}
         </div>
-        <button
-          onClick={() => {
-            soundManager.playSfx('accept');
-            onStartSkirmish();
-          }}
-          style={{
-            padding: '10px 24px',
-            backgroundColor: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.18)',
-            borderRadius: '10px',
-            color: '#e2e8f0',
-            fontSize: '14px',
-            cursor: 'pointer',
-          }}
-        >
-          🎲 Random Skirmish
-        </button>
         <button
           onClick={() => {
             soundManager.playSfx('accept');

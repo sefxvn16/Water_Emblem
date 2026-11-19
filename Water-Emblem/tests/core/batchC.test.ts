@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { evaluateChapterOutcome, type ChapterObjective } from '../../src/core/chapter/types';
 import { applyDifficulty } from '../../src/core/chapter/difficulty';
-import { generateRandomMap, generateSkirmishChapter } from '../../src/core/chapter/randomMap';
 import { testChapter01Data, type ExtendedUnitState } from '../../src/core/data/chapterData';
 import type { GridUnit } from '../../src/core/grid/types';
 
@@ -78,37 +77,3 @@ describe('difficulty (PLAN item 115, Q04)', () => {
   });
 });
 
-describe('random maps (PLAN item 119, Q12)', () => {
-  it('is deterministic per seed and differs across seeds', () => {
-    const a = generateRandomMap(42);
-    const b = generateRandomMap(42);
-    const c = generateRandomMap(43);
-    expect(a.grid).toEqual(b.grid);
-    expect(a.grid).not.toEqual(c.grid);
-  });
-
-  it('has a river with one bridge and clear deployment rows', () => {
-    const map = generateRandomMap(7);
-    const riverRow = map.grid[5]!;
-    expect(riverRow.filter((t) => t === 'bridge')).toHaveLength(1);
-    expect(riverRow.filter((t) => t === 'river')).toHaveLength(map.width - 1);
-    expect(map.grid[9]!.every((t) => t === 'plains')).toBe(true);
-    expect(map.grid[8]!.every((t) => t === 'plains')).toBe(true);
-  });
-
-  it('builds a playable skirmish chapter from the template', () => {
-    const { chapter, map } = generateSkirmishChapter(99, testChapter01Data);
-    expect(chapter.objective.type).toBe('rout');
-    expect(chapter.units.length).toBe(testChapter01Data.units.length);
-    for (const entry of chapter.units) {
-      const { x, y } = entry.unit.position;
-      expect(x).toBeGreaterThanOrEqual(0);
-      expect(x).toBeLessThan(map.width);
-      expect(y).toBeGreaterThanOrEqual(0);
-      expect(y).toBeLessThan(map.height);
-      expect(map.grid[y]![x]).not.toBe('river');
-    }
-    const players = chapter.units.filter((u) => u.unit.faction === 'player');
-    expect(players.every((u) => u.unit.position.y >= map.height - 2)).toBe(true);
-  });
-});
