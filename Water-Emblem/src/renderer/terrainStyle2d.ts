@@ -21,4 +21,7 @@ export const TERRAIN_COLORS: Readonly<Record<string, TerrainStyle2d>> = {
   castle: { bg: '#4a5568', label: 'Castle', icon: '🏯' },
   house: { bg: '#b45309', label: 'House', icon: '🏠' },
   shop: { bg: '#047857', label: 'Shop', icon: '🏪' },
+  chest: { bg: '#92400e', label: 'Chest', icon: '🎁' },
+  door: { bg: '#57534e', label: 'Door', icon: '🚪' },
+  arena: { bg: '#b45309', label: 'Arena', icon: '🏟️' },
 };

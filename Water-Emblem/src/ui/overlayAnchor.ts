@@ -107,11 +107,12 @@ export function useAnchoredOverlay(options: OverlayAnchorOptions): {
     if (rect) avoidRects.push(rect);
   }
   if (options.avoidHudCluster) {
+    // PLAN item 99: the End Turn + Settings cluster sits top-right now.
     avoidRects.push({
       left: vw - HUD_EDGE - 220,
       right: vw - HUD_EDGE,
-      top: vh - HUD_EDGE - 48,
-      bottom: vh - HUD_EDGE,
+      top: HUD_EDGE,
+      bottom: HUD_EDGE + 48,
     });
   }
   const position = computeOverlayPosition(

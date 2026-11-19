@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { CombatForecast } from '../core/combat/types';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sharedPanelStyle, statRowStyle, statValueStyle } from './designSystem';
@@ -13,7 +13,30 @@ interface CombatForecastWindowProps {
   onCancel: () => void;
 }
 
-/** FE3-styled combat forecast popup with visual HP delta transition, hit/avoid/crit, and weapon icons. */
+/** Sword glyph (Lucide "sword" outline) drawn in navy on the gold confirm button. */
+const SwordGlyph: React.FC = () => (
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.navy} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
+    <path d="M13 19l6-6" />
+    <path d="M16 16l4 4" />
+    <path d="M19 21l2-2" />
+  </svg>
+);
+
+/** Bold red X glyph for the cancel button. */
+const CrossGlyph: React.FC = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.enemy} strokeWidth="3.2" strokeLinecap="round" aria-hidden="true">
+    <path d="M5 5 L19 19" />
+    <path d="M19 5 L5 19" />
+  </svg>
+);
+
+/**
+ * Combat forecast as a two-panel versus bar (PLAN item 96): attacker panel
+ * left, defender panel right (mirrored), a gold sword button between them
+ * confirms the attack and a red X at the top-right cancels. All numbers
+ * still come verbatim from the core forecast.
+ */
 export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   forecast,
   attacker,
@@ -21,6 +44,9 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const [swordHover, setSwordHover] = useState(false);
+  const [cancelHover, setCancelHover] = useState(false);
+
   // Attacker projected combat
   const attDamagePerHit = forecast.attacker.damage;
   const attCount = forecast.attacker.attackCount;
@@ -49,7 +75,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   const { ref, style: anchorStyle } = useAnchoredOverlay({
     tile: attacker.unit.position,
     avoidTiles: [defender.unit.position],
-    width: 340,
+    width: 660,
     prefer: 'top-left',
     avoidHudCluster: true,
   });
@@ -70,7 +96,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     ? defender.inventory.find((i) => i.itemId === defender.weapon!.id)?.uses ?? (defender.weapon.maxUses ?? 40)
     : 0;
 
-  const renderSideCard = (
+  const renderSidePanel = (
     u: ExtendedUnitState,
     side: 'attacker' | 'defender',
     currentHp: number,
@@ -90,6 +116,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     const maxHp = u.stats.maxHp || currentHp || 1;
     const hpAfterRatio = Math.max(0, Math.min(1, afterHp / maxHp));
     const hpCurRatio = Math.max(0, Math.min(1, currentHp / maxHp));
+    const align = isPlayer ? 'left' : 'right';
 
     return (
       <div
@@ -99,42 +126,45 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           borderRadius: '6px',
           padding: '10px',
           display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
+          flexDirection: isPlayer ? 'row' : 'row-reverse',
+          gap: '10px',
+          flex: 1,
           minWidth: 0,
         }}
       >
-        {/* Header: Avatar + Name + Weapon */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '4px',
-              border: `1.5px solid ${isPlayer ? '#60a5fa' : '#f87171'}`,
-              overflow: 'hidden',
-              flexShrink: 0,
-              backgroundColor: '#07123d',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {u.avatarUrl ? (
-              <img
-                src={u.avatarUrl}
-                alt={u.unit.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <span style={{ fontSize: '24px' }}>👤</span>
-            )}
-          </div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '13px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {/* Avatar at the outer edge (mirrored for the defender) */}
+        <div
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '4px',
+            border: `1.5px solid ${isPlayer ? '#60a5fa' : '#f87171'}`,
+            overflow: 'hidden',
+            flexShrink: 0,
+            backgroundColor: '#07123d',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'flex-start',
+          }}
+        >
+          {u.avatarUrl ? (
+            <img
+              src={u.avatarUrl}
+              alt={u.unit.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+          ) : (
+            <span style={{ fontSize: '28px' }}>👤</span>
+          )}
+        </div>
+
+        <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <div style={{ textAlign: align }}>
+            <div style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {u.unit.name}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
               <img src={weaponIcon} alt="" style={{ width: '14px', height: '14px', imageRendering: 'pixelated', flexShrink: 0 }} />
               <span style={{ color: isPlayer ? '#93c5fd' : '#fca5a5', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {u.weapon?.name ?? 'Unarmed'}
@@ -142,44 +172,46 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
               <span style={{ color: '#94a3b8', fontSize: '10px' }}>/{weaponUses}</span>
             </div>
           </div>
-        </div>
 
-        {/* HP Prediction & Progress Bar */}
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#e2e8f0' }}>
-              {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#ef4444' : afterHp < currentHp ? '#fde047' : '#4ade80' }}>{afterHp}</span>
-            </span>
-            {hpLoss > 0 ? (
-              <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#f87171', backgroundColor: 'rgba(239,68,68,0.2)', padding: '0 4px', borderRadius: '3px' }}>
-                -{hpLoss}{afterHp === 0 ? ' KO' : ''}
+          {/* HP Prediction & Progress Bar */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#e2e8f0' }}>
+                {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#ef4444' : afterHp < currentHp ? '#fde047' : '#4ade80' }}>{afterHp}</span>
               </span>
-            ) : (
-              <span style={{ fontSize: '10px', color: '#94a3b8' }}>-0</span>
-            )}
+              {hpLoss > 0 ? (
+                <span style={{ fontSize: '11px', fontWeight: 'bold', color: '#f87171', backgroundColor: 'rgba(239,68,68,0.2)', padding: '0 4px', borderRadius: '3px' }}>
+                  -{hpLoss}{afterHp === 0 ? ' KO' : ''}
+                </span>
+              ) : (
+                <span style={{ fontSize: '10px', color: '#94a3b8' }}>-0</span>
+              )}
+            </div>
+            <div style={{ width: '100%', height: '7px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
+              {/* Depleted loss portion */}
+              <div style={{ width: `${hpCurRatio * 100}%`, height: '100%', backgroundColor: '#ef4444', position: 'absolute', left: 0, top: 0 }} />
+              {/* Retained remaining HP portion */}
+              <div style={{ width: `${hpAfterRatio * 100}%`, height: '100%', backgroundColor: '#22c55e', position: 'absolute', left: 0, top: 0 }} />
+            </div>
           </div>
-          <div style={{ width: '100%', height: '7px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
-            {/* Depleted loss portion */}
-            <div style={{ width: `${hpCurRatio * 100}%`, height: '100%', backgroundColor: '#ef4444', position: 'absolute', left: 0, top: 0 }} />
-            {/* Retained remaining HP portion */}
-            <div style={{ width: `${hpAfterRatio * 100}%`, height: '100%', backgroundColor: '#22c55e', position: 'absolute', left: 0, top: 0 }} />
-          </div>
-        </div>
 
-        {/* Combat Stats Rows */}
-        {!isPlayer && !canCounter ? (
-          <div style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '11px', textAlign: 'center', padding: '12px 0' }}>
-            Cannot counter
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px', marginTop: '2px' }}>
-            {renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}
-            {renderStatRow('Hit:', `${hitRate}%`)}
-            {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
-            {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}
-            {renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}
-          </div>
-        )}
+          {/* Combat Stats */}
+          {!isPlayer && !canCounter ? (
+            <div style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '11px', textAlign: 'center', padding: '8px 0' }}>
+              Cannot counter
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 12px' }}>
+                {renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}
+                {renderStatRow('Hit:', `${hitRate}%`)}
+                {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
+                {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}
+              </div>
+              {renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -191,22 +223,45 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
       style={{
         ...sharedPanelStyle,
         ...anchorStyle,
-        width: '340px',
+        width: '660px',
+        maxWidth: 'calc(100vw - 16px)',
         maxHeight: 'calc(100vh - 40px)',
         overflowY: 'auto',
         zIndex: DS_Z.forecast,
-        padding: '14px',
+        padding: '10px',
         borderRadius: DS_RADII.panel,
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
         <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.03em' }}>
           ⚔️ COMBAT FORECAST
         </div>
+        <button
+          type="button"
+          aria-label="Cancel"
+          title="Cancel"
+          onClick={onCancel}
+          onMouseEnter={() => setCancelHover(true)}
+          onMouseLeave={() => setCancelHover(false)}
+          style={{
+            ...secondaryButtonStyle(),
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            padding: 0,
+            flexShrink: 0,
+            border: `2px solid ${cancelHover ? DS_COLORS.enemy : DS_COLORS.secondaryBorder}`,
+            boxShadow: cancelHover ? '0 0 10px rgba(239,68,68,0.55)' : '0 2px 6px rgba(0,0,0,0.5)',
+            transform: cancelHover ? 'scale(1.08)' : 'scale(1)',
+            transition: 'transform 0.1s ease, box-shadow 0.1s ease, border-color 0.1s ease',
+          }}
+        >
+          <CrossGlyph />
+        </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-        {renderSideCard(
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {renderSidePanel(
           attacker,
           'attacker',
           attacker.stats.hp,
@@ -222,7 +277,33 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           attWeaponIcon,
           attUses,
         )}
-        {renderSideCard(
+
+        <button
+          type="button"
+          aria-label="⚔️ Attack!"
+          title="Attack"
+          onClick={onConfirm}
+          onMouseEnter={() => setSwordHover(true)}
+          onMouseLeave={() => setSwordHover(false)}
+          style={{
+            ...primaryButtonStyle(),
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            padding: 0,
+            flexShrink: 0,
+            border: `2px solid ${DS_COLORS.goldText}`,
+            boxShadow: swordHover
+              ? '0 0 16px rgba(234,179,8,0.8), 0 4px 10px rgba(0,0,0,0.6)'
+              : '0 0 8px rgba(234,179,8,0.45), 0 4px 10px rgba(0,0,0,0.6)',
+            transform: swordHover ? 'scale(1.1) rotate(-6deg)' : 'scale(1)',
+            transition: 'transform 0.12s ease, box-shadow 0.12s ease',
+          }}
+        >
+          <SwordGlyph />
+        </button>
+
+        {renderSidePanel(
           defender,
           'defender',
           defender.stats.hp,
@@ -238,30 +319,6 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           defWeaponIcon,
           defUses,
         )}
-      </div>
-
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <button
-          onClick={onConfirm}
-          style={{
-            ...primaryButtonStyle(),
-            flex: 1,
-            padding: '9px 12px',
-            fontSize: '14px',
-          }}
-        >
-          ⚔️ Attack!
-        </button>
-        <button
-          onClick={onCancel}
-          style={{
-            ...secondaryButtonStyle(),
-            padding: '9px 16px',
-            fontSize: '13px',
-          }}
-        >
-          Cancel
-        </button>
       </div>
     </div>
   );

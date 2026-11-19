@@ -21,7 +21,7 @@ interface BattleSettingsMenuProps {
   onLoad: () => void;
   onViewMode: (mode: '3d' | '2d') => void;
   onToggleMute: () => void;
-  /** Primary battle action shown left of the gear in the bottom-right cluster (End Turn). */
+  /** Primary battle action shown left of the gear in the top-right cluster (End Turn). */
   leading?: React.ReactNode;
 }
 
@@ -90,7 +90,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
         style={{
           position: 'fixed',
           right: `${HUD_EDGE}px`,
-          bottom: `${HUD_EDGE}px`,
+          top: `${HUD_EDGE}px`,
           zIndex: DS_Z.settings,
           display: 'flex',
           alignItems: 'center',
@@ -130,7 +130,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             ...sharedPanelStyle,
             position: 'fixed',
             right: `${HUD_EDGE}px`,
-            bottom: `${HUD_EDGE + HUD_SIZE + HUD_GAP}px`,
+            top: `${HUD_EDGE + HUD_SIZE + HUD_GAP}px`,
             zIndex: DS_Z.settings,
             width: '340px',
             maxHeight: `calc(100vh - ${HUD_EDGE + HUD_SIZE + HUD_GAP + 16}px)`,

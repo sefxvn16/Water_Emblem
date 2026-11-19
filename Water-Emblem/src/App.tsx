@@ -16,6 +16,13 @@ import { TurnManager } from './core/turn/turnManager';
 import { CombatForecast, type ItemDefinition } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
 import { applyCombatDurability } from './core/combat/durability';
+import {
+  canAttackAtDistance,
+  equipWeapon,
+  findWeaponForDistance,
+  getAttackWeapons,
+  getUsableWeapons,
+} from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
@@ -24,13 +31,20 @@ import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movement
 import { buildBoardView } from './core/grid/boardView';
 import {
   bossStartEvent,
+  canOpenChest,
+  canOpenDoor,
+  openChest,
+  openDoor,
   pillageVillage,
   recruit,
   resolveDefeat,
   seize,
   visitVillage,
   type ChapterState,
+  type ChestState,
   type DialogueLine,
+  type DoorState,
+  type GameEvent,
   type VillageState,
 } from './core/chapter/events';
 import { eventLogLines, villageRewardText } from './ui/eventLog';
@@ -38,7 +52,7 @@ import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
-import { changeMountedState, getAttackRange, getClassDefinition, promoteWithMasterSeal, useVulnerary } from './core/class/classRules';
+import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, useVulnerary } from './core/class/classRules';
 import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
@@ -51,6 +65,21 @@ import { BattleSettingsMenu, HUD_EDGE, HUD_SIZE } from './ui/BattleSettingsMenu'
 const HUD_CLEAR = HUD_EDGE + HUD_SIZE + 8;
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
+import { WeaponPickerWindow } from './ui/WeaponPickerWindow';
+import { OverflowWindow } from './ui/OverflowWindow';
+import { resolveOverflow, slotKind, hasRoomFor } from './core/data/inventory';
+import { TradeWindow, type TradeSide } from './ui/TradeWindow';
+import { getTradePartners, tradeMove, tradeSwap } from './core/data/trade';
+import { ConvoyWindow } from './ui/ConvoyWindow';
+import { CONVOY_SLOTS, depositToConvoy, sendToConvoy, withdrawFromConvoy } from './core/data/convoy';
+import { ShopWindow } from './ui/ShopWindow';
+import { ArenaWindow } from './ui/ArenaWindow';
+import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
+import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
+import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
+import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
+import { applyCombatWeaponExp } from './core/combat/weaponExp';
+import type { InventoryEntry } from './core/data/chapterData';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
 import { DialogueBox } from './ui/DialogueBox';
 import { BattlePreparationModal } from './ui/BattlePreparationModal';
@@ -111,6 +140,11 @@ export const App: React.FC = () => {
   };
   const [pendingMovePos, setPendingMovePos] = useState<Position | null>(null);
   const [plannedPath, setPlannedPath] = useState<readonly Position[] | null>(null);
+  // PLAN item 98: clicking a destination moves the unit there at once; the
+  // action bar appears only after arrival. moveOrigin is where Cancel Move
+  // sends the unit back to.
+  const [moveCommitted, setMoveCommitted] = useState(false);
+  const [moveOrigin, setMoveOrigin] = useState<Position | null>(null);
   const [activeMovingUnit, setActiveMovingUnit] = useState<ActiveMovingUnit | null>(null);
   const animCleanupRef = useRef<(() => void) | null>(null);
   const [hoveredTile, setHoveredTile] = useState<Position | null>(null);
@@ -124,22 +158,48 @@ export const App: React.FC = () => {
   // Attack target-lock (PLAN item 80): after pressing Attack with several
   // targets in range, only target tiles respond until one is picked.
   const [attackTargeting, setAttackTargeting] = useState(false);
+  const [weaponPickerOpen, setWeaponPickerOpen] = useState(false);
+  const [pendingOverflows, setPendingOverflows] = useState<
+    { unitId: string; itemId: string; itemName: string }[]
+  >([]);
+  const [tradeState, setTradeState] = useState<{ partnerId: string | null } | null>(null);
+  const [convoy, setConvoy] = useState<InventoryEntry[]>([]);
+  const [storageOpen, setStorageOpen] = useState(false);
+  const [shopOpen, setShopOpen] = useState(false);
+  const [arenaOpen, setArenaOpen] = useState(false);
+  const [arenaTier, setArenaTier] = useState<ArenaTier | null>(null);
+  const [arenaOpponent, setArenaOpponent] = useState<ExtendedUnitState | null>(null);
+  const [arenaOutcome, setArenaOutcome] = useState<ArenaFightOutcome | null>(null);
 
-  // Esc leaves the Attack target-lock and returns to the action menu.
+  // PLAN item 98: a committed move belongs to the current selection only.
   useEffect(() => {
-    if (!attackTargeting) return;
+    if (!turnState.selectedUnitId) {
+      setMoveCommitted(false);
+      setMoveOrigin(null);
+    }
+  }, [turnState.selectedUnitId]);
+  const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
+  const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
+
+  // Esc leaves the Attack target-lock / weapon picker / staff lock and
+  // returns to the action menu.
+  useEffect(() => {
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setAttackTargeting(false);
+      if (event.key === 'Escape') { setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [gold, setGold] = useState<number>(0);
   const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
+  const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
+  const [doorStates, setDoorStates] = useState<Record<string, DoorState>>({});
+  const [spawnedReinforcements, setSpawnedReinforcements] = useState<string[]>([]);
   const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
     villageName: string;
     lines: readonly DialogueLine[];
@@ -205,6 +265,8 @@ export const App: React.FC = () => {
       : structuredClone(targetChapter.units);
     setExtendedUnits(newUnits);
     setReserveUnits([]);
+    // The convoy carries over between chapters; a fresh game starts empty.
+    if (!carryoverUnits) setConvoy([]);
     turnManager.restoreState({ turnNumber: 1, activePhase: 'player_phase' }, newUnits.map((u) => u.unit));
     setTurnState(turnManager.getState());
     setChapterOutcome('ongoing');
@@ -212,6 +274,16 @@ export const App: React.FC = () => {
     setShowPreparation(chapterId === 'chapter_02' || chapterId === 'chapter_03');
     if (!carryoverUnits) setGold(0);
     setVillageStates({});
+    setChestStates({});
+    setDoorStates({});
+    setSpawnedReinforcements([]);
+    setMoveCommitted(false);
+    setMoveOrigin(null);
+    // PLAN item 94: warn about reinforcements arriving at the end of turn 1.
+    const arriving = announcedReinforcements(targetChapter, 1, []);
+    if (arriving.length > 0) {
+      setCombatLog((prev) => ['⚠️ Enemy reinforcements will arrive at the end of this turn!', ...prev]);
+    }
     setActiveVillageDialogue(null);
     setPendingMovePos(null);
     setSelectedTarget(null);
@@ -252,6 +324,13 @@ export const App: React.FC = () => {
     return new Set(Array.from(turnState.reachableTiles.keys()));
   }, [turnState.reachableTiles]);
 
+  // PLAN item 92: opened door tiles are passable for movement.
+  const openedDoorKeys = useMemo(() => new Set(
+    (currentChapter.doors ?? [])
+      .filter((door) => doorStates[door.id] === 'opened')
+      .map((door) => `${door.position.x},${door.position.y}`),
+  ), [currentChapter.doors, doorStates]);
+
   // Vùng nguy hiểm của quân địch
   const dangerZoneKeys = useMemo(() => {
     const danger = new Set<string>();
@@ -262,6 +341,7 @@ export const App: React.FC = () => {
         map: mapData,
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
+        openedDoors: openedDoorKeys,
       });
 
       const candidateTiles = enemy.aiRole === 'stationary'
@@ -284,7 +364,7 @@ export const App: React.FC = () => {
       }
     }
     return danger;
-  }, [extendedUnits]);
+  }, [extendedUnits, openedDoorKeys]);
 
   // Danh sách các mục tiêu có thể tấn công từ vị trí hiện tại
   const attackableTargets = useMemo(() => {
@@ -293,8 +373,9 @@ export const App: React.FC = () => {
     const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
     return enemies.filter((enemy) => {
       const dist = getManhattanDistance(pendingMovePos, enemy.unit.position);
-      const range = getAttackRange(selectedExtUnit.unit, selectedExtUnit.weapon);
-      return dist >= range.min && dist <= range.max;
+      // Any usable weapon in the inventory counts (PLAN item 85): the
+      // Attack command opens a weapon picker when several can reach.
+      return canAttackAtDistance(selectedExtUnit, ITEM_BY_ID, dist);
     });
   }, [selectedExtUnit, pendingMovePos, extendedUnits]);
 
@@ -302,12 +383,24 @@ export const App: React.FC = () => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
 
+  // PLAN item 89: heal-staff targets from the destination tile.
+  const staffTargets = useMemo(() => {
+    if (!staffTargeting || !selectedExtUnit || !pendingMovePos) return [];
+    const staff = ITEM_BY_ID.get(staffTargeting.staffId);
+    if (!staff) return [];
+    return getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos);
+  }, [staffTargeting, selectedExtUnit, pendingMovePos, extendedUnits]);
+
+  const staffTargetKeys = useMemo(() => {
+    return new Set(staffTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
+  }, [staffTargets]);
+
   const boardView = buildBoardView({
     map: mapData,
     units: extendedUnits.map(({ unit }) => unit),
     reachableKeys,
     dangerZoneKeys,
-    attackTargetKeys,
+    attackTargetKeys: staffTargeting ? staffTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
   });
 
@@ -343,6 +436,25 @@ export const App: React.FC = () => {
     return state === 'intact' ? village : null;
   }, [pendingMovePos, selectedExtUnit, currentChapter.villages, villageStates]);
 
+  // PLAN item 92: closed chest under the destination tile, closed door beside it.
+  const currentChestAtPendingPos = useMemo(() => {
+    if (!pendingMovePos || !selectedExtUnit) return null;
+    const chest = currentChapter.chests?.find(
+      (c) => c.position.x === pendingMovePos.x && c.position.y === pendingMovePos.y,
+    );
+    if (!chest || chestStates[chest.id] === 'opened') return null;
+    return chest;
+  }, [pendingMovePos, selectedExtUnit, currentChapter.chests, chestStates]);
+
+  const doorAtPendingPos = useMemo(() => {
+    if (!pendingMovePos || !selectedExtUnit) return null;
+    const door = currentChapter.doors?.find(
+      (d) => Math.abs(d.position.x - pendingMovePos.x) + Math.abs(d.position.y - pendingMovePos.y) === 1,
+    );
+    if (!door || doorStates[door.id] === 'opened') return null;
+    return door;
+  }, [pendingMovePos, selectedExtUnit, currentChapter.doors, doorStates]);
+
   // Click vào ô trên bản đồ
   const handleTileClick = (x: number, y: number) => {
     if (animCleanupRef.current) {
@@ -350,6 +462,26 @@ export const App: React.FC = () => {
       animCleanupRef.current = null;
     }
     if (turnState.activePhase !== 'player_phase' || isProcessingAI) {
+      return;
+    }
+    // PLAN item 86: a full-inventory choice must be resolved first.
+    if (pendingOverflows.length > 0) {
+      return;
+    }
+    // PLAN item 87: the trade window is modal.
+    if (tradeState) {
+      return;
+    }
+    // PLAN item 88: the storage window is modal.
+    if (storageOpen) {
+      return;
+    }
+    // PLAN item 91: the shop window is modal.
+    if (shopOpen) {
+      return;
+    }
+    // PLAN item 93: the arena window is modal.
+    if (arenaOpen) {
       return;
     }
 
@@ -360,14 +492,21 @@ export const App: React.FC = () => {
     const openAttackForecast = (target: ExtendedUnitState) => {
       if (!selectedExtUnit || !pendingMovePos) return;
       soundManager.playSfx('cursor');
+      setWeaponPickerOpen(false);
       setSelectedTarget(target);
       const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+      // PLAN item 85: when the equipped weapon cannot reach this target
+      // but another usable weapon can, equip that weapon for the attack.
+      const attackWeapon = findWeaponForDistance(selectedExtUnit, ITEM_BY_ID, dist);
+      if (attackWeapon && attackWeapon.id !== selectedExtUnit.weapon?.id) {
+        setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, attackWeapon.id, ITEM_BY_ID));
+      }
       const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
       const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
       setCombatForecast(calculateCombatForecast(
         selectedExtUnit.unit,
         selectedExtUnit.stats,
-        selectedExtUnit.weapon,
+        attackWeapon ?? selectedExtUnit.weapon,
         target.unit,
         target.stats,
         target.weapon,
@@ -378,6 +517,30 @@ export const App: React.FC = () => {
         extendedUnits.map((u) => u.unit)
       ));
     };
+
+    // PLAN item 89: staff target lock — click a highlighted ally to heal,
+    // click the unit's destination tile to go back to the menu.
+    if (staffTargeting) {
+      if (clickedExt && staffTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
+        const staffId = staffTargeting.staffId;
+        const targetId = clickedExt.unit.id;
+        setStaffTargeting(null);
+        executeWithMove(() => {
+          if (!selectedExtUnit) return;
+          const result = applyStaffUse(extendedUnits, selectedExtUnit.unit.id, targetId, staffId, ITEM_BY_ID, defaultRNG);
+          if (!result) return;
+          soundManager.playSfx('heal');
+          turnManager.replaceUnits(result.units.map(({ unit }) => unit));
+          turnManager.waitSelectedUnit();
+          setExtendedUnits(result.units);
+          setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
+          syncState();
+        });
+      } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
+        setStaffTargeting(null);
+      }
+      return;
+    }
 
     // Đang khóa chọn mục tiêu Attack (PLAN item 80): chỉ ô địch trong tầm
     // mới đáp ứng; bấm ô đích của quân để quay lại menu, ô khác bỏ qua.
@@ -400,17 +563,59 @@ export const App: React.FC = () => {
     }
 
     // Nếu đã chọn 1 quân ta và click vào ô di chuyển trong phạm vi
-    if (selectedExtUnit && reachableKeys.has(`${x},${y}`) && !activeMovingUnit) {
+    // (PLAN items 87/88: after trading or using Storage, the destination is locked).
+    // PLAN item 98: the click moves the unit to the tile right away; the
+    // action bar appears after arrival. Clicking another reachable tile
+    // sends the unit back to its origin first, then to the new tile.
+    if (selectedExtUnit && reachableKeys.has(`${x},${y}`) && !activeMovingUnit
+      && !(pendingMovePos && (selectedExtUnit.unit.hasTraded || selectedExtUnit.unit.hasStored))) {
       const moveData = turnState.reachableTiles?.get(`${x},${y}`);
       const path = moveData?.path ?? [selectedExtUnit.unit.position, { x, y }];
-      setPendingMovePos({ x, y });
+      const dest = { x, y };
+      const unitId = selectedExtUnit.unit.id;
+      const moveType = selectedExtUnit.unit.moveType;
+      const origin = moveOrigin ?? { ...selectedExtUnit.unit.position };
+      setPendingMovePos(dest);
       setPlannedPath(path);
+      setWeaponPickerOpen(false);
       // Đổi ô đích thì hủy lựa chọn tấn công đang chờ: dự báo cũ tính theo
       // vị trí cũ, giữ lại sẽ đánh địch cũ trong khi quân đi ô khác (PLAN 80).
       setCombatForecast(null);
       setSelectedTarget(null);
       setAttackTargeting(false);
+      setStaffTargeting(null);
       soundManager.playSfx('cursor');
+
+      const arriveAtDest = () => {
+        turnManager.moveSelectedUnit(dest);
+        setExtendedUnits([...extendedUnits]);
+        setActiveMovingUnit(null);
+        setMoveCommitted(true);
+        syncState();
+      };
+      const walkToDest = () => {
+        if (path.length <= 1 || (path[0]!.x === dest.x && path[0]!.y === dest.y)) {
+          arriveAtDest();
+          return;
+        }
+        animCleanupRef.current = runMovementAnimation(path, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+          animCleanupRef.current = null;
+          arriveAtDest();
+        });
+      };
+      if (moveCommitted && plannedPath && plannedPath.length > 1) {
+        const backPath = [...plannedPath].reverse();
+        animCleanupRef.current = runMovementAnimation(backPath, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+          animCleanupRef.current = null;
+          turnManager.moveSelectedUnit(origin);
+          setExtendedUnits([...extendedUnits]);
+          setActiveMovingUnit(null);
+          walkToDest();
+        });
+      } else {
+        setMoveOrigin(origin);
+        walkToDest();
+      }
       return;
     }
 
@@ -421,6 +626,7 @@ export const App: React.FC = () => {
         map: mapData,
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
+        openedDoors: openedDoorKeys,
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
       setPinnedUnitId(clickedExt.unit.id);
@@ -456,6 +662,15 @@ export const App: React.FC = () => {
 
   // Chạy di chuyển có hoạt cảnh trước khi hoàn tất hành động
   const executeWithMove = (actionFn: () => void) => {
+    // PLAN item 98: the unit already walked to the destination on click.
+    if (moveCommitted) {
+      actionFn();
+      setMoveCommitted(false);
+      setMoveOrigin(null);
+      setPendingMovePos(null);
+      setPlannedPath(null);
+      return;
+    }
     if (!selectedExtUnit || !pendingMovePos) { actionFn(); return; }
     const dest = { ...pendingMovePos };
     const path = plannedPath && plannedPath.length > 1 ? [...plannedPath] : null;
@@ -524,11 +739,13 @@ export const App: React.FC = () => {
         const killerId = result.unitDefeatedId === attacker.unit.id ? defender.unit.id : attacker.unit.id;
         const defeat = resolveDefeat(chapterState(updatedUnits), result.unitDefeatedId, killerId, itemsJson.items, currentDialogues);
         logs.push(...eventLogLines(defeat.events));
+        queueOverflows(defeat.events);
         updatedUnits = [...defeat.state.units];
       }
       const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
       updatedUnits = experience.entries;
       updatedUnits = applyCombatDurability(updatedUnits, result, ITEM_BY_ID);
+      updatedUnits = applyCombatWeaponExp(updatedUnits, result);
       logs.push(...experience.messages);
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
@@ -546,6 +763,40 @@ export const App: React.FC = () => {
   const handleConfirmWait = () => {
     executeWithMove(() => {
       soundManager.playSfx('accept');
+      turnManager.waitSelectedUnit();
+      setSelectedTarget(null);
+      setCombatForecast(null);
+      syncState();
+    });
+  };
+
+  // PLAN item 92: opening a chest or door ends the unit's action.
+  const handleOpenChest = () => {
+    if (!currentChestAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
+    const chest = currentChestAtPendingPos;
+    executeWithMove(() => {
+      const result = openChest(chapterState(), selectedExtUnit.unit.id, chest, currentChapter, itemsJson.items);
+      if (result.events.length === 0) return;
+      soundManager.playSfx('item_get');
+      setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+      commitChapterState(result.state);
+      queueOverflows(result.events);
+      turnManager.waitSelectedUnit();
+      setSelectedTarget(null);
+      setCombatForecast(null);
+      syncState();
+    });
+  };
+
+  const handleOpenDoor = () => {
+    if (!doorAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
+    const door = doorAtPendingPos;
+    executeWithMove(() => {
+      const result = openDoor(chapterState(), selectedExtUnit.unit.id, door);
+      if (result.events.length === 0) return;
+      soundManager.playSfx('item_get');
+      setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
+      commitChapterState(result.state);
       turnManager.waitSelectedUnit();
       setSelectedTarget(null);
       setCombatForecast(null);
@@ -573,7 +824,7 @@ export const App: React.FC = () => {
   const handlePromote = (targetClassId: string) => {
     if (!selectedExtUnit || !pendingMovePos) return;
     executeWithMove(() => {
-      const changed = promoteWithMasterSeal(selectedExtUnit, targetClassId);
+      const changed = promoteWithoutItem(selectedExtUnit, targetClassId);
       if (!changed) return;
       soundManager.playSfx('levelup');
       const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
@@ -597,18 +848,44 @@ export const App: React.FC = () => {
       map: mapData,
       terrains: defaultTerrainRegistry,
       units: nextUnits.map(({ unit }) => unit),
+      openedDoors: openedDoorKeys,
     });
     turnManager.selectUnit(changed.unit.id, range);
     syncState();
   };
 
-  const chapterState = (units: readonly ExtendedUnitState[] = extendedUnits): ChapterState => ({ units, gold, villageStates });
+  const chapterState = (units: readonly ExtendedUnitState[] = extendedUnits): ChapterState => ({ units, gold, villageStates, chestStates, doorStates });
 
   const commitChapterState = (next: ChapterState) => {
     setExtendedUnits([...next.units]);
     setGold(next.gold);
     setVillageStates({ ...next.villageStates });
+    setChestStates({ ...next.chestStates });
+    setDoorStates({ ...next.doorStates });
     turnManager.replaceUnits(next.units.map(({ unit }) => unit));
+  };
+
+  // PLAN item 86: full-inventory gains wait for a discard choice.
+  const queueOverflows = (events: readonly GameEvent[]) => {
+    const overflows = events
+      .filter((event) => event.type === 'item_overflow')
+      .map((event) => ({ unitId: event.unitId, itemId: event.itemId, itemName: event.itemName }));
+    if (overflows.length > 0) setPendingOverflows((prev) => [...prev, ...overflows]);
+  };
+
+  const resolvePendingOverflow = (discardItemId: string | null | 'convoy') => {
+    const pending = pendingOverflows[0];
+    if (!pending) return;
+    const newUses = ITEM_BY_ID.get(pending.itemId)?.maxUses ?? 1;
+    if (discardItemId === 'convoy') {
+      const nextConvoy = sendToConvoy(convoy, pending.itemId, newUses);
+      if (nextConvoy) setConvoy(nextConvoy);
+    } else {
+      setExtendedUnits((prev) =>
+        resolveOverflow(prev, pending.unitId, pending.itemId, newUses, discardItemId, ITEM_BY_ID));
+    }
+    setPendingOverflows((prev) => prev.slice(1));
+    syncState();
   };
 
   const handleSeize = () => {
@@ -618,6 +895,7 @@ export const App: React.FC = () => {
       if (!result.events.some(({ type }) => type === 'chapter_seized')) return;
       soundManager.playSfx('stage_clear');
       commitChapterState(result.state);
+      queueOverflows(result.events);
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       turnManager.waitSelectedUnit();
       setChapterOutcome('victory');
@@ -632,6 +910,7 @@ export const App: React.FC = () => {
       if (result.events.length === 0) return;
       soundManager.playSfx('item_get');
       commitChapterState(result.state);
+      queueOverflows(result.events);
       turnManager.waitSelectedUnit();
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       syncState();
@@ -653,6 +932,7 @@ export const App: React.FC = () => {
       });
       setCombatLog((prev) => [...eventLogLines(result.events), ...prev]);
       commitChapterState(result.state);
+      queueOverflows(result.events);
       turnManager.waitSelectedUnit();
       setSelectedTarget(null);
       setCombatForecast(null);
@@ -663,6 +943,15 @@ export const App: React.FC = () => {
   // Nút Attack trong menu hành động (PLAN item 80): đúng 1 mục tiêu thì mở
   // dự báo ngay; từ 2 mục tiêu thì khóa chọn mục tiêu trong tầm đánh.
   const handleAttack = () => {
+    // PLAN item 85: with several usable attack weapons, choose one first.
+    if (selectedExtUnit && getAttackWeapons(selectedExtUnit, ITEM_BY_ID).length > 1) {
+      setWeaponPickerOpen(true);
+      return;
+    }
+    proceedAttack();
+  };
+
+  const proceedAttack = () => {
     if (attackableTargets.length === 1) {
       const target = attackableTargets[0];
       if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
@@ -671,14 +960,275 @@ export const App: React.FC = () => {
     }
   };
 
+  const handlePickWeapon = (itemId: string) => {
+    if (!selectedExtUnit) return;
+    setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, itemId, ITEM_BY_ID));
+    setWeaponPickerOpen(false);
+    // Always go through target lock after picking, so the forecast is
+    // computed from the newly equipped weapon (state settles first).
+    setAttackTargeting(true);
+  };
+
+  const handleEquip = (itemId: string) => {
+    if (!selectedExtUnit) return;
+    setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, itemId, ITEM_BY_ID));
+  };
+
+  const handleStaff = (staffId: string) => {
+    setStaffTargeting({ staffId });
+  };
+
+  const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
+    ? getTradePartners(extendedUnits, selectedExtUnit, pendingMovePos)
+    : [];
+
+  // PLAN item 88: Storage is available to Marth himself and to units
+  // standing adjacent to Marth at their destination tile.
+  const lordEntry = extendedUnits.find((u) => u.unit.id === currentChapter.lordUnitId && !u.unit.isDead);
+  const canStorage = Boolean(selectedExtUnit && pendingMovePos && lordEntry && (
+    selectedExtUnit.unit.id === lordEntry.unit.id
+    || Math.abs(lordEntry.unit.position.x - pendingMovePos.x)
+      + Math.abs(lordEntry.unit.position.y - pendingMovePos.y) === 1
+  ));
+
+  // PLAN item 91: Shop is available on shop terrain at the destination tile.
+  const canShop = Boolean(selectedExtUnit && pendingMovePos
+    && (mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains') === 'shop');
+
+  // PLAN item 93: Arena is available on arena terrain for an armed unit with gold.
+  const canArena = Boolean(selectedExtUnit && pendingMovePos
+    && (mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains') === 'arena'
+    && canEnterArena(selectedExtUnit) && gold >= ARENA_TIERS[0]!.wager);
+
+  const handleDeposit = (index: number) => {
+    if (!selectedExtUnit) return;
+    const result = depositToConvoy(extendedUnits, convoy, selectedExtUnit.unit.id, index, ITEM_BY_ID);
+    if (result) {
+      setExtendedUnits(result.units);
+      setConvoy(result.convoy);
+    }
+  };
+
+  const handleWithdraw = (index: number) => {
+    if (!selectedExtUnit) return;
+    const result = withdrawFromConvoy(extendedUnits, convoy, selectedExtUnit.unit.id, index, ITEM_BY_ID);
+    if (result) {
+      setExtendedUnits(result.units);
+      setConvoy(result.convoy);
+    }
+  };
+
+  const handleStorageClose = () => {
+    if (selectedExtUnit) {
+      const next = extendedUnits.map((entry) =>
+        entry.unit.id === selectedExtUnit.unit.id
+          ? { ...entry, unit: { ...entry.unit, hasStored: true } }
+          : entry);
+      setExtendedUnits(next);
+      turnManager.replaceUnits(next.map((entry) => entry.unit));
+    }
+    setStorageOpen(false);
+    syncState();
+  };
+
+  const handleBuy = (itemId: string) => {
+    if (!selectedExtUnit) return;
+    const result = buyItem(extendedUnits, convoy, gold, selectedExtUnit.unit.id, itemId, ITEM_BY_ID);
+    if (result) {
+      soundManager.playSfx('item_get');
+      setExtendedUnits(result.units);
+      setConvoy(result.convoy);
+      setGold(result.gold);
+    }
+  };
+
+  const handleSell = (index: number) => {
+    if (!selectedExtUnit) return;
+    const result = sellItem(extendedUnits, gold, selectedExtUnit.unit.id, index, ITEM_BY_ID);
+    if (result) {
+      soundManager.playSfx('item_get');
+      setExtendedUnits(result.units);
+      setGold(result.gold);
+    }
+  };
+
+  // PLAN item 91: closing the shop ends the unit's action (FE3 Visit/Shop rule).
+  const handleShopClose = () => {
+    setShopOpen(false);
+    executeWithMove(() => {
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 93: arena — wager, fight the generated gladiator, leave ends the action.
+  const handleArenaTier = (tier: ArenaTier) => {
+    if (!selectedExtUnit || gold < tier.wager) return;
+    const opponent = generateArenaOpponent(selectedExtUnit, tier, ITEM_BY_ID);
+    if (!opponent) return;
+    setArenaTier(tier);
+    setArenaOpponent(opponent);
+    setArenaOutcome(null);
+  };
+
+  const handleArenaFight = () => {
+    if (!selectedExtUnit || !arenaTier || !arenaOpponent) return;
+    const tier = arenaTier;
+    const opponent = arenaOpponent;
+    const unitId = selectedExtUnit.unit.id;
+    executeWithMove(() => {
+      const entry = extendedUnits.find((u) => u.unit.id === unitId);
+      if (!entry) return;
+      const outcome = runArenaFight(entry, opponent, defaultRNG, ITEM_BY_ID);
+      setGold((prev) => prev - tier.wager + (outcome.won ? tier.wager * 2 : 0));
+      const nextUnits = extendedUnits.map((u) => (u.unit.id === unitId ? outcome.playerAfter : u));
+      setExtendedUnits(nextUnits);
+      turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+      setArenaOutcome(outcome);
+      soundManager.playSfx(outcome.won ? 'item_get' : 'nodamage');
+      setCombatLog((prev) => [
+        outcome.won
+          ? `🏟️ ${entry.unit.name} won the arena bout! +${tier.wager.toLocaleString()} G profit, +${outcome.expGained} EXP.`
+          : `🏟️ ${entry.unit.name} lost the arena bout and the ${tier.wager.toLocaleString()} G wager (+${outcome.expGained} EXP).`,
+        ...prev,
+      ]);
+      syncState();
+    });
+  };
+
+  const handleArenaAgain = () => {
+    setArenaTier(null);
+    setArenaOpponent(null);
+    setArenaOutcome(null);
+  };
+
+  const handleArenaLeave = () => {
+    setArenaOpen(false);
+    handleArenaAgain();
+    executeWithMove(() => {
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  const convoyRows = convoy.flatMap((item) => {
+    const def = ITEM_BY_ID.get(item.itemId);
+    return def
+      ? [{ itemId: item.itemId, name: def.name, uses: item.uses, maxUses: def.maxUses, type: def.type, equipped: false }]
+      : [];
+  });
+
+  const handlePrepDeposit = (index: number) => {
+    if (!prepConvoyUnitId) return;
+    const inDeployed = extendedUnits.some((u) => u.unit.id === prepConvoyUnitId);
+    const source = inDeployed ? extendedUnits : reserveUnits;
+    const result = depositToConvoy(source, convoy, prepConvoyUnitId, index, ITEM_BY_ID);
+    if (result) {
+      if (inDeployed) setExtendedUnits(result.units);
+      else setReserveUnits(result.units);
+      setConvoy(result.convoy);
+    }
+  };
+
+  const handlePrepWithdraw = (index: number) => {
+    if (!prepConvoyUnitId) return;
+    const inDeployed = extendedUnits.some((u) => u.unit.id === prepConvoyUnitId);
+    const source = inDeployed ? extendedUnits : reserveUnits;
+    const result = withdrawFromConvoy(source, convoy, prepConvoyUnitId, index, ITEM_BY_ID);
+    if (result) {
+      if (inDeployed) setExtendedUnits(result.units);
+      else setReserveUnits(result.units);
+      setConvoy(result.convoy);
+    }
+  };
+
+  const handleTrade = () => {
+    if (tradePartners.length === 0) return;
+    setTradeState({ partnerId: tradePartners.length === 1 ? tradePartners[0]!.unit.id : null });
+  };
+
+  const handleTradeSwap = (leftIndex: number, rightIndex: number) => {
+    if (!selectedExtUnit || !tradeState?.partnerId) return;
+    setExtendedUnits((prev) =>
+      tradeSwap(prev, selectedExtUnit.unit.id, tradeState.partnerId!, leftIndex, rightIndex, ITEM_BY_ID));
+  };
+
+  const handleTradeMove = (fromSide: 'left' | 'right', index: number) => {
+    if (!selectedExtUnit || !tradeState?.partnerId) return;
+    const fromId = fromSide === 'left' ? selectedExtUnit.unit.id : tradeState.partnerId;
+    const toId = fromSide === 'left' ? tradeState.partnerId : selectedExtUnit.unit.id;
+    setExtendedUnits((prev) => tradeMove(prev, fromId, toId, index, ITEM_BY_ID));
+  };
+
+  const handleTradeClose = () => {
+    if (selectedExtUnit && tradeState?.partnerId) {
+      // PLAN item 87: one initiation per turn; movement ends on exit.
+      const next = extendedUnits.map((entry) =>
+        entry.unit.id === selectedExtUnit.unit.id
+          ? { ...entry, unit: { ...entry.unit, hasTraded: true } }
+          : entry);
+      setExtendedUnits(next);
+      turnManager.replaceUnits(next.map((entry) => entry.unit));
+    }
+    setTradeState(null);
+    syncState();
+  };
+
+  const tradeSide = (entry: ExtendedUnitState): TradeSide => ({
+    unitId: entry.unit.id,
+    unitName: entry.unit.name,
+    items: entry.inventory.flatMap((item) => {
+      const def = ITEM_BY_ID.get(item.itemId);
+      return def
+        ? [{
+            itemId: item.itemId,
+            name: def.name,
+            uses: item.uses,
+            maxUses: def.maxUses,
+            type: def.type,
+            equipped: entry.weapon?.id === item.itemId,
+          }]
+        : [];
+    }),
+  });
+
   // Hủy bước di chuyển
   const handleCancelMove = () => {
     soundManager.playSfx('cancel');
-    setPendingMovePos(null);
-    setPlannedPath(null);
+    setWeaponPickerOpen(false);
+    setStaffTargeting(null);
     setSelectedTarget(null);
     setCombatForecast(null);
     setAttackTargeting(false);
+    // PLAN item 98: the unit already moved — walk it back to its origin
+    // and keep it selected so another destination can be chosen.
+    if (moveCommitted && moveOrigin && selectedExtUnit) {
+      const origin = moveOrigin;
+      const unitId = selectedExtUnit.unit.id;
+      const moveType = selectedExtUnit.unit.moveType;
+      const backPath = plannedPath && plannedPath.length > 1 ? [...plannedPath].reverse() : null;
+      const arriveBack = () => {
+        turnManager.moveSelectedUnit(origin);
+        setExtendedUnits([...extendedUnits]);
+        setActiveMovingUnit(null);
+        setMoveCommitted(false);
+        setMoveOrigin(null);
+        setPendingMovePos(null);
+        setPlannedPath(null);
+        syncState();
+      };
+      if (backPath) {
+        animCleanupRef.current = runMovementAnimation(backPath, moveType, soundManager, (pos) => setActiveMovingUnit({ unitId, pos }), () => {
+          animCleanupRef.current = null;
+          arriveBack();
+        });
+      } else {
+        arriveBack();
+      }
+      return;
+    }
+    setPendingMovePos(null);
+    setPlannedPath(null);
     setPinnedUnitId(null);
     setHoveredUnitSummary(null);
     turnManager.cancelSelect();
@@ -709,6 +1259,7 @@ export const App: React.FC = () => {
         villageTargets: currentChapter.villages?.filter(
           (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
         ).map((v) => v.position),
+        openedDoors: openedDoorKeys,
       });
 
       if (decision.type === 'attack') {
@@ -752,11 +1303,13 @@ export const App: React.FC = () => {
             result.unitDefeatedId, killerId, itemsJson.items, currentDialogues,
           );
           logs.push(...eventLogLines(defeat.events, '  '));
+          queueOverflows(defeat.events);
           phaseUnits = [...defeat.state.units];
         }
         const experience = applyCombatExperience(phaseUnits, result, defaultRNG);
         phaseUnits = experience.entries;
         phaseUnits = applyCombatDurability(phaseUnits, result, ITEM_BY_ID);
+        phaseUnits = applyCombatWeaponExp(phaseUnits, result);
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
         logs.push(...experience.messages);
@@ -779,6 +1332,21 @@ export const App: React.FC = () => {
 
     setVillageStates(nextVillageStates);
 
+    // PLAN item 94: reinforcements arrive at the end of the enemy phase
+    // and do not act on the turn they appear.
+    let nextSpawnedReinforcements = spawnedReinforcements;
+    for (const group of dueReinforcements(currentChapter, turnState.turnNumber, spawnedReinforcements)) {
+      const spawned = spawnReinforcements(phaseUnits, group, mapData, defaultTerrainRegistry);
+      phaseUnits = spawned.units;
+      nextSpawnedReinforcements = [...nextSpawnedReinforcements, group.id];
+      if (spawned.spawned.length > 0) {
+        logs.push(`⚔️ Enemy reinforcements have arrived! (${spawned.spawned.length} units)`);
+      }
+    }
+    if (nextSpawnedReinforcements !== spawnedReinforcements) {
+      setSpawnedReinforcements(nextSpawnedReinforcements);
+    }
+
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
 
     // Kiểm tra kết quả chương sau lượt địch
@@ -791,6 +1359,12 @@ export const App: React.FC = () => {
       turnManager.switchPhase('player_phase');
       phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
       phaseUnits = phaseUnits.map((u) => u.unit.faction === 'player' && !u.unit.isDead ? { ...u, unit: { ...u.unit, hasActed: false } } : u);
+      // PLAN item 94: warn about reinforcements arriving this turn.
+      const arriving = announcedReinforcements(currentChapter, turnState.turnNumber + 1, nextSpawnedReinforcements);
+      if (arriving.length > 0) {
+        showNotice('⚠️ Enemy reinforcements will arrive at the end of this turn!');
+        setCombatLog((prev) => ['⚠️ Enemy reinforcements will arrive at the end of this turn!', ...prev]);
+      }
     }
     turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
     setExtendedUnits(phaseUnits);
@@ -805,6 +1379,7 @@ export const App: React.FC = () => {
     }
     setExtendedUnits(data.extendedUnits);
     setReserveUnits(data.reserveUnits ?? []);
+    setConvoy(data.convoy ?? []);
     setShowPreparation(false);
     turnManager.restoreState(data.turnState, data.extendedUnits.map((item) => item.unit));
     defaultRNG.setSeed(data.rngSeed);
@@ -813,6 +1388,11 @@ export const App: React.FC = () => {
     setCombatLog(data.combatLog);
     setGold(data.gold);
     setVillageStates(data.villageStates);
+    setChestStates(data.chestStates ?? {});
+    setDoorStates(data.doorStates ?? {});
+    setSpawnedReinforcements(data.spawnedReinforcements ?? []);
+    setMoveCommitted(false);
+    setMoveOrigin(null);
     setActiveVillageDialogue(null);
     setPendingMovePos(null);
     setSelectedTarget(null);
@@ -832,12 +1412,16 @@ export const App: React.FC = () => {
       turnState: { turnNumber: turnState.turnNumber, activePhase: turnState.activePhase },
       extendedUnits,
       reserveUnits,
+      convoy,
       rngSeed: defaultRNG.getSeed(),
       chapterOutcome,
       showStoryIntro,
       combatLog,
       gold,
       villageStates,
+      chestStates,
+      doorStates,
+      spawnedReinforcements,
     }, slotId);
     if (ok) {
       showNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
@@ -925,10 +1509,10 @@ export const App: React.FC = () => {
             />
           </div>
         ) : (
-          <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: `8px ${HUD_CLEAR}px ${HUD_CLEAR}px 8px` }}>
+          <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: `${HUD_CLEAR}px ${HUD_CLEAR}px ${HUD_CLEAR}px 8px` }}>
             <Grid2D
               board={boardView}
-              movementPath={plannedPath}
+              movementPath={moveCommitted ? null : plannedPath}
               pendingDestination={pendingMovePos}
               activeMovingUnit={activeMovingUnit}
               getUnitDisplay={getUnitDisplay}
@@ -996,7 +1580,7 @@ export const App: React.FC = () => {
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && !combatForecast && !attackTargeting && !activeMovingUnit ? {
+        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -1005,14 +1589,39 @@ export const App: React.FC = () => {
           canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp
             && selectedExtUnit.inventory.some((i) => i.itemId === 'vulnerary' && i.uses > 0)),
           promotions: selectedExtUnit && selectedExtUnit.level >= 10
-            && selectedExtUnit.inventory.some((i) => i.itemId === 'master_seal' && i.uses > 0)
             ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id })) : [],
           villageName: currentVillageAtPendingPos?.name ?? null,
           hasAttackTargets: attackableTargets.length > 0,
           targetPositions: attackableTargets.map((t) => t.unit.position),
+          equipOptions: selectedExtUnit
+            ? getUsableWeapons(selectedExtUnit, ITEM_BY_ID)
+              .filter((weapon) => !weapon.equipped)
+              .map((weapon) => ({ itemId: weapon.itemId, name: weapon.definition.name }))
+            : [],
+          canTrade: tradePartners.length > 0,
+          canCancelMove: !selectedExtUnit?.unit.hasTraded && !selectedExtUnit?.unit.hasStored,
+          canStorage,
+          canShop,
+          canOpenChest: Boolean(selectedExtUnit && currentChestAtPendingPos && canOpenChest(selectedExtUnit, currentChapter)),
+          canOpenDoor: Boolean(selectedExtUnit && doorAtPendingPos && canOpenDoor(selectedExtUnit)),
+          canArena,
+          staffOptions: selectedExtUnit
+            ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
+              .filter((staff) => isHealStaff(staff)
+                && getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos).length > 0)
+              .map((staff) => ({ itemId: staff.id, name: staff.name }))
+            : [],
         } : null}
         onToggleMount={handleToggleMounted}
         onAttack={handleAttack}
+        onEquip={handleEquip}
+        onTrade={handleTrade}
+        onStorage={() => setStorageOpen(true)}
+        onShop={() => setShopOpen(true)}
+        onOpenChest={handleOpenChest}
+        onOpenDoor={handleOpenDoor}
+        onArena={() => setArenaOpen(true)}
+        onStaff={handleStaff}
         onSeize={handleSeize}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}
@@ -1021,6 +1630,132 @@ export const App: React.FC = () => {
         onWait={handleConfirmWait}
         onCancelMove={handleCancelMove}
       />
+
+      {weaponPickerOpen && selectedExtUnit && pendingMovePos && (
+        <WeaponPickerWindow
+          anchorTile={pendingMovePos}
+          unit={selectedExtUnit.unit}
+          weapons={getAttackWeapons(selectedExtUnit, ITEM_BY_ID)}
+          onPick={handlePickWeapon}
+          onCancel={() => setWeaponPickerOpen(false)}
+        />
+      )}
+
+      {pendingOverflows[0] && (() => {
+        const pending = pendingOverflows[0];
+        const entry = extendedUnits.find((u) => u.unit.id === pending.unitId);
+        const newDef = ITEM_BY_ID.get(pending.itemId);
+        if (!entry || !newDef) return null;
+        const kind = slotKind(newDef);
+        const choices = entry.inventory.flatMap((item) => {
+          const def = ITEM_BY_ID.get(item.itemId);
+          return def && slotKind(def) === kind
+            ? [{ itemId: item.itemId, name: def.name, uses: item.uses, maxUses: def.maxUses, type: def.type }]
+            : [];
+        });
+        return (
+          <OverflowWindow
+            unitName={entry.unit.name}
+            newItemName={pending.itemName}
+            choices={choices}
+            onDiscard={(itemId) => resolvePendingOverflow(itemId)}
+            onDiscardNew={() => resolvePendingOverflow(null)}
+            onSendToConvoy={convoy.length < CONVOY_SLOTS ? () => resolvePendingOverflow('convoy') : undefined}
+          />
+        );
+      })()}
+
+      {tradeState && selectedExtUnit && pendingMovePos && (() => {
+        const partner = tradeState.partnerId
+          ? extendedUnits.find((u) => u.unit.id === tradeState.partnerId)
+          : undefined;
+        return (
+          <TradeWindow
+            left={tradeSide(selectedExtUnit)}
+            right={partner ? tradeSide(partner) : null}
+            partnerChoices={tradePartners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name }))}
+            onPickPartner={(unitId) => setTradeState({ partnerId: unitId })}
+            onSwap={handleTradeSwap}
+            onMove={handleTradeMove}
+            onClose={handleTradeClose}
+          />
+        );
+      })()}
+
+      {storageOpen && selectedExtUnit && (
+        <ConvoyWindow
+          unitName={selectedExtUnit.unit.name}
+          unitItems={tradeSide(selectedExtUnit).items}
+          convoyItems={convoyRows}
+          convoyCount={convoy.length}
+          convoyCapacity={CONVOY_SLOTS}
+          onDeposit={handleDeposit}
+          onWithdraw={handleWithdraw}
+          onClose={handleStorageClose}
+        />
+      )}
+
+      {shopOpen && selectedExtUnit && (
+        <ShopWindow
+          unitName={selectedExtUnit.unit.name}
+          gold={gold}
+          stock={getShopStock(ITEM_BY_ID).map((def) => ({
+            itemId: def.id,
+            name: def.name,
+            type: def.type,
+            price: def.price ?? 0,
+            maxUses: def.maxUses,
+            canBuy: gold >= (def.price ?? 0)
+              && (hasRoomFor(selectedExtUnit, def.id, ITEM_BY_ID) || convoy.length < CONVOY_SLOTS),
+          }))}
+          sellItems={selectedExtUnit.inventory.flatMap((item) => {
+            const def = ITEM_BY_ID.get(item.itemId);
+            return def ? [{
+              itemId: item.itemId,
+              name: def.name,
+              type: def.type,
+              uses: item.uses,
+              maxUses: def.maxUses,
+              equipped: selectedExtUnit.weapon?.id === item.itemId,
+              sellValue: sellValue(def, item.uses),
+            }] : [];
+          })}
+          onBuy={handleBuy}
+          onSell={handleSell}
+          onClose={handleShopClose}
+        />
+      )}
+
+      {arenaOpen && selectedExtUnit && (
+        <ArenaWindow
+          unitName={selectedExtUnit.unit.name}
+          gold={gold}
+          tier={arenaTier}
+          opponent={arenaOpponent}
+          outcome={arenaOutcome}
+          onSelectTier={handleArenaTier}
+          onFight={handleArenaFight}
+          onFightAgain={handleArenaAgain}
+          onLeave={handleArenaLeave}
+        />
+      )}
+
+      {prepConvoyUnitId && (() => {
+        const entry = [...extendedUnits, ...reserveUnits].find((u) => u.unit.id === prepConvoyUnitId);
+        if (!entry) return null;
+        return (
+          <ConvoyWindow
+            unitName={entry.unit.name}
+            unitItems={tradeSide(entry).items}
+            convoyItems={convoyRows}
+            convoyCount={convoy.length}
+            convoyCapacity={CONVOY_SLOTS}
+            onDeposit={handlePrepDeposit}
+            onWithdraw={handlePrepWithdraw}
+            onClose={() => setPrepConvoyUnitId(null)}
+          />
+        );
+      })()}
 
       <CombatResultPopup entry={popupQueue[0] ?? null} onDismiss={() => setPopupQueue((queue) => queue.slice(1))} />
       {activeSummaryUnit && activeSummaryTile && !combatForecast && !inspectedUnit && (
@@ -1075,6 +1810,7 @@ export const App: React.FC = () => {
           deploymentLimit={currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}
           onToggle={toggleDeployment}
           onStart={() => setShowPreparation(false)}
+          onOpenConvoy={(unitId) => setPrepConvoyUnitId(unitId)}
         />
       )}
 

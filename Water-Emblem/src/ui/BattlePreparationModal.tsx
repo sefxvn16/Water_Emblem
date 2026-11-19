@@ -13,6 +13,8 @@ interface BattlePreparationModalProps {
   deploymentLimit: number;
   onToggle: (unitId: string) => void;
   onStart: () => void;
+  /** Open convoy management for a unit (PLAN item 88, prep access). */
+  onOpenConvoy: (unitId: string) => void;
 }
 
 /** FE3 unit-select layout: start bar on top, 3-column roster grid, info panel for the focused unit below. */
@@ -143,6 +145,23 @@ export const BattlePreparationModal: React.FC<BattlePreparationModalProps> = (pr
               <div style={{ fontWeight: 'bold', fontSize: '16px', color: '#fff' }}>{info.unit.name}</div>
               <div>{getClassDefinition(info.unit.classId)?.name ?? info.unit.classId ?? '—'} · LV {info.level}</div>
               <div>HP {info.stats.hp} / {info.stats.maxHp} · {info.weapon?.name ?? 'Unarmed'}</div>
+              <button
+                data-testid="prep-open-convoy"
+                onClick={() => props.onOpenConvoy(info.unit.id)}
+                style={{
+                  marginTop: '4px',
+                  padding: '4px 12px',
+                  backgroundColor: '#2563eb',
+                  border: 'none',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                }}
+              >
+                Items / Convoy
+              </button>
             </div>
           </div>
         )}
