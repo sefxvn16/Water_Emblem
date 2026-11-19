@@ -357,6 +357,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/weapon-durability`. Cụm End Turn + Settings chuyển lên góc trên phải (`BattleSettingsMenu` neo `top` thay `bottom`, menu mở xuống dưới cụm nút); vùng tránh HUD của cửa sổ dự báo (`overlayAnchor`) đổi theo góc trên phải; đệm bản đồ thêm phía trên. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/231 test PASS. Gate đầy đủ chạy lại 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
+- [ ] 100. Bảng dự báo chiến đấu đặt giữa dưới màn hình, né 2 nhân vật đang chọn.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19 17:58: "cho bảng thông tin dự báo chiến đấu ra giữa bên dưới đi, nếu che 2 nhân vật đang được chọn thì di chuyển sang trái một khoảng. Trong trường hợp bị sát màn hình (không đủ cho bảng thông tin dự báo) thì làm ngược lại. Ưu tiên căn giữa dưới".
+  - Tiêu chí xong: (1) Bảng dự báo mặc định căn giữa phía dưới màn hình. (2) Nếu bảng che ô của quân đánh hoặc quân thủ thì dịch sang trái vừa đủ để không che; nếu dịch trái không đủ chỗ (sát mép trái) thì dịch sang phải thay thế. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
