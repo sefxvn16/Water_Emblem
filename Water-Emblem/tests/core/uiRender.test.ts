@@ -523,6 +523,32 @@ describe('UI rendering tests', () => {
       const pos = computeOverlayPosition(null, [cluster], box.width, box.height, vw, vh, 'bottom-right');
       expect(overlaps(pos, cluster)).toBe(false);
     });
+
+    // PLAN item 100: bottom-center placement for the combat forecast.
+    const wideBox = { width: 660, height: 200 };
+    const overlapsWide = (pos: { left: number; top: number }, rect: ScreenRect): boolean => {
+      const boxRect: ScreenRect = { left: pos.left, right: pos.left + wideBox.width, top: pos.top, bottom: pos.top + wideBox.height };
+      return !(boxRect.right <= rect.left || boxRect.left >= rect.right || boxRect.bottom <= rect.top || boxRect.top >= rect.bottom);
+    };
+
+    it('bottom-center: centers at the bottom when nothing is covered', () => {
+      const pos = computeOverlayPosition(null, [], wideBox.width, wideBox.height, vw, vh, 'bottom-center');
+      expect(pos).toEqual({ left: (vw - wideBox.width) / 2, top: vh - 16 - wideBox.height });
+    });
+
+    it('bottom-center: slides left to clear a tile under the center', () => {
+      const tile: ScreenRect = { left: 700, right: 766, top: 600, bottom: 666 };
+      const pos = computeOverlayPosition(tile, [], wideBox.width, wideBox.height, vw, vh, 'bottom-center');
+      expect(pos.left).toBeLessThan((vw - wideBox.width) / 2);
+      expect(overlapsWide(pos, tile)).toBe(false);
+    });
+
+    it('bottom-center: slides right when the left side has no room', () => {
+      const tile: ScreenRect = { left: 320, right: 386, top: 600, bottom: 666 };
+      const pos = computeOverlayPosition(tile, [], wideBox.width, wideBox.height, vw, vh, 'bottom-center');
+      expect(pos.left).toBeGreaterThan((vw - wideBox.width) / 2);
+      expect(overlapsWide(pos, tile)).toBe(false);
+    });
   });
 
   describe('MovementArrow & movementAnimation', () => {

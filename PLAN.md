@@ -357,10 +357,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/weapon-durability`. Cụm End Turn + Settings chuyển lên góc trên phải (`BattleSettingsMenu` neo `top` thay `bottom`, menu mở xuống dưới cụm nút); vùng tránh HUD của cửa sổ dự báo (`overlayAnchor`) đổi theo góc trên phải; đệm bản đồ thêm phía trên. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/231 test PASS. Gate đầy đủ chạy lại 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
-- [ ] 100. Bảng dự báo chiến đấu đặt giữa dưới màn hình, né 2 nhân vật đang chọn.
+- [x] 100. Bảng dự báo chiến đấu đặt giữa dưới màn hình, né 2 nhân vật đang chọn.
   - Nguồn: chủ dự án yêu cầu 2026-11-19 17:58: "cho bảng thông tin dự báo chiến đấu ra giữa bên dưới đi, nếu che 2 nhân vật đang được chọn thì di chuyển sang trái một khoảng. Trong trường hợp bị sát màn hình (không đủ cho bảng thông tin dự báo) thì làm ngược lại. Ưu tiên căn giữa dưới".
   - Tiêu chí xong: (1) Bảng dự báo mặc định căn giữa phía dưới màn hình. (2) Nếu bảng che ô của quân đánh hoặc quân thủ thì dịch sang trái vừa đủ để không che; nếu dịch trái không đủ chỗ (sát mép trái) thì dịch sang phải thay thế. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/forecast-bottom-center`. `overlayAnchor` thêm kiểu neo `bottom-center`: mặc định căn giữa dưới; nếu che ô quân đánh/quân thủ thì dịch trái vừa đủ tránh, dịch trái không đủ chỗ thì dịch phải; cả hai phía đều không tránh hết thì lấy phía ít che hơn. `CombatForecastWindow` đổi `prefer` sang `bottom-center`. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/234 test PASS (3 test mới cho bottom-center); Playwright phần dự báo (A2/A5/A6) PASS; gate đầy đủ 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)

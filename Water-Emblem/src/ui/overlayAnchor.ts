@@ -3,7 +3,7 @@ import type { Position } from '../core/grid/types';
 import { getTileRect, HUD_CLEAR_BOTTOM, type ScreenRect } from './tileAnchor';
 import { HUD_EDGE } from './BattleSettingsMenu';
 
-export type OverlayCorner = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right';
+export type OverlayCorner = 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'bottom-center';
 
 export interface OverlayAnchorOptions {
   /** Tile the overlay describes; null renders at the default corner. */
@@ -40,13 +40,45 @@ export function computeOverlayPosition(
   vh: number,
   prefer: OverlayCorner,
 ): { left: number; top: number } {
+  const avoid = tileRect ? [tileRect, ...avoidRects] : [...avoidRects];
+
+  // PLAN item 100: bottom-center first. If the box would cover an avoided
+  // rect (the attacker/defender tiles), slide left just enough to clear
+  // them; when there is not enough room on the left, slide right instead.
+  if (prefer === 'bottom-center') {
+    const top = Math.max(EDGE, vh - EDGE - boxHeight);
+    const maxLeft = Math.max(EDGE, vw - EDGE - boxWidth);
+    const centered = Math.max(EDGE, Math.min((vw - boxWidth) / 2, maxLeft));
+    const boxAt = (left: number): ScreenRect => ({ left, right: left + boxWidth, top, bottom: top + boxHeight });
+    const totalOverlap = (left: number): number => avoid.reduce((sum, rect) => sum + overlapArea(boxAt(left), rect), 0);
+    if (totalOverlap(centered) === 0) return { left: centered, top };
+
+    const overlapped = avoid.filter((rect) => overlapArea(boxAt(centered), rect) > 0);
+    const leftTarget = Math.min(...overlapped.map((rect) => rect.left - boxWidth - EDGE));
+    if (leftTarget >= EDGE) return { left: leftTarget, top };
+    const rightTarget = Math.max(...overlapped.map((rect) => rect.right + EDGE));
+    if (rightTarget <= maxLeft) return { left: rightTarget, top };
+
+    // Neither side fully clears: take the clamped side with less overlap.
+    const candidates = [centered, EDGE, maxLeft];
+    let bestLeft = centered;
+    let bestOverlap = Infinity;
+    for (const left of candidates) {
+      const overlap = totalOverlap(left);
+      if (overlap < bestOverlap) {
+        bestOverlap = overlap;
+        bestLeft = left;
+      }
+    }
+    return { left: bestLeft, top };
+  }
+
   const candidates: { left: number; top: number; corner: OverlayCorner }[] = [
     { left: EDGE, top: vh - EDGE - boxHeight, corner: 'bottom-left' },
     { left: vw - EDGE - boxWidth, top: vh - HUD_CLEAR_BOTTOM - boxHeight, corner: 'bottom-right' },
     { left: EDGE, top: EDGE, corner: 'top-left' },
     { left: vw - EDGE - boxWidth, top: EDGE, corner: 'top-right' },
   ];
-  const avoid = tileRect ? [tileRect, ...avoidRects] : [...avoidRects];
   const first = candidates[0];
   if (!first) return { left: EDGE, top: EDGE };
   const preferRow = prefer.split('-')[0] ?? '';

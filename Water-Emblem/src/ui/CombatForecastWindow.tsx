@@ -70,13 +70,13 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   const attWeaponIcon = attacker.weapon ? getItemIcon(attacker.weapon.id, attacker.weapon.type) : '';
   const defWeaponIcon = defender.weapon ? getItemIcon(defender.weapon.id, defender.weapon.type) : '';
 
-  // Top-left by default (FE3: forecast overlays the left edge); flips to
-  // another corner when it would cover the attacker or defender tile (R6).
+  // Bottom-center by default (PLAN item 100); slides left (or right when
+  // the left side has no room) so it never covers attacker/defender tiles.
   const { ref, style: anchorStyle } = useAnchoredOverlay({
     tile: attacker.unit.position,
     avoidTiles: [defender.unit.position],
     width: 660,
-    prefer: 'top-left',
+    prefer: 'bottom-center',
     avoidHudCluster: true,
   });
 
