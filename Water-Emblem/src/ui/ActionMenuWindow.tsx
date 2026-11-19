@@ -164,12 +164,6 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           >
             {`Actions (${actions.unitName})`}
           </div>
-          {actions.hasAttackTargets && (
-            <div style={{ padding: '4px 8px', fontSize: '12px', color: '#fde047', borderBottom: '1px solid rgba(234,179,8,0.3)', marginBottom: '4px' }}>
-              🎯 Click red tile to attack
-            </div>
-          )}
-
           {actions.hasAttackTargets && renderItem('attack', 'Attack', props.onAttack)}
           {actions.canSeize && renderItem('seize', '👑 Seize Gate', props.onSeize)}
           {actions.talkTargetName !== null && renderItem('talk', `Talk: ${actions.talkTargetName}`, props.onTalk)}
