@@ -1,21 +1,19 @@
 import type { ExtendedUnitState } from '../data/chapterData';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Difficulty levels (PLAN item 115, Q04). Chosen for a playthrough and
  * stored in the save; enemy units receive flat stat bonuses when a
  * chapter is loaded [Giả định]: Hard +4 HP / +2 all other stats,
- * Lunatic +8 HP / +4 all other stats.
+ * Lunatic +8 HP / +4 all other stats. Bonuses are declared in
+ * data/balance.json (PLAN item 134).
  */
 
 export type Difficulty = 'normal' | 'hard' | 'lunatic';
 
 export const DIFFICULTIES: readonly Difficulty[] = ['normal', 'hard', 'lunatic'];
 
-const BONUS: Record<Difficulty, { hp: number; stat: number }> = {
-  normal: { hp: 0, stat: 0 },
-  hard: { hp: 4, stat: 2 },
-  lunatic: { hp: 8, stat: 4 },
-};
+const BONUS: Record<Difficulty, { hp: number; stat: number }> = balanceConfig.difficulty;
 
 export function applyDifficulty(
   units: readonly ExtendedUnitState[],

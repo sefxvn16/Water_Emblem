@@ -1,5 +1,7 @@
 import type { ExtendedUnitState } from '../data/chapterData';
 import type { ItemDefinition, UnitCombatStats } from './types';
+import { getClassDefinition } from '../class/classRules';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Manakete transformation (PLAN item 121, A13) and Xane imitation
@@ -13,17 +15,18 @@ import type { ItemDefinition, UnitCombatStats } from './types';
  *
  * Imitate: copies an ally's stats and weapon for 5 turns [Giả định],
  * then reverts to the saved backup.
+ *
+ * PLAN item 134: durations, thresholds and bonuses are declared in
+ * data/balance.json; which classes transform/imitate and the transform
+ * weapon are declared in data/classes.json.
  */
 
-export const TRANSFORM_TURNS = 5;
-export const TRANSFORM_LUCK_THRESHOLD = 15;
-export const TRANSFORM_COOLDOWN = 2;
-export const IMITATE_TURNS = 5;
-export const DRAGON_BREATH_ID = 'dragon_breath';
+export const TRANSFORM_TURNS: number = balanceConfig.transform.turns;
+export const TRANSFORM_LUCK_THRESHOLD: number = balanceConfig.transform.luckThreshold;
+export const TRANSFORM_COOLDOWN: number = balanceConfig.transform.cooldown;
+export const IMITATE_TURNS: number = balanceConfig.imitate.turns;
 
-const TRANSFORM_BONUS: Partial<Record<keyof UnitCombatStats, number>> = {
-  str: 5, def: 5, res: 5, spd: 3,
-};
+const TRANSFORM_BONUS: Partial<Record<keyof UnitCombatStats, number>> = balanceConfig.transform.statBonus;
 
 function applyBonus(stats: UnitCombatStats, sign: 1 | -1): UnitCombatStats {
   const next = { ...stats };
@@ -35,7 +38,7 @@ function applyBonus(stats: UnitCombatStats, sign: 1 | -1): UnitCombatStats {
 }
 
 export function canTransform(entry: ExtendedUnitState): boolean {
-  return entry.unit.classId === 'manakete'
+  return getClassDefinition(entry.unit.classId)?.canTransform === true
     && !entry.unit.isDead
     && (entry.unit.transformTurns ?? 0) <= 0
     && (entry.unit.transformCooldown ?? 0) <= 0;
@@ -46,15 +49,16 @@ export function transformUnit(
   itemById: ReadonlyMap<string, ItemDefinition>,
 ): ExtendedUnitState | null {
   if (!canTransform(entry)) return null;
-  const breath = itemById.get(DRAGON_BREATH_ID);
-  if (!breath) return null;
-  const turns = TRANSFORM_TURNS + (entry.stats.lck >= TRANSFORM_LUCK_THRESHOLD ? 1 : 0);
-  const hasBreath = entry.inventory.some((item) => item.itemId === DRAGON_BREATH_ID);
+  const breathId = getClassDefinition(entry.unit.classId)?.transformWeaponId;
+  const breath = breathId ? itemById.get(breathId) : undefined;
+  if (!breath || !breathId) return null;
+  const turns = TRANSFORM_TURNS + (entry.stats.lck >= TRANSFORM_LUCK_THRESHOLD ? balanceConfig.transform.luckBonusTurns : 0);
+  const hasBreath = entry.inventory.some((item) => item.itemId === breathId);
   return {
     ...entry,
     stats: applyBonus(entry.stats, 1),
     weapon: breath,
-    inventory: hasBreath ? entry.inventory : [...entry.inventory, { itemId: DRAGON_BREATH_ID, uses: breath.maxUses }],
+    inventory: hasBreath ? entry.inventory : [...entry.inventory, { itemId: breathId, uses: breath.maxUses }],
     unit: { ...entry.unit, transformTurns: turns },
   };
 }
@@ -72,7 +76,7 @@ export function imitateUnit(
   entry: ExtendedUnitState,
   target: ExtendedUnitState,
 ): ExtendedUnitState | null {
-  if (entry.unit.classId !== 'chameleon' || entry.unit.isDead || target.unit.isDead) return null;
+  if (getClassDefinition(entry.unit.classId)?.canImitate !== true || entry.unit.isDead || target.unit.isDead) return null;
   if ((entry.unit.imitateTurns ?? 0) > 0) return null;
   return {
     ...entry,

@@ -6,6 +6,7 @@ import { awardExperience, calculateCombatExp } from '../progression/experience';
 import { defaultTerrainRegistry } from '../grid/terrain';
 import type { ItemDefinition, SingleAttackEvent } from './types';
 import type { SeededRNG } from './rng';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Arena (PLAN item 93): wager gold, fight a generated mirror opponent.
@@ -13,6 +14,8 @@ import type { SeededRNG } from './rng';
  * foe for a higher payout. Defeat is non-lethal (modern style, PLAN 93):
  * the unit keeps 1 HP and loses the wager. The player strikes first each
  * round (FE3 decides first strike by Attack Speed — simplification).
+ * Wager tiers and round cap are declared in data/balance.json (PLAN
+ * item 134).
  */
 export interface ArenaTier {
   readonly wager: number;
@@ -20,13 +23,9 @@ export interface ArenaTier {
   readonly bonus: number;
 }
 
-export const ARENA_TIERS: readonly ArenaTier[] = [
-  { wager: 300, bonus: 0 },
-  { wager: 600, bonus: 1 },
-  { wager: 1000, bonus: 2 },
-];
+export const ARENA_TIERS: readonly ArenaTier[] = balanceConfig.arena.tiers;
 
-const MAX_ROUNDS = 10;
+const MAX_ROUNDS: number = balanceConfig.arena.maxRounds;
 
 const IRON_WEAPON_BY_TYPE: Readonly<Record<string, string>> = {
   sword: 'iron_sword',
@@ -51,13 +50,13 @@ export function generateArenaOpponent(
   const bonus = tier.bonus;
   const stats = {
     ...player.stats,
-    maxHp: Math.min(60, player.stats.maxHp + 2 * bonus),
-    str: Math.min(30, player.stats.str + bonus),
-    mag: Math.min(30, player.stats.mag + bonus),
-    skill: Math.min(30, player.stats.skill + bonus),
-    spd: Math.min(30, player.stats.spd + bonus),
-    def: Math.min(30, player.stats.def + bonus),
-    res: Math.min(30, player.stats.res + bonus),
+    maxHp: Math.min(balanceConfig.statCaps.hp, player.stats.maxHp + balanceConfig.arena.opponentHpPerBonus * bonus),
+    str: Math.min(balanceConfig.statCaps.stat, player.stats.str + bonus),
+    mag: Math.min(balanceConfig.statCaps.stat, player.stats.mag + bonus),
+    skill: Math.min(balanceConfig.statCaps.stat, player.stats.skill + bonus),
+    spd: Math.min(balanceConfig.statCaps.stat, player.stats.spd + bonus),
+    def: Math.min(balanceConfig.statCaps.stat, player.stats.def + bonus),
+    res: Math.min(balanceConfig.statCaps.stat, player.stats.res + bonus),
   };
   stats.hp = stats.maxHp;
   return {
@@ -73,7 +72,7 @@ export function generateArenaOpponent(
     stats,
     weapon,
     inventory: [{ itemId: weapon.id, uses: weapon.maxUses ?? 40 }],
-    level: Math.min(20, player.level + bonus),
+    level: Math.min(balanceConfig.experience.maxLevel, player.level + bonus),
     exp: 0,
   };
 }
