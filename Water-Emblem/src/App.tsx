@@ -621,6 +621,9 @@ export const App: React.FC = () => {
     });
   };
 
+  // Nút Attack trong menu hành động: mở dự báo cho mục tiêu đầu tiên trong tầm.
+  const handleAttack = () => { const target = attackableTargets[0]; if (target) handleTileClick(target.unit.position.x, target.unit.position.y); };
+
   // Hủy bước di chuyển
   const handleCancelMove = () => {
     soundManager.playSfx('cancel');
@@ -959,6 +962,7 @@ export const App: React.FC = () => {
           targetPositions: attackableTargets.map((t) => t.unit.position),
         } : null}
         onToggleMount={handleToggleMounted}
+        onAttack={handleAttack}
         onSeize={handleSeize}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}

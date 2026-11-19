@@ -258,6 +258,7 @@ describe('UI rendering tests', () => {
             targetPositions: [{ x: 17, y: 4 }],
           },
           onToggleMount: () => {},
+          onAttack: () => {},
           onSeize: () => {},
           onTalk: () => {},
           onUseVulnerary: () => {},
@@ -270,8 +271,42 @@ describe('UI rendering tests', () => {
 
       expect(html).toContain('Actions (Draug)');
       expect(html).toContain('Click red tile to attack');
-      expect(html).toContain('✓ Wait');
+      expect(html).toContain('>Attack<');
+      expect(html).toContain('>Wait<');
+      expect(html).not.toContain('✓ Wait');
       expect(html).toContain('Cancel Move');
+    });
+
+    it('hides the Attack button when no enemy is in range', () => {
+      const html = renderToString(
+        React.createElement(ActionMenuWindow, {
+          anchorTile: { x: 16, y: 4 },
+          mountLabel: null,
+          actions: {
+            unitName: 'Draug',
+            canSeize: false,
+            talkTargetName: null,
+            canUseVulnerary: false,
+            promotions: [],
+            villageName: null,
+            hasAttackTargets: false,
+            targetPositions: [],
+          },
+          onToggleMount: () => {},
+          onAttack: () => {},
+          onSeize: () => {},
+          onTalk: () => {},
+          onUseVulnerary: () => {},
+          onPromote: () => {},
+          onVisitVillage: () => {},
+          onWait: () => {},
+          onCancelMove: () => {},
+        })
+      );
+
+      expect(html).toContain('>Wait<');
+      expect(html).not.toContain('>Attack<');
+      expect(html).not.toContain('Click red tile to attack');
     });
 
     it('positions menu to the left when attack targets are to the right', () => {

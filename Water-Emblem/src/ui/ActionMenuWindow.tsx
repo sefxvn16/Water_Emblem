@@ -26,6 +26,7 @@ interface ActionMenuWindowProps {
   mountLabel: string | null;
   actions: PendingActions | null;
   onToggleMount: () => void;
+  onAttack: () => void;
   onSeize: () => void;
   onTalk: () => void;
   onUseVulnerary: () => void;
@@ -169,6 +170,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
             </div>
           )}
 
+          {actions.hasAttackTargets && renderItem('attack', 'Attack', props.onAttack)}
           {actions.canSeize && renderItem('seize', '👑 Seize Gate', props.onSeize)}
           {actions.talkTargetName !== null && renderItem('talk', `Talk: ${actions.talkTargetName}`, props.onTalk)}
           {actions.canUseVulnerary && renderItem('vulnerary', 'Use Vulnerary', props.onUseVulnerary)}
@@ -177,7 +179,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           )}
           {actions.villageName !== null && renderItem('village', `Visit (${actions.villageName})`, props.onVisitVillage)}
 
-          {renderItem('wait', '✓ Wait', props.onWait)}
+          {renderItem('wait', 'Wait', props.onWait)}
           {renderItem('cancel', 'Cancel Move', props.onCancelMove, true)}
         </>
       )}
