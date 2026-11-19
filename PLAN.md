@@ -668,21 +668,23 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Nguồn: Chủ 2026-11-19 23:29: "sao lại là bản sao? Đổi sang đối thủ ngẫu nhiên".
   - Tiêu chí xong: Đối thủ arena sinh ngẫu nhiên quanh cấp của quân người chơi (mức cược cao thì mạnh hơn); EXP/độ bền/WEx giữ như cũ; `tsc` PASS; Vitest PASS; gate PASS.
   - Ghi chú: Phần arena chết thật/Yield/đánh trước theo AS (FE3) chủ đã chốt 2026-11-19 23:41: giữ nguyên hiện trạng (thua không chết, người chơi đánh trước), không đổi.
-  - Kết quả: CHƯA LÀM.
+  - Chủ 2026-11-20 01:32 duyệt cách sinh đã trình: chọn ngẫu nhiên 1 trong 7 mẫu địch có sẵn (bỏ curate vì không đánh), level = level quân ta + bonus tier hiện có, chỉ số = base mẫu + growth class × (level−1) chặn trần, vũ khí sắt/thép/bạc theo tier từ items hiện có — không thêm số mới.
+  - Kết quả: ĐÃ DUYỆT cách sinh 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
   - Kiểm bởi: tôi
 
 - [] 152. Skill đổi sang hiệu ứng Fire Emblem thật (146-B6).
   - Nguồn: Chủ 2026-11-19 23:29: "Đổi sang giống FE. Đề xuất cho tôi." Chủ 23:36 đồng ý đề xuất hiệu ứng, chờ duyệt bảng phân bổ skill theo nhân vật/class (cả 2 book). Chủ 2026-11-20 01:18 hỏi Book 1 có bao nhiêu nhân vật được gán và chốt nguyên tắc: "không có ai là phế cả, ai cũng hữu ích bằng cách này hay cách khác" — bảng phân bổ phải phủ đủ mọi nhân vật hữu ích, trình lại để chủ duyệt trước khi code phần gán.
   - Đề xuất hiệu ứng: Charisma giữ nguyên (FE4/FE5); Winged Grace → Axebreaker FE13 (+50 Hit/Avo vs rìu); Veteran → Hit Rate +20 FE13; Hot Blood → Wrath FE13 (+20 Crit khi HP ≤ nửa); Calm → Perfectionist FE14 (+15 Hit/Avo khi đầy HP); Bulwark → Armored Blow FE14 (−10 sát thương vật lý khi chủ động đánh) [mặc định đã trình]; Deadeye → Critical +10 FE10 [mặc định đã trình; Deadeye thật FE10 cần hệ trạng thái ngủ chưa có]; Nimble → Avoid +10 FE13 (đổi tên); Gentle + Healer → Healtouch FE13; 5 Faire +2 → +5 FE13; Sureshot → Sure Strike FE8 (Level% chắc chắn trúng); Pavise −2 phẳng → Pavise FE13 (Skill% giảm nửa sát thương kiếm/giáo/rìu); Focus → Anathema FE13 (địch trong 3 ô −10 Avo/Crit Avo) [mặc định đã trình]; Locktouch giữ nguyên.
-  - Đề xuất phân bổ (chờ duyệt): personal giữ 9 gán hiện có — Marth Charisma, Jagen Hit Rate +20, Caeda Axebreaker, Cain Wrath, Abel Perfectionist, Draug Armored Blow, Gordin Critical +10, Julian Avoid +10, Lena Healtouch; Book 2 thêm Luke Wrath, Roderick Perfectionist, Cecil Avoid +10, Ryan Critical +10, Warren Hit Rate +20, Sirius Charisma, Phina Avoid +10, Marisha/Yuliya/Nyna Healtouch, Samuel Critical +10, Sheena Armored Blow; Jubelo/Arlen và nhân vật Book 1 còn lại không personal; aura Charisma không cộng dồn [Giả định]. Class skill giữ gán hiện có trong `classes.json`, đổi hiệu ứng theo trên; Critical +10 chỉ personal [Giả định].
+  - Bảng phân bổ ĐÃ DUYỆT (chủ 2026-11-20 01:32 "đồng ý gán 11 nhân vật còn thiếu"): đếm hiện tại 20 nhân vật chơi được trong data, 9 có personal, 11 chưa có (Ogma/Barst/Bord/Cord/Castor/Darros/Wrys/Navarre/Tiki/Xane/Feena), Tiki/Xane/Feena không có skill nào vì dancer/manakete/chameleon là 3/40 class không có classSkill. Gán đủ 20: giữ 9 cũ (Marth Charisma, Jagen Hit Rate +20, Caeda Axebreaker, Cain Wrath, Abel Perfectionist, Draug Armored Blow, Gordin Critical +10, Julian Avoid +10, Lena Healtouch) + thêm 11 (Ogma Critical +10, Barst Wrath, Bord Armored Blow, Cord Perfectionist, Castor Hit Rate +20, Darros Avoid +10, Wrys Healtouch, Navarre Critical +10, Tiki Pavise, Xane Avoid +10, Feena Charisma). Class skill giữ gán hiện có, đổi hiệu ứng theo FE; 3 class tiện ích không thêm class skill (Dance/Transform/Imitate là tiện ích của class), chỉ thêm personal. Aura Charisma không cộng dồn. Nhân vật Book 2 chưa có trong data chỉ gán khi được thêm vào game.
   - Tiêu chí xong: Chủ duyệt bảng phân bổ phủ đủ mọi nhân vật hữu ích (nguyên tắc 2026-11-20); hiệu ứng + số theo FE như đề xuất; test cho từng skill; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM — CHỜ NGƯỜI DÙNG duyệt bảng phân bổ phủ đủ (đang đếm gán hiện tại và trình lại).
+  - Kết quả: ĐÃ DUYỆT bảng phân bổ 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
   - Kiểm bởi: tôi
 
 - [] 153. Devil Axe: thêm phản đòn theo FE (146-B7).
   - Nguồn: Chủ 2026-11-19 23:29: "B7-B8: đổi giống FE".
   - Tiêu chí xong: Devil Axe có tỉ lệ tự gây sát thương theo FE [Giả định: FE11 (31−Luck)%, sát thương tính như tự đánh chính mình] và căn chỉ số vũ khí về FE11 (Mt17/Wt8/Hit100/25 lượt/rank D); test cho phản đòn; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Chủ 2026-11-20 01:32 duyệt dạng FE11 cho cả 2 book (rank D, Mt17/Wt8/Hit100/Crit0/25 lượt, không bán được, phản đòn (31−Luck)% tối thiểu 1%, sát thương như tự đánh chính mình) theo báo cáo đối chiếu Serenes Forest/FE Wiki; công thức FE12 (21−Luck/2)% không dùng vì nguồn yếu và game chỉ có một định nghĩa Devil Axe.
+  - Kết quả: ĐÃ DUYỆT dạng FE11 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
   - Kiểm bởi: tôi
 
 - [] 154. Triangle Attack: chỉ bộ ba Palla/Catria/Est (146-B8).
@@ -695,13 +697,15 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 - [] 155. Master Key: một loại key duy nhất mở mọi cửa/rương (146-B11).
   - Nguồn: Chủ 2026-11-19 23:29: "đổi tất cả key về cùng 1 loại, chỉ có 1 loại key duy nhất... mở được tất cả các loại door, chest"; chủ chốt 23:36: "Đồng ý master key"; chủ xác nhận 23:55: "tất cả các loại key (kể cả chest key) đã quyết là đổi sang master key rồi".
   - Tiêu chí xong: Thay mọi loại key (`door_key` hiện có; chest key của FE3/FE11 chưa có trong data) bằng Master Key duy nhất [Giả định theo FE11: 5 lượt dùng, giá 2400G, mở door/chest/drawbridge]; save cũ vẫn nạp được; test cho mở cửa/rương bằng Master Key; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Chủ 2026-11-20 01:32 duyệt theo đề xuất: Master Key FE11/FE12 (5 lượt, 2400G, mở door/chest/drawbridge — game chưa có drawbridge nên trước mắt mở door/chest), thay `door_key`, save cũ chứa `door_key` tự chuyển sang `master_key` khi nạp, Locktouch của thief và Fire Emblem của Marth giữ nguyên.
+  - Kết quả: ĐÃ DUYỆT 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
   - Kiểm bởi: tôi
 
 - [] 156. Triển khai Warp staff (146-B12).
   - Nguồn: Chủ 2026-11-19 23:29: "B12: làm đi". Hiện trạng: `warp_staff` có trong `items.json` nhưng chưa có hành động dùng (nợ ghi trong battle.md, mục 89).
   - Tiêu chí xong: Hành động Warp [Giả định theo FE11/FE3: đưa đồng minh kề bên tới ô đi được bất kỳ nhìn thấy, tầm đích vô hạn; rank C, 7 lượt]; trượng giảm độ bền khi dùng; test Vitest + Playwright; `tsc` PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Chủ 2026-11-20 01:32 duyệt theo đề xuất: Warp FE11/FE12 (rank C, chọn đồng minh kề bên, 7 lượt, Worth 0 không bán — giá file 2000 tự đặt đưa về 0, đích là ô đi được nhìn thấy bất kỳ); EXP/WEx dùng hệ staff hiện có, không thêm EXP riêng 50 của FE12.
+  - Kết quả: ĐÃ DUYỆT 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
   - Kiểm bởi: tôi
 
 - [] 157. Rà soát và sửa chỉ số nhân vật/class về đúng FE11 (Book 1) / FE12 (Book 2) theo decisions.md.
