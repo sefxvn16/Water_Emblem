@@ -514,8 +514,14 @@ describe('UI rendering tests', () => {
       // No more thick shaft, block arrowhead or destination ring.
       expect(html).not.toContain('stroke-width="18"');
       expect(html).not.toContain('M 20,0 L -14,-22 L -7,0 L -14,22 Z');
-      // Origin node: diameter = 1/3 of the 64px tile → r = 10.67.
-      expect(html).toContain('r="10.67"');
+      // Origin node: outer diameter = 1/3 of the 64px tile. Ring stroke
+      // centre r = 64/6 − 2.5 = 8.17 (dark underlay 5px, white ring 3px).
+      expect(html).toContain('r="8.17"');
+      // The node renders in its own layer above the avatar overlay (z 25)
+      // so it stays visible — PLAN item 83 (owner reported it missing
+      // because the avatar covered it).
+      expect(html).toContain('data-testid="movement-origin-node"');
+      expect(html).toContain('z-index:26');
     });
 
     it('returns null when path has fewer than 2 waypoints', () => {
