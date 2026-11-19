@@ -183,6 +183,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
     - Gate lần 1 trên nhánh này: FAIL — cả 3 chapter replay fail vì fixture ghi bước '✓ Wait' (247 bước), không khớp nút Wait mới. Đã sửa fixture thành 'Wait' (chapterReplay 3/3 pass trở lại) và commit riêng. Gate chạy lại 2026-11-19: Result: PASS (build PASS, e2e PASS).
   - Kiểm bởi: tôi
 
+- [ ] 80. Menu hành động: bỏ dòng gợi ý "Click red tile to attack"; nút Attack khóa chọn mục tiêu trong tầm đánh; sửa bug dự báo cũ khi đổi ô đích.
+  - Nguồn: yêu cầu của chủ dự án 2026-11-19 (kèm ảnh chụp màn hình). (1) Bỏ dòng chữ "Click red tile to attack" trong popup hành động, chỉ còn nút Attack. (2) Bấm Attack thì khóa vào các mục tiêu trong tầm đánh (nhiều mục tiêu thì chọn một trong số đó), không chọn được ô ngoài. (3) Bug hiện tại: bấm ô đỏ → popup dự báo hiện → không tắt popup, chọn di chuyển ô khác → bấm Attack vẫn đánh địch mà vẫn di chuyển ô khác được. Nguyên nhân đã tra: nhánh "bấm ô đích mới" trong `handleTileClick` đổi `pendingMovePos` mà không xóa `combatForecast`/`selectedTarget`, nên dự báo cũ (tính theo vị trí cũ) vẫn xác nhận được trong khi `executeWithMove` di chuyển quân tới ô mới.
+  - Tiêu chí xong: (1) Popup hành động không còn dòng "Click red tile to attack"; nút Attack vẫn chỉ hiện khi có địch trong tầm. (2) Bấm Attack: đúng 1 mục tiêu → mở dự báo ngay như cũ; từ 2 mục tiêu → vào chế độ khóa chọn mục tiêu (menu ẩn, chỉ ô địch trong tầm mới đáp ứng, bấm ô đích của quân hoặc Esc để quay lại menu, ô khác bỏ qua). (3) Đổi ô đích khi dự báo đang mở → dự báo cũ đóng (không còn đánh + di chuyển cùng lúc). (4) Không đổi luật chơi hay con số nào; test uiRender bỏ assert dòng gợi ý (chủ dự án ra lệnh bỏ dòng đó). (5) Kiểm trên trình duyệt thật (2D) bằng spec mới `tests/browser/actionMenuAttack.spec.ts`: tái hiện bug (dự báo mở → bấm ô đích khác → dự báo đóng) và khóa chọn mục tiêu (2 địch trong tầm → Attack → bấm ô ngoài tầm không có gì xảy ra → bấm ô địch → dự báo mở; Esc quay lại menu); chụp ảnh kiểm chứng. (6) Gate `node .studio/gate.mjs` Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
