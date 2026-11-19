@@ -27,7 +27,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
-import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
+import { runMovementAnimation, setAnimationSpeed, type ActiveMovingUnit, type AnimationSpeed } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import {
   bossStartEvent,
@@ -82,6 +82,7 @@ import { canCanto } from './core/combat/canto';
 import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { generateSkirmishChapter } from './core/chapter/randomMap';
+import { computeEnemyIntents } from './core/ai/intent';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -194,6 +195,15 @@ export const App: React.FC = () => {
   const cantoUsedRef = useRef(false);
   // PLAN item 115: playthrough difficulty (enemy stat bonuses).
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
+  // PLAN item 117: animation speed setting, persisted locally.
+  const [animationSpeed, setAnimationSpeedState] = useState<AnimationSpeed>(() => {
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('water-emblem-anim-speed') : null;
+    return saved === 'fast' || saved === 'off' ? saved : 'normal';
+  });
+  useEffect(() => {
+    setAnimationSpeed(animationSpeed);
+    try { localStorage.setItem('water-emblem-anim-speed', animationSpeed); } catch { /* storage unavailable */ }
+  }, [animationSpeed]);
 
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
@@ -357,6 +367,46 @@ export const App: React.FC = () => {
 
   // PLAN item 101: destroyed destructible objects become passable rubble.
   const destroyedKeys = useMemo(() => destroyedObjectKeys(objectStates), [objectStates]);
+
+  // PLAN items 106/107 (B02/B03): enemy intent preview during player phase.
+  const enemyIntents = useMemo(() => {
+    if (turnState.activePhase !== 'player_phase' || chapterOutcome !== 'ongoing') return [];
+    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
+    if (enemies.length === 0) return [];
+    return computeEnemyIntents(enemies, {
+      map: mapData,
+      terrains: defaultTerrainRegistry,
+      units: extendedUnits.map((u) => u.unit),
+      unitStatsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.stats])),
+      unitWeaponsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.weapon])),
+      villageTargets: (currentChapter.villages ?? [])
+        .filter((v) => (villageStates[v.id] ?? 'intact') === 'intact')
+        .map((v) => v.position),
+      chestTargets: (currentChapter.chests ?? [])
+        .filter((c) => chestStates[c.id] !== 'opened')
+        .map((c) => c.position),
+      turnNumber: turnState.turnNumber,
+      openedDoors: openedDoorKeys,
+      destroyedObjects: destroyedKeys,
+    });
+  }, [extendedUnits, turnState.activePhase, turnState.turnNumber, chapterOutcome, mapData, currentChapter, villageStates, chestStates, openedDoorKeys, destroyedKeys]);
+
+  const intentTargetKeys = useMemo(() => {
+    const keys = new Set<string>();
+    for (const intent of enemyIntents) {
+      if (!intent.targetUnitId) continue;
+      const target = extendedUnits.find((u) => u.unit.id === intent.targetUnitId);
+      if (target) keys.add(`${target.unit.position.x},${target.unit.position.y}`);
+    }
+    return keys;
+  }, [enemyIntents, extendedUnits]);
+
+  const inspectedEnemyId = pinnedUnitId ?? hoveredUnitSummary?.unitId ?? null;
+  const intentPath = useMemo(() => {
+    if (!inspectedEnemyId) return null;
+    const intent = enemyIntents.find((i) => i.enemyId === inspectedEnemyId);
+    return intent ? intent.path : null;
+  }, [enemyIntents, inspectedEnemyId]);
 
   // Vùng nguy hiểm của quân địch
   const dangerZoneKeys = useMemo(() => {
@@ -1751,6 +1801,8 @@ export const App: React.FC = () => {
               onTileClick={handleTileClick}
               onTileHover={handleTileHover}
               onTileInspect={(x, y) => setInspectedTile({ x, y })}
+              intentTargetKeys={intentTargetKeys}
+              intentPath={intentPath}
             />
           </div>
         )}
@@ -1777,6 +1829,8 @@ export const App: React.FC = () => {
         onSave={() => handleSave()}
         onLoad={() => handleLoad()}
         onViewMode={setViewMode}
+        animationSpeed={animationSpeed}
+        onAnimationSpeed={setAnimationSpeedState}
         onToggleMute={handleToggleMute}
         leading={turnState.activePhase === 'player_phase' && (
           <button
@@ -2064,6 +2118,7 @@ export const App: React.FC = () => {
             </div>
           }
           onConfirm={() => setShowStoryIntro(false)}
+          onSkip={() => setShowStoryIntro(false)}
         />
       )}
 
@@ -2080,6 +2135,7 @@ export const App: React.FC = () => {
             </div>
           }
           onConfirm={() => setActiveVillageDialogue(null)}
+          onSkip={() => setActiveVillageDialogue(null)}
         />
       )}
 

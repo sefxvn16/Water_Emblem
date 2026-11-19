@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sectionHeadingStyle, sharedPanelStyle } from './designSystem';
+import type { AnimationSpeed } from '../renderer/movementAnimation';
 
 interface BattleSettingsMenuProps {
   /** Changes whenever the chapter changes or a full-screen modal opens or closes; the menu closes. */
@@ -20,6 +21,9 @@ interface BattleSettingsMenuProps {
   onSave: () => void;
   onLoad: () => void;
   onViewMode: (mode: '3d' | '2d') => void;
+  /** Animation speed setting (PLAN item 117). */
+  animationSpeed: AnimationSpeed;
+  onAnimationSpeed: (speed: AnimationSpeed) => void;
   onToggleMute: () => void;
   /** Primary battle action shown left of the gear in the top-right cluster (End Turn). */
   leading?: React.ReactNode;
@@ -243,6 +247,13 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                 <button onClick={() => props.onViewMode('2d')} style={viewButtonStyle(props.viewMode === '2d')}>
                   🗺️ 2D Grid
                 </button>
+              </div>
+              <div style={{ display: 'flex', flex: 1, backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}`, minHeight: 44 }} role="group" aria-label="Animation speed">
+                {(['normal', 'fast', 'off'] as const).map((speed) => (
+                  <button key={speed} onClick={() => props.onAnimationSpeed(speed)} style={viewButtonStyle(props.animationSpeed === speed)}>
+                    {speed === 'normal' ? '🐢 Normal' : speed === 'fast' ? '🐇 Fast' : '⏩ Off'}
+                  </button>
+                ))}
               </div>
               <button
                 onClick={props.onToggleMute}

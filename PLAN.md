@@ -393,16 +393,16 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Chương khai báo `traps`; quân kết thúc di chuyển trên ô bẫy thì chịu sát thương (không dưới 1 HP [Giả định]), kích hoạt 1 lần; `triggeredTraps` lưu trong save; áp dụng cả quân người chơi lẫn địch. Kiểm chứng: Vitest 37 file/243 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 106. B02 Đường mục tiêu địch: hiện đường địch dự kiến đi/đánh.
+- [x] 106. B02 Đường mục tiêu địch: hiện đường địch dự kiến đi/đánh.
   - Nguồn: cơ chế đã chọn B02. Địch công bố mục tiêu dự kiến (không khóa cứng) [Giả định khi làm].
   - Tiêu chí xong: (1) Chọn/hover địch thì hiện đường di chuyển dự kiến tới mục tiêu của nó theo AI hiện tại; không dùng thông tin bị che. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Chọn/hover quân địch hiện đường di chuyển dự kiến (ô đỏ) tính bằng chính AI địch (`computeEnemyIntents`); là dự đoán, không khóa [Giả định]. Kiểm chứng: `tsc --noEmit` PASS; Vitest 40 file/266 test PASS (test mới `tests/core/batchD.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 107. B03 Đòn báo trước: hiện địch sẽ đánh ai ở pha địch tới.
+- [x] 107. B03 Đòn báo trước: hiện địch sẽ đánh ai ở pha địch tới.
   - Nguồn: cơ chế đã chọn B03.
   - Tiêu chí xong: (1) Trong pha người chơi, địch trong tầm đánh quân ta được đánh dấu mục tiêu dự kiến (theo AI hiện tại); dấu cập nhật khi quân ta di chuyển. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Trong pha người chơi, quân ta bị địch dự kiến tấn công có dấu ⚔️ trên ô; cập nhật theo vị trí quân. Kiểm chứng: Vitest 40 file/266 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 108. B05 Bảo vệ mục tiêu: mục tiêu chương bảo vệ quân/ô.
@@ -459,10 +459,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
   - Kiểm bởi: tôi
 
-- [ ] 117. Q07 Tua/bỏ còn thiếu: cài đặt tốc độ hoạt cảnh + bỏ qua hội thoại.
+- [x] 117. Q07 Tua/bỏ còn thiếu: cài đặt tốc độ hoạt cảnh + bỏ qua hội thoại.
   - Nguồn: cơ chế đã chọn Q07 (hiện bỏ qua hoạt cảnh di chuyển được; chưa có cài đặt tốc độ, chưa bỏ qua hội thoại).
   - Tiêu chí xong: (1) Settings có tốc độ hoạt cảnh (thường/nhanh/tắt) áp dụng cho di chuyển + chiến đấu; hội thoại có nút bỏ qua. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Cài đặt tốc độ hoạt ảnh Normal/Fast/Off trong Settings (lưu localStorage); nút Skip ở hộp thoại mở màn + làng. Kiểm chứng: Vitest 40 file/266 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 118. Q10 Bản đồ giải đố: loại chương giải đố.

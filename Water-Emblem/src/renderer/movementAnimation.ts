@@ -15,6 +15,19 @@ export function isFastAnimation(): boolean {
   return /HeadlessChrome|Playwright/i.test(ua);
 }
 
+/** Animation speed setting (PLAN item 117): normal 65ms/step, fast 25ms, off = instant. */
+export type AnimationSpeed = 'normal' | 'fast' | 'off';
+
+let animationSpeed: AnimationSpeed = 'normal';
+
+export function setAnimationSpeed(speed: AnimationSpeed): void {
+  animationSpeed = speed;
+}
+
+export function getAnimationSpeed(): AnimationSpeed {
+  return animationSpeed;
+}
+
 /**
  * Runs a step-by-step movement animation along a path of waypoints.
  * Plays move step sound at each waypoint and returns a cleanup function to cancel early.
@@ -32,12 +45,13 @@ export function runMovementAnimation(
     return () => {};
   }
 
-  if (isFastAnimation()) {
+  if (isFastAnimation() || animationSpeed === 'off') {
     const last = path[path.length - 1];
     if (last) onStep(last, path.length - 1);
     onComplete();
     return () => {};
   }
+  const effectiveStepMs = animationSpeed === 'fast' ? 25 : stepMs;
 
   const p0 = path[0];
   if (p0) onStep(p0, 0);
@@ -57,7 +71,7 @@ export function runMovementAnimation(
       clearInterval(timer);
       onComplete();
     }
-  }, stepMs);
+  }, effectiveStepMs);
 
   return () => {
     if (!finished) {

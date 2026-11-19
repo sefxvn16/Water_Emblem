@@ -80,3 +80,9 @@ Giao diện còn cần menu hành động, trạng thái đơn vị, thông tin 
 ## Kiểm chứng hình ảnh và hiệu năng
 
 Kiểm tay bằng bản đồ và đơn vị thực: chọn ô, xem tầm, xoay/zoom, đọc mục tiêu, giao tranh, tua hoạt cảnh. Đề án cũ nêu 60 FPS trên laptop tầm trung, 30 FPS mobile, dưới 100.000 triangles và 100 draw calls; thiết bị mục tiêu và điều kiện đo chưa được chốt. Giữ các số đó làm mốc tham khảo, đo rồi điều chỉnh trước khi biến thành tiêu chí nghiệm thu trong `PLAN.md`.
+
+## Xem trước ý định địch (2026-11-19, PLAN mục 106/107)
+
+- **B03 Đòn báo trước (mục 107):** trong pha người chơi, quân ta nào địch dự kiến tấn công ở pha địch tới sẽ có dấu ⚔️ ở góc ô. Tính bằng chính AI địch trên trạng thái hiện tại (`computeEnemyIntents`), cập nhật khi quân di chuyển — là dự đoán, không khóa.
+- **B02 Đường mục tiêu (mục 106):** khi chọn/hover một quân địch, đường di chuyển dự kiến của nó hiện bằng ô đỏ mờ trên bản đồ.
+- **Q07 Tua/bỏ qua (mục 117):** cài đặt tốc độ hoạt ảnh Normal/Fast/Off trong menu Settings (lưu localStorage); nút Skip ở hộp thoại mở màn và làng.
