@@ -1,0 +1,122 @@
+{
+  "skills": [
+    {
+      "aura": {
+        "avoid": 10,
+        "hit": 10,
+        "range": 3
+      },
+      "description": "Allies within 3 tiles gain +10 Hit and Avoid.",
+      "id": "charisma",
+      "name": "Charisma"
+    },
+    {
+      "avoid": 10,
+      "description": "+10 Avoid against axes.",
+      "id": "winged_grace",
+      "name": "Winged Grace"
+    },
+    {
+      "description": "+10 Hit.",
+      "hit": 10,
+      "id": "veteran",
+      "name": "Veteran"
+    },
+    {
+      "crit": 10,
+      "description": "+10 Crit when HP is below half.",
+      "id": "hot_blood",
+      "name": "Hot Blood"
+    },
+    {
+      "description": "+10 Hit at full HP.",
+      "hit": 10,
+      "id": "calm",
+      "name": "Calm"
+    },
+    {
+      "damageTaken": -2,
+      "description": "Takes 2 less damage when defending.",
+      "id": "bulwark",
+      "name": "Bulwark"
+    },
+    {
+      "crit": 10,
+      "description": "+10 Crit with bows.",
+      "id": "deadeye",
+      "name": "Deadeye"
+    },
+    {
+      "avoid": 10,
+      "description": "+10 Avoid.",
+      "id": "nimble",
+      "name": "Nimble"
+    },
+    {
+      "description": "Heals 5 more HP with staves.",
+      "healBonus": 5,
+      "id": "gentle",
+      "name": "Gentle"
+    },
+    {
+      "damage": 2,
+      "description": "+2 damage with swords.",
+      "id": "swordfaire",
+      "name": "Swordfaire"
+    },
+    {
+      "damage": 2,
+      "description": "+2 damage with lances.",
+      "id": "lancefaire",
+      "name": "Lancefaire"
+    },
+    {
+      "damage": 2,
+      "description": "+2 damage with axes.",
+      "id": "axefaire",
+      "name": "Axefaire"
+    },
+    {
+      "damage": 2,
+      "description": "+2 damage with bows.",
+      "id": "bowfaire",
+      "name": "Bowfaire"
+    },
+    {
+      "damage": 2,
+      "description": "+2 damage with tomes.",
+      "id": "tomefaire",
+      "name": "Tomefaire"
+    },
+    {
+      "description": "+15 Hit with bows.",
+      "hit": 15,
+      "id": "sureshot",
+      "name": "Sureshot"
+    },
+    {
+      "damageTaken": -2,
+      "description": "Takes 2 less damage.",
+      "id": "pavise",
+      "name": "Pavise"
+    },
+    {
+      "description": "+10 Hit with tomes.",
+      "hit": 10,
+      "id": "focus",
+      "name": "Focus"
+    },
+    {
+      "description": "Heals 5 more HP with staves.",
+      "healBonus": 5,
+      "id": "healer",
+      "name": "Healer"
+    },
+    {
+      "description": "Can open chests and doors without a key.",
+      "id": "locktouch",
+      "name": "Locktouch"
+    }
+  ],
+  "version": "1.0.0"
+}

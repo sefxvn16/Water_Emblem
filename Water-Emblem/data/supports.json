@@ -3,6 +3,11 @@
   "sourceGame": "FE11",
   "sourceUrl": "https://serenesforest.net/shadow-dragon/characters/support-bonus/",
   "activationRange": 3,
+  "rankBonuses": {
+    "C": { "hit": 5, "avoid": 5, "crit": 0, "dodge": 0 },
+    "B": { "hit": 10, "avoid": 10, "crit": 0, "dodge": 0 },
+    "A": { "hit": 10, "avoid": 10, "crit": 5, "dodge": 5 }
+  },
   "relationships": [
     {
       "supporterId": "caeda",

@@ -1,25 +1,120 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "weaponTriangle": {
-    "sword": { "strongAgainst": "axe", "weakAgainst": "lance" },
-    "lance": { "strongAgainst": "sword", "weakAgainst": "axe" },
-    "axe": { "strongAgainst": "lance", "weakAgainst": "sword" },
-    "bow": { "strongAgainst": null, "weakAgainst": null },
-    "tome": { "strongAgainst": null, "weakAgainst": null },
-    "staff": { "strongAgainst": null, "weakAgainst": null }
+    "axe": {
+      "strongAgainst": "lance",
+      "weakAgainst": "sword"
+    },
+    "bow": {
+      "strongAgainst": null,
+      "weakAgainst": null
+    },
+    "lance": {
+      "strongAgainst": "sword",
+      "weakAgainst": "axe"
+    },
+    "staff": {
+      "strongAgainst": null,
+      "weakAgainst": null
+    },
+    "sword": {
+      "strongAgainst": "axe",
+      "weakAgainst": "lance"
+    },
+    "tome": {
+      "strongAgainst": null,
+      "weakAgainst": null
+    }
   },
   "triangleModifiers": {
-    "advantage": { "damage": 0, "hit": 5 },
-    "disadvantage": { "damage": 0, "hit": -5 },
-    "neutral": { "damage": 0, "hit": 0 }
+    "advantage": {
+      "damage": 0,
+      "hit": 5
+    },
+    "disadvantage": {
+      "damage": 0,
+      "hit": -5
+    },
+    "neutral": {
+      "damage": 0,
+      "hit": 0
+    }
   },
-  "triangleRankBonuses": { "highRankHit": 10, "aRankDamage": 1 },
+  "triangleRankBonuses": {
+    "aRankDamage": 1,
+    "highRankHit": 10
+  },
   "weaponRankBonuses": {
-    "sword": { "C": { "might": 1, "hit": 0 }, "B": { "might": 2, "hit": 0 }, "A": { "might": 3, "hit": 0 } },
-    "lance": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } },
-    "axe": { "C": { "might": 0, "hit": 5 }, "B": { "might": 0, "hit": 10 }, "A": { "might": 0, "hit": 15 } },
-    "bow": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } },
-    "tome": { "C": { "might": 1, "hit": 0 }, "B": { "might": 1, "hit": 5 }, "A": { "might": 2, "hit": 5 } }
+    "axe": {
+      "A": {
+        "hit": 15,
+        "might": 0
+      },
+      "B": {
+        "hit": 10,
+        "might": 0
+      },
+      "C": {
+        "hit": 5,
+        "might": 0
+      }
+    },
+    "bow": {
+      "A": {
+        "hit": 5,
+        "might": 2
+      },
+      "B": {
+        "hit": 5,
+        "might": 1
+      },
+      "C": {
+        "hit": 0,
+        "might": 1
+      }
+    },
+    "lance": {
+      "A": {
+        "hit": 5,
+        "might": 2
+      },
+      "B": {
+        "hit": 5,
+        "might": 1
+      },
+      "C": {
+        "hit": 0,
+        "might": 1
+      }
+    },
+    "sword": {
+      "A": {
+        "hit": 0,
+        "might": 3
+      },
+      "B": {
+        "hit": 0,
+        "might": 2
+      },
+      "C": {
+        "hit": 0,
+        "might": 1
+      }
+    },
+    "tome": {
+      "A": {
+        "hit": 5,
+        "might": 2
+      },
+      "B": {
+        "hit": 5,
+        "might": 1
+      },
+      "C": {
+        "hit": 0,
+        "might": 1
+      }
+    }
   },
   "effectiveMultiplier": 3,
   "effectiveMultipliesOnlyMight": true,
@@ -27,10 +122,131 @@
   "critMultiplier": 3,
   "rngMode": "2RN",
   "aiWeights": {
-    "killBonus": 100,
-    "damageMultiplier": 2,
     "counterDamagePenalty": 1,
-    "triangleAdvantageBonus": 10,
-    "lowHpTargetBonus": 15
+    "damageMultiplier": 2,
+    "fleeDistanceWeight": 10,
+    "killBonus": 100,
+    "lowHpTargetBonus": 15,
+    "lowHpThreshold": 0.4,
+    "retreatHpFraction": 0.5,
+    "triangleAdvantageBonus": 10
+  },
+  "statCaps": {
+    "hp": 60,
+    "stat": 30
+  },
+  "promotionLevel": 10,
+  "experience": {
+    "bossKillBonus": 40,
+    "expPerLevel": 100,
+    "killExpBase": 20,
+    "killExpLevelMultiplier": 3,
+    "maxExp": 100,
+    "maxLevel": 20,
+    "minExp": 1,
+    "noDamageExp": 1,
+    "promotedLevelOffset": 20,
+    "roundExpBase": 31,
+    "roundExpDivisor": 3
+  },
+  "weaponExp": {
+    "staffWexByRank": {
+      "A": 10,
+      "B": 6,
+      "C": 4,
+      "D": 2,
+      "E": 1
+    },
+    "thresholds": {
+      "B": 200,
+      "C": 150,
+      "D": 100,
+      "E": 50
+    }
+  },
+  "staffExpPerUse": 14,
+  "pincer": {
+    "crit": 10,
+    "hit": 15
+  },
+  "height": {
+    "hitPerLevel": 10,
+    "maxHitBonus": 20
+  },
+  "triangleAttack": {
+    "requiredFliers": 3
+  },
+  "ballista": {
+    "maxRange": 10,
+    "mightBonus": 6,
+    "minRange": 3
+  },
+  "transform": {
+    "cooldown": 2,
+    "luckBonusTurns": 1,
+    "luckThreshold": 15,
+    "statBonus": {
+      "def": 5,
+      "res": 5,
+      "spd": 3,
+      "str": 5
+    },
+    "turns": 5
+  },
+  "imitate": {
+    "turns": 5
+  },
+  "difficulty": {
+    "hard": {
+      "hp": 4,
+      "stat": 2
+    },
+    "lunatic": {
+      "hp": 8,
+      "stat": 4
+    },
+    "normal": {
+      "hp": 0,
+      "stat": 0
+    }
+  },
+  "arena": {
+    "maxRounds": 10,
+    "opponentHpPerBonus": 2,
+    "tiers": [
+      {
+        "bonus": 0,
+        "wager": 300
+      },
+      {
+        "bonus": 1,
+        "wager": 600
+      },
+      {
+        "bonus": 2,
+        "wager": 1000
+      }
+    ]
+  },
+  "inventory": {
+    "itemSlots": 4,
+    "weaponSlots": 4
+  },
+  "convoySlots": 128,
+  "shop": {
+    "sellBackDivisor": 2
+  },
+  "trapMinHp": 1,
+  "reinforcementSearchRadius": 2,
+  "skirmish": {
+    "forestThreshold": 0.14,
+    "gateElevation": 1,
+    "height": 10,
+    "mountainElevation": 1,
+    "mountainThreshold": 0.2,
+    "peakElevation": 2,
+    "peakThreshold": 0.23,
+    "riverElevation": -1,
+    "width": 12
   }
 }

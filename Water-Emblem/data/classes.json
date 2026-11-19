@@ -90,7 +90,8 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "swordfaire"
+      "classSkill": "swordfaire",
+      "dismountedClassId": "lord"
     },
     {
       "id": "cavalier",
@@ -139,7 +140,8 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "paladin"
     },
     {
       "id": "cataphract",
@@ -185,7 +187,8 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "paladin"
     },
     {
       "id": "outrider",
@@ -231,7 +234,8 @@
         "def": 5,
         "res": -15
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "paladin"
     },
     {
       "id": "paladin",
@@ -416,7 +420,8 @@
         "def": 10,
         "res": 0
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "dismounted_pegasus"
     },
     {
       "id": "seraph_knight",
@@ -462,7 +467,8 @@
         "def": 10,
         "res": 0
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "dismounted_pegasus"
     },
     {
       "id": "dragon_knight",
@@ -508,7 +514,8 @@
         "def": 10,
         "res": 0
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "dismountedClassId": "dismounted_pegasus"
     },
     {
       "id": "archer",
@@ -554,7 +561,8 @@
         "def": 10,
         "res": -10
       },
-      "classSkill": "sureshot"
+      "classSkill": "sureshot",
+      "canUseBallista": true
     },
     {
       "id": "sniper",
@@ -600,7 +608,14 @@
         "def": 10,
         "res": -10
       },
-      "classSkill": "bowfaire"
+      "classSkill": "bowfaire",
+      "weaponRangeOverrides": {
+        "bow": {
+          "min": 2,
+          "max": 3
+        }
+      },
+      "canUseBallista": true
     },
     {
       "id": "hunter",
@@ -646,7 +661,8 @@
         "def": 5,
         "res": -15
       },
-      "classSkill": "bowfaire"
+      "classSkill": "bowfaire",
+      "canUseBallista": true
     },
     {
       "id": "mangudai",
@@ -691,7 +707,15 @@
         "def": 5,
         "res": -15
       },
-      "classSkill": "bowfaire"
+      "classSkill": "bowfaire",
+      "dismountedClassId": "paladin",
+      "weaponRangeOverrides": {
+        "bow": {
+          "min": 2,
+          "max": 2
+        }
+      },
+      "canUseBallista": true
     },
     {
       "id": "mercenary",
@@ -875,7 +899,8 @@
         "def": 5,
         "res": -10
       },
-      "classSkill": "locktouch"
+      "classSkill": "locktouch",
+      "killExpBonus": 20
     },
     {
       "id": "trickster",
@@ -920,7 +945,8 @@
         "def": 5,
         "res": -10
       },
-      "classSkill": "locktouch"
+      "classSkill": "locktouch",
+      "killExpBonus": 20
     },
     {
       "id": "fighter",
@@ -1057,7 +1083,8 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "axefaire"
+      "classSkill": "axefaire",
+      "dismountedClassId": "paladin"
     },
     {
       "id": "pirate",
@@ -1715,7 +1742,9 @@
         "lck": 0,
         "def": 10,
         "res": 10
-      }
+      },
+      "canTransform": true,
+      "transformWeaponId": "dragon_breath"
     },
     {
       "id": "chameleon",
@@ -1758,7 +1787,8 @@
         "lck": 0,
         "def": 10,
         "res": 10
-      }
+      },
+      "canImitate": true
     },
     {
       "id": "dismounted_pegasus",
