@@ -427,11 +427,12 @@
       "might": 0,
       "minRange": 1,
       "name": "Warp",
-      "price": 2000,
+      "price": 0,
       "requiredRank": "C",
       "sourceGame": "FE11",
       "type": "staff",
-      "weight": 5
+      "weight": 5,
+      "warp": true
     },
     {
       "crit": 0,

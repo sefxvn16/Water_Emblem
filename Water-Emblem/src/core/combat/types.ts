@@ -29,6 +29,9 @@ export interface ItemDefinition {
   /** Devil-weapon backfire base (PLAN item 153, FE11): each strike has a
    * (backfireBase − Luck)% chance (minimum 1%) to hit the user instead. */
   readonly backfireBase?: number;
+  /** Warp staff (PLAN item 156, FE11/FE12): sends an adjacent ally to any
+   * traversable visible tile. */
+  readonly warp?: boolean;
 }
 
 export interface UnitCombatStats {

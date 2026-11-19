@@ -85,7 +85,7 @@ import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { getSkillModifiers } from './core/combat/skills';
 import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
-import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
+import { applyStaffUse, applyWarpUse, getStaffTargets, getUsableStaves, getWarpDestinations, isHealStaff, isWarpStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
 import type { InventoryEntry } from './core/data/chapterData';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
@@ -191,6 +191,8 @@ export const App: React.FC = () => {
   const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
   const [prepTrade, setPrepTrade] = useState<{ unitId: string; partnerId: string | null } | null>(null);
   const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
+  // PLAN item 156: Warp picks the ally first, then the destination tile.
+  const [warpTargeting, setWarpTargeting] = useState<{ staffId: string; targetId: string } | null>(null);
 
   // PLAN item 102 (Canto): after acting, mounted/flying units may move the
   // movement they had left when they arrived at their action tile.
@@ -211,16 +213,16 @@ export const App: React.FC = () => {
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
-    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !cantoActive && !tradeTargeting) return;
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !warpTargeting && !cantoActive && !tradeTargeting) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setTradeTargeting(false);
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setWarpTargeting(null); setTradeTargeting(false);
         if (cantoActive) { setCantoActive(false); turnManager.waitSelectedUnit(); syncState(); }
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting, weaponPickerOpen, staffTargeting, cantoActive, tradeTargeting]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting, warpTargeting, cantoActive, tradeTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupIdRef = useRef(0);
@@ -456,6 +458,15 @@ export const App: React.FC = () => {
     return new Set(staffTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [staffTargets]);
 
+  // PLAN item 156: valid Warp destinations for the chosen ally.
+  const warpDestinationKeys = useMemo(() => {
+    if (!warpTargeting) return new Set<string>();
+    const target = extendedUnits.find((u) => u.unit.id === warpTargeting.targetId);
+    if (!target) return new Set<string>();
+    return new Set(getWarpDestinations(extendedUnits, target, mapData, defaultTerrainRegistry)
+      .map((pos) => `${pos.x},${pos.y}`));
+  }, [warpTargeting, extendedUnits, mapData]);
+
   // PLAN item 132: trade partners are picked on the map (Fire Emblem
   // style), highlighted like attack/staff targets.
   const tradeTargetKeys = useMemo(() => {
@@ -468,7 +479,7 @@ export const App: React.FC = () => {
     units: extendedUnits.map(({ unit }) => unit),
     reachableKeys,
     dangerZoneKeys: displayDangerZoneKeys,
-    attackTargetKeys: staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
+    attackTargetKeys: warpTargeting ? warpDestinationKeys : staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
     inspected: inspectedEnemy?.unit.position ?? null,
   });
@@ -677,6 +688,29 @@ export const App: React.FC = () => {
       return;
     }
 
+    // PLAN item 156: Warp destination lock — click a highlighted tile to
+    // send the ally there, click the unit's destination tile to cancel.
+    if (warpTargeting) {
+      if (warpDestinationKeys.has(`${x},${y}`)) {
+        const { staffId, targetId } = warpTargeting;
+        const destination = { x, y };
+        setWarpTargeting(null);
+        executeWithMove(() => {
+          if (!selectedExtUnit) return;
+          const result = applyWarpUse(extendedUnits, selectedExtUnit.unit.id, targetId, staffId, destination, ITEM_BY_ID, defaultRNG, mapData, defaultTerrainRegistry);
+          if (!result) return;
+          turnManager.replaceUnits(result.units.map(({ unit }) => unit));
+          waitWithCanto();
+          setExtendedUnits(result.units);
+          setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
+          syncState();
+        });
+      } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
+        setWarpTargeting(null);
+      }
+      return;
+    }
+
     // PLAN item 89: staff target lock — click a highlighted ally to heal,
     // click the unit's destination tile to go back to the menu.
     if (staffTargeting) {
@@ -684,6 +718,12 @@ export const App: React.FC = () => {
         const staffId = staffTargeting.staffId;
         const targetId = clickedExt.unit.id;
         setStaffTargeting(null);
+        // PLAN item 156: Warp needs a second pick — the destination tile.
+        const staff = ITEM_BY_ID.get(staffId);
+        if (staff && isWarpStaff(staff)) {
+          setWarpTargeting({ staffId, targetId });
+          return;
+        }
         executeWithMove(() => {
           if (!selectedExtUnit) return;
           const result = applyStaffUse(extendedUnits, selectedExtUnit.unit.id, targetId, staffId, ITEM_BY_ID, defaultRNG);
@@ -1947,7 +1987,7 @@ export const App: React.FC = () => {
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting ? {
+        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting && !warpTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -1979,7 +2019,7 @@ export const App: React.FC = () => {
           imitateTargetName: imitateTarget?.unit.name ?? null,
           staffOptions: selectedExtUnit
             ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
-              .filter((staff) => isHealStaff(staff)
+              .filter((staff) => (isHealStaff(staff) || isWarpStaff(staff))
                 && getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos).length > 0)
               .map((staff) => ({ itemId: staff.id, name: staff.name }))
             : [],
