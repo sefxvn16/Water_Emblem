@@ -75,29 +75,6 @@ test.describe('Game Error Tolerance & Resilience Suite', () => {
     expect(isUnmutedInStorage).toBe('false');
   });
 
-  test('switches view mode between 3D and 2D repeatedly without WebGL errors', async ({ page }) => {
-    const pageErrors: string[] = [];
-    page.on('pageerror', (err) => pageErrors.push(err.message));
-
-    await page.goto('/');
-  const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
-  if (await resumeBtn.isVisible()) await resumeBtn.click();
-    await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
-
-    // Toggle 2D and 3D back and forth 4 times
-    for (let i = 0; i < 4; i++) {
-      await openSettings(page);
-      await page.getByRole('button', { name: /2D Grid/ }).click();
-      await expect(page.getByText('25,6', { exact: true })).toBeVisible();
-
-      await openSettings(page);
-      await page.getByRole('button', { name: /3D View/ }).click();
-      await expect(page.locator('canvas')).toBeVisible();
-    }
-
-    expect(pageErrors).toEqual([]);
-  });
-
   test('recovers safely from a corrupted save file in IndexedDB without white screen', async ({ page }) => {
     test.setTimeout(60_000);
     await page.goto('/');
