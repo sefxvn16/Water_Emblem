@@ -79,8 +79,16 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
 
   const itemList: Array<{ name: string; uses: number | string; icon: string }> = [];
 
+  let equippedSkipped = false;
   for (const inv of inventoryItems) {
     const isWeapon = ['sword', 'lance', 'axe', 'bow', 'staff'].includes(inv.type);
+    // The equipped weapon already heads the list; skip its own inventory
+    // entry so slot 1 is not shown twice (PLAN item 82). A second copy of
+    // the same weapon still shows.
+    if (isWeapon && !equippedSkipped && inv.id === u.weapon.id) {
+      equippedSkipped = true;
+      continue;
+    }
     const entry = {
       name: inv.name,
       uses: inv.uses,
