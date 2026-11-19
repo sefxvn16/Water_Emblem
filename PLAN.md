@@ -204,6 +204,84 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: nhánh `cs/water-inspector-j2` (3 commit: `c090654` PLAN, `87d6ea5` sửa, `507501b` test). Sửa `UnitInspectorWindow.tsx`: khi dựng `weaponList`, bỏ qua mục trong túi trùng với vũ khí đang trang bị (cây thứ hai giống hệt vẫn hiện). Áp dụng cho mọi quân (lỗi ở logic hiển thị, dữ liệu gốc sạch — đã kiểm `characters.json` + chương 1). Kiểm chứng: `tsc --noEmit` PASS; Vitest 25 file/165 test PASS (thêm assert `>Rapier<` xuất hiện đúng 1 lần — đếm chữ hiển thị, không đếm alt của icon); Playwright `inspectorJ2.spec.ts` 2/2 PASS (test icons cập nhật: Marth 2 ô có icon + 2 ô trống — assert cũ ghim hiển thị nhân đôi, chủ dự án báo là lỗi); ảnh sau chụp lại: `work/water-inspector-j2/after/01-inspector-player.png` (Rapier 1 lần + Iron Sword), `02-inspector-enemy.png`, render `03/04` chụp lại. Gate `node .studio/gate.mjs`: Result: PASS (test PASS, build PASS, integration PASS, 0 vi phạm luật). Chưa push/merge (chờ lệnh riêng).
   - Kiểm bởi: tôi
 
+- [ ] 83. Đường di chuyển: nút tròn ở ô bắt đầu phải nhìn thấy được (hiện bị avatar che).
+  - Nguồn: chủ dự án báo 2026-11-19 kèm ảnh chụp ("Hình tròn đường kính 1/3 chiều ngang ô vuông chưa có"). Đã kiểm: nút tròn có trong DOM (r=10.67 tại tâm ô bắt đầu) nhưng SVG đường đi ở z 1, avatar ở lớp z 25 nên avatar 42px che kín nút 21px — người chơi không nhìn thấy.
+  - Tiêu chí xong: (1) Nút tròn đường kính = 1/3 chiều ngang ô (r = tileSize/6), tâm tại ô bắt đầu, vẽ **trên** lớp avatar (z 26) để nhìn thấy; đường trắng mảnh vẫn ở z 1 dưới avatar (mục 78 giữ nguyên: avatar đè lên đường). (2) Test: Vitest `uiRender.test.ts` (test MovementArrow) thêm assert nút tròn nằm ở lớp trên avatar (`data-testid="movement-origin-node"`, z-index 26) — assert cũ về đường/r giữ nguyên. (3) Ảnh kiểm chứng trên trình duyệt thật: chọn quân + bấm ô đích, nút tròn hiện rõ tại ô bắt đầu. (4) Gate `node .studio/gate.mjs` Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 84. Độ bền vũ khí: vũ khí giảm độ bền khi đánh, vỡ thì biến mất.
+  - Nguồn: đề xuất cơ chế 2026-11-19 (`work/water-mechanics-proposal/01-proposal.md` Nhóm A7); chủ dự án chốt 2026-11-19: "Vũ khí vỡ thì biến mất vì game không có rèn đồ". Hiện trạng: vũ khí không giảm `uses` khi đánh nên không bao giờ vỡ.
+  - Tiêu chí xong: (1) Mỗi lần đánh bằng vũ khí (kể cả phản đòn/nhân đôi theo luật combat hiện có) trừ 1 độ bền; về 0 thì vũ khí biến mất khỏi túi, quân chuyển sang vũ khí dùng được tiếp theo (không còn thì không vũ khí). (2) Vật phẩm tiêu hao giữ nguyên cơ chế `spendItem` hiện có. (3) Test Vitest cho trừ độ bền + biến mất + chuyển vũ khí; Playwright kiểm trên game thật. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 85. Đổi vũ khí trong trận: chọn vũ khí trang bị từ túi.
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A7). Hiện trạng: vũ khí trang bị cố định theo trường `weapon`, các vũ khí khác trong túi chỉ để hiển thị.
+  - Tiêu chí xong: (1) Trong menu hành động (hoặc inspector) đổi được vũ khí trang bị sang cây khác trong túi mà quân dùng được (rank/loại hợp lệ); dự báo giao tranh tính theo vũ khí mới. (2) Không đổi luật combat nào khác. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 86. Giới hạn túi đồ theo FE3: 4 vũ khí + 4 vật phẩm [Giả định].
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A8); FE3 gốc tách 2 túi 4+4 (trượng thuộc túi vật phẩm). [Giả định 2026-11-19: chọn 4+4 kiểu FE3 — khớp sẵn bố cục inspector J2 (ô Weapons 2×2 + 4 ô Items); chủ dự án chưa trả lời điểm này trong lượt chốt, ghi rõ là giả định.]
+  - Tiêu chí xong: (1) Túi mỗi quân tối đa 4 vũ khí + 4 vật phẩm; nhận đồ khi đầy thì hỏi gửi vào kho (mục 88) hoặc bỏ. (2) Dữ liệu chương hiện tại không quân nào vượt giới hạn (kiểm bằng test). (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 87. Trao đổi đồ (Trade) giữa 2 quân đứng cạnh nhau.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19; luật FE3 gốc (nghiên cứu 2026-11-19): đổi đồ giữa 2 quân kề nhau; thoát Trade thì hết di chuyển nhưng vẫn đánh/dùng đồ/dùng trượng được từ ô đó; mỗi quân chỉ chủ động trade 1 lần/lượt; quân khác vẫn trade với quân đó được; trade với quân đã hành động xong sẽ đổi vũ khí trang bị của quân đó thành cây dùng được đầu tiên; đánh xong không trade được.
+  - Tiêu chí xong: (1) Menu hành động có Trade khi đứng kề đồng minh; giao diện 2 cửa sổ theo bố cục FE3 (`art_ui.md` đã tham chiếu ảnh trade). (2) Đúng các luật trên, gồm giới hạn túi (mục 86). (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 88. Kho đồ qua Marth (Convoy): cất/lấy đồ khi đứng cạnh Marth.
+  - Nguồn: chủ dự án yêu cầu 2026-11-19; luật FE3 gốc: Marth là kho, 128 ô chung cho vũ khí + vật phẩm (trượng/đá rồng tính là vật phẩm), cất/lấy miễn phí; trong trận chỉ quân đứng kề Marth (và chính Marth) mới có lệnh Storage; màn chuẩn bị tự do cất/lấy/trade; đồ tràn túi hỏi gửi vào kho.
+  - Tiêu chí xong: (1) Kho 128 ô lưu trong save; lệnh Storage trong menu khi kề Marth; màn chuẩn bị (Q06) quản lý kho được. (2) Đồ nhận khi túi đầy (mục 86) hỏi gửi vào kho. (3) Test Vitest + Playwright (kể cả save/load giữ kho). (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 89. Dùng trượng (C10): hành động dùng trượng trong trận.
+  - Nguồn: đã chọn C10 trong `decisions.md`; danh sách trượng FE3 (nghiên cứu 2026-11-19): Heal/Mend/Recover/Physic/Fortify/Warp/Rescue/Silence/Barrier/Hammerne/Thief/Unlock/Watch/Again/Aum (Rewarp không có ở FE3). Dữ liệu hiện có heal/mend/warp + quân mang trượng (Wrys, Lena) nhưng không có hành động dùng.
+  - Tiêu chí xong: (1) Hành động dùng trượng trong menu cho quân mang trượng dùng được (rank/loại hợp lệ): hồi máu (Heal/Mend/Recover/Physic/Fortify) trước; các trượng còn lại theo dữ liệu có sẵn, ghi rõ trượng nào chưa làm. (2) Trượng giảm độ bền khi dùng, vỡ thì biến mất (mục 84). (3) EXP cho healer: kiểm nguồn FE3 trước khi chốt số (nghiên cứu ghi chưa thống nhất — ghi rõ số dùng là [Giả định] nếu chưa kiểm được ROM). (4) Test Vitest + Playwright. (5) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 90. Rank vũ khí tăng theo dùng (WEx).
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A9); FE5: ngưỡng E→D 50, D→C 100, C→B 150, B→A 200, A→S 250; 1 WEx mỗi lần đánh trúng, trượng 1–10 theo rank. Hiện trạng: rank có nhưng không bao giờ tăng.
+  - Tiêu chí xong: (1) Đánh trúng/dùng trượng cộng WEx theo loại vũ khí; đủ ngưỡng thì lên rank; rank giữ qua chương (save). (2) Không đổi bonus rank hiện có. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 91. Tiệm vũ khí/dụng cụ: mua/bán bằng vàng.
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A4). Hiện trạng: ô `shop` có trên bản đồ nhưng không mua bán được; `items.json` chưa có giá. `decisions.md` từng xếp shop/forge vào "chưa chọn" — mục này đưa shop vào phạm vi (forge vẫn không làm, theo chốt "game không có rèn đồ" 2026-11-19).
+  - Tiêu chí xong: (1) Giá mua cho mọi vật phẩm trong `items.json` (nguồn FE11/FE12 theo quy tắc nguồn `decisions.md`, ghi rõ vật phẩm nào là [Giả định]); bán lại theo tỉ lệ cố định ghi trong spec. (2) Đứng trên ô shop có lệnh mua/bán; đồ mua vào túi (giới hạn mục 86, tràn thì vào kho mục 88). (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 92. Rương/cửa/khóa: mở bằng thief, chìa khóa, Marth + Fire Emblem.
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A5); FE3 gốc: thief mở khóa bẩm sinh (không cần lockpick), Marth chỉ mở rương khi có Fire Emblem. Hiện trạng: `door_key` có trong dữ liệu, Julian mang sẵn, nhưng không có tương tác; `terrains.json` chưa có ô chest/door.
+  - Tiêu chí xong: (1) Ô chest/door trong dữ liệu địa hình + bản đồ chương có đặt rương/cửa (ghi rõ chương nào); thief mở được cả hai, quân mang `door_key` mở cửa (tiêu hao), Marth có Fire Emblem mở rương. (2) Rương cho vật phẩm/vàng theo dữ liệu chương. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 93. Đấu trường (Arena) với Yield.
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A6); FE3 có Yield (rút lui) so với FE1.
+  - Tiêu chí xong: (1) Ô arena trên bản đồ chương có đặt (ghi rõ chương nào); vào đấu trường tốn vàng cược, thắng nhận vàng + EXP, Yield rút lui giữa trận (mất cược), thua hết HP thì chết theo luật permadeath hiện có. (2) Đối thủ đấu trường theo dữ liệu cân bằng ghi trong spec. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 94. Viện binh (B04): báo trước, không hành động lượt xuất hiện.
+  - Nguồn: đã chọn B04 "Viện binh báo trước" trong `decisions.md`; chủ dự án ủy quyền quyết định kiểu viện binh 2026-11-19 ("cho phép tự quyết định"). Quyết định (tôi, theo ủy quyền): viện binh được báo trước (hiển thị điểm/lượt xuất hiện) và **không hành động trong lượt xuất hiện** — kiểu hiện đại được người chơi đánh giá cao hơn; ambush spawn kiểu FE3 (đánh ngay lượt xuất hiện) bị phê bình rộng rãi là không công bằng. Hiện trạng: chưa có hệ viện binh (chỉ có cờ hiển thị `isReinforcement`).
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo viện binh (lượt/điều kiện kích hoạt, ô xuất hiện, quân); xuất hiện đầu pha địch, lượt đó không di chuyển/tấn công; cảnh báo trước cho người chơi (điểm xuất hiện + lượt). (2) Quân viện binh dùng cờ `isReinforcement` sẵn có cho hiển thị. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
+- [ ] 95. Nguồn Master Seal ở chương 1–3 [Giả định vị trí].
+  - Nguồn: đề xuất cơ chế 2026-11-19 (Nhóm A10). Thăng cấp đã code (Master Seal + cấp ≥10) nhưng ch1–3 không có nguồn Master Seal nào nên không thăng cấp được. [Giả định 2026-11-19: đặt 1 Master Seal ở làng chương 2 và 1 ở rương chương 3 (cần mục 92); chủ dự án chưa trả lời điểm này trong lượt chốt.]
+  - Tiêu chí xong: (1) Dữ liệu chương 2/3 có Master Seal tại vị trí đã ghi; quân cấp ≥10 thăng cấp được trong game thật. (2) Test Playwright kiểm luồng thăng cấp. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
 - [x] 78. Mũi tên di chuyển: avatar đè lên mũi tên; mũi tên dày, trắng, nét liền, hơi trong suốt, đầu mũi tên dạng khối theo ảnh mẫu.
   - Nguồn: yêu cầu của chủ dự án 2026-11-19 (kèm ảnh mũi tên mẫu — chỉ lấy hình dáng, không lấy màu).
   - Tiêu chí xong: (1) Trên trình duyệt thật (2D): khi chọn quân và rê tới ô đích, avatar của mọi quân trên đường đi luôn hiển thị đè lên mũi tên (không bị mũi tên che); chụp ảnh kiểm chứng. (2) Mũi tên: thân dày hơn (rộng ~18px so với 9px cũ), màu trắng, nét liền (không còn đường đứt), hơi trong suốt (opacity ~0.85), có viền tối để không trùng nền; đầu mũi tên dạng khối tam giác rộng theo ảnh mẫu. (3) Không đổi luật chơi hay con số nào. (4) Gate `node .studio/gate.mjs` Result: PASS.

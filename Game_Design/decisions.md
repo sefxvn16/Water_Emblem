@@ -49,6 +49,17 @@ Ngôn ngữ mặc định của toàn bộ trò chơi là **tiếng Anh (English
 
 Break; Arts khắc Bow/Tome/Dagger; Battle Styles đầy đủ; Chain Attack tự động; Combat Arts; Gambits; Pair Up/Guard Stance; Rescue/Drop/Shove/Swap; rewind; Ironman/Classic/Casual; Fog of War; tương tác nguyên tố và phá/đốt/đóng băng diện rộng; tháp thử thách; randomizer; toàn bộ campaign 40+ chương; shop/forge và hub mở rộng. Những mục này không được triển khai chỉ vì từng xuất hiện trong báo cáo hoặc đề án. Một số có thể trở lại nếu chủ dự án chọn sau.
 
+## Quyết định về cơ chế ngày 2026-11-19
+
+Nguồn: chủ dự án chốt sau bản đề xuất tổng hợp cơ chế FE3 gốc + FE hiện đại (`work/water-mechanics-proposal/01-proposal.md`, đối chiếu kiểm kê code trên `main` @ `216888c`).
+
+- **Nhóm C bỏ đi:** các cơ chế hiện đại ngoài 30 mã đã chọn (Rescue, Shove, Casual, Capture, Forging, Bonus EXP, Fog of War, Steal, Combat Arts, Turnwheel, Pair Up, Gambits, Break/Chain/Engage, Fatigue...) **không làm**. Phạm vi cơ chế = 30 mã đã chọn + cơ chế FE3 gốc còn thiếu (PLAN mục 84–95).
+- **Vũ khí vỡ thì biến mất** (không thành "Broken"), vì game không có rèn đồ (forge không làm).
+- **Viện binh (B04):** chủ dự án ủy quyền cho tôi quyết định kiểu viện binh. Quyết định: viện binh **báo trước** (điểm/lượt xuất hiện) và **không hành động trong lượt xuất hiện** — kiểu hiện đại được người chơi đánh giá cao hơn; ambush spawn kiểu FE3 bị phê bình là không công bằng.
+- **Pha ally cho mục tiêu bảo vệ/NPC:** đồng ý về nội dung, nhưng bản đồ gốc hiện tại không có map nào cần; chỉ làm khi bổ sung map mới sau này. Chưa đưa vào PLAN.
+- **Túi đồ 4 vũ khí + 4 vật phẩm kiểu FE3** là [Giả định] của tôi (chủ dự án chưa trả lời điểm này; khớp bố cục inspector J2 4+4) — ghi trong PLAN mục 86.
+- **Vị trí Master Seal ở ch1–3** là [Giả định] của tôi (làng ch2 + rương ch3) — ghi trong PLAN mục 95.
+
 ## Điểm còn cần chốt hoặc kiểm nguồn trước khi triển khai
 
 | Vấn đề | Vì sao chưa chốt |
