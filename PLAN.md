@@ -609,6 +609,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
+- [] 142. Đứng tại chỗ chọn địch phải hiện thanh hành động.
+  - Nguồn: chủ dự án 2026-11-19 22:11: "Đứng tại chỗ chọn địch thì không hiển thị ra hành động gì? Trong khi đáng lẽ phải hiện thanh hành động".
+  - Tiêu chí xong: (1) Quân không di chuyển (đứng tại ô gốc), bấm vào quân địch trong tầm → hiện thanh hành động (hoặc mở thẳng dự báo theo mục 141). (2) Bấm vào chính ô của quân đang chọn cũng phải hiện thanh hành động tại chỗ. (3) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
