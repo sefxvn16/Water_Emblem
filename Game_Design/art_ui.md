@@ -94,3 +94,5 @@ Kiểm tay bằng bản đồ và đơn vị thực: chọn ô, xem tầm, xoay/
 - Bảng dự báo theo ảnh mẫu: khiên avatar lớn ở mép ngoài tràn khung, icon vũ khí hình thoi nhỏ ở góc trong, tên/HP/chỉ số ở giữa, huy hiệu Lv ở góc trong-dưới; màn hình ≤640px thu nhỏ khiên, chỉ số xếp 1 cột.
 - Trao đổi đồ chọn đối tác trên bản đồ (kiểu Fire Emblem), không dùng popup danh sách (mục 132). Nhận vật phẩm/vàng/thu phục hiện popup giữa màn hình có icon/avatar (mục 131).
 - Settings: nút đều 44px lưới 2 cột, bỏ thông tin Phase/Turn, thanh trượt âm lượng (0 = tắt), Save/Load ngang hàng, "Manage Saves" thay cho "Save Files" (mục 128).
+
+- Quyết định chủ (2026-11-19 18:59): KHÔNG scale toàn bộ giao diện theo kích thước màn hình. Giữ cách scale có giới hạn (clamp + điểm gãy đổi bố cục) đã làm ở mục 126/128.
