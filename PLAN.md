@@ -180,7 +180,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: (1) Wait không còn dấu ✓ (`ActionMenuWindow.tsx`; kiểm bằng textContent === 'Wait' trên trình duyệt thật + test uiRender assert `>Wait<` và không chứa '✓ Wait'). (2) Nút Attack chỉ hiện khi có địch trong tầm (`handleAttack` mở dự báo qua `handleTileClick` — dùng lại luồng bấm ô đỏ); kiểm trên trình duyệt thật 2D: địch kề Marth → menu có Attack → bấm Attack → COMBAT FORECAST hiện → Cancel → menu lại có Attack; Caeda di chuyển tới chỗ không có địch trong tầm → menu không có Attack. Ảnh: `work/water-action-menu-77/item77-attack-visible.png`, `item77-forecast.png`, `item77-no-attack.png`. Vitest 24 files/154 tests PASS; build PASS.
     - Nhiều mục tiêu trong tầm: Attack mở dự báo cho mục tiêu đầu tiên; hủy dự báo để quay lại menu rồi bấm ô đỏ khác (chủ dự án có thể yêu cầu danh sách chọn mục tiêu sau).
     - App.tsx +4 dòng (1183→1187) do handler `handleAttack` mới; không nhân đôi logic dự báo.
-    - Gate: chưa chạy trên nhánh này.
+    - Gate lần 1 trên nhánh này: FAIL — cả 3 chapter replay fail vì fixture ghi bước '✓ Wait' (247 bước), không khớp nút Wait mới. Đã sửa fixture thành 'Wait' (chapterReplay 3/3 pass trở lại) và commit riêng; đang chạy lại gate.
   - Kiểm bởi: tôi
 
 ## Giai đoạn 4 trở đi: mở rộng
