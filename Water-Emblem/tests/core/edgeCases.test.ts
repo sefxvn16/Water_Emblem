@@ -3,7 +3,7 @@ import { calculateCombatForecast, executeCombat } from '../../src/core/combat/ca
 import { SeededRNG } from '../../src/core/combat/rng';
 import { evaluateAITurn } from '../../src/core/ai/decision';
 import { TerrainRegistry, healUnitsOnTerrain } from '../../src/core/grid/terrain';
-import { promoteWithMasterSeal, useVulnerary } from '../../src/core/class/classRules';
+import { promoteWithoutItem, useVulnerary } from '../../src/core/class/classRules';
 import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import type { MapData } from '../../src/core/grid/types';
 import itemsJson from '../../data/items.json' with { type: 'json' };
@@ -217,7 +217,7 @@ describe('Inventory & Item Edge Cases', () => {
       inventory: [{ itemId: 'master_seal', uses: 1 }],
     });
 
-    const promoted = promoteWithMasterSeal(lowLevelKnight, 'cataphract');
+    const promoted = promoteWithoutItem(lowLevelKnight, 'cataphract');
     expect(promoted).toBeNull();
   });
 
@@ -228,11 +228,11 @@ describe('Inventory & Item Edge Cases', () => {
       inventory: [{ itemId: 'master_seal', uses: 1 }],
     });
 
-    const promoted = promoteWithMasterSeal(readyCavalier, 'cataphract');
+    const promoted = promoteWithoutItem(readyCavalier, 'cataphract');
     expect(promoted).not.toBeNull();
     expect(promoted!.unit.classId).toBe('cataphract');
     expect(promoted!.level).toBe(1);
-    expect(promoted!.inventory.length).toBe(0); // master seal consumed
+    expect(promoted!.inventory.length).toBe(1); // no item consumed (PLAN item 95)
     expect(promoted!.stats.maxHp).toBeGreaterThanOrEqual(readyCavalier.stats.maxHp);
   });
 });

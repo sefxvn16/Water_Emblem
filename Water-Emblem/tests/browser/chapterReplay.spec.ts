@@ -50,11 +50,12 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
       await openSettings(page);
       await page.locator('select').first().selectOption(step.value);
     } else {
-      // Recorded name is the button's textContent; match it exactly, tolerant of whitespace only.
-      const pattern = step.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s*');
+      // Recorded name is the button's accessible name; match it exactly,
+      // ignoring whitespace (name computation inserts spaces between elements).
+      const pattern = step.name.split('').map((ch) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*');
       if (SETTINGS_BUTTONS.test(step.name)) await openSettings(page);
       else await closeSettings(page);
-      await page.locator('button', { hasText: new RegExp(`^\\s*${pattern}\\s*$`) }).first().click({ timeout: 15000 });
+      await page.getByRole('button', { name: new RegExp(`^${pattern}$`) }).first().click({ timeout: 15000 });
       if (/Seize/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /STAGE CLEAR/i }), where).toBeVisible();
         seizes += 1;

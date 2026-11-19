@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { chapter01Data } from '../../src/core/data/chapterData';
 import itemsJson from '../../data/items.json';
 import type { ItemDefinition } from '../../src/core/combat/types';
-import { changeMountedState, getAttackRange, isWeaponUsable, promoteUnit, promoteWithMasterSeal, useVulnerary } from '../../src/core/class/classRules';
+import { changeMountedState, getAttackRange, isWeaponUsable, promoteUnit, promoteWithoutItem, useVulnerary } from '../../src/core/class/classRules';
 
 describe('class rules', () => {
   it('lets ground cavalry dismount and remount without healing or losing identity', () => {
@@ -65,15 +65,14 @@ describe('class rules', () => {
     expect(useVulnerary(healed, vulnerary)).toBeNull();
   });
 
-  it('consumes a Master Seal only when promotion succeeds', () => {
+  it('promotes without any item at level 10+ (PLAN item 95)', () => {
     const gordin = structuredClone(chapter01Data.units.find(({ unit }) => unit.id === 'gordin')!);
-    gordin.inventory.push({ itemId: 'master_seal', uses: 1 });
-    expect(promoteWithMasterSeal(gordin, 'sniper')).toBeNull();
+    expect(promoteWithoutItem(gordin, 'sniper')).toBeNull();
     const eligible = { ...gordin, level: 10 };
-    expect(promoteWithMasterSeal(eligible, 'warlord')).toBeNull();
-    const promoted = promoteWithMasterSeal(eligible, 'sniper')!;
+    expect(promoteWithoutItem(eligible, 'warlord')).toBeNull();
+    const promoted = promoteWithoutItem(eligible, 'sniper')!;
     expect(promoted.unit.classId).toBe('sniper');
-    expect(promoted.inventory.some((item) => item.itemId === 'master_seal')).toBe(false);
-    expect(eligible.inventory.some((item) => item.itemId === 'master_seal')).toBe(true);
+    expect(promoted.level).toBe(1);
+    expect(promoted.inventory).toEqual(eligible.inventory);
   });
 });

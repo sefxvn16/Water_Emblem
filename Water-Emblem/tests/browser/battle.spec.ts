@@ -58,7 +58,7 @@ test('move and wait, two turns, and IndexedDB save/load', async ({ page }) => {
   await expect(page.getByText(/(?:Save file loaded|Đã nạp lại tiến độ)/i)).toBeVisible();
 });
 
-test('a carried Vulnerary heals once and promotion consumes a Master Seal', async ({ page }) => {
+test('a carried Vulnerary heals once and promotion needs no item', async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
@@ -83,7 +83,6 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
         marth.stats.hp = 8;
         marth.inventory.push({ itemId: 'vulnerary', uses: 2 });
         gordin.level = 10;
-        gordin.inventory.push({ itemId: 'master_seal', uses: 1 });
         (record as any).timestamp = Date.now() + 1000;
         transaction.objectStore('saves').put(record);
         transaction.objectStore('saves').put({ ...record, slot: 'slot1' });
@@ -132,6 +131,7 @@ test('a carried Vulnerary heals once and promotion consumes a Master Seal', asyn
   });
   expect(saved.find(({ unit }) => unit.id === 'marth')?.inventory.find((item) => item.itemId === 'vulnerary')?.uses).toBe(1);
   expect(saved.find(({ unit }) => unit.id === 'gordin')?.unit.classId).toBe('sniper');
+  // PLAN item 95: promotion consumes no item.
   expect(saved.find(({ unit }) => unit.id === 'gordin')?.inventory.some((item) => item.itemId === 'master_seal')).toBe(false);
 });
 

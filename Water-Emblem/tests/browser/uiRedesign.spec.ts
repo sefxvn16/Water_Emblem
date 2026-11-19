@@ -548,14 +548,15 @@ test('combat-forecast-ui/A6 no forecast data shows no window', async ({ page }) 
   await expect(page.getByTestId('forecast-window')).toHaveCount(0);
 });
 
-test('settings-menu/A2 menu opens upward and auto-closes', async ({ page }) => {
+test('settings-menu/A2 menu opens downward and auto-closes', async ({ page }) => {
   await gotoBattle(page);
   await openSettings(page);
   const menu = page.getByTestId('settings-menu');
   await expect(menu).toBeVisible();
   const menuBox = await menu.boundingBox();
   const gearBox = await page.getByRole('button', { name: 'Settings', exact: true }).boundingBox();
-  expect(menuBox!.y + menuBox!.height).toBeLessThanOrEqual(gearBox!.y);
+  // PLAN item 99: the cluster sits top-right, so the menu opens below it.
+  expect(menuBox!.y).toBeGreaterThanOrEqual(gearBox!.y + gearBox!.height);
   // Chapter change closes the menu.
   await page.getByTestId('settings-menu').locator('select').selectOption('chapter_02');
   await expect(menu).toHaveCount(0);
