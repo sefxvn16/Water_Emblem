@@ -3,6 +3,8 @@ import type { ChapterChest, ChapterData, ChapterDoor, ChapterReward, ChapterVill
 import { addItemToInventory } from '../data/inventory';
 import { getClassDefinition } from '../class/classRules';
 import { evaluateChapterOutcome } from './types';
+import defaultDialoguesJson from '../../../data/dialogues/default_dialogues.json' with { type: 'json' };
+import itemsJson from '../../../data/items.json' with { type: 'json' };
 
 export type VillageState = 'intact' | 'visited' | 'destroyed';
 export type ChestState = 'opened';
@@ -91,6 +93,20 @@ function dialogueLines(value: unknown): DialogueLine[] | undefined {
   return value.map(({ speaker, text, avatarUrl }) => ({ speaker, text, avatarUrl: typeof avatarUrl === 'string' ? avatarUrl : '' }));
 }
 
+/** Default village lines when a chapter defines none (data/dialogues/default_dialogues.json, PLAN item 134). */
+const DEFAULT_VILLAGE_LINES: DialogueLine[] = dialogueLines(defaultDialoguesJson.defaultVillage) ?? [];
+
+/** Item roles declared in data/items.json (PLAN item 134): door key, lord's chest key. */
+const itemRoleById = new Map<string, string>(
+  (itemsJson.items as readonly { id: string; itemRole?: string }[])
+    .filter((item) => item.itemRole !== undefined)
+    .map((item) => [item.id, item.itemRole!] as const),
+);
+
+function holdsItemRole(entry: ExtendedUnitState, role: string): boolean {
+  return entry.inventory.some((item) => itemRoleById.get(item.itemId) === role && item.uses > 0);
+}
+
 /** Boss lines come from `boss_<unitId>` with `startCombat` and `death` text. */
 export function getBossLines(dialogues: DialogueTable, unitId: string): { startCombat?: string; death?: string } | undefined {
   const entry = lookup(dialogues, `boss_${unitId}`);
@@ -164,11 +180,7 @@ export function visitVillage(
   if (!reward) return unchanged(state);
   const villageTable = lookup(dialogues, 'villages');
   const villageLines = typeof villageTable === 'object' && villageTable !== null ? lookup(villageTable, village.id) : undefined;
-  const lines = dialogueLines(villageLines) ?? [{
-    speaker: 'Villager',
-    avatarUrl: '/avatars/village_man.png',
-    text: 'Thank you Prince Marth for protecting our village!',
-  }];
+  const lines = dialogueLines(villageLines) ?? DEFAULT_VILLAGE_LINES;
   return {
     state: { ...reward.state, villageStates: { ...state.villageStates, [village.id]: 'visited' } },
     events: [
@@ -290,17 +302,15 @@ export function opensLocksInately(entry: ExtendedUnitState): boolean {
   return getClassDefinition(entry.unit.classId)?.canOpenLocks === true;
 }
 
-/** FE3: the lord opens chests only while carrying the Fire Emblem. */
+/** FE3: the lord opens chests only while carrying the Fire Emblem (itemRole 'lordChestKey'). */
 export function canOpenChest(entry: ExtendedUnitState, chapter: ChapterData): boolean {
   if (opensLocksInately(entry)) return true;
-  return entry.unit.id === chapter.lordUnitId
-    && entry.inventory.some((item) => item.itemId === 'fire_emblem' && item.uses > 0);
+  return entry.unit.id === chapter.lordUnitId && holdsItemRole(entry, 'lordChestKey');
 }
 
-/** Thief-line classes or a Door Key (consumed on use) open doors. */
+/** Thief-line classes or a Door Key (itemRole 'doorKey', consumed on use) open doors. */
 export function canOpenDoor(entry: ExtendedUnitState): boolean {
-  return opensLocksInately(entry)
-    || entry.inventory.some((item) => item.itemId === 'door_key' && item.uses > 0);
+  return opensLocksInately(entry) || holdsItemRole(entry, 'doorKey');
 }
 
 /** Open the chest the unit stands on; the reward follows village rules. */
@@ -343,7 +353,7 @@ export function openDoor(
     units = mapUnit(state.units, unitId, (entry) => ({
       ...entry,
       inventory: entry.inventory.flatMap((item) => {
-        if (item.itemId !== 'door_key') return [item];
+        if (itemRoleById.get(item.itemId) !== 'doorKey') return [item];
         return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
       }),
     }));

@@ -1,11 +1,12 @@
 import type { Position } from '../grid/types';
 import type { ChapterTrap, ExtendedUnitState } from '../data/chapterData';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Trap tiles (PLAN item 105, V08): a trap triggers once when a unit ends
  * its movement on the trap tile, dealing fixed damage that never reduces
- * HP below 1 [Giả định]. Triggered trap ids are tracked by App and saved.
- * Pure helpers.
+ * HP below the floor declared in data/balance.json [Giả định]. Triggered
+ * trap ids are tracked by App and saved. Pure helpers.
  */
 
 export function trapAt(
@@ -25,7 +26,7 @@ export function applyTrapDamage(
 ): ExtendedUnitState[] {
   return units.map((entry) => {
     if (entry.unit.id !== unitId || entry.unit.isDead) return entry;
-    const hp = Math.max(1, entry.stats.hp - damage);
+    const hp = Math.max(balanceConfig.trapMinHp, entry.stats.hp - damage);
     return { ...entry, stats: { ...entry.stats, hp } };
   });
 }

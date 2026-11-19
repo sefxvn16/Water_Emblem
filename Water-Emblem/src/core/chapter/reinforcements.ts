@@ -1,6 +1,7 @@
 import type { ChapterData, ChapterReinforcement, ExtendedUnitState } from '../data/chapterData';
 import type { MapData, Position } from '../grid/types';
 import type { TerrainRegistry } from '../grid/terrain';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Reinforcements (PLAN item 94, B04): announced in advance, they arrive at
@@ -39,7 +40,7 @@ function findSpawnTile(
   const start = entry.unit.position;
   const visited = new Set<string>([`${start.x},${start.y}`]);
   let frontier: Position[] = [start];
-  for (let radius = 0; radius <= 2; radius++) {
+  for (let radius = 0; radius <= balanceConfig.reinforcementSearchRadius; radius++) {
     const next: Position[] = [];
     for (const pos of frontier) {
       const terrainId = map.grid[pos.y]?.[pos.x];

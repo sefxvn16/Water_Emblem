@@ -1,16 +1,19 @@
 import type { MapData, Position } from '../grid/types';
 import { SeededRNG } from '../combat/rng';
 import type { ChapterData, ExtendedUnitState } from '../data/chapterData';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Random skirmish maps (PLAN item 119, Q12): a separate mode that
  * generates a battlefield from a seed — same seed, same map. Terrain
  * mix [Giả định]: plains with forest/mountain clusters, a river crossed
  * by one bridge, a fort and a gate; deployment rows stay clear.
+ * Generation parameters are declared in data/balance.json (PLAN
+ * item 134).
  */
 
-export const SKIRMISH_WIDTH = 12;
-export const SKIRMISH_HEIGHT = 10;
+export const SKIRMISH_WIDTH: number = balanceConfig.skirmish.width;
+export const SKIRMISH_HEIGHT: number = balanceConfig.skirmish.height;
 
 export function generateRandomMap(seed: number): MapData {
   const rng = new SeededRNG(seed);
@@ -23,9 +26,9 @@ export function generateRandomMap(seed: number): MapData {
       const roll = rng.next();
       let terrain = 'plains';
       let elevation = 0;
-      if (roll < 0.14) terrain = 'forest';
-      else if (roll < 0.2) { terrain = 'mountain'; elevation = 1; }
-      else if (roll < 0.23) { terrain = 'peak'; elevation = 2; }
+      if (roll < balanceConfig.skirmish.forestThreshold) terrain = 'forest';
+      else if (roll < balanceConfig.skirmish.mountainThreshold) { terrain = 'mountain'; elevation = balanceConfig.skirmish.mountainElevation; }
+      else if (roll < balanceConfig.skirmish.peakThreshold) { terrain = 'peak'; elevation = balanceConfig.skirmish.peakElevation; }
       row.push(terrain);
       elevRow.push(elevation);
     }
@@ -38,7 +41,7 @@ export function generateRandomMap(seed: number): MapData {
   const bridgeX = 1 + Math.floor(rng.next() * (SKIRMISH_WIDTH - 2));
   for (let x = 0; x < SKIRMISH_WIDTH; x++) {
     grid[riverY]![x] = x === bridgeX ? 'bridge' : 'river';
-    elevations[riverY]![x] = x === bridgeX ? 0 : -1;
+    elevations[riverY]![x] = x === bridgeX ? 0 : balanceConfig.skirmish.riverElevation;
   }
 
   // A fort and a gate on the enemy half.
@@ -46,7 +49,7 @@ export function generateRandomMap(seed: number): MapData {
   const gateX = Math.floor(rng.next() * SKIRMISH_WIDTH);
   grid[1]![fortX] = 'fort';
   grid[0]![gateX] = 'gate';
-  elevations[0]![gateX] = 1;
+  elevations[0]![gateX] = balanceConfig.skirmish.gateElevation;
 
   // Deployment rows (bottom two) stay clear plains.
   for (let y = SKIRMISH_HEIGHT - 2; y < SKIRMISH_HEIGHT; y++) {

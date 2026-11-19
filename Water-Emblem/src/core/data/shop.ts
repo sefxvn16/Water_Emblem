@@ -2,6 +2,7 @@ import type { ItemDefinition } from '../combat/types';
 import type { ExtendedUnitState, InventoryEntry } from './chapterData';
 import { CONVOY_SLOTS, reequipAfterRemoval } from './convoy';
 import { hasRoomFor } from './inventory';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Shops (PLAN item 91; FE3 rules in Game_Design/battle.md "Tiệm"):
@@ -31,10 +32,10 @@ export function getShopStock(itemById: ReadonlyMap<string, ItemDefinition>): Ite
   );
 }
 
-/** Gold received for selling one entry (FE11: half, scaled by remaining uses). */
+/** Gold received for selling one entry (FE11: half, scaled by remaining uses; divisor in data/balance.json). */
 export function sellValue(definition: ItemDefinition, uses: number): number {
   if (definition.price === undefined || definition.maxUses <= 0) return 0;
-  return Math.floor((definition.price * uses) / definition.maxUses / 2);
+  return Math.floor((definition.price * uses) / definition.maxUses / balanceConfig.shop.sellBackDivisor);
 }
 
 export function buyItem(

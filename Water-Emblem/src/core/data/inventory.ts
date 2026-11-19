@@ -1,4 +1,5 @@
 import type { ExtendedUnitState } from './chapterData';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Split inventory limits (PLAN item 86; rules in Game_Design/battle.md
@@ -9,10 +10,11 @@ import type { ExtendedUnitState } from './chapterData';
  *
  * Pure helpers: inputs are not mutated. The item lookup only needs each
  * item's `type`, so callers may pass full ItemDefinitions or lighter
- * records (chapter events pass ItemInfo).
+ * records (chapter events pass ItemInfo). Slot counts are declared in
+ * data/balance.json (PLAN item 134).
  */
-export const WEAPON_SLOTS = 4;
-export const ITEM_SLOTS = 4;
+export const WEAPON_SLOTS: number = balanceConfig.inventory.weaponSlots;
+export const ITEM_SLOTS: number = balanceConfig.inventory.itemSlots;
 
 export type SlotKind = 'weapon' | 'item';
 

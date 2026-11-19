@@ -89,7 +89,7 @@ export function evaluateAITurn(
         ? 0
         : Math.min(...playerUnitsForRoles.map((p) => getManhattanDistance(position, p.position)));
       const terrainId = map.grid[position.y]?.[position.x] ?? 'plains';
-      const score = minDist * 10 + terrains.getAvoidBonus(terrainId, enemyUnit.moveType);
+      const score = minDist * balanceConfig.aiWeights.fleeDistanceWeight + terrains.getAvoidBonus(terrainId, enemyUnit.moveType);
       if (score > bestScore) {
         bestScore = score;
         best = position;
@@ -105,8 +105,8 @@ export function evaluateAITurn(
   };
 
   if (role === 'flee') return fleeDecision();
-  // Retreat: fall back when below half HP [Giả định], otherwise pursue.
-  if (role === 'retreat' && enemyStats.hp * 2 < enemyStats.maxHp) return fleeDecision();
+  // Retreat: fall back below the HP fraction in data/balance.json [Giả định], otherwise pursue.
+  if (role === 'retreat' && enemyStats.hp < enemyStats.maxHp * balanceConfig.aiWeights.retreatHpFraction) return fleeDecision();
   if (role === 'thief') {
     const lootTargets = [...(context.chestTargets ?? []), ...(context.villageTargets ?? [])];
     if (lootTargets.length === 0) return fleeDecision();
@@ -209,7 +209,7 @@ export function evaluateAITurn(
         }
 
         // Ưu tiên mục tiêu đang thấp máu
-        if (targetStats.hp <= targetStats.maxHp * 0.4) {
+        if (targetStats.hp <= targetStats.maxHp * weights.lowHpThreshold) {
           score += weights.lowHpTargetBonus;
         }
 

@@ -2,6 +2,7 @@ import type { ItemDefinition } from '../combat/types';
 import { getUsableWeapons } from '../combat/equip';
 import type { ExtendedUnitState, InventoryEntry } from './chapterData';
 import { hasRoomFor } from './inventory';
+import balanceConfig from '../../../data/balance.json';
 
 /**
  * Convoy through Marth (PLAN item 88; FE3 rules in Game_Design/battle.md
@@ -9,9 +10,10 @@ import { hasRoomFor } from './inventory';
  * equipped weapon re-equips the first usable weapon (or unarmed), like
  * trading. Withdrawal respects the 4+4 split (PLAN item 86).
  *
- * Pure helpers: invalid operations return null.
+ * Pure helpers: invalid operations return null. The slot count is
+ * declared in data/balance.json (PLAN item 134).
  */
-export const CONVOY_SLOTS = 128;
+export const CONVOY_SLOTS: number = balanceConfig.convoySlots;
 
 export interface ConvoyResult {
   units: ExtendedUnitState[];
