@@ -8,6 +8,7 @@ import { UnitInspectorWindow } from '../../src/ui/UnitInspectorWindow';
 import { CombatForecastWindow } from '../../src/ui/CombatForecastWindow';
 import { ActionMenuWindow } from '../../src/ui/ActionMenuWindow';
 import { computeActionMenuPosition } from '../../src/ui/tileAnchor';
+import { computeOverlayPosition, type ScreenRect } from '../../src/ui/overlayAnchor';
 import { MovementArrow } from '../../src/renderer/MovementArrow';
 import { runMovementAnimation } from '../../src/renderer/movementAnimation';
 import type { BoardView } from '../../src/core/grid/boardView';
@@ -302,6 +303,119 @@ describe('UI rendering tests', () => {
       const isAbove = pos!.top + 160 <= anchor.top;
       const isBelow = pos!.top >= anchor.bottom;
       expect(isAbove || isBelow).toBe(true);
+    });
+  });
+
+  describe('combat-forecast-ui: renders core forecast verbatim (A1/A3/A4)', () => {
+    const forecastUnit = (id: string, name: string, faction: 'player' | 'enemy'): ExtendedUnitState => ({
+      ...mockUnit,
+      unit: { ...mockUnit.unit, id, name, faction },
+      stats: { ...mockUnit.stats, hp: 16, maxHp: 16, def: 2 },
+    });
+
+    const renderForecast = (defenderCanCounter: boolean): string => {
+      const mockForecast: CombatForecast = {
+        attacker: {
+          unit: mockUnit.unit,
+          stats: mockUnit.stats,
+          weapon: mockUnit.weapon,
+          damage: 11,
+          hitRate: 100,
+          critRate: 2,
+          attackSpeed: 7,
+          attackCount: 1,
+          canCounter: true,
+        },
+        defender: {
+          unit: { ...mockUnit.unit, id: 'thief', name: 'Thief', faction: 'enemy' },
+          stats: { ...mockUnit.stats, hp: 16, maxHp: 16, def: 2 },
+          weapon: mockUnit.weapon,
+          damage: 0,
+          hitRate: 94,
+          critRate: 0,
+          attackSpeed: 5,
+          attackCount: 1,
+          canCounter: defenderCanCounter,
+        },
+        distance: 1,
+      };
+      return renderToString(
+        React.createElement(CombatForecastWindow, {
+          forecast: mockForecast,
+          attacker: mockUnit,
+          defender: forecastUnit('thief', 'Thief', 'enemy'),
+          onConfirm: () => {},
+          onCancel: () => {},
+        })
+      );
+    };
+
+    // Value shown in the right-aligned column after a "Label:" row.
+    const statValue = (html: string, label: string): string | null => {
+      const match = html.match(new RegExp(`${label}:</span><strong[^>]*>([^<]*)`));
+      return match?.[1]?.trim() ?? null;
+    };
+
+    it('A1: displayed Dmg/Hit/Crit/AS/HP-after equal the forecast object', () => {
+      const html = renderForecast(true);
+      expect(statValue(html, 'Dmg')).toBe('11');
+      expect(statValue(html, 'Hit')).toBe('100%');
+      expect(statValue(html, 'Crit')).toBe('2%');
+      expect(statValue(html, 'AS')).toBe('7');
+      expect(html).toContain('HP: 16 → ');
+      expect(html).toContain('>5<');
+      // Avo is not a field of CombatSideForecast: the window shows the
+      // UI-computed avoid (attackSpeed + floor(lck/2)); its correctness is
+      // the M1/M2 fix in Batch 2. Here it is checked against the fixture's
+      // own inputs: attacker 7 + 3 = 10, defender 5 + 3 = 8.
+      expect(statValue(html, 'Avo')).toBe('10%');
+      expect(html).toContain('8%');
+    });
+
+    it('A3: each side shows current → after (−loss) with a two-colour bar', () => {
+      // renderToString separates adjacent text nodes with <!-- -->;
+      // strip them so text assertions read the visible text.
+      const text = renderForecast(true).replace(/<!-- -->/g, '');
+      expect(text).toContain('HP: 16 → ');
+      expect(text).toContain('>5<');
+      expect(text).toContain('-11');
+      // Loss segment (red) under the remaining-HP segment (green).
+      expect(text).toContain('background-color:#ef4444');
+      expect(text).toContain('background-color:#22c55e');
+    });
+
+    it('A4: "Cannot counter" shows exactly when the defender cannot counter', () => {
+      expect(renderForecast(true)).not.toContain('Cannot counter');
+      expect(renderForecast(false)).toContain('Cannot counter');
+    });
+  });
+
+  describe('overlayAnchor: computeOverlayPosition', () => {
+    const box = { width: 340, height: 400 };
+    const vw = 1366;
+    const vh = 768;
+
+    const overlaps = (pos: { left: number; top: number }, rect: ScreenRect): boolean => {
+      const boxRect: ScreenRect = { left: pos.left, right: pos.left + box.width, top: pos.top, bottom: pos.top + box.height };
+      return !(boxRect.right <= rect.left || boxRect.left >= rect.right || boxRect.bottom <= rect.top || boxRect.top >= rect.bottom);
+    };
+
+    it('uses the preferred corner when it covers nothing', () => {
+      const pos = computeOverlayPosition(null, [], box.width, box.height, vw, vh, 'top-left');
+      expect(pos).toEqual({ left: 16, top: 16 });
+    });
+
+    it('flips to another corner when the preferred corner covers the tile', () => {
+      const tile: ScreenRect = { left: 0, right: 400, top: 0, bottom: 450 };
+      const pos = computeOverlayPosition(tile, [], box.width, box.height, vw, vh, 'top-left');
+      expect(pos.left).not.toBe(16);
+      expect(overlaps(pos, tile)).toBe(false);
+    });
+
+    it('never covers the HUD cluster rect', () => {
+      const cluster: ScreenRect = { left: vw - 28 - 220, right: vw - 28, top: vh - 28 - 48, bottom: vh - 28 };
+      const pos = computeOverlayPosition(null, [cluster], box.width, box.height, vw, vh, 'bottom-right');
+      expect(overlaps(pos, cluster)).toBe(false);
     });
   });
 
