@@ -42,8 +42,9 @@ function side(entry: ExtendedUnitState, hpBefore: number, hpAfter: number, resul
 }
 
 /**
- * Reads a finished exchange into display data. HP before must be captured before executeCombat,
- * which writes the new HP into the forecast stats. Enemy side first (left), player side second (right).
+ * Reads a finished exchange into display data. HP before must be captured before executeCombat;
+ * the post-combat HP is read from the result forecast (PLAN item 133: executeCombat is pure and
+ * returns a new forecast carrying the final HP). Enemy side first (left), player side second (right).
  */
 export function buildCombatPopup(
   id: number,

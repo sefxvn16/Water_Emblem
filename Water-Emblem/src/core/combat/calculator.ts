@@ -325,6 +325,14 @@ export function executeCombat(
   let unitDefeatedId: string | undefined;
   if (forecast.attacker.attackCount === 0) return { forecast, events };
 
+  // PLAN item 133: combat is pure — the input forecast is never written to.
+  // The result carries a new forecast whose side stats hold the post-combat HP.
+  const withFinalHp = (): CombatForecast => ({
+    ...forecast,
+    attacker: { ...forecast.attacker, stats: { ...forecast.attacker.stats, hp: attackerHp } },
+    defender: { ...forecast.defender, stats: { ...forecast.defender.stats, hp: defenderHp } },
+  });
+
   const mode = balanceConfig.rngMode as '1RN' | '2RN';
 
   const makeAttack = (
@@ -376,9 +384,7 @@ export function executeCombat(
     const attackerDiedRound2 = makeAttack(false);
     if (attackerDiedRound2) {
       // Attacker chết khi bị phản đòn
-      forecast.attacker.stats.hp = attackerHp;
-      forecast.defender.stats.hp = defenderHp;
-      return { forecast, events, unitDefeatedId };
+      return { forecast: withFinalHp(), events, unitDefeatedId };
     }
   }
 
@@ -391,12 +397,8 @@ export function executeCombat(
     }
   }
 
-  // Cập nhật lại HP
-  forecast.attacker.stats.hp = attackerHp;
-  forecast.defender.stats.hp = defenderHp;
-
   return {
-    forecast,
+    forecast: withFinalHp(),
     events,
     unitDefeatedId,
   };

@@ -120,8 +120,9 @@ export function runArenaFight(
     );
     const result = executeCombat(forecast, rng);
     events.push(...result.events);
-    working = { ...working, stats: { ...forecast.attacker.stats } };
-    opponentHp = forecast.defender.stats.hp;
+    // PLAN item 133: post-combat HP comes from the result forecast.
+    working = { ...working, stats: { ...result.forecast.attacker.stats } };
+    opponentHp = result.forecast.defender.stats.hp;
     working = applyCombatDurability([working], result, itemById)[0] ?? working;
     working = applyCombatWeaponExp([working], result)[0] ?? working;
     if (opponentHp <= 0) {
