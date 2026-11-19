@@ -306,7 +306,7 @@ describe('UI rendering tests', () => {
   });
 
   describe('MovementArrow & movementAnimation', () => {
-    it('renders SVG polyline and destination marker when path has >= 2 waypoints', () => {
+    it('renders a thick white solid arrow with a block arrowhead', () => {
       const html = renderToString(
         React.createElement(MovementArrow, {
           path: [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
@@ -316,9 +316,16 @@ describe('UI rendering tests', () => {
       );
 
       expect(html).toContain('data-testid="movement-arrow-svg"');
-      expect(html).toContain('feDropShadow');
       expect(html).toContain('polyline');
-      expect(html).toContain('stroke-dasharray="6 6"');
+      expect(html).not.toContain('feDropShadow');
+      expect(html).not.toContain('#38bdf8');
+      expect(html).not.toContain('stroke-dasharray');
+      // Thick white solid shaft with a dark outline.
+      expect(html).toContain('stroke="#ffffff"');
+      expect(html).toContain('stroke-width="18"');
+      expect(html).toContain('stroke="#0f172a"');
+      // Block arrowhead (reference shape): wide triangle, notched back edge.
+      expect(html).toContain('M 20,0 L -14,-22 L -7,0 L -14,22 Z');
     });
 
     it('returns null when path has fewer than 2 waypoints', () => {

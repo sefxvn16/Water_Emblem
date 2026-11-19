@@ -56,88 +56,65 @@ export const MovementArrow: React.FC<MovementArrowProps> = ({
         width: `${totalWidth}px`,
         height: `${totalHeight}px`,
         pointerEvents: 'none',
-        zIndex: 15,
+        // Above the tile backgrounds, below the unit avatars (overlay z 25).
+        zIndex: 1,
       }}
       viewBox={`0 0 ${totalWidth} ${totalHeight}`}
     >
-      <defs>
-        <filter id="fe-arrow-glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#38bdf8" floodOpacity="0.8" />
-        </filter>
-      </defs>
-
       {/* 1. Base dark outline for contrast across all terrain types */}
       <polyline
         points={pointsStr}
         fill="none"
         stroke="#0f172a"
-        strokeWidth="14"
+        strokeWidth="26"
         strokeLinecap="round"
         strokeLinejoin="round"
+        opacity="0.85"
       />
 
-      {/* 2. Main cyan/blue tactical shaft */}
-      <polyline
-        points={pointsStr}
-        fill="none"
-        stroke="#38bdf8"
-        strokeWidth="9"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        filter="url(#fe-arrow-glow)"
-      />
-
-      {/* 3. Inner core white highlight */}
+      {/* 2. Main white shaft: thick, solid, slightly transparent */}
       <polyline
         points={pointsStr}
         fill="none"
         stroke="#ffffff"
-        strokeWidth="3"
+        strokeWidth="18"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeDasharray="6 6"
+        opacity="0.85"
       />
 
-      {/* 4. Origin tile anchor dot */}
+      {/* 3. Origin tile anchor dot */}
       <circle
         cx={origin.x}
         cy={origin.y}
         r="6"
-        fill="#38bdf8"
+        fill="#ffffff"
+        fillOpacity="0.85"
         stroke="#0f172a"
         strokeWidth="2.5"
       />
 
-      {/* 5. Destination pulsing indicator ring */}
+      {/* 4. Destination indicator ring */}
       <circle
         cx={dest.x}
         cy={dest.y}
         r="26"
-        fill="rgba(56, 189, 248, 0.18)"
-        stroke="#38bdf8"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="#ffffff"
+        strokeOpacity="0.85"
         strokeWidth="2.5"
-        strokeDasharray="5 3"
       />
 
-      {/* 6. Destination Fire Emblem arrowhead oriented along arrival vector */}
+      {/* 5. Destination arrowhead: bold block triangle (reference shape),
+          oriented along the arrival vector */}
       <g transform={`translate(${dest.x}, ${dest.y}) rotate(${angle})`}>
-        {/* Dark outline */}
         <path
-          d="M -18,-13 L 8,0 L -18,13 L -10,0 Z"
-          fill="#0f172a"
-          stroke="#0f172a"
-          strokeWidth="3"
-          strokeLinejoin="round"
-        />
-        {/* Vibrant cyan fill */}
-        <path
-          d="M -16,-10 L 6,0 L -16,10 L -8,0 Z"
-          fill="#38bdf8"
-        />
-        {/* White inner accent */}
-        <path
-          d="M -11,-4 L 1,0 L -11,4 L -5,0 Z"
+          d="M 20,0 L -14,-22 L -7,0 L -14,22 Z"
           fill="#ffffff"
+          fillOpacity="0.85"
+          stroke="#0f172a"
+          strokeWidth="3.5"
+          strokeLinejoin="round"
         />
       </g>
     </svg>
