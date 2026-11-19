@@ -270,7 +270,7 @@ describe('UI rendering tests', () => {
       );
 
       expect(html).toContain('Actions (Draug)');
-      expect(html).toContain('Click red tile to attack');
+      expect(html).not.toContain('Click red tile to attack');
       expect(html).toContain('>Attack<');
       expect(html).toContain('>Wait<');
       expect(html).not.toContain('✓ Wait');
