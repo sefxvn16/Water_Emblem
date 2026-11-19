@@ -592,8 +592,9 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kiểm bởi: tôi
 
 - [] 139. Thứ tự nút chức năng cố định + bổ sung nút Cancel.
-  - Nguồn: chủ dự án 2026-11-19 22:10: "Thứ tự các nút chức năng cần giữ cố định, không đổi lung tung: Attack/Hồi máu → Wait → Đổi vũ khí → Trade → ... → Cancel (hiện đang thiếu)".
-  - Tiêu chí xong: (1) Thứ tự nút cố định theo danh sách chủ duyệt (thay thứ tự ưu tiên của mục 130); nút không khả dụng thì ẩn nhưng thứ tự tương đối không đổi. (2) Có nút Cancel. (3) Danh sách đầy đủ trình chủ duyệt trước khi làm. (4) Test + gate PASS.
+  - Nguồn: chủ dự án 2026-11-19 22:10: "Thứ tự các nút chức năng cần giữ cố định, không đổi lung tung: Attack/Hồi máu → Wait → Đổi vũ khí → Trade → ... → Cancel (hiện đang thiếu)". Bổ sung 22:15: "Nút Talk là cao nhất, trên cả Attack/Heal. Tìm hiểu thứ tự nút của game Fire Emblem đi (không nhất thiết là game FE3)".
+  - Tìm hiểu FE (2026-11-19): FE11 (Shadow Dragon) menu theo thứ tự: lệnh ngữ cảnh (Talk/Seize) → Attack/Heal → Item → Wait. Các bản GBA/Tellius: Attack → Staff → Item (equip/use) → Trade → Wait, lệnh ngữ cảnh (Talk/Visit/Seize/Chest/Door/Shop/Arena) hiện ở trên cùng khi khả dụng. Quy ước chung của dòng: lệnh đặc biệt/ngữ cảnh trước, Attack/Staff, Item, Trade, Wait cuối cùng.
+  - Tiêu chí xong: (1) Talk đứng cao nhất, trên Attack/Heal (quyết định chủ 22:15). (2) Thứ tự cố định theo danh sách chủ duyệt (thay thứ tự ưu tiên của mục 130); nút không khả dụng thì ẩn nhưng thứ tự tương đối không đổi. (3) Có nút Cancel. (4) Danh sách đầy đủ trình chủ duyệt trước khi làm. (5) Test + gate PASS.
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
