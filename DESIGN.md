@@ -148,6 +148,12 @@ Specs: `specs/design-system.md`, `specs/hud-basic-info.md`, `specs/unit-inspecto
   hovered; unpin + hover shows the hovered unit) and that no stale unit shows after
   the cursor moves away. If the owner wants the selected-unit fallback reachable,
   that is a behaviour change for a later item.
+- **Banner flip, starting positions.** At 1366px wide the chapter-1 units start too
+  close to the map's edges for their tile to scroll across the viewport middle
+  (max scrollLeft 712 leaves Marth's centre at x=916 when he stands at (24,5)), so
+  the flip in the Playwright test is verified with Marth moved to (19,5) first. The
+  flip rule itself (side opposite the tile's half) is the same code path for every
+  tile; the terrain window uses the identical hook.
 - `Game_Design/decisions.md` (layout section, 2026-11-17) still says the Settings
   button is at the top-right; `art_ui.md:38-39`, PLAN item 71, the code, and the
   owner decision 2026-11-19 all say bottom-right. Bottom-right wins; `decisions.md`
