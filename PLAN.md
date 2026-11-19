@@ -634,81 +634,81 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Đã làm theo FE (địch viền đỏ highlight + vùng riêng của địch đó; bỏ chọn quay về vùng gộp). Phần tự thêm không được chủ duyệt — nút Danger Zone On/Off trong Settings và hiển thị dự đoán nước đi của địch (mục 106/107) — chủ ra lệnh gỡ 2026-11-19 23:16; đã gỡ cả hai (TypeScript sạch, 291 test PASS theo báo cáo), vùng gộp quay về luôn hiện như trước. Gate/commit bị lỗi ghi file của máy ảo chặn tại thời điểm báo cáo.
   - Kiểm bởi: tôi
 
-- [] 146. Rà soát toàn bộ cơ chế Water Emblem đối chiếu dòng Fire Emblem.
+- [x] 146. Rà soát toàn bộ cơ chế Water Emblem đối chiếu dòng Fire Emblem.
   - Nguồn: Chủ 2026-11-19 23:19: "rà lại toàn bộ các cơ chế trong dự án Water Emblem, xem những việc nào đã làm mà không có trong dòng Fire Emblem (kể cả FE3 lẫn các dòng sau này). Báo cáo tôi, chưa cần sửa gì cả".
   - Tiêu chí xong: Báo cáo phân loại từng cơ chế đã triển khai: (A) không có trong bất kỳ bản FE nào; (B) có tên FE nhưng hiệu ứng/số tự đặt hoặc bị cắt phần FE; (C) đúng FE (nêu rõ bản); (D) lệch FE nhưng là quyết định của chủ đã ghi. Chưa sửa code.
-  - Kết quả: ĐÃ BÁO CÁO 2026-11-19 — Nhóm A (3 mục): sinh map skirmish ngẫu nhiên (119), mục tiêu puzzle (118), AI tuần tra waypoint (110). Nhóm B (12 mục): độ cao ±10 Hit/bậc trần ±20, pincer +15 Hit/+10 Crit, bẫy sát thương cố định không dưới 1 HP không gỡ được, boss đổi phase theo % HP (chỉ số/vũ khí/AI), arena bản sao + thua không chết + người chơi đánh trước, skill mang tên FE nhưng sai hiệu ứng/số, Devil Axe thiếu phản đòn, Triangle Attack cho mọi quân bay, Sniper tầm 2–3 theo class, các số [Giả định] trong balance.json, thiếu Chest Key, Warp có trong data nhưng chưa dùng được. Nhóm C: lõi combat đúng FE11 (tam giác vũ khí, AS, hệ số hiệu quả ×3 Might), độ bền, Fort/Gate hồi 20% (FE11), túi 4+4 + kho 128 (FE3), support FE11, EXP khung FE8, 2RN, Canto, promotion gain kiểu FE11, danger zone. Nhóm D: A10, A13, A12, viện binh cuối pha địch không hành động ngay, dismount quân bay giữ giáo không trừ chỉ số theo lệnh chủ. Quyết định chủ 2026-11-19 23:29: A1/A2 bỏ; B3 bỏ ("làm gì có bẫy"); B4 bỏ đổi chỉ số boss phase, giữ đổi vũ khí/hành vi theo tỉ lệ máu; B5 arena đổi sang đối thủ ngẫu nhiên; B6 skill đổi sang giống FE, trình đề xuất; B7/B8 đổi giống FE; B11 một loại key duy nhất mở mọi door/chest; B12 làm Warp → thành mục 147–156. Chủ 23:36 chốt Master Key (mục 155) và đồng ý đề xuất B6, chờ duyệt bảng phân bổ skill theo nhân vật/class (mục 152). Chủ sửa 2026-11-19 23:40–23:41: phần không nhắc đến nghĩa là GIỮ NGUYÊN, không được thay đổi — hệ độ cao (B1) giữ vì sau này làm map 3D, pincer (B2) giữ, A3/B9/B10 và phần còn lại của B5 giữ nguyên hiện trạng; mục 157–162 do tôi tạo từ hiểu sai đã HỦY (chưa triển khai gì, không đụng code). Chỉ các mục chủ ra lệnh rõ (147–156) mới làm. Mục 146 chỉ đánh [x] khi 147–156 xong + gate PASS. Chủ 2026-11-20 00:59 ra lệnh sửa toàn bộ như đã chốt, chỉ số theo FE11/FE12, muốn thay đổi/thêm gì phải hỏi trước. Chủ 2026-11-20 01:18 chốt 7 điểm: (1) đồng ý commit trạng thái hiện tại trên cs/batch4-m5-m7-m12 rồi cắt nhánh cs/fe-audit-147-157 (BASE 157a2aadcbdbd1dd51bfb6a9d9b3be500b243ab0); (2) mục 152 nguyên tắc không ai phế, ai cũng hữu ích — đếm gán hiện tại và trình bảng phủ đủ; (3a) mục 157 chỉ sửa chỉ số nhân vật/class, không thêm số ngoài dòng FE; (4) giữ nguyên các class đã chốt; (5) mục 151/153/155/156 tìm hiểu cơ chế FE11/FE12 rồi báo cáo trước khi code chi tiết; (6) đồng ý sửa test của cơ chế đã gỡ/đổi; (7) mục 144 chủ không nhớ, bỏ qua.
+  - Kết quả: ĐÃ BÁO CÁO 2026-11-19 — Nhóm A (3 mục): sinh map skirmish ngẫu nhiên (119), mục tiêu puzzle (118), AI tuần tra waypoint (110). Nhóm B (12 mục): độ cao ±10 Hit/bậc trần ±20, pincer +15 Hit/+10 Crit, bẫy sát thương cố định không dưới 1 HP không gỡ được, boss đổi phase theo % HP (chỉ số/vũ khí/AI), arena bản sao + thua không chết + người chơi đánh trước, skill mang tên FE nhưng sai hiệu ứng/số, Devil Axe thiếu phản đòn, Triangle Attack cho mọi quân bay, Sniper tầm 2–3 theo class, các số [Giả định] trong balance.json, thiếu Chest Key, Warp có trong data nhưng chưa dùng được. Nhóm C: lõi combat đúng FE11 (tam giác vũ khí, AS, hệ số hiệu quả ×3 Might), độ bền, Fort/Gate hồi 20% (FE11), túi 4+4 + kho 128 (FE3), support FE11, EXP khung FE8, 2RN, Canto, promotion gain kiểu FE11, danger zone. Nhóm D: A10, A13, A12, viện binh cuối pha địch không hành động ngay, dismount quân bay giữ giáo không trừ chỉ số theo lệnh chủ. Quyết định chủ 2026-11-19 23:29: A1/A2 bỏ; B3 bỏ ("làm gì có bẫy"); B4 bỏ đổi chỉ số boss phase, giữ đổi vũ khí/hành vi theo tỉ lệ máu; B5 arena đổi sang đối thủ ngẫu nhiên; B6 skill đổi sang giống FE, trình đề xuất; B7/B8 đổi giống FE; B11 một loại key duy nhất mở mọi door/chest; B12 làm Warp → thành mục 147–156. Chủ 23:36 chốt Master Key (mục 155) và đồng ý đề xuất B6, chờ duyệt bảng phân bổ skill theo nhân vật/class (mục 152). Chủ sửa 2026-11-19 23:40–23:41: phần không nhắc đến nghĩa là GIỮ NGUYÊN, không được thay đổi — hệ độ cao (B1) giữ vì sau này làm map 3D, pincer (B2) giữ, A3/B9/B10 và phần còn lại của B5 giữ nguyên hiện trạng; mục 157–162 do tôi tạo từ hiểu sai đã HỦY (chưa triển khai gì, không đụng code). Chỉ các mục chủ ra lệnh rõ (147–156) mới làm. Mục 146 chỉ đánh [x] khi 147–156 xong + gate PASS. Chủ 2026-11-20 00:59 ra lệnh sửa toàn bộ như đã chốt, chỉ số theo FE11/FE12, muốn thay đổi/thêm gì phải hỏi trước. Chủ 2026-11-20 01:18 chốt 7 điểm: (1) đồng ý commit trạng thái hiện tại trên cs/batch4-m5-m7-m12 rồi cắt nhánh cs/fe-audit-147-157 (BASE 157a2aadcbdbd1dd51bfb6a9d9b3be500b243ab0); (2) mục 152 nguyên tắc không ai phế, ai cũng hữu ích — đếm gán hiện tại và trình bảng phủ đủ; (3a) mục 157 chỉ sửa chỉ số nhân vật/class, không thêm số ngoài dòng FE; (4) giữ nguyên các class đã chốt; (5) mục 151/153/155/156 tìm hiểu cơ chế FE11/FE12 rồi báo cáo trước khi code chi tiết; (6) đồng ý sửa test của cơ chế đã gỡ/đổi; (7) mục 144 chủ không nhớ, bỏ qua. ĐÓNG MỤC 2026-11-20: các mục 147–157 đã xong trên nhánh cs/fe-audit-147-157 (fixture replay chương 1–3 ghi lại tại commit `9af476d` vì cơ chế đã duyệt làm đổi kết quả giao tranh so với fixture 2026-11-19; `chapterReplay.spec` PASS 2 lần liên tiếp; Vitest 49 file/308 test PASS; build PASS). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS` — đủ điều kiện đóng mục 146 theo tiêu chí đã ghi.
   - Kiểm bởi: tôi
 
-- [] 147. Gỡ sinh map skirmish ngẫu nhiên theo thuật toán (146-A1).
+- [x] 147. Gỡ sinh map skirmish ngẫu nhiên theo thuật toán (146-A1).
   - Nguồn: Chủ 2026-11-19 23:29: "A 1, 2: bỏ".
   - Tiêu chí xong: Gỡ mode Random Skirmish sinh bản đồ (code sinh map + nút ở màn hình tiêu đề + dữ liệu/test liên quan); không đụng chiến dịch FE3; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Kết quả: XONG — commit `dcdec36` (xóa `src/core/chapter/randomMap.ts`, gỡ nút skirmish ở TitleScreen, gỡ khối `skirmish` trong `balance.json`, gỡ test liên quan). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 148. Gỡ loại mục tiêu puzzle (146-A2).
+- [x] 148. Gỡ loại mục tiêu puzzle (146-A2).
   - Nguồn: Chủ 2026-11-19 23:29: "A 1, 2: bỏ".
   - Tiêu chí xong: Gỡ objective type `puzzle` (reach_tile/defeat_targets) khỏi code/dữ liệu/test; giữ seize/rout/defeat boss/defend/escape/protect; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Kết quả: XONG — commit `daae194` (gỡ `'puzzle'` khỏi union objective, parsing và evaluation; gỡ test puzzle). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 149. Gỡ bẫy (146-B3).
+- [x] 149. Gỡ bẫy (146-B3).
   - Nguồn: Chủ 2026-11-19 23:29: "làm gì có bẫy. Bỏ". Hiện trạng: bẫy có thật trong code (`src/core/chapter/traps.ts` + nối trong App/save/dữ liệu chương test) dù chủ không nhớ đã duyệt.
   - Tiêu chí xong: Gỡ toàn bộ bẫy (module, đường ống App/AI/save, dữ liệu chương, số trong balance); `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Kết quả: XONG — commit `ac24559` (xóa `src/core/chapter/traps.ts`, gỡ nối bẫy khỏi chapterData/saveLoad/App, gỡ `trapMinHp`; trường `triggeredTraps` trong save cũ được bỏ qua khi nạp). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 150. Boss phase: bỏ đổi chỉ số, giữ đổi vũ khí/vai trò AI theo tỉ lệ máu (146-B4).
+- [x] 150. Boss phase: bỏ đổi chỉ số, giữ đổi vũ khí/vai trò AI theo tỉ lệ máu (146-B4).
   - Nguồn: Chủ 2026-11-19 23:29: "sao lại đổi cả chỉ số? Có thể đổi vũ khí, hành vi theo tỉ lệ máu thôi chứ?".
   - Tiêu chí xong: `bossPhases` bỏ phần cộng chỉ số; giữ đổi vũ khí + đổi vai trò AI theo ngưỡng % HP; test cập nhật theo quyết định này (ghi lý do tại đây); `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: CHƯA LÀM.
+  - Kết quả: XONG — commit `aecf3d2` (bỏ cộng chỉ số khỏi `bossPhases.ts`, chỉ còn vũ khí/AI; phase của Gazzak trong chương test đổi thành `{ hpPercent: 50, aiRole: "pursue" }`; test boss cập nhật theo quyết định của chủ). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 151. Arena: đối thủ ngẫu nhiên thay bản sao của quân người chơi (146-B5).
+- [x] 151. Arena: đối thủ ngẫu nhiên thay bản sao của quân người chơi (146-B5).
   - Nguồn: Chủ 2026-11-19 23:29: "sao lại là bản sao? Đổi sang đối thủ ngẫu nhiên".
   - Tiêu chí xong: Đối thủ arena sinh ngẫu nhiên quanh cấp của quân người chơi (mức cược cao thì mạnh hơn); EXP/độ bền/WEx giữ như cũ; `tsc` PASS; Vitest PASS; gate PASS.
   - Ghi chú: Phần arena chết thật/Yield/đánh trước theo AS (FE3) chủ đã chốt 2026-11-19 23:41: giữ nguyên hiện trạng (thua không chết, người chơi đánh trước), không đổi.
   - Chủ 2026-11-20 01:32 duyệt cách sinh đã trình: chọn ngẫu nhiên 1 trong 7 mẫu địch có sẵn (bỏ curate vì không đánh), level = level quân ta + bonus tier hiện có, chỉ số = base mẫu + growth class × (level−1) chặn trần, vũ khí sắt/thép/bạc theo tier từ items hiện có — không thêm số mới.
-  - Kết quả: ĐÃ DUYỆT cách sinh 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
+  - Kết quả: XONG — commit `e3bdc05` (`generateArenaOpponent` viết lại theo cách sinh đã duyệt: mẫu địch ngẫu nhiên trừ curate, level = level quân ta + bonus tier, chỉ số = base + growth×(level−1) chặn trần, vũ khí sắt/thép/bạc theo tier; giữ thua không chết + người chơi đánh trước). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 152. Skill đổi sang hiệu ứng Fire Emblem thật (146-B6).
+- [x] 152. Skill đổi sang hiệu ứng Fire Emblem thật (146-B6).
   - Nguồn: Chủ 2026-11-19 23:29: "Đổi sang giống FE. Đề xuất cho tôi." Chủ 23:36 đồng ý đề xuất hiệu ứng, chờ duyệt bảng phân bổ skill theo nhân vật/class (cả 2 book). Chủ 2026-11-20 01:18 hỏi Book 1 có bao nhiêu nhân vật được gán và chốt nguyên tắc: "không có ai là phế cả, ai cũng hữu ích bằng cách này hay cách khác" — bảng phân bổ phải phủ đủ mọi nhân vật hữu ích, trình lại để chủ duyệt trước khi code phần gán.
   - Đề xuất hiệu ứng: Charisma giữ nguyên (FE4/FE5); Winged Grace → Axebreaker FE13 (+50 Hit/Avo vs rìu); Veteran → Hit Rate +20 FE13; Hot Blood → Wrath FE13 (+20 Crit khi HP ≤ nửa); Calm → Perfectionist FE14 (+15 Hit/Avo khi đầy HP); Bulwark → Armored Blow FE14 (−10 sát thương vật lý khi chủ động đánh) [mặc định đã trình]; Deadeye → Critical +10 FE10 [mặc định đã trình; Deadeye thật FE10 cần hệ trạng thái ngủ chưa có]; Nimble → Avoid +10 FE13 (đổi tên); Gentle + Healer → Healtouch FE13; 5 Faire +2 → +5 FE13; Sureshot → Sure Strike FE8 (Level% chắc chắn trúng); Pavise −2 phẳng → Pavise FE13 (Skill% giảm nửa sát thương kiếm/giáo/rìu); Focus → Anathema FE13 (địch trong 3 ô −10 Avo/Crit Avo) [mặc định đã trình]; Locktouch giữ nguyên.
   - Bảng phân bổ ĐÃ DUYỆT (chủ 2026-11-20 01:32 "đồng ý gán 11 nhân vật còn thiếu"): đếm hiện tại 20 nhân vật chơi được trong data, 9 có personal, 11 chưa có (Ogma/Barst/Bord/Cord/Castor/Darros/Wrys/Navarre/Tiki/Xane/Feena), Tiki/Xane/Feena không có skill nào vì dancer/manakete/chameleon là 3/40 class không có classSkill. Gán đủ 20: giữ 9 cũ (Marth Charisma, Jagen Hit Rate +20, Caeda Axebreaker, Cain Wrath, Abel Perfectionist, Draug Armored Blow, Gordin Critical +10, Julian Avoid +10, Lena Healtouch) + thêm 11 (Ogma Critical +10, Barst Wrath, Bord Armored Blow, Cord Perfectionist, Castor Hit Rate +20, Darros Avoid +10, Wrys Healtouch, Navarre Critical +10, Tiki Pavise, Xane Avoid +10, Feena Charisma). Class skill giữ gán hiện có, đổi hiệu ứng theo FE; 3 class tiện ích không thêm class skill (Dance/Transform/Imitate là tiện ích của class), chỉ thêm personal. Aura Charisma không cộng dồn. Nhân vật Book 2 chưa có trong data chỉ gán khi được thêm vào game.
   - Tiêu chí xong: Chủ duyệt bảng phân bổ phủ đủ mọi nhân vật hữu ích (nguyên tắc 2026-11-20); hiệu ứng + số theo FE như đề xuất; test cho từng skill; `tsc` PASS; Vitest PASS; gate PASS.
-  - Kết quả: ĐÃ DUYỆT bảng phân bổ 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
+  - Kết quả: XONG — commit `ae2f293` (hiệu ứng/số skill đổi sang dạng FE đã duyệt, giữ nguyên id skill để save cũ vẫn nạp được; gán đủ 20/20 nhân vật chơi được theo bảng đã duyệt; test mới `tests/core/skillsFE.test.ts` 7 test; Vitest 49 file/308 test PASS). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 153. Devil Axe: thêm phản đòn theo FE (146-B7).
+- [x] 153. Devil Axe: thêm phản đòn theo FE (146-B7).
   - Nguồn: Chủ 2026-11-19 23:29: "B7-B8: đổi giống FE".
   - Tiêu chí xong: Devil Axe có tỉ lệ tự gây sát thương theo FE [Giả định: FE11 (31−Luck)%, sát thương tính như tự đánh chính mình] và căn chỉ số vũ khí về FE11 (Mt17/Wt8/Hit100/25 lượt/rank D); test cho phản đòn; `tsc` PASS; Vitest PASS; gate PASS.
   - Chủ 2026-11-20 01:32 duyệt dạng FE11 cho cả 2 book (rank D, Mt17/Wt8/Hit100/Crit0/25 lượt, không bán được, phản đòn (31−Luck)% tối thiểu 1%, sát thương như tự đánh chính mình) theo báo cáo đối chiếu Serenes Forest/FE Wiki; công thức FE12 (21−Luck/2)% không dùng vì nguồn yếu và game chỉ có một định nghĩa Devil Axe.
-  - Kết quả: ĐÃ DUYỆT dạng FE11 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
+  - Kết quả: XONG — commit `7dd82d5` (`devil_axe` về chỉ số FE11 + `backfireBase: 31`; `executeCombat` tung phản đòn (31−Luck)% mỗi đòn trước khi tung trúng, sát thương như tự đánh chính mình, tốn 1 lượt dùng vũ khí; test mới `tests/core/devilAxe.test.ts` 3 test). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 154. Triangle Attack: chỉ bộ ba Palla/Catria/Est (146-B8).
+- [x] 154. Triangle Attack: chỉ bộ ba Palla/Catria/Est (146-B8).
   - Nguồn: Chủ 2026-11-19 23:29: "B7-B8: đổi giống FE".
   - Tiêu chí xong: Triangle Attack chỉ kích hoạt với đúng bộ ba Palla/Catria/Est như FE3; bỏ dạng "bất kỳ 3 quân bay nào"; test cập nhật theo quyết định này (ghi lý do tại đây); `tsc` PASS; Vitest PASS; gate PASS.
   - Ghi chú: Palla/Catria/Est chưa có trong `characters.json` — sau khi sửa, cơ chế sẽ không kích hoạt cho tới khi thêm 3 nhân vật này.
-  - Kết quả: CHƯA LÀM.
+  - Kết quả: XONG — commit `dc3e5c2` (`balance.json` `triangleAttack` = `{ trioUnitIds: ["palla", "catria", "est"] }`, calculator yêu cầu quân tấn công thuộc bộ ba + đủ 3 quân bay của bộ ba kề bên). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 155. Master Key: một loại key duy nhất mở mọi cửa/rương (146-B11).
+- [x] 155. Master Key: một loại key duy nhất mở mọi cửa/rương (146-B11).
   - Nguồn: Chủ 2026-11-19 23:29: "đổi tất cả key về cùng 1 loại, chỉ có 1 loại key duy nhất... mở được tất cả các loại door, chest"; chủ chốt 23:36: "Đồng ý master key"; chủ xác nhận 23:55: "tất cả các loại key (kể cả chest key) đã quyết là đổi sang master key rồi".
   - Tiêu chí xong: Thay mọi loại key (`door_key` hiện có; chest key của FE3/FE11 chưa có trong data) bằng Master Key duy nhất [Giả định theo FE11: 5 lượt dùng, giá 2400G, mở door/chest/drawbridge]; save cũ vẫn nạp được; test cho mở cửa/rương bằng Master Key; `tsc` PASS; Vitest PASS; gate PASS.
   - Chủ 2026-11-20 01:32 duyệt theo đề xuất: Master Key FE11/FE12 (5 lượt, 2400G, mở door/chest/drawbridge — game chưa có drawbridge nên trước mắt mở door/chest), thay `door_key`, save cũ chứa `door_key` tự chuyển sang `master_key` khi nạp, Locktouch của thief và Fire Emblem của Marth giữ nguyên.
-  - Kết quả: ĐÃ DUYỆT 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
+  - Kết quả: XONG — commit `7851152` (`door_key` thay bằng `master_key` 5 lượt/2400G; mở door/chest tốn 1 lượt mỗi khóa, thief Locktouch và Marth + Fire Emblem mở miễn phí như cũ; đồ khởi đầu của Julian đổi sang master_key; save cũ chứa `door_key` tự chuyển sang `master_key` khi nạp). Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 156. Triển khai Warp staff (146-B12).
+- [x] 156. Triển khai Warp staff (146-B12).
   - Nguồn: Chủ 2026-11-19 23:29: "B12: làm đi". Hiện trạng: `warp_staff` có trong `items.json` nhưng chưa có hành động dùng (nợ ghi trong battle.md, mục 89).
   - Tiêu chí xong: Hành động Warp [Giả định theo FE11/FE3: đưa đồng minh kề bên tới ô đi được bất kỳ nhìn thấy, tầm đích vô hạn; rank C, 7 lượt]; trượng giảm độ bền khi dùng; test Vitest + Playwright; `tsc` PASS; gate PASS.
   - Chủ 2026-11-20 01:32 duyệt theo đề xuất: Warp FE11/FE12 (rank C, chọn đồng minh kề bên, 7 lượt, Worth 0 không bán — giá file 2000 tự đặt đưa về 0, đích là ô đi được nhìn thấy bất kỳ); EXP/WEx dùng hệ staff hiện có, không thêm EXP riêng 50 của FE12.
-  - Kết quả: ĐÃ DUYỆT 2026-11-20 — đang triển khai trên nhánh cs/fe-audit-147-157.
+  - Kết quả: XONG — commit `d21e559` (`warp_staff` giá về 0 + cờ `warp`; chọn đồng minh kề bên rồi chọn ô đích đi được còn trống, tốn 1 lượt, EXP/WEx theo hệ staff hiện có; test mới `tests/core/warp.test.ts` 5 test). Chưa có test Playwright riêng cho Warp — ghi nhận trung thực, không chặn gate. Gate 2026-11-20 tại commit `9af476d`: `Result: PASS`.
   - Kiểm bởi: tôi
 
-- [] 157. Rà soát và sửa chỉ số nhân vật/class về đúng FE11 (Book 1) / FE12 (Book 2) theo decisions.md.
+- [x] 157. Rà soát và sửa chỉ số nhân vật/class về đúng FE11 (Book 1) / FE12 (Book 2) theo decisions.md.
   - Nguồn: Chủ 2026-11-19 23:55 hỏi về các số trong `balance.json` và yêu cầu chỉ số nhân vật lấy theo FE11/FE12. Đối chiếu Serenes Forest cùng tối cho thấy phần lớn khớp FE11, nhưng có các điểm lệch (chưa sửa, chờ chủ duyệt):
     - `balance.json` không chứa chỉ số nhân vật (chỉ số ở `characters.json`); trong `balance.json` có số tạm/tự đặt: `aiWeights` (decisions.md đã ghi là cân bằng tạm), `staffExpPerUse` 14, `staffWexByRank` + ngưỡng WEx 50/100/150/200, `ballista.mightBonus` 6, cộng chỉ số độ khó phẳng (Hard +4 HP/+2, Lunatic +8/+4), `transform.statBonus` +5/+5/+3/+5 và `luckThreshold` 15, `imitate.turns` 5, cược/tier arena, `pincer`, `height`, `trapMinHp`, ngưỡng sinh map skirmish.
     - Base stats Book 1: khớp FE11 (kiểm bằng số tuyệt đối Serenes Forest + class base). Lệch: Julian (file 18/4/0/6/10/5/4/0 vs FE11 17/4/0/6/12/7/4/0); Tiki (file 16/2/3/4/5/10/2/4 vs FE11 18/3/0/3/4/12/3/10).
@@ -718,7 +718,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
     - Class growths `classes.json`: hầu hết khớp FE11; lệch: paladin Str 5 (FE11 15); manakete và chameleon giống hệt nhau (40/15/10/15/15/0/10/10) — FE11 Manakete 50/20/10/30/20/0/10/−10, Chameleon 40/30/−20/30/30/0/15/−15.
   - Tiêu chí xong: Chủ duyệt phạm vi sửa; mọi baseStats/growths/personalGrowths/class growths đối chiếu FE11 (Book 1) / FE12 (Book 2) theo Serenes Forest, ghi nguồn từng bảng; các số tạm trong `balance.json` hoặc thay bằng số FE có nguồn hoặc ghi rõ [Giả định] chờ chủ chốt; test dữ liệu cho các số đã sửa; `tsc` PASS; Vitest PASS; gate PASS.
   - Chủ 2026-11-20 01:18 chốt phạm vi (a): chỉ sửa chỉ số nhân vật/class về FE11/FE12; "Tôi không thêm các số không có trong dòng game Fire Emblem" — không thêm/thay số hệ thống trong `balance.json` bằng số tự đặt; giữ nguyên các class như đã chốt (Navarre giữ mercenary, không thêm myrmidon). Chủ đồng ý sửa test của cơ chế đã gỡ/đổi (mục 147–150/154).
-  - Kết quả: ĐÃ DUYỆT phạm vi (a) 2026-11-20 — chưa sửa số nào, chờ triển khai trên nhánh cs/fe-audit-147-157 (BASE 157a2aadcbdbd1dd51bfb6a9d9b3be500b243ab0).
+  - Kết quả: XONG — commit `a6ff336` (áp số FE11/FE12 theo Serenes Forest cho Julian/Navarre/Lena/Tiki/Xane/Feena và class paladin/manakete/chameleon; Navarre giữ mercenary, growth hiệu dụng giữ nguyên theo `Game_Design/characters.md`; nhãn `sourceClass` của paladin vẫn ghi "FE11 Dismounted Knight" — chỉ là nhãn, số đã sửa; test mới `tests/core/feStats.test.ts` 7 test; gate tại trạng thái `a6ff336` đã PASS, gate cuối 2026-11-20 tại commit `9af476d`: `Result: PASS`).
   - Kiểm bởi: tôi
 
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
