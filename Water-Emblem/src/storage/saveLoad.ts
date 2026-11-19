@@ -136,7 +136,8 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
     })
     && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
     && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string))
-    && (value.personalSkill === undefined || (typeof value.personalSkill === 'string' && value.personalSkill in SKILLS));
+    && (value.personalSkill === undefined || (typeof value.personalSkill === 'string' && value.personalSkill in SKILLS))
+    && (value.imitateBackup === undefined || (isRecord(value.imitateBackup) && isStats(value.imitateBackup.stats)));
 }
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {

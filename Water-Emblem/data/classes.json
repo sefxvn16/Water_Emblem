@@ -1673,6 +1673,92 @@
       "promotions": [],
       "sourceClass": "FE12 Dancer (class analogue)",
       "classSkill": "tomefaire"
+    },
+    {
+      "id": "manakete",
+      "name": "Manakete",
+      "nameVi": "Long nhân",
+      "usableWeapons": [
+        "tome"
+      ],
+      "moveType": "foot",
+      "baseMov": 5,
+      "baseStats": {
+        "hp": 18,
+        "str": 3,
+        "mag": 2,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 2
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [],
+      "sourceClass": "FE3 Manakete",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 15,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      }
+    },
+    {
+      "id": "chameleon",
+      "name": "Chameleon",
+      "nameVi": "Tắc kè hoa",
+      "usableWeapons": [
+        "sword"
+      ],
+      "moveType": "foot",
+      "baseMov": 6,
+      "baseStats": {
+        "hp": 18,
+        "str": 3,
+        "mag": 2,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 2
+      },
+      "maxStats": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 30,
+        "def": 30,
+        "res": 30
+      },
+      "tier": "base",
+      "promotions": [],
+      "sourceClass": "FE3 Chameleon",
+      "growths": {
+        "hp": 40,
+        "str": 15,
+        "mag": 10,
+        "skill": 15,
+        "spd": 15,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      }
     }
   ]
 }

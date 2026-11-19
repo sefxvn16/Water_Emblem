@@ -85,8 +85,13 @@ export function isWeaponUsable(unit: GridUnit, weapon: ItemDefinition): boolean 
   return ranks.indexOf(held) >= ranks.indexOf(weapon.requiredRank ?? 'E');
 }
 
-export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined): { min: number; max: number } {
+export function getAttackRange(unit: GridUnit, weapon: ItemDefinition | undefined, terrainId?: string): { min: number; max: number } {
   if (!weapon || weapon.type === 'staff' || !isWeaponUsable(unit, weapon)) return { min: 1, max: 0 };
+  // PLAN item 122 (A14): an archer-line unit manning a ballista shoots 3-10.
+  if (terrainId === 'ballista' && weapon.type === 'bow'
+    && ['archer', 'sniper', 'hunter', 'mangudai'].includes(unit.classId ?? '')) {
+    return { min: 3, max: 10 };
+  }
   if (weapon.type === 'bow' && unit.classId === 'sniper') return { min: 2, max: 3 };
   if (weapon.type === 'bow' && unit.classId === 'mangudai') return { min: 2, max: 2 };
   return { min: weapon.minRange, max: weapon.maxRange };

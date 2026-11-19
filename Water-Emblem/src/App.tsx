@@ -84,6 +84,7 @@ import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { generateSkirmishChapter } from './core/chapter/randomMap';
 import { computeEnemyIntents } from './core/ai/intent';
 import { getSkillModifiers } from './core/combat/skills';
+import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, getStaffTargets, getUsableStaves, isHealStaff } from './core/combat/staff';
 import { applyCombatWeaponExp } from './core/combat/weaponExp';
@@ -672,6 +673,7 @@ export const App: React.FC = () => {
       const allGridUnits = extendedUnits.map((u) => u.unit);
       const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds);
       const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds);
+      const holds = (entry: ExtendedUnitState, itemId: string) => entry.inventory.some((i) => i.itemId === itemId);
       setCombatForecast(calculateCombatForecast(
         selectedExtUnit.unit,
         selectedExtUnit.stats,
@@ -685,7 +687,13 @@ export const App: React.FC = () => {
         defenderTerrain,
         allGridUnits,
         { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
-        { attacker: attackerMods, defender: defenderMods }
+        { attacker: attackerMods, defender: defenderMods },
+        {
+          attackerHasLight: holds(selectedExtUnit, 'lightsphere'),
+          attackerHasDark: holds(selectedExtUnit, 'darksphere'),
+          defenderHasLight: holds(target, 'lightsphere'),
+          defenderHasDark: holds(target, 'darksphere'),
+        }
       ));
     };
 
@@ -1148,6 +1156,67 @@ export const App: React.FC = () => {
     });
   };
 
+  // PLAN item 121: manakete transformation (ends the unit's action).
+  const handleTransform = () => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    executeWithMove(() => {
+      const transformed = transformUnit(selectedExtUnit, ITEM_BY_ID);
+      if (!transformed) return;
+      const next = extendedUnits.map((entry) => entry.unit.id === transformed.unit.id ? transformed : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🐉 ${transformed.unit.name} transforms into a dragon!`, ...prev]);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 124: dancer refreshes an adjacent acted ally.
+  const danceTarget = selectedExtUnit?.unit.classId === 'dancer' && pendingMovePos
+    ? extendedUnits.find((entry) => entry.unit.faction === 'player' && !entry.unit.isDead
+      && entry.unit.id !== selectedExtUnit.unit.id && entry.unit.hasActed
+      && getManhattanDistance(entry.unit.position, pendingMovePos) === 1)
+    : undefined;
+
+  const handleDance = () => {
+    if (!selectedExtUnit || !danceTarget) return;
+    executeWithMove(() => {
+      const next = extendedUnits.map((entry) => entry.unit.id === danceTarget.unit.id
+        ? { ...entry, unit: { ...entry.unit, hasActed: false } }
+        : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`💃 ${selectedExtUnit.unit.name} dances for ${danceTarget.unit.name}!`, ...prev]);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
+  // PLAN item 124: Xane imitates an adjacent ally for 5 turns.
+  const imitateTarget = selectedExtUnit?.unit.classId === 'chameleon' && pendingMovePos
+    && (selectedExtUnit.unit.imitateTurns ?? 0) <= 0
+    ? extendedUnits.find((entry) => entry.unit.faction === 'player' && !entry.unit.isDead
+      && entry.unit.id !== selectedExtUnit.unit.id
+      && getManhattanDistance(entry.unit.position, pendingMovePos) === 1)
+    : undefined;
+
+  const handleImitate = () => {
+    if (!selectedExtUnit || !imitateTarget) return;
+    executeWithMove(() => {
+      const imitated = imitateUnit(selectedExtUnit, imitateTarget);
+      if (!imitated) return;
+      const next = extendedUnits.map((entry) => entry.unit.id === imitated.unit.id ? imitated : entry);
+      turnManager.replaceUnits(next.map(({ unit }) => unit));
+      setExtendedUnits(next);
+      soundManager.playSfx('accept');
+      setCombatLog((prev) => [`🎭 ${imitated.unit.name} imitates ${imitateTarget.unit.name}!`, ...prev]);
+      turnManager.waitSelectedUnit();
+      syncState();
+    });
+  };
+
   const handleTalk = () => {
     if (!talkTarget || !selectedExtUnit) return;
     executeWithMove(() => {
@@ -1544,6 +1613,10 @@ export const App: React.FC = () => {
         unitStatsMap: statsMap,
         unitWeaponsMap: weaponsMap,
         unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+        sphereHolders: {
+          light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
+          dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
+        },
         villageTargets: currentChapter.villages?.filter(
           (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
         ).map((v) => v.position),
@@ -1671,6 +1744,14 @@ export const App: React.FC = () => {
       soundManager.playSfx('player_phase');
       turnManager.switchPhase('player_phase');
       phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
+      // PLAN items 121/124: tick transformation/imitation timers.
+      const ticked = tickSpecialStates(phaseUnits, ITEM_BY_ID);
+      phaseUnits = ticked.units;
+      for (const event of ticked.events) {
+        logs.push(event.kind === 'transform_end'
+          ? `🐉 ${event.unitName} returns to human form.`
+          : `🎭 ${event.unitName}'s imitation ends.`);
+      }
       phaseUnits = phaseUnits.map((u) => u.unit.faction === 'player' && !u.unit.isDead ? { ...u, unit: { ...u.unit, hasActed: false } } : u);
       // PLAN item 94: warn about reinforcements arriving this turn.
       const arriving = announcedReinforcements(currentChapter, turnState.turnNumber + 1, nextSpawnedReinforcements);
@@ -1934,6 +2015,9 @@ export const App: React.FC = () => {
           canArena,
           canEscape: chapterObjective.type === 'escape' && Boolean(pendingMovePos
             && (chapterObjective.escapeTiles ?? []).some((t) => t.x === pendingMovePos.x && t.y === pendingMovePos.y)),
+          canTransform: Boolean(selectedExtUnit && canTransform(selectedExtUnit)),
+          danceTargetName: danceTarget?.unit.name ?? null,
+          imitateTargetName: imitateTarget?.unit.name ?? null,
           staffOptions: selectedExtUnit
             ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
               .filter((staff) => isHealStaff(staff)
@@ -1953,6 +2037,9 @@ export const App: React.FC = () => {
         onStaff={handleStaff}
         onSeize={handleSeize}
         onEscape={handleEscape}
+        onTransform={handleTransform}
+        onDance={handleDance}
+        onImitate={handleImitate}
         onTalk={handleTalk}
         onUseVulnerary={handleUseVulnerary}
         onPromote={handlePromote}

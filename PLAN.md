@@ -477,34 +477,34 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Mode Random Skirmish: sinh bản đồ 12x10 theo seed (sông + 1 cầu, fort/gate, bãi triển khai), quân từ chương test đặt lại vị trí, mục tiêu rout; nút ở màn hình tiêu đề. Save skirmish chỉ nạp trong cùng phiên [Giả định]. Kiểm chứng: Vitest 39 file/262 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 120. A12 Spheres: ngọc chỉ giữ chức năng đánh rồng/boss.
+- [x] 120. A12 Spheres: ngọc chỉ giữ chức năng đánh rồng/boss.
   - Nguồn: chủ dự án chốt A12 2026-11-19 (bỏ Astral Shards; Spheres bỏ tăng chỉ số, chỉ giữ chức năng đánh rồng/boss).
   - Tiêu chí xong: (1) Vật phẩm Lightsphere/Darksphere có trong dữ liệu; quân giữ Darksphere miễn sát thương trừ khi đối thủ giữ Lightsphere (luật FE3); không còn chức năng tăng chỉ số. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ngọc Sáng/Tối là vật phẩm mang theo (không bán, không cộng chỉ số); cầm Ngọc Tối miễn sát thương trừ khi quân đánh cầm Ngọc Sáng — áp dụng cả phía người chơi lẫn AI. Kiểm chứng: `tsc --noEmit` PASS; Vitest 42 file/281 test PASS (test mới `tests/core/batchF.test.ts`). Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 121. A13 Manakete biến hình không cần đá.
+- [x] 121. A13 Manakete biến hình không cần đá.
   - Nguồn: chủ dự án chốt A13 (tối đa 5 lượt, Luck cao thêm 1 lượt, nghỉ 2 lượt). Ngưỡng Luck cao chốt khi làm, ghi [Giả định].
   - Tiêu chí xong: (1) Class manakete có lệnh biến hình: thành rồng với chỉ số rồng trong tối đa 5 lượt (+1 nếu Luck cao), hết hạn tự về dạng người và nghỉ 2 lượt mới biến lại được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Class manakete + Tiki ở chương test; Transform không cần đá, 5 lượt (+1 nếu Luck ≥15 [Giả định]), +5 Str/Def/Res +3 Spd, Dragon Breath; nghỉ 2 lượt. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 122. A14 Ballista: nỏ cố định tầm xa.
+- [x] 122. A14 Ballista: nỏ cố định tầm xa.
   - Nguồn: chủ dự án chốt A14 (nội dung Book 2; làm cơ chế + dữ liệu test).
   - Tiêu chí xong: (1) Ô ballista: quân cung đứng vào bắn được tầm xa (3–10) với sát thương theo luật ghi rõ; địch cũng dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Ô ballista: quân cung đứng trên bắn 3–10 ô, +6 Might [Giả định]; địch dùng được. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 123. A15 Triangle Attack: 3 kỵ sĩ bay kẹp 1 địch thì chí mạng.
+- [x] 123. A15 Triangle Attack: 3 kỵ sĩ bay kẹp 1 địch thì chí mạng.
   - Nguồn: chủ dự án chốt A15.
   - Tiêu chí xong: (1) Khi 3 quân bay cùng phe đứng kề 1 địch (3 phía) và 1 trong 3 tấn công thì đòn đó chí mạng chắc chắn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. 3 quân bay đồng minh kề quanh địch → đòn của quân bay chắc chắn chí mạng. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
-- [ ] 124. A16 Dancer + Xane: nhảy hồi lượt, bắt chước quân khác.
+- [x] 124. A16 Dancer + Xane: nhảy hồi lượt, bắt chước quân khác.
   - Nguồn: chủ dự án chốt A16.
   - Tiêu chí xong: (1) Dancer có lệnh Dance: quân ta kề bên đã hành động được hành động lại. (2) Xane có lệnh Imitate: sao chép chỉ số/vũ khí của quân ta kề bên trong số lượt ghi rõ. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
-  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Dance (Feena) cho đồng minh kề bên đã hành động được hành động lại; Imitate (Xane, class chameleon) sao chép chỉ số + vũ khí đồng minh kề bên 5 lượt [Giả định]. Kiểm chứng: Vitest 42 file/281 test PASS. Gate đầy đủ chạy ở cuối đợt cơ chế.
   - Kiểm bởi: tôi
 
 - [x] 125. Nút Cancel của bảng dự báo nằm ngay dưới nút Attack; 2 nút tròn 3D bóng bẩy.

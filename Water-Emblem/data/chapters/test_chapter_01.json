@@ -167,6 +167,36 @@
           "y": 5
         }
       ]
+    },
+    {
+      "id": "tiki",
+      "characterId": "tiki",
+      "weaponId": "dragon_breath",
+      "position": {
+        "x": 0,
+        "y": 6
+      },
+      "faction": "player"
+    },
+    {
+      "id": "feena",
+      "characterId": "feena",
+      "weaponId": "iron_sword",
+      "position": {
+        "x": 1,
+        "y": 6
+      },
+      "faction": "player"
+    },
+    {
+      "id": "xane",
+      "characterId": "xane",
+      "weaponId": "iron_sword",
+      "position": {
+        "x": 2,
+        "y": 6
+      },
+      "faction": "player"
     }
   ],
   "reinforcements": [

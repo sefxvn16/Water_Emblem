@@ -41,6 +41,8 @@ export interface AIContext {
   readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
   /** Skill ids per unit (PLAN items 112/113). */
   readonly unitSkillsMap?: ReadonlyMap<string, readonly string[]>;
+  /** Sphere holders by unit id (PLAN item 120). */
+  readonly sphereHolders?: { readonly light: ReadonlySet<string>; readonly dark: ReadonlySet<string> };
   readonly villageTargets?: readonly Position[];
   /** Unopened chest tiles for the thief role (PLAN item 110). */
   readonly chestTargets?: readonly Position[];
@@ -174,6 +176,12 @@ export function evaluateAITurn(
           context.unitSkillsMap ? {
             attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap),
             defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap),
+          } : undefined,
+          context.sphereHolders ? {
+            attackerHasLight: context.sphereHolders.light.has(enemyUnit.id),
+            attackerHasDark: context.sphereHolders.dark.has(enemyUnit.id),
+            defenderHasLight: context.sphereHolders.light.has(target.id),
+            defenderHasDark: context.sphereHolders.dark.has(target.id),
           } : undefined
         );
 

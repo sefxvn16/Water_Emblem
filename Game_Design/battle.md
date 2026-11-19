@@ -157,3 +157,11 @@ Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Bá
 - **V04 Canto (mục 102):** quân cưỡi/bay sau khi hành động (đánh/trượng/đồ/mở rương-cửa/cửa hàng/đấu trường/phá vật) được đi tiếp số ô di chuyển còn dư lúc tới ô hành động; tổng không vượt MOV. Chỉ quân người chơi [Giả định], AI địch không dùng Canto. Lệnh Wait thuần không kích hoạt Canto.
 - **B10 Vai trò AI (mục 110):** thêm `patrol` (đi tuần theo `patrolPoints`, vẫn đánh khi có quân trong tầm), `retreat` (dưới 50% HP thì rút xa quân ta [Giả định], còn lại như pursue), `thief` (tới rương/làng chưa mở để cướp; hết mục tiêu thì bỏ chạy), `flee` (luôn chạy xa quân ta, không đánh). Ô rút lui chọn theo khoảng cách xa nhất + thưởng né địa hình.
 - **B11 Boss nhiều pha (mục 111):** chương khai báo `bossPhases` cho boss (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò AI). Mỗi pha áp dụng 1 lần khi HP xuống ngưỡng, ghi nhật ký; tiến độ pha (`bossPhase`) lưu cùng quân trong save.
+
+## Đợt F cơ chế Book 2 (2026-11-19, PLAN mục 120–124)
+
+- **A12 Ngọc Sáng/Tối (mục 120):** `lightsphere`/`darksphere` là vật phẩm mang theo (không bán ở cửa hàng, không cộng chỉ số — đúng quyết định chủ: bỏ chức năng tăng chỉ số). Quân cầm Ngọc Tối không nhận sát thương, trừ khi quân đánh cầm Ngọc Sáng.
+- **A13 Manakete (mục 121):** class `manakete` + nhân vật Tiki (chương test). Lệnh Transform: không cần đá (quyết định chủ A13), biến hình 5 lượt (+1 nếu Luck ≥ 15 [Giả định]), +5 Str/Def/Res, +3 Spd [Giả định], dùng vũ khí Dragon Breath (phép 1–2 ô); hết hạn nghỉ 2 lượt mới biến hình lại.
+- **A14 Ballista (mục 122):** ô địa hình `ballista`; quân cung (archer/sniper/hunter/mangudai) đứng trên đó bắn tầm 3–10, +6 Might [Giả định]. Địch dùng được như quân ta.
+- **A15 Triangle Attack (mục 123):** 3 quân bay đồng minh kề quanh 1 địch thì đòn của quân bay tấn công chắc chắn chí mạng (Crit 100%).
+- **A16 Dancer + Xane (mục 124):** Dancer (Feena) có lệnh Dance: quân đồng minh kề bên đã hành động được hành động lại. Xane (class `chameleon`) có lệnh Imitate: sao chép chỉ số + vũ khí của đồng minh kề bên trong 5 lượt [Giả định], hết hạn trở lại như cũ.

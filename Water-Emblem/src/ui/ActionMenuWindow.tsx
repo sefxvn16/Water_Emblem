@@ -30,6 +30,12 @@ export interface PendingActions {
   canArena: boolean;
   /** Standing on an escape tile in an escape chapter (PLAN item 109). */
   canEscape: boolean;
+  /** Manakete ready to transform (PLAN item 121). */
+  canTransform: boolean;
+  /** Adjacent acted ally a dancer can refresh (PLAN item 124). */
+  danceTargetName: string | null;
+  /** Adjacent ally Xane can imitate (PLAN item 124). */
+  imitateTargetName: string | null;
 }
 
 interface ActionMenuWindowProps {
@@ -50,6 +56,9 @@ interface ActionMenuWindowProps {
   onArena: () => void;
   onSeize: () => void;
   onEscape: () => void;
+  onTransform: () => void;
+  onDance: () => void;
+  onImitate: () => void;
   onTalk: () => void;
   onUseVulnerary: () => void;
   onPromote: (classId: string) => void;
@@ -195,6 +204,9 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
             )}
             {actions.canSeize && renderButton('seize', '👑', 'Seize Gate', props.onSeize)}
             {actions.canEscape && renderButton('escape', '🏃', 'Escape', props.onEscape, 'primary')}
+            {actions.canTransform && renderButton('transform', '🐉', 'Transform', props.onTransform, 'primary')}
+            {actions.danceTargetName !== null && renderButton('dance', '💃', `Dance: ${actions.danceTargetName}`, props.onDance)}
+            {actions.imitateTargetName !== null && renderButton('imitate', '🎭', `Imitate: ${actions.imitateTargetName}`, props.onImitate)}
             {actions.talkTargetName !== null && renderButton('talk', '💬', `Talk: ${actions.talkTargetName}`, props.onTalk)}
             {actions.canUseVulnerary && renderButton('vulnerary', '🧪', 'Use Vulnerary', props.onUseVulnerary)}
             {actions.promotions.map((p) =>

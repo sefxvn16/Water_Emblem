@@ -50,6 +50,8 @@ export interface ExtendedUnitState {
   bossPhases?: BossPhase[];
   /** Personal skill id from the character (PLAN item 112, N01). */
   personalSkill?: string;
+  /** Stats/weapon saved while imitating another unit (PLAN item 124). */
+  imitateBackup?: { stats: UnitCombatStats; weaponId?: string };
   /** Highest boss phase already applied (PLAN item 111). */
   bossPhase?: number;
   dropItemId?: string;

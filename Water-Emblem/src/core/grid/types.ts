@@ -61,6 +61,12 @@ export interface GridUnit {
   isReinforcement?: boolean;
   /** Escaped the map (PLAN item 109); no longer on the battlefield. */
   hasEscaped?: boolean;
+  /** Manakete transformation turns left (PLAN item 121); absent/0 = human form. */
+  transformTurns?: number;
+  /** Turns until a manakete may transform again (PLAN item 121). */
+  transformCooldown?: number;
+  /** Xane imitation turns left (PLAN item 124); absent/0 = own form. */
+  imitateTurns?: number;
 }
 
 export interface MoveTileResult {

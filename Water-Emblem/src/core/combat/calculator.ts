@@ -116,7 +116,8 @@ export function calculateCombatSide(
   allUnits?: readonly GridUnit[],
   heightDiff = 0,
   skillMods?: SkillModifiers,
-  opponentSkillMods?: SkillModifiers
+  opponentSkillMods?: SkillModifiers,
+  blockedByDarksphere = false
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -132,7 +133,7 @@ export function calculateCombatSide(
     };
   }
 
-  const range = getAttackRange(unit, weapon);
+  const range = getAttackRange(unit, weapon, _terrainId);
   const inRange = distance >= range.min && distance <= range.max;
   if (!inRange) {
     return {
@@ -164,16 +165,22 @@ export function calculateCombatSide(
 
   // Tính Effective Might
   const isEffective = isWeaponEffective(weapon, opponentUnit);
-  const effectiveMight = isEffective
+  let effectiveMight = isEffective
     ? weapon.might * balanceConfig.effectiveMultiplier
     : weapon.might;
+  // PLAN item 122 (A14): ballista shots hit harder [Giả định +6 Might].
+  if (_terrainId === 'ballista' && weapon.type === 'bow') effectiveMight += 6;
 
   const attackPower = (weapon.isMagic ? stats.mag : stats.str) + effectiveMight + triangle.damage + rankBonus.might;
 
   const opponentTerrainDef = weapon.isMagic ? 0 : terrainRegistry.getDefenseBonus(opponentTerrainId, opponentUnit.moveType);
   const defense = (weapon.isMagic ? opponentStats.res : opponentStats.def) + opponentTerrainDef;
   // PLAN items 112/113: skill damage modifiers.
-  const damage = Math.max(0, attackPower - defense + (skillMods?.damage ?? 0) + (opponentSkillMods?.damageTaken ?? 0));
+  // PLAN item 120 (A12): the Darksphere negates all damage unless the
+  // attacker holds the Lightsphere.
+  const damage = blockedByDarksphere
+    ? 0
+    : Math.max(0, attackPower - defense + (skillMods?.damage ?? 0) + (opponentSkillMods?.damageTaken ?? 0));
 
   // Tính Hit
   // PLAN item 104 (V07): height advantage — ±10 Hit per elevation level,
@@ -189,7 +196,15 @@ export function calculateCombatSide(
 
   // Tính Crit
   const rawCrit = weapon.crit + Math.floor(stats.skill / 2) + unitSupport.crit + (classDefinition?.critBonus ?? 0) + (pincer ? 10 : 0) + (skillMods?.crit ?? 0) - (opponentStats.lck + opponentSupport.dodge);
-  const critRate = Math.min(100, Math.max(0, rawCrit));
+  let critRate = Math.min(100, Math.max(0, rawCrit));
+  // PLAN item 123 (A15): Triangle Attack — three allied fliers adjacent
+  // to the opponent make the attacking flier's strike a guaranteed crit.
+  if (unit.moveType === 'flier' && allUnits) {
+    const adjacentFliers = allUnits.filter((ally) =>
+      !ally.isDead && ally.faction === unit.faction && ally.moveType === 'flier'
+      && Math.abs(ally.position.x - opponentUnit.position.x) + Math.abs(ally.position.y - opponentUnit.position.y) === 1);
+    if (adjacentFliers.length >= 3) critRate = 100;
+  }
 
   const as = calculateAttackSpeed(stats, weapon);
 
@@ -239,7 +254,8 @@ export function calculateCombatForecast(
   defenderTerrainId: string,
   allUnits?: readonly GridUnit[],
   elevations?: { readonly attacker: number; readonly defender: number },
-  skills?: { readonly attacker?: SkillModifiers; readonly defender?: SkillModifiers }
+  skills?: { readonly attacker?: SkillModifiers; readonly defender?: SkillModifiers },
+  spheres?: { readonly attackerHasLight?: boolean; readonly attackerHasDark?: boolean; readonly defenderHasLight?: boolean; readonly defenderHasDark?: boolean }
 ): CombatForecast {
   const heightDiff = elevations ? elevations.attacker - elevations.defender : 0;
   let attackerSide = calculateCombatSide(
@@ -256,7 +272,8 @@ export function calculateCombatForecast(
     allUnits,
     heightDiff,
     skills?.attacker,
-    skills?.defender
+    skills?.defender,
+    Boolean(spheres?.defenderHasDark && !spheres?.attackerHasLight)
   );
 
   let defenderSide = calculateCombatSide(
@@ -273,7 +290,8 @@ export function calculateCombatForecast(
     allUnits,
     -heightDiff,
     skills?.defender,
-    skills?.attacker
+    skills?.attacker,
+    Boolean(spheres?.attackerHasDark && !spheres?.defenderHasLight)
   );
 
   // Đánh 2 lần (Double Attack)

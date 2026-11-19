@@ -1397,6 +1397,109 @@
       "weaponRanks": {
         "axe": "D"
       }
+    },
+    {
+      "id": "tiki",
+      "name": "Tiki",
+      "nameVi": "Tiki",
+      "title": "Divine Dragon Princess",
+      "classId": "manakete",
+      "level": 1,
+      "weaponRanks": {
+        "tome": "E"
+      },
+      "baseStats": {
+        "hp": 16,
+        "str": 2,
+        "mag": 3,
+        "skill": 4,
+        "spd": 5,
+        "lck": 10,
+        "def": 2,
+        "res": 4
+      },
+      "growths": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 40,
+        "spd": 40,
+        "lck": 50,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [],
+      "avatarUrl": "/avatars/tiki.png"
+    },
+    {
+      "id": "feena",
+      "name": "Feena",
+      "nameVi": "Feena",
+      "title": "Dancer",
+      "classId": "dancer",
+      "level": 1,
+      "weaponRanks": {
+        "sword": "E"
+      },
+      "baseStats": {
+        "hp": 16,
+        "str": 3,
+        "mag": 0,
+        "skill": 5,
+        "spd": 8,
+        "lck": 8,
+        "def": 3,
+        "res": 1
+      },
+      "growths": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 40,
+        "spd": 40,
+        "lck": 50,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/feena.png"
+    },
+    {
+      "id": "xane",
+      "name": "Xane",
+      "nameVi": "Xane",
+      "title": "Chameleon",
+      "classId": "chameleon",
+      "level": 1,
+      "weaponRanks": {
+        "sword": "E"
+      },
+      "baseStats": {
+        "hp": 18,
+        "str": 4,
+        "mag": 0,
+        "skill": 4,
+        "spd": 6,
+        "lck": 6,
+        "def": 4,
+        "res": 1
+      },
+      "growths": {
+        "hp": 60,
+        "str": 30,
+        "mag": 30,
+        "skill": 40,
+        "spd": 40,
+        "lck": 50,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/xane.png"
     }
   ]
 }
