@@ -363,6 +363,150 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/forecast-bottom-center`. `overlayAnchor` thêm kiểu neo `bottom-center`: mặc định căn giữa dưới; nếu che ô quân đánh/quân thủ thì dịch trái vừa đủ tránh, dịch trái không đủ chỗ thì dịch phải; cả hai phía đều không tránh hết thì lấy phía ít che hơn. `CombatForecastWindow` đổi `prefer` sang `bottom-center`. Kiểm chứng: `tsc --noEmit` PASS; Vitest 36 file/234 test PASS (3 test mới cho bottom-center); Playwright phần dự báo (A2/A5/A6) PASS; gate đầy đủ 2026-11-19: Result: PASS (test + build + integration).
   - Kiểm bởi: tôi
 
+- [ ] 101. C12 Phá vật che chắn: vật cản có HP, đánh vỡ được.
+  - Nguồn: cơ chế đã chọn C12 (`decisions.md`); dữ liệu địa hình đã có field `destructible`/`maxHp` nhưng chưa code đọc. Chủ dự án 2026-11-19 18:26: làm toàn bộ cơ chế đã chốt cho xong.
+  - Tiêu chí xong: (1) Ô địa hình phá được có HP; quân đánh vào ô đó như đánh mục tiêu (dự báo hiện), vỡ thì ô thành địa hình thường đi qua được; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 102. V04 Canto: kỵ binh/bay đi tiếp phần di chuyển còn lại sau khi hành động.
+  - Nguồn: cơ chế đã chọn V04. Giới hạn Canto chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Quân cưỡi/bay sau khi đánh/dùng đồ/trượng được đi tiếp số ô di chuyển còn dư (tổng không vượt MOV), rồi mới kết thúc lượt. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 103. V05 Đánh kẹp: thưởng khi kẹp địch giữa 2 quân ta.
+  - Nguồn: cơ chế đã chọn V05 (đòn phối hợp do đánh kẹp vị trí, không phải Chain Attack). Vị trí kích hoạt + mức thưởng chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Khi quân ta đánh địch đang bị kẹp (có quân ta ở phía đối diện địch so với quân đánh) thì được thưởng chỉ số chiến đấu ghi rõ trong `battle.md`. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 104. V07 Lợi thế cao độ: địa hình cao thấp ảnh hưởng chiến đấu.
+  - Nguồn: cơ chế đã chọn V07. Mức cao độ + thưởng chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Địa hình có cao độ; quân ở cao hơn được thưởng Hit/Avoid (hoặc theo chốt khi làm) khi đánh quân thấp hơn và ngược lại; dự báo hiển thị đúng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 105. V08 Bẫy/chặn lối: ô bẫy trên bản đồ.
+  - Nguồn: cơ chế đã chọn V08. Loại bẫy + sát thương chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Dữ liệu chương đặt được ô bẫy; quân bước vào chịu hiệu ứng (sát thương/trạng thái) một lần, bẫy lộ ra sau khi kích hoạt; trạng thái lưu vào save. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 106. B02 Đường mục tiêu địch: hiện đường địch dự kiến đi/đánh.
+  - Nguồn: cơ chế đã chọn B02. Địch công bố mục tiêu dự kiến (không khóa cứng) [Giả định khi làm].
+  - Tiêu chí xong: (1) Chọn/hover địch thì hiện đường di chuyển dự kiến tới mục tiêu của nó theo AI hiện tại; không dùng thông tin bị che. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 107. B03 Đòn báo trước: hiện địch sẽ đánh ai ở pha địch tới.
+  - Nguồn: cơ chế đã chọn B03.
+  - Tiêu chí xong: (1) Trong pha người chơi, địch trong tầm đánh quân ta được đánh dấu mục tiêu dự kiến (theo AI hiện tại); dấu cập nhật khi quân ta di chuyển. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 108. B05 Bảo vệ mục tiêu: mục tiêu chương bảo vệ quân/ô.
+  - Nguồn: cơ chế đã chọn B05 (hiện mới có defeat_boss/rout/seize).
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo được mục tiêu bảo vệ (quân NPC hoặc ô) trong số lượt hoặc tới khi hết địch; mục tiêu chết/bị chiếm thì thua chương. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 109. B06 Thoát bản đồ: mục tiêu chương thoát quân qua ô thoát.
+  - Nguồn: cơ chế đã chọn B06.
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo ô thoát; quân tới ô thoát có lệnh Escape rời bản đồ; đủ điều kiện (vd Marth thoát / toàn quân thoát) thì thắng. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 110. B10 Vai trò AI còn thiếu: tuần tra, rút lui, trộm, bỏ chạy.
+  - Nguồn: cơ chế đã chọn B10 (hiện mới stationary/pursue/pillage).
+  - Tiêu chí xong: (1) Thêm vai trò patrol (đi tuần theo tuyến), retreat (rút về điểm an toàn khi yếu máu), thief (tới rương/làng trộm rồi bỏ chạy), flee (chạy khỏi quân ta); dữ liệu chương dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 111. B11 Boss nhiều pha: boss đổi trạng thái theo ngưỡng HP.
+  - Nguồn: cơ chế đã chọn B11.
+  - Tiêu chí xong: (1) Dữ liệu chương khai báo pha boss (ngưỡng HP → cộng chỉ số/đổi vũ khí/đổi vai trò AI); qua ngưỡng thì áp dụng ngay và ghi nhật ký. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 112. N01 Kỹ năng cá nhân: kỹ năng riêng từng nhân vật.
+  - Nguồn: cơ chế đã chọn N01.
+  - Tiêu chí xong: (1) Dữ liệu nhân vật gắn được kỹ năng cá nhân; kỹ năng có hiệu lực trong chiến đấu/di chuyển theo mô tả ghi trong `characters.md`; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 113. N02 Kỹ năng class: hệ kỹ năng theo class.
+  - Nguồn: cơ chế đã chọn N02 (hiện mới bonus chỉ số theo class).
+  - Tiêu chí xong: (1) Class gắn kỹ năng; quân thuộc class được hiệu lực kỹ năng; đổi/thăng class thì kỹ năng đổi theo; hiện trong inspector. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 114. N04 Reclass ở màn chuẩn bị.
+  - Nguồn: cơ chế đã chọn N04; tạm chốt FE11: reclass tại Battle Preparation từ chương 4.
+  - Tiêu chí xong: (1) Màn chuẩn bị đổi được class của quân trong nhóm class cho phép, giữ cấp/EXP theo luật FE11 ghi rõ; chương chưa mở reclass thì ẩn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 115. Q04 Độ khó: chọn mức khó khi bắt đầu game.
+  - Nguồn: cơ chế đã chọn Q04. Số mức + mức cộng chỉ số địch chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Game mới chọn được độ khó; địch được cộng chỉ số theo mức; mức khó lưu trong save và hiện trong Settings. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 116. Q06 Chuẩn bị trận còn thiếu: trao đổi đồ giữa quân ở màn chuẩn bị.
+  - Nguồn: cơ chế đã chọn Q06 (kho đồ ở màn chuẩn bị đã làm mục 88; còn trao đổi đồ trực tiếp giữa 2 quân).
+  - Tiêu chí xong: (1) Màn chuẩn bị trao đổi đồ được giữa 2 quân bất kỳ (không cần đứng cạnh), giữ giới hạn 4+4. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 117. Q07 Tua/bỏ còn thiếu: cài đặt tốc độ hoạt cảnh + bỏ qua hội thoại.
+  - Nguồn: cơ chế đã chọn Q07 (hiện bỏ qua hoạt cảnh di chuyển được; chưa có cài đặt tốc độ, chưa bỏ qua hội thoại).
+  - Tiêu chí xong: (1) Settings có tốc độ hoạt cảnh (thường/nhanh/tắt) áp dụng cho di chuyển + chiến đấu; hội thoại có nút bỏ qua. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 118. Q10 Bản đồ giải đố: loại chương giải đố.
+  - Nguồn: cơ chế đã chọn Q10. Điều kiện giải đố chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Có loại mục tiêu giải đố (vd tới ô đích trong giới hạn lượt / hạ đúng mục tiêu) và ít nhất 1 chương giải đố chơi được (chương test). (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 119. Q12 Bản đồ ngẫu nhiên: mode giao tranh sinh bản đồ theo seed.
+  - Nguồn: cơ chế đã chọn Q12 (mode riêng, không thay bản đồ FE3 chiến dịch). Quy tắc sinh bản đồ chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Mode riêng sinh bản đồ + địch theo seed (cùng seed ra cùng bản đồ), chơi tới thắng/thua được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 120. A12 Spheres: ngọc chỉ giữ chức năng đánh rồng/boss.
+  - Nguồn: chủ dự án chốt A12 2026-11-19 (bỏ Astral Shards; Spheres bỏ tăng chỉ số, chỉ giữ chức năng đánh rồng/boss).
+  - Tiêu chí xong: (1) Vật phẩm Lightsphere/Darksphere có trong dữ liệu; quân giữ Darksphere miễn sát thương trừ khi đối thủ giữ Lightsphere (luật FE3); không còn chức năng tăng chỉ số. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 121. A13 Manakete biến hình không cần đá.
+  - Nguồn: chủ dự án chốt A13 (tối đa 5 lượt, Luck cao thêm 1 lượt, nghỉ 2 lượt). Ngưỡng Luck cao chốt khi làm, ghi [Giả định].
+  - Tiêu chí xong: (1) Class manakete có lệnh biến hình: thành rồng với chỉ số rồng trong tối đa 5 lượt (+1 nếu Luck cao), hết hạn tự về dạng người và nghỉ 2 lượt mới biến lại được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 122. A14 Ballista: nỏ cố định tầm xa.
+  - Nguồn: chủ dự án chốt A14 (nội dung Book 2; làm cơ chế + dữ liệu test).
+  - Tiêu chí xong: (1) Ô ballista: quân cung đứng vào bắn được tầm xa (3–10) với sát thương theo luật ghi rõ; địch cũng dùng được. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 123. A15 Triangle Attack: 3 kỵ sĩ bay kẹp 1 địch thì chí mạng.
+  - Nguồn: chủ dự án chốt A15.
+  - Tiêu chí xong: (1) Khi 3 quân bay cùng phe đứng kề 1 địch (3 phía) và 1 trong 3 tấn công thì đòn đó chí mạng chắc chắn. (2) Test Vitest + Playwright. (3) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
+- [ ] 124. A16 Dancer + Xane: nhảy hồi lượt, bắt chước quân khác.
+  - Nguồn: chủ dự án chốt A16.
+  - Tiêu chí xong: (1) Dancer có lệnh Dance: quân ta kề bên đã hành động được hành động lại. (2) Xane có lệnh Imitate: sao chép chỉ số/vũ khí của quân ta kề bên trong số lượt ghi rõ. (3) Test Vitest + Playwright. (4) Gate Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, đang làm.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
