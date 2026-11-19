@@ -26,6 +26,9 @@ export interface ItemDefinition {
   readonly buyable?: boolean;
   readonly effectiveAgainst: readonly MoveType[];
   readonly isMagic?: boolean;
+  /** Devil-weapon backfire base (PLAN item 153, FE11): each strike has a
+   * (backfireBase − Luck)% chance (minimum 1%) to hit the user instead. */
+  readonly backfireBase?: number;
 }
 
 export interface UnitCombatStats {
@@ -66,6 +69,8 @@ export interface SingleAttackEvent {
   readonly isCrit: boolean;
   readonly damageDealt: number;
   readonly defenderHpAfter: number;
+  /** Devil-weapon backfire (PLAN item 153): the strike hit its own user. */
+  readonly isBackfire?: boolean;
 }
 
 export interface CombatResult {

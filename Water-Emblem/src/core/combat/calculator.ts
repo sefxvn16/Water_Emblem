@@ -345,6 +345,40 @@ export function executeCombat(
     const side = fromAttacker ? forecast.attacker : forecast.defender;
     const isDefenderTarget = fromAttacker;
 
+    // PLAN item 153 (FE11 Devil Axe): a devil weapon can backfire — the
+    // strike hits its own user instead, with damage as if the user had
+    // attacked themselves (their Atk − their Def, tripled on a crit).
+    if (side.weapon?.backfireBase !== undefined) {
+      const backfireChance = Math.max(1, side.weapon.backfireBase - side.stats.lck);
+      if (rng.roll1RN(backfireChance)) {
+        const isCrit = rng.rollCrit(side.critRate);
+        const attackStat = side.weapon.isMagic ? side.stats.mag : side.stats.str;
+        const defenseStat = side.weapon.isMagic ? side.stats.res : side.stats.def;
+        const baseDamage = Math.max(0, attackStat + side.weapon.might - defenseStat);
+        const selfDamage = isCrit ? baseDamage * balanceConfig.critMultiplier : baseDamage;
+        if (fromAttacker) {
+          attackerHp = Math.max(0, attackerHp - selfDamage);
+        } else {
+          defenderHp = Math.max(0, defenderHp - selfDamage);
+        }
+        events.push({
+          attackerId: side.unit.id,
+          defenderId: side.unit.id,
+          isHit: true,
+          isCrit,
+          damageDealt: selfDamage,
+          defenderHpAfter: fromAttacker ? attackerHp : defenderHp,
+          isBackfire: true,
+        });
+        const ownHp = fromAttacker ? attackerHp : defenderHp;
+        if (ownHp <= 0) {
+          unitDefeatedId = side.unit.id;
+          return true;
+        }
+        return false;
+      }
+    }
+
     const isHit = rng.rollHit(side.hitRate, mode);
     let damage = 0;
     let isCrit = false;
