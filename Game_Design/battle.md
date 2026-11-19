@@ -15,7 +15,6 @@ Các ô đang có lấy bonus từ [bảng địa hình FE11](https://serenesfor
 - V05: đánh kẹp khi hai đồng minh đặt hai phía của mục tiêu. Chờ chốt cách xác định “hai phía” trên lưới, ai được bồi đòn, sát thương và giới hạn mỗi giao tranh. Đây không phải Chain Attack tự động của Battle Style Backup.
 - V07: cao độ ảnh hưởng chiến đấu. Bản 3D cũ dự kiến các mức 0–2, nhưng lợi thế tầm bắn, hit, damage và khả năng đi lên/xuống **chưa chốt**. Cao độ trang trí không tự phát sinh bonus gameplay.
 - V08: bẫy và chặn lối. Chờ chốt loại bẫy, cách đặt/nhìn thấy/kích hoạt, thời gian tồn tại và AI có được biết bẫy hay không.
-- C12: vật che chắn có thể bị phá. Chờ chốt ô nào là cover, độ bền, ảnh hưởng đến line of sight/hit và hậu quả khi bị phá. Bố cục bản đồ FE3 gốc không tự có dữ liệu cover có thể phá.
 - B01: vùng nguy hiểm là hợp tầm địch có thể đánh ở trạng thái hiện tại, dùng cùng luật di chuyển/tầm đánh thực; UI chỉ đọc kết quả này. Cần quy định cách biểu diễn khi còn Fog of War nếu sau này được chọn.
 
 ## Giao tranh và hỗ trợ
@@ -30,7 +29,7 @@ Dữ liệu vũ khí bản thử hiện dùng số FE11 cho 17 vũ khí có đ�
 - C01: Sword > Axe > Lance > Sword. Đề án cũ còn ghi Arts > Bow/Tome/Dagger, +15 Hit, +1 Damage và Break; chủ dự án chỉ chọn **tam giác vũ khí**, nên các phần thêm đó chưa được chốt.
 - C03: vũ khí khắc class như cung với đơn vị bay hoặc vũ khí chuyên dụng với giáp/kỵ binh. Danh sách cặp khắc, hệ số và thứ tự nhân hệ số **chờ chốt**.
 - C10: trượng có tác dụng hỗ trợ ngoài hồi HP. Cần chốt tập hiệu ứng, tầm, số lần dùng, đối tượng hợp lệ, độ chính xác và thời điểm tác dụng. Đề án cũ chưa mô tả đủ.
-- V05, V07, V08, C12 có thể thay dự báo và kết quả. Thứ tự ưu tiên giữa đòn chính, đánh kẹp, bẫy, cover và hiệu ứng trượng **chờ chốt**; không tự suy diễn từ FE hoặc Triangle Strategy.
+- V05, V07, V08 có thể thay dự báo và kết quả. Thứ tự ưu tiên giữa đòn chính, đánh kẹp, bẫy và hiệu ứng trượng **chờ chốt**; không tự suy diễn từ FE hoặc Triangle Strategy.
 
 ### Độ bền vũ khí (PLAN mục 84, chốt 2026-11-19)
 
@@ -147,14 +146,14 @@ Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Bá
 
 ## Đợt A cơ chế đã chốt (2026-11-19, PLAN mục 101/103/104/105)
 
-- **C12 Phá vật che chắn (mục 101):** ô địa hình `destructible` (vd Wall 20 HP) đánh được như mục tiêu thường qua dự báo; vật không phản đòn, không cho EXP, độ bền + WEx vẫn tính. Vỡ (0 HP) thì ô thành đống đổ nát đi qua tốn 1. HP vật lưu trong save (`objectStates`). Địch AI không đánh vật [Giả định].
+- **C12 Phá vật che chắn (mục 101) — ĐÃ GỠ BỎ** theo lệnh chủ dự án 2026-11-19 ("bỏ. không có cơ chế này"; PLAN mục 143): chủ không nhớ đã duyệt C12, chi tiết "ô nào phá được" chưa từng được chốt. Toàn bộ code (`src/core/chapter/objects.ts`), cờ `destructible`/`maxHp` trên `wall`, trường save `objectStates` và test liên quan đã xóa; tường là ô không đi qua được như thường. Save cũ còn trường `objectStates` vẫn nạp được (trường bị bỏ qua khi nạp).
 - **V05 Đánh kẹp (mục 103):** khi quân ta đánh địch mà có quân ta khác đứng kề phía đối diện của địch (so với quân đánh) thì quân đánh được **+15 Hit, +10 Crit** [Giả định]. Áp dụng cả hai phía giao tranh theo đồng minh của từng phía.
 - **V07 Lợi thế cao độ (mục 104):** cao độ ô lấy từ `elevations` của bản đồ; chênh cao độ cho **±10 Hit mỗi bậc, tối đa ±20** [Giả định] (cao hơn đánh trúng hơn, thấp hơn bị trừ tương ứng).
 - **V08 Bẫy (mục 105):** chương khai báo `traps` (ô + sát thương). Quân kết thúc di chuyển trên ô bẫy thì bẫy kích hoạt 1 lần, gây sát thương cố định nhưng **không giảm HP dưới 1** [Giả định]; bẫy đã kích hoạt lưu trong save (`triggeredTraps`).
 
 ## Đợt B cơ chế đã chốt (2026-11-19, PLAN mục 102/110/111)
 
-- **V04 Canto (mục 102):** quân cưỡi/bay sau khi hành động (đánh/trượng/đồ/mở rương-cửa/cửa hàng/đấu trường/phá vật) được đi tiếp số ô di chuyển còn dư lúc tới ô hành động; tổng không vượt MOV. Chỉ quân người chơi [Giả định], AI địch không dùng Canto. Lệnh Wait thuần không kích hoạt Canto.
+- **V04 Canto (mục 102):** quân cưỡi/bay sau khi hành động (đánh/trượng/đồ/mở rương-cửa/cửa hàng/đấu trường) được đi tiếp số ô di chuyển còn dư lúc tới ô hành động; tổng không vượt MOV. Chỉ quân người chơi [Giả định], AI địch không dùng Canto. Lệnh Wait thuần không kích hoạt Canto.
 - **B10 Vai trò AI (mục 110):** thêm `patrol` (đi tuần theo `patrolPoints`, vẫn đánh khi có quân trong tầm), `retreat` (dưới 50% HP thì rút xa quân ta [Giả định], còn lại như pursue), `thief` (tới rương/làng chưa mở để cướp; hết mục tiêu thì bỏ chạy), `flee` (luôn chạy xa quân ta, không đánh). Ô rút lui chọn theo khoảng cách xa nhất + thưởng né địa hình.
 - **B11 Boss nhiều pha (mục 111):** chương khai báo `bossPhases` cho boss (ngưỡng HP% → cộng chỉ số/đổi vũ khí/đổi vai trò AI). Mỗi pha áp dụng 1 lần khi HP xuống ngưỡng, ghi nhật ký; tiến độ pha (`bossPhase`) lưu cùng quân trong save.
 

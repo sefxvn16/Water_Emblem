@@ -18,8 +18,6 @@ export interface TerrainDefinition {
   readonly avoidBonus: number;
   readonly defenseBonus: number;
   readonly healPercent: number;
-  readonly destructible?: boolean;
-  readonly maxHp?: number;
   readonly movementCosts: Record<MoveType, number | null>;
   readonly sourceClassCosts?: Readonly<Record<string, number | null>>;
 }

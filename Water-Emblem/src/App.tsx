@@ -29,6 +29,7 @@ import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { runMovementAnimation, setAnimationSpeed, type ActiveMovingUnit, type AnimationSpeed } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
+import { computeCombinedThreatKeys, computeUnitThreatKeys } from './core/grid/threatRange';
 import {
   bossStartEvent,
   canOpenChest,
@@ -78,13 +79,11 @@ import { ShopWindow } from './ui/ShopWindow';
 import { ArenaWindow } from './ui/ArenaWindow';
 import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
 import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
-import { buildObjectDefender, damageObject, destroyedObjectKeys, isDestructibleTile, objectHpAt } from './core/chapter/objects';
 import { applyTrapDamage, trapAt } from './core/chapter/traps';
 import { canCanto } from './core/combat/canto';
 import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { generateSkirmishChapter } from './core/chapter/randomMap';
-import { computeEnemyIntents } from './core/ai/intent';
 import { getSkillModifiers } from './core/combat/skills';
 import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
@@ -211,7 +210,6 @@ export const App: React.FC = () => {
     setAnimationSpeed(animationSpeed);
     try { localStorage.setItem('water-emblem-anim-speed', animationSpeed); } catch { /* storage unavailable */ }
   }, [animationSpeed]);
-
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
@@ -234,7 +232,6 @@ export const App: React.FC = () => {
   const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
   const [doorStates, setDoorStates] = useState<Record<string, DoorState>>({});
   const [spawnedReinforcements, setSpawnedReinforcements] = useState<string[]>([]);
-  const [objectStates, setObjectStates] = useState<Record<string, number>>({});
   const [triggeredTraps, setTriggeredTraps] = useState<string[]>([]);
   const [activeVillageDialogue, setActiveVillageDialogue] = useState<{
     villageName: string;
@@ -341,7 +338,6 @@ export const App: React.FC = () => {
     setChestStates({});
     setDoorStates({});
     setSpawnedReinforcements([]);
-    setObjectStates({});
     setTriggeredTraps([]);
     setCantoActive(false);
     cantoRemainingRef.current = 0;
@@ -400,85 +396,36 @@ export const App: React.FC = () => {
       .map((door) => `${door.position.x},${door.position.y}`),
   ), [currentChapter.doors, doorStates]);
 
-  // PLAN item 101: destroyed destructible objects become passable rubble.
-  const destroyedKeys = useMemo(() => destroyedObjectKeys(objectStates), [objectStates]);
+  // Vùng nguy hiểm của quân địch (PLAN item 145): tập ô gộp của mọi địch,
+  // tính bằng helper core dùng chung với vùng của từng địch.
+  const threatContext = {
+    map: mapData,
+    terrains: defaultTerrainRegistry,
+    units: extendedUnits.map((u) => u.unit),
+    openedDoors: openedDoorKeys,
+  };
+  const combinedDangerZoneKeys = useMemo(() => computeCombinedThreatKeys(
+    extendedUnits
+      .filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead)
+      .map((enemy) => ({
+        unit: enemy.unit,
+        attackRange: getAttackRange(enemy.unit, enemy.weapon),
+        stationary: enemy.aiRole === 'stationary',
+      })),
+    threatContext,
+  ), [extendedUnits, openedDoorKeys, mapData]);
 
-  // PLAN items 106/107 (B02/B03): enemy intent preview during player phase.
-  const enemyIntents = useMemo(() => {
-    if (turnState.activePhase !== 'player_phase' || chapterOutcome !== 'ongoing') return [];
-    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
-    if (enemies.length === 0) return [];
-    return computeEnemyIntents(enemies, {
-      map: mapData,
-      terrains: defaultTerrainRegistry,
-      units: extendedUnits.map((u) => u.unit),
-      unitStatsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.stats])),
-      unitWeaponsMap: new Map(extendedUnits.map((u) => [u.unit.id, u.weapon])),
-      unitSkillsMap: new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
-      villageTargets: (currentChapter.villages ?? [])
-        .filter((v) => (villageStates[v.id] ?? 'intact') === 'intact')
-        .map((v) => v.position),
-      chestTargets: (currentChapter.chests ?? [])
-        .filter((c) => chestStates[c.id] !== 'opened')
-        .map((c) => c.position),
-      turnNumber: turnState.turnNumber,
-      openedDoors: openedDoorKeys,
-      destroyedObjects: destroyedKeys,
-    });
-  }, [extendedUnits, turnState.activePhase, turnState.turnNumber, chapterOutcome, mapData, currentChapter, villageStates, chestStates, openedDoorKeys, destroyedKeys]);
-
-  const intentTargetKeys = useMemo(() => {
-    const keys = new Set<string>();
-    for (const intent of enemyIntents) {
-      if (!intent.targetUnitId) continue;
-      const target = extendedUnits.find((u) => u.unit.id === intent.targetUnitId);
-      if (target) keys.add(`${target.unit.position.x},${target.unit.position.y}`);
-    }
-    return keys;
-  }, [enemyIntents, extendedUnits]);
-
-  const inspectedEnemyId = pinnedUnitId ?? hoveredUnitSummary?.unitId ?? null;
-  const intentPath = useMemo(() => {
-    if (!inspectedEnemyId) return null;
-    const intent = enemyIntents.find((i) => i.enemyId === inspectedEnemyId);
-    return intent ? intent.path : null;
-  }, [enemyIntents, inspectedEnemyId]);
-
-  // Vùng nguy hiểm của quân địch
-  const dangerZoneKeys = useMemo(() => {
-    const danger = new Set<string>();
-    const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
-
-    for (const enemy of enemies) {
-      const range = calculateMovementRange(enemy.unit, {
-        map: mapData,
-        terrains: defaultTerrainRegistry,
-        units: extendedUnits.map((u) => u.unit),
-        openedDoors: openedDoorKeys,
-        destroyedObjects: destroyedKeys,
-      });
-
-      const candidateTiles = enemy.aiRole === 'stationary'
-        ? [enemy.unit.position]
-        : Array.from(range.values(), ({ position }) => position);
-      for (const tile of candidateTiles) {
-        const { min: minR, max: maxR } = getAttackRange(enemy.unit, enemy.weapon);
-        for (let dx = -maxR; dx <= maxR; dx++) {
-          for (let dy = -maxR; dy <= maxR; dy++) {
-            const dist = Math.abs(dx) + Math.abs(dy);
-            if (dist >= minR && dist <= maxR) {
-              const nx = tile.x + dx;
-              const ny = tile.y + dy;
-              if (nx >= 0 && nx < mapData.width && ny >= 0 && ny < mapData.height) {
-                danger.add(`${nx},${ny}`);
-              }
-            }
-          }
-        }
-      }
-    }
-    return danger;
-  }, [extendedUnits, openedDoorKeys]);
+  // Địch đang được xem (bấm vào địch): hiện vùng của riêng địch đó thay vùng
+  // gộp, kiểu Fire Emblem (PLAN item 145).
+  const inspectedEnemy = inspectedTile
+    ? extendedUnits.find((u) => !u.unit.isDead && u.unit.faction === 'enemy' && u.unit.position.x === inspectedTile.x && u.unit.position.y === inspectedTile.y)
+    : undefined;
+  const inspectedThreatKeys = useMemo(() => (inspectedEnemy ? computeUnitThreatKeys({
+    unit: inspectedEnemy.unit,
+    attackRange: getAttackRange(inspectedEnemy.unit, inspectedEnemy.weapon),
+    stationary: inspectedEnemy.aiRole === 'stationary',
+  }, threatContext) : null), [inspectedEnemy, extendedUnits, openedDoorKeys, mapData]);
+  const displayDangerZoneKeys = inspectedThreatKeys ?? combinedDangerZoneKeys;
 
   // Danh sách các mục tiêu có thể tấn công từ vị trí hiện tại
   const attackableTargets = useMemo(() => {
@@ -496,24 +443,6 @@ export const App: React.FC = () => {
   const attackTargetKeys = useMemo(() => {
     return new Set(attackableTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [attackableTargets]);
-
-  // PLAN item 101: destructible objects in weapon range are attack targets.
-  const objectTargets = useMemo(() => {
-    if (!selectedExtUnit || !pendingMovePos) return [];
-    const targets: ExtendedUnitState[] = [];
-    for (let y = 0; y < mapData.height; y++) {
-      for (let x = 0; x < mapData.width; x++) {
-        const pos = { x, y };
-        if (!isDestructibleTile(mapData, defaultTerrainRegistry, pos)) continue;
-        const hp = objectHpAt(objectStates, mapData, defaultTerrainRegistry, pos);
-        if (hp <= 0) continue;
-        const dist = getManhattanDistance(pendingMovePos, pos);
-        if (!canAttackAtDistance(selectedExtUnit, ITEM_BY_ID, dist)) continue;
-        targets.push(buildObjectDefender(mapData, defaultTerrainRegistry, pos, hp));
-      }
-    }
-    return targets;
-  }, [selectedExtUnit, pendingMovePos, mapData, objectStates]);
 
   // PLAN item 89: heal-staff targets from the destination tile.
   const tradePartners = selectedExtUnit && pendingMovePos && !selectedExtUnit.unit.hasTraded
@@ -542,9 +471,10 @@ export const App: React.FC = () => {
     map: mapData,
     units: extendedUnits.map(({ unit }) => unit),
     reachableKeys,
-    dangerZoneKeys,
+    dangerZoneKeys: displayDangerZoneKeys,
     attackTargetKeys: staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
+    inspected: inspectedEnemy?.unit.position ?? null,
   });
 
   const getUnitDisplay = (unitId: string): UnitDisplay | undefined => {
@@ -610,7 +540,6 @@ export const App: React.FC = () => {
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
         openedDoors: openedDoorKeys,
-        destroyedObjects: destroyedKeys,
       });
       if (range.size > 1 && turnManager.selectUnit(unit.id, range)) {
         setCantoActive(true);
@@ -790,12 +719,6 @@ export const App: React.FC = () => {
         && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
         setAttackTargeting(false);
         openAttackForecast(clickedExt);
-      } else if (objectTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y)) {
-        const objectTarget = objectTargets.find((t) => t.unit.position.x === x && t.unit.position.y === y);
-        if (objectTarget) {
-          setAttackTargeting(false);
-          openAttackForecast(objectTarget);
-        }
       } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
         setAttackTargeting(false);
       }
@@ -806,12 +729,6 @@ export const App: React.FC = () => {
     if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
       && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
       openAttackForecast(clickedExt);
-      return;
-    }
-    // PLAN item 101: clicking a destructible object in range opens its forecast.
-    if (pendingMovePos && objectTargets.some((t) => t.unit.position.x === x && t.unit.position.y === y)) {
-      const objectTarget = objectTargets.find((t) => t.unit.position.x === x && t.unit.position.y === y);
-      if (objectTarget) openAttackForecast(objectTarget);
       return;
     }
 
@@ -891,7 +808,6 @@ export const App: React.FC = () => {
         terrains: defaultTerrainRegistry,
         units: extendedUnits.map((u) => u.unit),
         openedDoors: openedDoorKeys,
-        destroyedObjects: destroyedKeys,
       });
       turnManager.selectUnit(clickedExt.unit.id, range);
       cantoRemainingRef.current = 0;
@@ -973,31 +889,6 @@ export const App: React.FC = () => {
     setSelectedTarget(null);
 
     executeWithMove(() => {
-      // PLAN item 101: attacking a destructible object — no counter, no EXP;
-      // durability and weapon EXP still apply.
-      if (defender.unit.id.startsWith('object:')) {
-        const result = executeCombat(forecast, defaultRNG);
-        const totalDamage = result.events
-          .filter((ev) => ev.attackerId === attacker.unit.id && ev.isHit)
-          .reduce((sum, ev) => sum + ev.damageDealt, 0);
-        const damaged = damageObject(objectStates, mapData, defaultTerrainRegistry, defender.unit.position, totalDamage);
-        setObjectStates(damaged.states);
-        let updatedUnits = applyCombatDurability(extendedUnits, result, ITEM_BY_ID);
-        updatedUnits = applyCombatWeaponExp(updatedUnits, result);
-        turnManager.replaceUnits(updatedUnits.map(({ unit }) => unit));
-        waitWithCanto();
-        setExtendedUnits(updatedUnits);
-        soundManager.playWeaponHit(attacker.weapon?.type ?? 'sword');
-        setCombatLog((prev) => [
-          damaged.destroyed
-            ? `💥 ${attacker.unit.name} destroys the ${defender.unit.name}!`
-            : `⚔️ ${attacker.unit.name} hits the ${defender.unit.name} for ${totalDamage} (${damaged.remainingHp} HP left).`,
-          ...prev,
-        ].slice(0, 20));
-        syncState();
-        return;
-      }
-
       const hpBefore = { attacker: attacker.stats.hp, defender: defender.stats.hp };
       const result = executeCombat(forecast, defaultRNG);
       const popup = buildCombatPopup(++popupIdRef.current, attacker, defender, hpBefore, result);
@@ -1149,7 +1040,6 @@ export const App: React.FC = () => {
       terrains: defaultTerrainRegistry,
       units: nextUnits.map(({ unit }) => unit),
       openedDoors: openedDoorKeys,
-      destroyedObjects: destroyedKeys,
     });
     turnManager.selectUnit(changed.unit.id, range);
     syncState();
@@ -1364,13 +1254,10 @@ export const App: React.FC = () => {
   };
 
   const proceedAttack = () => {
-    if (attackableTargets.length === 1 && objectTargets.length === 0) {
+    if (attackableTargets.length === 1) {
       const target = attackableTargets[0];
       if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
-    } else if (attackableTargets.length === 0 && objectTargets.length === 1) {
-      const target = objectTargets[0];
-      if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
-    } else if (attackableTargets.length + objectTargets.length > 0) {
+    } else if (attackableTargets.length > 0) {
       setAttackTargeting(true);
     }
   };
@@ -1728,7 +1615,6 @@ export const App: React.FC = () => {
         patrolTargets: enemy.patrolPoints,
         turnNumber: turnState.turnNumber,
         openedDoors: openedDoorKeys,
-        destroyedObjects: destroyedKeys,
       });
 
       if (decision.type === 'attack') {
@@ -1893,7 +1779,6 @@ export const App: React.FC = () => {
     setChestStates(data.chestStates ?? {});
     setDoorStates(data.doorStates ?? {});
     setSpawnedReinforcements(data.spawnedReinforcements ?? []);
-    setObjectStates(data.objectStates ?? {});
     setTriggeredTraps(data.triggeredTraps ?? []);
     setDifficulty(data.difficulty ?? 'normal');
     setCantoActive(false);
@@ -1930,7 +1815,6 @@ export const App: React.FC = () => {
       chestStates,
       doorStates,
       spawnedReinforcements,
-      objectStates,
       triggeredTraps,
       difficulty,
     }, slotId);
@@ -2013,7 +1897,7 @@ export const App: React.FC = () => {
               mapData={mapData}
               units={extendedUnits}
               reachableKeys={reachableKeys}
-              dangerZoneKeys={dangerZoneKeys}
+              dangerZoneKeys={combinedDangerZoneKeys}
               selectedPos={pendingMovePos || (selectedExtUnit ? selectedExtUnit.unit.position : null)}
               attackTargetKeys={attackTargetKeys}
               onTileClick={handleTileClick}
@@ -2031,8 +1915,6 @@ export const App: React.FC = () => {
               onTileClick={handleTileClick}
               onTileHover={handleTileHover}
               onTileInspect={(x, y) => setInspectedTile({ x, y })}
-              intentTargetKeys={intentTargetKeys}
-              intentPath={intentPath}
             />
           </div>
         )}
@@ -2109,7 +1991,7 @@ export const App: React.FC = () => {
           promotions: selectedExtUnit && selectedExtUnit.level >= 10
             ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id })) : [],
           villageName: currentVillageAtPendingPos?.name ?? null,
-          hasAttackTargets: attackableTargets.length + objectTargets.length > 0,
+          hasAttackTargets: attackableTargets.length > 0,
           targetPositions: attackableTargets.map((t) => t.unit.position),
           equipOptions: selectedExtUnit
             ? getUsableWeapons(selectedExtUnit, ITEM_BY_ID)

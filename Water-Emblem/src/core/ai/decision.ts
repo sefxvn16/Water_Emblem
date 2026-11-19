@@ -52,8 +52,6 @@ export interface AIContext {
   readonly turnNumber?: number;
   /** Opened door tiles as "x,y" keys (PLAN item 92). */
   readonly openedDoors?: ReadonlySet<string>;
-  /** Destroyed destructible-object tiles as "x,y" keys (PLAN item 101). */
-  readonly destroyedObjects?: ReadonlySet<string>;
 }
 
 export function evaluateAITurn(
@@ -76,7 +74,6 @@ export function evaluateAITurn(
     terrains,
     units,
     openedDoors: context.openedDoors,
-    destroyedObjects: context.destroyedObjects,
   });
 
   // PLAN item 110 (B10): flee/retreat/thief/patrol roles.

@@ -617,6 +617,104 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
+- [] 143. Gỡ cơ chế C12 phá vật che chắn theo lệnh chủ.
+  - Nguồn: Chủ 2026-11-19 23:01 hỏi "Tôi đã bao giờ xác nhận tường là đơn vị phá được đâu? sao lại tạo thêm luật?". Kiểm tra: C12 "Phá vật che chắn" nằm trong `Game_Design/decisions.md` từ commit đầu 2026-11-13 nhưng chi tiết "ô nào phá được" ghi rõ "chờ chốt, không tự suy diễn"; cờ `destructible: true` trên `wall` có từ dữ liệu cũ (commit 374004e), không phải quyết định của chủ; mục 101 đã tự dùng cờ đó mà không hỏi — sai quy trình. Chủ 2026-11-19 23:02: "bỏ. không có cơ chế này".
+  - Tiêu chí xong: Gỡ toàn bộ C12 (code đánh vật thể, cờ `destructible`, trường save liên quan); tường không phá được; nút Attack chỉ hiện khi có địch thật trong tầm; test + gate PASS.
+  - Kết quả: ĐÃ GỠ BỎ (báo cáo 2026-11-19): tường không còn phá được; toàn bộ code đánh vật thể đã xóa (file module, đường ống trong App/AI/pathfinding, trường lưu save); nút Attack chỉ hiện khi có địch thật trong tầm. Gate/commit còn bị lỗi ghi file của máy ảo chặn tại thời điểm báo cáo.
+  - Kiểm bởi: tôi
+
+- [] 144. (Nội dung gốc bị mất khi PLAN.md bị cắt cụt ngày 2026-11-19 23:42 — cần ghi lại.)
+  - Ghi chú khôi phục: Mục này nằm giữa mục 143 (gỡ C12) và 145 (vùng nguy hiểm địch chọn). Nội dung gốc chưa commit nên không có trong git, và không khôi phục được từ transcript/memory. Cần chủ hoặc phiên làm việc song song ghi lại nội dung thật; không tự bịa thay thế.
+  - Kiểm bởi: tôi
+
+- [] 145. Hiển thị địch được chọn và vùng nguy hiểm của địch đó theo kiểu FE; gỡ phần tự thêm.
+  - Nguồn: Chủ 2026-11-19 (kèm ảnh): địch được chọn không hiển thị/highlight trên bản đồ; vùng nguy hiểm của địch (ô đi tới/đánh tới được) hiển thị chưa đúng. Chủ ra lệnh làm theo FE: chọn địch thì highlight địch đó và hiện vùng đi + vùng đánh của riêng địch đó, không chỉ lớp gộp mọi địch.
+  - Tiêu chí xong: (1) Bấm địch → địch được viền highlight, lớp đỏ chuyển thành vùng của riêng địch đó (ô đi tới + ô đánh tới); bỏ chọn quay về vùng gộp. (2) Không thêm hiển thị nào ngoài lệnh chủ.
+  - Kết quả: Đã làm theo FE (địch viền đỏ highlight + vùng riêng của địch đó; bỏ chọn quay về vùng gộp). Phần tự thêm không được chủ duyệt — nút Danger Zone On/Off trong Settings và hiển thị dự đoán nước đi của địch (mục 106/107) — chủ ra lệnh gỡ 2026-11-19 23:16; đã gỡ cả hai (TypeScript sạch, 291 test PASS theo báo cáo), vùng gộp quay về luôn hiện như trước. Gate/commit bị lỗi ghi file của máy ảo chặn tại thời điểm báo cáo.
+  - Kiểm bởi: tôi
+
+- [] 146. Rà soát toàn bộ cơ chế Water Emblem đối chiếu dòng Fire Emblem.
+  - Nguồn: Chủ 2026-11-19 23:19: "rà lại toàn bộ các cơ chế trong dự án Water Emblem, xem những việc nào đã làm mà không có trong dòng Fire Emblem (kể cả FE3 lẫn các dòng sau này). Báo cáo tôi, chưa cần sửa gì cả".
+  - Tiêu chí xong: Báo cáo phân loại từng cơ chế đã triển khai: (A) không có trong bất kỳ bản FE nào; (B) có tên FE nhưng hiệu ứng/số tự đặt hoặc bị cắt phần FE; (C) đúng FE (nêu rõ bản); (D) lệch FE nhưng là quyết định của chủ đã ghi. Chưa sửa code.
+  - Kết quả: ĐÃ BÁO CÁO 2026-11-19 — Nhóm A (3 mục): sinh map skirmish ngẫu nhiên (119), mục tiêu puzzle (118), AI tuần tra waypoint (110). Nhóm B (12 mục): độ cao ±10 Hit/bậc trần ±20, pincer +15 Hit/+10 Crit, bẫy sát thương cố định không dưới 1 HP không gỡ được, boss đổi phase theo % HP (chỉ số/vũ khí/AI), arena bản sao + thua không chết + người chơi đánh trước, skill mang tên FE nhưng sai hiệu ứng/số, Devil Axe thiếu phản đòn, Triangle Attack cho mọi quân bay, Sniper tầm 2–3 theo class, các số [Giả định] trong balance.json, thiếu Chest Key, Warp có trong data nhưng chưa dùng được. Nhóm C: lõi combat đúng FE11 (tam giác vũ khí, AS, hệ số hiệu quả ×3 Might), độ bền, Fort/Gate hồi 20% (FE11), túi 4+4 + kho 128 (FE3), support FE11, EXP khung FE8, 2RN, Canto, promotion gain kiểu FE11, danger zone. Nhóm D: A10, A13, A12, viện binh cuối pha địch không hành động ngay, dismount quân bay giữ giáo không trừ chỉ số theo lệnh chủ. Quyết định chủ 2026-11-19 23:29: A1/A2 bỏ; B3 bỏ ("làm gì có bẫy"); B4 bỏ đổi chỉ số boss phase, giữ đổi vũ khí/hành vi theo tỉ lệ máu; B5 arena đổi sang đối thủ ngẫu nhiên; B6 skill đổi sang giống FE, trình đề xuất; B7/B8 đổi giống FE; B11 một loại key duy nhất mở mọi door/chest; B12 làm Warp → thành mục 147–156. Chủ 23:36 chốt Master Key (mục 155) và đồng ý đề xuất B6, chờ duyệt bảng phân bổ skill theo nhân vật/class (mục 152). Chủ sửa 2026-11-19 23:40–23:41: phần không nhắc đến nghĩa là GIỮ NGUYÊN, không được thay đổi — hệ độ cao (B1) giữ vì sau này làm map 3D, pincer (B2) giữ, A3/B9/B10 và phần còn lại của B5 giữ nguyên hiện trạng; mục 157–162 do tôi tạo từ hiểu sai đã HỦY (chưa triển khai gì, không đụng code). Chỉ các mục chủ ra lệnh rõ (147–156) mới làm. Mục 146 chỉ đánh [x] khi 147–156 xong + gate PASS.
+  - Kiểm bởi: tôi
+
+- [] 147. Gỡ sinh map skirmish ngẫu nhiên theo thuật toán (146-A1).
+  - Nguồn: Chủ 2026-11-19 23:29: "A 1, 2: bỏ".
+  - Tiêu chí xong: Gỡ mode Random Skirmish sinh bản đồ (code sinh map + nút ở màn hình tiêu đề + dữ liệu/test liên quan); không đụng chiến dịch FE3; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 148. Gỡ loại mục tiêu puzzle (146-A2).
+  - Nguồn: Chủ 2026-11-19 23:29: "A 1, 2: bỏ".
+  - Tiêu chí xong: Gỡ objective type `puzzle` (reach_tile/defeat_targets) khỏi code/dữ liệu/test; giữ seize/rout/defeat boss/defend/escape/protect; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 149. Gỡ bẫy (146-B3).
+  - Nguồn: Chủ 2026-11-19 23:29: "làm gì có bẫy. Bỏ". Hiện trạng: bẫy có thật trong code (`src/core/chapter/traps.ts` + nối trong App/save/dữ liệu chương test) dù chủ không nhớ đã duyệt.
+  - Tiêu chí xong: Gỡ toàn bộ bẫy (module, đường ống App/AI/save, dữ liệu chương, số trong balance); `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 150. Boss phase: bỏ đổi chỉ số, giữ đổi vũ khí/vai trò AI theo tỉ lệ máu (146-B4).
+  - Nguồn: Chủ 2026-11-19 23:29: "sao lại đổi cả chỉ số? Có thể đổi vũ khí, hành vi theo tỉ lệ máu thôi chứ?".
+  - Tiêu chí xong: `bossPhases` bỏ phần cộng chỉ số; giữ đổi vũ khí + đổi vai trò AI theo ngưỡng % HP; test cập nhật theo quyết định này (ghi lý do tại đây); `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 151. Arena: đối thủ ngẫu nhiên thay bản sao của quân người chơi (146-B5).
+  - Nguồn: Chủ 2026-11-19 23:29: "sao lại là bản sao? Đổi sang đối thủ ngẫu nhiên".
+  - Tiêu chí xong: Đối thủ arena sinh ngẫu nhiên quanh cấp của quân người chơi (mức cược cao thì mạnh hơn); EXP/độ bền/WEx giữ như cũ; `tsc` PASS; Vitest PASS; gate PASS.
+  - Ghi chú: Phần arena chết thật/Yield/đánh trước theo AS (FE3) chủ đã chốt 2026-11-19 23:41: giữ nguyên hiện trạng (thua không chết, người chơi đánh trước), không đổi.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 152. Skill đổi sang hiệu ứng Fire Emblem thật (146-B6).
+  - Nguồn: Chủ 2026-11-19 23:29: "Đổi sang giống FE. Đề xuất cho tôi." Chủ 23:36 đồng ý đề xuất hiệu ứng, chờ duyệt bảng phân bổ skill theo nhân vật/class (cả 2 book).
+  - Đề xuất hiệu ứng: Charisma giữ nguyên (FE4/FE5); Winged Grace → Axebreaker FE13 (+50 Hit/Avo vs rìu); Veteran → Hit Rate +20 FE13; Hot Blood → Wrath FE13 (+20 Crit khi HP ≤ nửa); Calm → Perfectionist FE14 (+15 Hit/Avo khi đầy HP); Bulwark → Armored Blow FE14 (−10 sát thương vật lý khi chủ động đánh) [mặc định đã trình]; Deadeye → Critical +10 FE10 [mặc định đã trình; Deadeye thật FE10 cần hệ trạng thái ngủ chưa có]; Nimble → Avoid +10 FE13 (đổi tên); Gentle + Healer → Healtouch FE13; 5 Faire +2 → +5 FE13; Sureshot → Sure Strike FE8 (Level% chắc chắn trúng); Pavise −2 phẳng → Pavise FE13 (Skill% giảm nửa sát thương kiếm/giáo/rìu); Focus → Anathema FE13 (địch trong 3 ô −10 Avo/Crit Avo) [mặc định đã trình]; Locktouch giữ nguyên.
+  - Đề xuất phân bổ (chờ duyệt): personal giữ 9 gán hiện có — Marth Charisma, Jagen Hit Rate +20, Caeda Axebreaker, Cain Wrath, Abel Perfectionist, Draug Armored Blow, Gordin Critical +10, Julian Avoid +10, Lena Healtouch; Book 2 thêm Luke Wrath, Roderick Perfectionist, Cecil Avoid +10, Ryan Critical +10, Warren Hit Rate +20, Sirius Charisma, Phina Avoid +10, Marisha/Yuliya/Nyna Healtouch, Samuel Critical +10, Sheena Armored Blow; Jubelo/Arlen và nhân vật Book 1 còn lại không personal; aura Charisma không cộng dồn [Giả định]. Class skill giữ gán hiện có trong `classes.json`, đổi hiệu ứng theo trên; Critical +10 chỉ personal [Giả định].
+  - Tiêu chí xong: Chủ duyệt bảng phân bổ; hiệu ứng + số theo FE như đề xuất; test cho từng skill; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM — CHỜ NGƯỜI DÙNG duyệt bảng phân bổ.
+  - Kiểm bởi: tôi
+
+- [] 153. Devil Axe: thêm phản đòn theo FE (146-B7).
+  - Nguồn: Chủ 2026-11-19 23:29: "B7-B8: đổi giống FE".
+  - Tiêu chí xong: Devil Axe có tỉ lệ tự gây sát thương theo FE [Giả định: FE11 (31−Luck)%, sát thương tính như tự đánh chính mình] và căn chỉ số vũ khí về FE11 (Mt17/Wt8/Hit100/25 lượt/rank D); test cho phản đòn; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 154. Triangle Attack: chỉ bộ ba Palla/Catria/Est (146-B8).
+  - Nguồn: Chủ 2026-11-19 23:29: "B7-B8: đổi giống FE".
+  - Tiêu chí xong: Triangle Attack chỉ kích hoạt với đúng bộ ba Palla/Catria/Est như FE3; bỏ dạng "bất kỳ 3 quân bay nào"; test cập nhật theo quyết định này (ghi lý do tại đây); `tsc` PASS; Vitest PASS; gate PASS.
+  - Ghi chú: Palla/Catria/Est chưa có trong `characters.json` — sau khi sửa, cơ chế sẽ không kích hoạt cho tới khi thêm 3 nhân vật này.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 155. Master Key: một loại key duy nhất mở mọi cửa/rương (146-B11).
+  - Nguồn: Chủ 2026-11-19 23:29: "đổi tất cả key về cùng 1 loại, chỉ có 1 loại key duy nhất... mở được tất cả các loại door, chest"; chủ chốt 23:36: "Đồng ý master key"; chủ xác nhận 23:55: "tất cả các loại key (kể cả chest key) đã quyết là đổi sang master key rồi".
+  - Tiêu chí xong: Thay mọi loại key (`door_key` hiện có; chest key của FE3/FE11 chưa có trong data) bằng Master Key duy nhất [Giả định theo FE11: 5 lượt dùng, giá 2400G, mở door/chest/drawbridge]; save cũ vẫn nạp được; test cho mở cửa/rương bằng Master Key; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 156. Triển khai Warp staff (146-B12).
+  - Nguồn: Chủ 2026-11-19 23:29: "B12: làm đi". Hiện trạng: `warp_staff` có trong `items.json` nhưng chưa có hành động dùng (nợ ghi trong battle.md, mục 89).
+  - Tiêu chí xong: Hành động Warp [Giả định theo FE11/FE3: đưa đồng minh kề bên tới ô đi được bất kỳ nhìn thấy, tầm đích vô hạn; rank C, 7 lượt]; trượng giảm độ bền khi dùng; test Vitest + Playwright; `tsc` PASS; gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 157. Rà soát và sửa chỉ số nhân vật/class về đúng FE11 (Book 1) / FE12 (Book 2) theo decisions.md.
+  - Nguồn: Chủ 2026-11-19 23:55 hỏi về các số trong `balance.json` và yêu cầu chỉ số nhân vật lấy theo FE11/FE12. Đối chiếu Serenes Forest cùng tối cho thấy phần lớn khớp FE11, nhưng có các điểm lệch (chưa sửa, chờ chủ duyệt):
+    - `balance.json` không chứa chỉ số nhân vật (chỉ số ở `characters.json`); trong `balance.json` có số tạm/tự đặt: `aiWeights` (decisions.md đã ghi là cân bằng tạm), `staffExpPerUse` 14, `staffWexByRank` + ngưỡng WEx 50/100/150/200, `ballista.mightBonus` 6, cộng chỉ số độ khó phẳng (Hard +4 HP/+2, Lunatic +8/+4), `transform.statBonus` +5/+5/+3/+5 và `luckThreshold` 15, `imitate.turns` 5, cược/tier arena, `pincer`, `height`, `trapMinHp`, ngưỡng sinh map skirmish.
+    - Base stats Book 1: khớp FE11 (kiểm bằng số tuyệt đối Serenes Forest + class base). Lệch: Julian (file 18/4/0/6/10/5/4/0 vs FE11 17/4/0/6/12/7/4/0); Tiki (file 16/2/3/4/5/10/2/4 vs FE11 18/3/0/3/4/12/3/10).
+    - Feena (Book 2): base file 16/3/0/5/8/8/3/1 — không khớp FE12 (16/2/0/2/13/8/5/0) và cũng không khớp FE3 (16/1/2/10/8/2/0).
+    - Growth hiệu dụng trong game: 14 nhân vật khớp FE11 từng số (Marth, Jagen, Caeda, Cain, Abel, Draug, Gordin, Ogma, Barst, Bord, Cord, Castor, Darros, Wrys). Lệch: Julian (game 110/80/0/80/90/80/35/0 vs FE11 80/50/0/50/50/80/30/2 — `personalGrowths` của Julian trùng growth tổng FE3 80/70/50/50/80/30); Navarre (game 100/40/0/45/45/40/10/0 vs FE11 90/30/0/40/50/40/10/0 — classId mercenary trong khi personal growth tính theo Myrmidon của FE11); Lena HP growth 20 vs FE11 15; Jagen Str growth trong game 10 vs FE11 20 (do `classes.json` paladin Str growth 5, FE11 là 15).
+    - Tiki/Xane/Feena dùng chung một bộ growth giống hệt nhau (60/30/30/40/40/50/20/20) — không phải FE11 (Tiki 90/50/10/80/80/90/20/2; Xane 40/30/0/30/30/20/15/2) và không phải FE12 cho Feena.
+    - Class growths `classes.json`: hầu hết khớp FE11; lệch: paladin Str 5 (FE11 15); manakete và chameleon giống hệt nhau (40/15/10/15/15/0/10/10) — FE11 Manakete 50/20/10/30/20/0/10/−10, Chameleon 40/30/−20/30/30/0/15/−15.
+  - Tiêu chí xong: Chủ duyệt phạm vi sửa; mọi baseStats/growths/personalGrowths/class growths đối chiếu FE11 (Book 1) / FE12 (Book 2) theo Serenes Forest, ghi nguồn từng bảng; các số tạm trong `balance.json` hoặc thay bằng số FE có nguồn hoặc ghi rõ [Giả định] chờ chủ chốt; test dữ liệu cho các số đã sửa; `tsc` PASS; Vitest PASS; gate PASS.
+  - Kết quả: CHỜ NGƯỜI DÙNG — chưa sửa số nào.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".

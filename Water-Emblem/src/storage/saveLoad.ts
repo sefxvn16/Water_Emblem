@@ -38,8 +38,6 @@ export interface GameSnapshot {
   doorStates?: Record<string, 'opened'>;
   /** Reinforcement groups already spawned (PLAN item 94); absent = none yet. */
   spawnedReinforcements?: string[];
-  /** Remaining HP of damaged destructible objects by "x,y" key (PLAN item 101). */
-  objectStates?: Record<string, number>;
   /** Traps already triggered (PLAN item 105); absent = none yet. */
   triggeredTraps?: string[];
   /** Playthrough difficulty (PLAN item 115); absent = normal. */
@@ -171,10 +169,8 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   if (!Array.isArray(spawnedReinforcements)) return false;
   const reinforcementGroupIds = new Set((chapter.reinforcements ?? []).map(({ id }) => id));
   if (spawnedReinforcements.some((id: unknown) => typeof id !== 'string' || !reinforcementGroupIds.has(id))) return false;
-  const objectStates = value.objectStates === undefined ? {} : value.objectStates;
-  if (!isRecord(objectStates)) return false;
-  if (Object.entries(objectStates).some(([key, hp]) =>
-    !/^\d+,\d+$/.test(key) || !isNonnegativeInteger(hp))) return false;
+  // PLAN item 143: the C12 destructible-object mechanic was removed by
+  // owner order; an `objectStates` field left in an older save is ignored.
   const triggeredTraps = value.triggeredTraps === undefined ? [] : value.triggeredTraps;
   if (!Array.isArray(triggeredTraps)) return false;
   const trapIds = new Set((chapter.traps ?? []).map(({ id }) => id));
@@ -258,7 +254,6 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
   migrated.chestStates ??= {};
   migrated.doorStates ??= {};
   migrated.spawnedReinforcements ??= [];
-  migrated.objectStates ??= {};
   migrated.triggeredTraps ??= [];
   migrated.difficulty ??= 'normal';
   const savedIds = new Set([...migrated.extendedUnits as unknown[],

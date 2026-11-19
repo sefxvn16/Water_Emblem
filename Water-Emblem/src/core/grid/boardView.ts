@@ -5,6 +5,8 @@ export interface TileOverlay {
   readonly danger: boolean;
   readonly attackTarget: boolean;
   readonly selected: boolean;
+  /** The inspected enemy's tile (PLAN item 145): highlighted on the map. */
+  readonly inspected: boolean;
 }
 
 export interface BoardTile {
@@ -30,6 +32,8 @@ export interface BoardViewInput {
   readonly dangerZoneKeys: ReadonlySet<string>;
   readonly attackTargetKeys: ReadonlySet<string>;
   readonly selected: Position | null;
+  /** Inspected enemy position to highlight (PLAN item 145); null when none. */
+  readonly inspected: Position | null;
 }
 
 export function tileKey(x: number, y: number): string {
@@ -38,7 +42,7 @@ export function tileKey(x: number, y: number): string {
 
 /** Builds the renderer-neutral board model shared by the 2D and 3D views. Tiles are indexed [y][x]. */
 export function buildBoardView(input: BoardViewInput): BoardView {
-  const { map, units, reachableKeys, dangerZoneKeys, attackTargetKeys, selected } = input;
+  const { map, units, reachableKeys, dangerZoneKeys, attackTargetKeys, selected, inspected } = input;
   const unitAt = new Map<string, string>();
   for (const unit of units) {
     if (!unit.isDead && !unit.hasEscaped) unitAt.set(tileKey(unit.position.x, unit.position.y), unit.id);
@@ -58,6 +62,7 @@ export function buildBoardView(input: BoardViewInput): BoardView {
           danger: dangerZoneKeys.has(key),
           attackTarget: attackTargetKeys.has(key),
           selected: selected !== null && selected.x === x && selected.y === y,
+          inspected: inspected !== null && inspected.x === x && inspected.y === y,
         },
       };
     }));

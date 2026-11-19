@@ -27,7 +27,7 @@ const mockBoardView: BoardView = {
         terrainId: 'plains',
         elevation: 0,
         unitId: 'marth',
-        overlay: { reachable: false, danger: false, attackTarget: false, selected: false },
+        overlay: { reachable: false, danger: false, attackTarget: false, selected: false, inspected: false },
       },
       {
         x: 1,
@@ -36,7 +36,7 @@ const mockBoardView: BoardView = {
         terrainId: 'forest',
         elevation: 0,
         unitId: null,
-        overlay: { reachable: false, danger: false, attackTarget: false, selected: false },
+        overlay: { reachable: false, danger: false, attackTarget: false, selected: false, inspected: false },
       },
     ],
     [
@@ -47,7 +47,7 @@ const mockBoardView: BoardView = {
         terrainId: 'plains',
         elevation: 0,
         unitId: null,
-        overlay: { reachable: false, danger: false, attackTarget: false, selected: false },
+        overlay: { reachable: false, danger: false, attackTarget: false, selected: false, inspected: false },
       },
       {
         x: 1,
@@ -56,7 +56,7 @@ const mockBoardView: BoardView = {
         terrainId: 'plains',
         elevation: 0,
         unitId: null,
-        overlay: { reachable: false, danger: false, attackTarget: false, selected: false },
+        overlay: { reachable: false, danger: false, attackTarget: false, selected: false, inspected: false },
       },
     ],
   ],

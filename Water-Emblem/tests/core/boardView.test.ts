@@ -21,7 +21,7 @@ const empty = new Set<string>();
 
 describe('buildBoardView', () => {
   it('has the map dimensions and is indexed [y][x]', () => {
-    const board = buildBoardView({ map, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null });
+    const board = buildBoardView({ map, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null, inspected: null });
     expect(board.width).toBe(3);
     expect(board.height).toBe(2);
     expect(board.tiles).toHaveLength(2);
@@ -34,7 +34,7 @@ describe('buildBoardView', () => {
     const board = buildBoardView({
       map,
       units: [unit('a', 1, 0), unit('b', 2, 1, true)],
-      reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null,
+      reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null, inspected: null,
     });
     expect(board.tiles[0]![1]!.unitId).toBe('a');
     expect(board.tiles[1]![2]!.unitId).toBeNull();
@@ -48,18 +48,21 @@ describe('buildBoardView', () => {
       dangerZoneKeys: new Set(['1,0', '0,0']),
       attackTargetKeys: new Set(['2,1']),
       selected: { x: 1, y: 1 },
+      inspected: { x: 2, y: 0 },
     });
-    expect(board.tiles[0]![0]!.overlay).toEqual({ reachable: true, danger: true, attackTarget: false, selected: false });
-    expect(board.tiles[0]![1]!.overlay).toEqual({ reachable: false, danger: true, attackTarget: false, selected: false });
-    expect(board.tiles[1]![2]!.overlay).toEqual({ reachable: false, danger: false, attackTarget: true, selected: false });
-    expect(board.tiles[1]![1]!.overlay).toEqual({ reachable: false, danger: false, attackTarget: false, selected: true });
+    expect(board.tiles[0]![0]!.overlay).toEqual({ reachable: true, danger: true, attackTarget: false, selected: false, inspected: false });
+    expect(board.tiles[0]![1]!.overlay).toEqual({ reachable: false, danger: true, attackTarget: false, selected: false, inspected: false });
+    expect(board.tiles[1]![2]!.overlay).toEqual({ reachable: false, danger: false, attackTarget: true, selected: false, inspected: false });
+    expect(board.tiles[1]![1]!.overlay).toEqual({ reachable: false, danger: false, attackTarget: false, selected: true, inspected: false });
+    // PLAN item 145: the inspected enemy's tile is flagged for the highlight.
+    expect(board.tiles[0]![2]!.overlay).toEqual({ reachable: false, danger: false, attackTarget: false, selected: false, inspected: true });
   });
 
   it('defaults elevation to 0 and reads map elevations when present', () => {
-    const flat = buildBoardView({ map, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null });
+    const flat = buildBoardView({ map, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null, inspected: null });
     expect(flat.tiles[0]![1]!.elevation).toBe(0);
     const raised: MapData = { ...map, elevations: [[0, 2, 0], [0, 0, 3]] };
-    const board = buildBoardView({ map: raised, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null });
+    const board = buildBoardView({ map: raised, units: [], reachableKeys: empty, dangerZoneKeys: empty, attackTargetKeys: empty, selected: null, inspected: null });
     expect(board.tiles[0]![1]!.elevation).toBe(2);
     expect(board.tiles[1]![2]!.elevation).toBe(3);
   });

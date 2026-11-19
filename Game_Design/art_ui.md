@@ -46,7 +46,7 @@ Vị trí chính xác của menu hành động và cửa sổ thông tin quân k
 
 ## Camera và hoạt cảnh
 
-Góc nhìn chính bắt đầu ở góc 3/4 để đọc bản đồ, nhưng camera xoay tự do và liên tục quanh điểm quan sát, không khóa ở bốn hướng 90°. Kéo chuột trái hoặc một ngón để di chuyển bản đồ; kéo chuột phải để xoay camera. Chỉ dẫn thao tác phải hiện rõ trong khung chơi. Camera phải giúp nhìn rõ ô, cao độ V07, cover C12 và bẫy V08; không che ô mục tiêu khi dự báo.
+Góc nhìn chính bắt đầu ở góc 3/4 để đọc bản đồ, nhưng camera xoay tự do và liên tục quanh điểm quan sát, không khóa ở bốn hướng 90°. Kéo chuột trái hoặc một ngón để di chuyển bản đồ; kéo chuột phải để xoay camera. Chỉ dẫn thao tác phải hiện rõ trong khung chơi. Camera phải giúp nhìn rõ ô, cao độ V07 và bẫy V08; không che ô mục tiêu khi dự báo.
 
 Zoom liên tục bằng lăn chuột hoặc nút cộng/trừ dưới minimap, không chia thành ba nấc. Góc nhìn ban đầu ở khoảng cách khu vực để thao tác chiến thuật; người chơi có thể thu nhỏ tới mức toàn bộ bản đồ vừa khung và chiếm phần lớn diện tích khả dụng, hoặc phóng gần nhân vật. Giữ hướng xoay và tâm quan sát khi zoom; chữ, dấu chọn và thông tin chiến thuật vẫn phải đọc được. Quy tắc này thay thế mô tả ba nấc zoom trước đó.
 
@@ -83,6 +83,7 @@ Kiểm tay bằng bản đồ và đơn vị thực: chọn ô, xem tầm, xoay/
 
 ## Xem trước ý định địch (2026-11-19, PLAN mục 106/107)
 
+- **B01 Vùng nguy hiểm (mục 145):** vùng gộp của mọi địch (đi + đánh tới) tô đỏ mờ, bật/tắt trong Settings (mặc định bật, lưu localStorage). Bấm vào một địch: địch đó được viền highlight trên bản đồ và vùng hiển thị chuyển thành vùng của riêng địch đó (kiểu Fire Emblem); bỏ chọn thì trở lại vùng gộp (nếu đang bật).
 - **B03 Đòn báo trước (mục 107):** trong pha người chơi, quân ta nào địch dự kiến tấn công ở pha địch tới sẽ có dấu ⚔️ ở góc ô. Tính bằng chính AI địch trên trạng thái hiện tại (`computeEnemyIntents`), cập nhật khi quân di chuyển — là dự đoán, không khóa.
 - **B02 Đường mục tiêu (mục 106):** khi chọn/hover một quân địch, đường di chuyển dự kiến của nó hiện bằng ô đỏ mờ trên bản đồ.
 - **Q07 Tua/bỏ qua (mục 117):** cài đặt tốc độ hoạt ảnh Normal/Fast/Off trong menu Settings (lưu localStorage); nút Skip ở hộp thoại mở màn và làng.

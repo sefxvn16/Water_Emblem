@@ -243,8 +243,6 @@
       "avoidBonus": 0,
       "defenseBonus": 0,
       "healPercent": 0,
-      "destructible": true,
-      "maxHp": 20,
       "movementCosts": {
         "foot": null,
         "armor": null,

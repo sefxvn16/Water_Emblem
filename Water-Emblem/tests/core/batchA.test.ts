@@ -2,14 +2,6 @@ import { describe, expect, it } from 'vitest';
 import { initialChapterData, testChapter01Data, type ExtendedUnitState } from '../../src/core/data/chapterData';
 import { calculateCombatForecast, hasPincerAlly } from '../../src/core/combat/calculator';
 import { defaultTerrainRegistry, getElevation } from '../../src/core/grid/terrain';
-import { calculateMovementRange } from '../../src/core/grid/pathfinding';
-import {
-  buildObjectDefender,
-  damageObject,
-  destroyedObjectKeys,
-  isDestructibleTile,
-  objectHpAt,
-} from '../../src/core/chapter/objects';
 import { applyTrapDamage, trapAt } from '../../src/core/chapter/traps';
 import type { MapData } from '../../src/core/grid/types';
 import testMapJson from '../../data/maps/test_map_01.json';
@@ -89,43 +81,8 @@ describe('pincer attack (PLAN item 103, V05)', () => {
   });
 });
 
-describe('destructible objects (PLAN item 101, C12)', () => {
-  it('recognizes the test-map wall and tracks its HP', () => {
-    const wall = { x: 7, y: 6 };
-    expect(isDestructibleTile(testMap, defaultTerrainRegistry, wall)).toBe(true);
-    expect(isDestructibleTile(testMap, defaultTerrainRegistry, { x: 0, y: 0 })).toBe(false);
-    expect(objectHpAt({}, testMap, defaultTerrainRegistry, wall)).toBe(20);
-    const hit = damageObject({}, testMap, defaultTerrainRegistry, wall, 12);
-    expect(hit.remainingHp).toBe(8);
-    expect(hit.destroyed).toBe(false);
-    const broken = damageObject(hit.states, testMap, defaultTerrainRegistry, wall, 8);
-    expect(broken.destroyed).toBe(true);
-    expect(destroyedObjectKeys(broken.states).has('7,6')).toBe(true);
-  });
-
-  it('destroyed walls become passable for movement', () => {
-    const units = freshUnits();
-    const marth = find(units, 'marth');
-    marth.unit.position = { x: 6, y: 6 };
-    const blocked = calculateMovementRange(marth.unit, {
-      map: testMap, terrains: defaultTerrainRegistry, units: units.map((u) => u.unit),
-    });
-    expect(blocked.has('7,6')).toBe(false);
-    const opened = calculateMovementRange(marth.unit, {
-      map: testMap, terrains: defaultTerrainRegistry, units: units.map((u) => u.unit),
-      destroyedObjects: new Set(['7,6']),
-    });
-    expect(opened.has('7,6')).toBe(true);
-  });
-
-  it('builds a pseudo-defender for forecasts', () => {
-    const defender = buildObjectDefender(testMap, defaultTerrainRegistry, { x: 7, y: 6 }, 20);
-    expect(defender.unit.id).toBe('object:7,6');
-    expect(defender.unit.name).toBe('Wall');
-    expect(defender.stats.hp).toBe(20);
-    expect(defender.weapon).toBeUndefined();
-  });
-});
+// PLAN item 143: the C12 destructible-object tests that lived here were
+// removed with the mechanic itself (owner order 2026-11-19).
 
 describe('traps (PLAN item 105, V08)', () => {
   it('loads traps from chapter data', () => {

@@ -26,10 +26,6 @@ interface Grid2DProps {
   onTileHover: (x: number, y: number) => void;
   /** Right-click or ~500 ms touch hold on a tile. */
   onTileInspect?: (x: number, y: number) => void;
-  /** Tiles an enemy plans to attack next phase (PLAN item 107, B03). */
-  intentTargetKeys?: ReadonlySet<string>;
-  /** Planned movement path of the inspected enemy (PLAN item 106, B02). */
-  intentPath?: readonly Position[] | null;
 }
 
 const LONG_PRESS_MS = 500;
@@ -159,8 +155,6 @@ export const Grid2D: React.FC<Grid2DProps> = ({
   onTileClick,
   onTileHover,
   onTileInspect,
-  intentTargetKeys,
-  intentPath,
 }) => {
   const pressTimer = useRef<number | null>(null);
   const longPressed = useRef(false);
@@ -198,13 +192,14 @@ export const Grid2D: React.FC<Grid2DProps> = ({
           const terrain = TERRAIN_COLORS[terrainId] ?? FALLBACK_TERRAIN;
           const unit = unitId === null ? undefined : getUnitDisplay(unitId);
           const isPendingDest = pendingDestination && pendingDestination.x === x && pendingDestination.y === y;
-          const { reachable, danger, attackTarget, selected } = overlay;
+          const { reachable, danger, attackTarget, selected, inspected } = overlay;
 
           return (
             <div
               key={key}
               data-testid={`tile-${x}-${y}`}
               data-attack-target={attackTarget ? 'true' : undefined}
+              data-inspected={inspected ? 'true' : undefined}
               data-pending-dest={isPendingDest ? 'true' : undefined}
               onClick={() => {
                 if (longPressed.current) {
@@ -246,6 +241,8 @@ export const Grid2D: React.FC<Grid2DProps> = ({
                 cursor: 'pointer',
                 border: selected
                   ? '2px solid #FFEB3B'
+                  : inspected
+                  ? '3px solid #EF5350'
                   : isPendingDest
                   ? '2px dashed #38bdf8'
                   : attackTarget
@@ -294,47 +291,6 @@ export const Grid2D: React.FC<Grid2DProps> = ({
           );
         }),
       )}
-
-      {/* Enemy intent preview (PLAN items 106/107): planned path tiles in
-          red, planned attack targets marked with crossed swords. */}
-      {intentPath && intentPath.length > 1 && intentPath.slice(1).map((pos, index) => (
-        <div
-          key={`intent-path-${index}`}
-          data-testid="intent-path-tile"
-          style={{
-            position: 'absolute',
-            left: `${4 + pos.x * 66}px`,
-            top: `${4 + pos.y * 66}px`,
-            width: '64px',
-            height: '64px',
-            backgroundColor: 'rgba(239,68,68,0.28)',
-            border: '2px solid rgba(239,68,68,0.7)',
-            boxSizing: 'border-box',
-            zIndex: 2,
-            pointerEvents: 'none',
-          }}
-        />
-      ))}
-      {intentTargetKeys && Array.from(intentTargetKeys).map((key) => {
-        const [tx, ty] = key.split(',').map(Number);
-        return (
-          <div
-            key={`intent-target-${key}`}
-            data-testid="intent-target-marker"
-            style={{
-              position: 'absolute',
-              left: `${4 + (tx ?? 0) * 66 + 40}px`,
-              top: `${4 + (ty ?? 0) * 66 + 2}px`,
-              fontSize: '16px',
-              zIndex: 26,
-              pointerEvents: 'none',
-              textShadow: '0 0 3px #000',
-            }}
-          >
-            ⚔️
-          </div>
-        );
-      })}
 
       {/* 3. Stationary unit avatars: a separate layer above the movement
           arrow (z 1), so the arrow never covers a unit. Pointer-events none

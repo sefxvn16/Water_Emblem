@@ -22,8 +22,6 @@
           "avoidBonus": { "type": "integer" },
           "defenseBonus": { "type": "integer" },
           "healPercent": { "type": "integer", "minimum": 0, "maximum": 100 },
-          "destructible": { "type": "boolean" },
-          "maxHp": { "type": "integer", "minimum": 1 },
           "movementCosts": {
             "type": "object",
             "required": ["foot", "armor", "cavalry", "flier", "mage", "bandit"],

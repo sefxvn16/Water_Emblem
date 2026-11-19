@@ -22,6 +22,17 @@ describe('save validation', () => {
     expect(isSaveGameData({ ...snapshot, version: '6.0.0', timestamp: 1000 })).toBe(true);
   });
 
+  // PLAN item 143: C12 was removed by owner order; saves written while it
+  // existed carry an `objectStates` field, which must be ignored on load.
+  it('still loads an older save that carries the removed objectStates field', () => {
+    const snapshot = makeSnapshot();
+    const withObjects = { ...snapshot, objectStates: { '25,2': 8, '7,6': 0 } };
+    expect(isGameSnapshot(withObjects)).toBe(true);
+    expect(isSaveGameData({ ...withObjects, version: '6.0.0', timestamp: 1000 })).toBe(true);
+    const migrated = migrateSaveGameData({ ...withObjects, version: '5.0.0', timestamp: 1000 });
+    expect(migrated?.version).toBe('6.0.0');
+  });
+
   it('accepts a Chapter 3 snapshot for saving', () => {
     const snapshot = makeSnapshot();
     snapshot.chapterId = chapter03Data.id;

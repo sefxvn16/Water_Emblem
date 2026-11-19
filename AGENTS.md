@@ -78,12 +78,13 @@ Dữ liệu nhân vật, class, vật phẩm, kỹ năng, bản đồ, chương 
 | Nhân vật, chỉ số gốc, tăng trưởng, chân dung | `data/characters.json` |
 | Class, kiểu di chuyển, tầm di chuyển gốc | `data/classes.json` |
 | Vật phẩm và vũ khí | `data/items.json` |
+| Kỹ năng (định nghĩa và số hiệu ứng) | `data/skills.json` |
 | Địa hình và tham số cân bằng | `data/terrains.json`, `data/balance.json` |
 | Lưới ô và cao độ | `data/maps/<map-id>.json` |
 | Atlas tra cứu mọi bản đồ FE3 (lưới, quân, công trình) và bảng nguồn | `Game_Design/campaign.md` mục "Atlas bản đồ FE3 và bảng tra nguồn"; atlas ở `D:\OneDrive\AI Relax\projects\FE3_map_atlas\` |
 | Lưới tham chiếu FE3 (lập độc lập, chỉ dùng để đối chiếu và test) | `data/reference/fe3/<map-id>.json`; quy trình và script ở `tools/fe3_map_reference/` |
 | Mục tiêu, vị trí và phe của quân, ô triển khai, vũ khí trang bị, làng, sự kiện, ngoại lệ riêng của chương | `data/chapters/<chapter-id>.json` |
-| Hội thoại từng chương | `data/dialogues/<chapter-id>_dialogues.json` |
+| Hội thoại từng chương | `data/dialogues/<chapter-id>_dialogues.json`; thoại làng mặc định khi chương không khai báo: `data/dialogues/default_dialogues.json` |
 | Vị trí và thông tin vùng trên World Map | `data/world_map.json` |
 | Schema JSON | `data/schemas/` |
 | Quan hệ hỗ trợ và bonus theo điểm | `data/supports.json`, `src/core/combat/support.ts` |
@@ -142,6 +143,7 @@ Kho asset gốc FE3 (trước đây là `public/models/Original/`) nằm ngoài 
 - Với nhóm chỉ số, class và tăng trưởng được chủ dự án chỉnh ngày 2026-11-14, phần nào chủ dự án không sửa trong đề xuất đã báo thì ghi **Tạm chốt** theo đề xuất, kèm nguồn và điểm còn phải kiểm; không lặp lại câu hỏi đã có đáp án. Điểm mơ hồ có thể làm đổi schema hoặc luật trận vẫn hỏi gộp một lượt trước khi code phần phụ thuộc.
 - Quyết định lớn về kiến trúc, gameplay, phạm vi, dependency, dùng tài sản bên ngoài và phát hành thuộc chủ dự án.
 - Khi chưa rõ, kiểm tài liệu và code hiện có trước; nêu giả định hoặc điểm chưa kiểm chứng. Hỏi chủ dự án nếu câu trả lời làm thay đổi thiết kế. Không báo đã chạy, đã kiểm hoặc đã hoàn thành khi chưa có bằng chứng.
+- **Theo Fire Emblem, không tự bịa (chủ dự án 2026-11-19):** mọi cơ chế, luật và hiển thị phải theo dòng Fire Emblem hoặc quyết định đã ghi của chủ dự án. **CẤM BỊA, CẤM SÁNG TẠO LUNG TUNG KHI CHƯA HỎI NGƯỜI DÙNG** — không tự tạo luật, cơ chế hay hiển thị chưa được chủ xác nhận; điểm chưa chốt thì hỏi chủ, không tự suy diễn (bài học mục 101/C12, mục 143).
 
 <!-- coding-studio-gate:begin -->
 ## Quality gate (every AI and person)
