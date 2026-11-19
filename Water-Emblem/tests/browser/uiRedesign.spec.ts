@@ -48,7 +48,7 @@ function overlaps(a: Rect, b: Rect): boolean {
 }
 
 async function scrollMap(page: Page, dx: number, dy: number) {
-  await page.evaluate(([dx, dy]) => {
+  await page.evaluate(({ dx, dy }) => {
     const tile = document.querySelector('[data-testid="tile-0-0"]');
     let el: HTMLElement | null = tile as HTMLElement | null;
     while (el) {
@@ -59,7 +59,7 @@ async function scrollMap(page: Page, dx: number, dy: number) {
       }
       el = el.parentElement;
     }
-  }, [dx, dy]);
+  }, { dx, dy });
 }
 
 /** Scroll the map until the tile's centre is at the given fraction of the viewport width. */
@@ -87,7 +87,7 @@ function luminance(rgb: [number, number, number]): number {
     const s = c / 255;
     return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
   };
-  const [r, g, b] = rgb.map(f);
+  const [r = 0, g = 0, b = 0] = rgb.map(f);
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
@@ -122,7 +122,7 @@ async function openForecast(page: Page) {
         };
         const marth = record.extendedUnits.find(({ unit }) => unit.id === 'marth')!;
         marth.unit.position = { x: 4, y: 4 };
-        (record as { timestamp: number }).timestamp = Date.now() + 1000;
+        (record as unknown as { timestamp: number }).timestamp = Date.now() + 1000;
         store.put(record);
       };
       transaction.oncomplete = () => resolve();
@@ -486,6 +486,7 @@ test('unit-inspector/A5 longest unit name fits', async ({ page }) => {
   await gotoBattle(page);
   const longest = CHARACTERS.characters.map((c) => c.name).sort((a, b) => b.length - a.length)[0];
   expect(longest).toBe('Galder Pirate (Lv 3)');
+  if (longest === undefined) throw new Error('characters.json has no characters');
   await openInspector(page, 4, 1);
   const inspector = page.getByTestId('inspector');
   await expect(inspector.getByText(longest, { exact: true })).toBeVisible();
