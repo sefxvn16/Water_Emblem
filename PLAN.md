@@ -555,6 +555,24 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/group-b-mechanics`. Bấm Trade → đồng minh kề bên sáng lên trên bản đồ (như chọn mục tiêu tấn công, đúng kiểu Fire Emblem), bấm vào đồng minh mở thẳng màn trao đổi; 1 đối tác thì mở thẳng; Esc/bấm ô quân để huỷ. Kiểm chứng: Vitest 283 PASS. Gate đầy đủ chạy ở cuối đợt. Gate đầy đủ 2026-11-19 trên `991795e`: Result: PASS (test PASS, build PASS, integration PASS).
   - Kiểm bởi: tôi
 
+- [] 133. M5 (đợt 4): core thuần — `executeCombat` và `TurnManager` không sửa input.
+  - Nguồn: code review 2026-11-18 (M5); chủ dự án duyệt 7 quyết định đợt 4 ngày 2026-11-19 19:29–19:33: (1) M5/M7/M12 ghi mục PLAN riêng (mục này + 134 + 135); (2) `turn.test.ts:130` được đổi từ so sánh tham chiếu sang so sánh giá trị; (6) `combatPopupData.test.ts:54-55` được tăng cường assert HP sau combat. Spec: `work/water-batch4-m5-m7-m12/specs-draft/core-purity.md`.
+  - Tiêu chí xong: (1) `executeCombat` không ghi HP vào `forecast.*.stats.hp`; mọi nơi đọc HP sau combat (luồng người chơi, AI, `buildCombatPopup`) dùng giá trị trả về. (2) `TurnManager` không sửa object quân tại chỗ; `restoreState` trả state mới. (3) Kiểm tra mọi chỗ so sánh `===` trên mảng quân trước khi đổi. (4) Test đổi theo quyết định (2)+(6) có ghi lý do tại đây. (5) Hành vi game không đổi: toàn bộ test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 134. M7 (đợt 4): đưa số cứng trong code vào dữ liệu, hành vi giữ nguyên.
+  - Nguồn: code review 2026-11-18 (M7); quyết định (3) của chủ dự án 2026-11-19: số cứng chuyển vào data với hành vi GIỐNG HỆT, test hiện có không đổi (số đã ghim bởi test: support rank C +5/+5, B +10/+10, tầm sniper 2–3, warlord→lord, thief/trickster +20, boss +40). Spec: `work/water-batch4-m5-m7-m12/specs-draft/data-driven-rules.md`.
+  - Tiêu chí xong: (1) Mọi số luật còn cứng trong `src/core/` chuyển vào file data tương ứng. (2) Không đổi hành vi: toàn bộ test hiện có PASS nguyên trạng. (3) Gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 135. M12 (đợt 4): tách lớp mô phỏng khỏi `App.tsx` (App chỉ lắp ráp).
+  - Nguồn: code review 2026-11-18 (M12); quyết định (4) thứ tự đường nối: `runAITurn` → xử lý combat → tính danger zone; quyết định (5): mỗi đường early-return của `executeWithMove` phải có guard trước khi di chuyển (hoặc test chứng minh không tới được); quyết định (7): Muse tự kiểm tra `tools/e2e_record` còn đọc `__WATER_EMBLEM_STATE__` hay không (đã kiểm 2026-11-19: còn đọc — giữ có chủ đích hay bỏ do Muse quyết, ghi tại đây khi làm). Ưu tiên kiến trúc của chủ dự án: core → Stateless Modules → Simulation Layer. Spec: `work/water-batch4-m5-m7-m12/specs-draft/app-assembly.md`.
+  - Tiêu chí xong: (1) `runAITurn`, xử lý combat, danger zone nằm ở module mô phỏng riêng, `App.tsx` chỉ gọi. (2) 5 đường early-return của `executeWithMove` có guard/test theo quyết định (5). (3) Hành vi không đổi: toàn bộ test + gate PASS. (4) Thêm `.worktrees/` vào `.gitignore` [Giả định].
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
