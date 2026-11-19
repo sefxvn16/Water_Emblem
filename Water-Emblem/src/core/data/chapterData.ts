@@ -52,6 +52,24 @@ export interface ChapterVillage {
   reward: ChapterVillageReward;
 }
 
+export interface ChapterChest {
+  id: string;
+  position: { x: number; y: number };
+  reward: ChapterReward;
+}
+
+export interface ChapterDoor {
+  id: string;
+  position: { x: number; y: number };
+}
+
+/** Enemy reinforcements arriving at the end of the enemy phase of `turn` (PLAN item 94). */
+export interface ChapterReinforcement {
+  id: string;
+  turn: number;
+  units: ExtendedUnitState[];
+}
+
 export interface ChapterData {
   readonly id: string;
   readonly name: string;
@@ -64,6 +82,9 @@ export interface ChapterData {
   readonly carryoverUnitIds: readonly string[];
   readonly deploymentSlots: readonly Position[];
   readonly villages?: readonly ChapterVillage[];
+  readonly chests?: readonly ChapterChest[];
+  readonly doors?: readonly ChapterDoor[];
+  readonly reinforcements?: readonly ChapterReinforcement[];
   readonly seizeReward?: ChapterReward;
 }
 
@@ -371,6 +392,79 @@ export function loadChapterData(
   const villagePositions = villages.map((v) => `${v.position.x},${v.position.y}`);
   if (new Set(villagePositions).size !== villagePositions.length) throw new Error('Multiple villages occupy one tile');
 
+  const chestRows = data.chests ?? [];
+  if (!Array.isArray(chestRows)) throw new Error('chapter.chests must be an array');
+  const chests: ChapterChest[] = chestRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.chests[${index}]`);
+    const chestId = requireString(item.id, `chapter.chests[${index}].id`);
+    const position = readPosition(item.position, map, `chapter.chests[${index}].position`);
+    const tile = map.grid[position.y]?.[position.x];
+    if (tile !== 'chest') {
+      throw new Error(`Chest ${chestId} at (${position.x},${position.y}) must be on a chest tile, found ${tile}`);
+    }
+    const rewardRaw = requireRecord(item.reward, `chapter.chests[${index}].reward`);
+    const rewardType = requireChoice(rewardRaw.type, ['gold', 'item'], `chapter.chests[${index}].reward.type`);
+    const reward: ChapterReward = {
+      type: rewardType,
+      ...(rewardType === 'gold'
+        ? { amount: requireInteger(rewardRaw.amount, `chapter.chests[${index}].reward.amount`, 1) }
+        : {
+            itemId: (() => {
+              const itemId = requireString(rewardRaw.itemId, `chapter.chests[${index}].reward.itemId`);
+              if (!itemById.has(itemId)) {
+                throw new Error(`Chest ${chestId} reward references unknown item ${itemId}`);
+              }
+              return itemId;
+            })(),
+          }),
+    };
+    return { id: chestId, position, reward };
+  });
+
+  const chestIds = chests.map((c) => c.id);
+  if (new Set(chestIds).size !== chestIds.length) throw new Error('Duplicate chest ID');
+  const chestPositions = chests.map((c) => `${c.position.x},${c.position.y}`);
+  if (new Set(chestPositions).size !== chestPositions.length) throw new Error('Multiple chests occupy one tile');
+
+  const doorRows = data.doors ?? [];
+  if (!Array.isArray(doorRows)) throw new Error('chapter.doors must be an array');
+  const doors: ChapterDoor[] = doorRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.doors[${index}]`);
+    const doorId = requireString(item.id, `chapter.doors[${index}].id`);
+    const position = readPosition(item.position, map, `chapter.doors[${index}].position`);
+    const tile = map.grid[position.y]?.[position.x];
+    if (tile !== 'door') {
+      throw new Error(`Door ${doorId} at (${position.x},${position.y}) must be on a door tile, found ${tile}`);
+    }
+    return { id: doorId, position };
+  });
+
+  const doorIds = doors.map((d) => d.id);
+  if (new Set(doorIds).size !== doorIds.length) throw new Error('Duplicate door ID');
+  const doorPositions = doors.map((d) => `${d.position.x},${d.position.y}`);
+  if (new Set(doorPositions).size !== doorPositions.length) throw new Error('Multiple doors occupy one tile');
+
+  const reinforcementRows = data.reinforcements ?? [];
+  if (!Array.isArray(reinforcementRows)) throw new Error('chapter.reinforcements must be an array');
+  const knownUnitIds = new Set([...units, ...optionalUnits].map((entry) => entry.unit.id));
+  const reinforcements: ChapterReinforcement[] = reinforcementRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.reinforcements[${index}]`);
+    const reinforcementId = requireString(item.id, `chapter.reinforcements[${index}].id`);
+    const turn = requireInteger(item.turn, `chapter.reinforcements[${index}].turn`, 1);
+    if (!Array.isArray(item.units) || item.units.length === 0) {
+      throw new Error(`chapter.reinforcements[${index}].units must be a nonempty array`);
+    }
+    const reinforcementUnits = item.units.map((unitValue: unknown, unitIndex: number) =>
+      parseUnit(unitValue, `chapter.reinforcements[${index}].units[${unitIndex}]`));
+    for (const entry of reinforcementUnits) {
+      if (knownUnitIds.has(entry.unit.id)) throw new Error(`Duplicate unit ID ${entry.unit.id}`);
+      knownUnitIds.add(entry.unit.id);
+    }
+    return { id: reinforcementId, turn, units: reinforcementUnits };
+  });
+  const reinforcementIds = reinforcements.map((r) => r.id);
+  if (new Set(reinforcementIds).size !== reinforcementIds.length) throw new Error('Duplicate reinforcement ID');
+
   let seizeReward: ChapterReward | undefined;
   if (data.seizeReward !== undefined) {
     const rewardRaw = requireRecord(data.seizeReward, 'chapter.seizeReward');
@@ -391,7 +485,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, seizeReward };
+  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

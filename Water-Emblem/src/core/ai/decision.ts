@@ -39,6 +39,8 @@ export interface AIContext {
   readonly unitStatsMap: Map<string, UnitCombatStats>;
   readonly unitWeaponsMap: Map<string, ItemDefinition | undefined>;
   readonly villageTargets?: readonly Position[];
+  /** Opened door tiles as "x,y" keys (PLAN item 92). */
+  readonly openedDoors?: ReadonlySet<string>;
 }
 
 export function evaluateAITurn(
@@ -60,6 +62,7 @@ export function evaluateAITurn(
     map,
     terrains,
     units,
+    openedDoors: context.openedDoors,
   });
 
   // FE3 thieves head for unvisited villages before seeking combat.

@@ -816,6 +816,7 @@
       "id": "thief",
       "name": "Thief",
       "nameVi": "Đạo tặc",
+      "canOpenLocks": true,
       "usableWeapons": [
         "sword"
       ],
@@ -861,6 +862,7 @@
       "id": "trickster",
       "name": "Trickster",
       "nameVi": "Ảo thuật đạo tặc",
+      "canOpenLocks": true,
       "usableWeapons": [
         "sword"
       ],

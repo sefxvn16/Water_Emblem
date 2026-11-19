@@ -5,6 +5,8 @@ export interface PathfindingContext {
   readonly map: MapData;
   readonly terrains: TerrainRegistry;
   readonly units: readonly GridUnit[];
+  /** Opened door tiles as "x,y" keys (PLAN item 92); closed doors block. */
+  readonly openedDoors?: ReadonlySet<string>;
 }
 
 function posKey(pos: Position): string {
@@ -91,7 +93,9 @@ export function calculateMovementRange(
         continue;
       }
 
-      const moveCost = terrains.getMovementCost(terrainId, unit.moveType, unit.classId);
+      const moveCost = terrainId === 'door' && context.openedDoors?.has(posKey(nextPos))
+        ? 1
+        : terrains.getMovementCost(terrainId, unit.moveType, unit.classId);
       if (moveCost === null) {
         // Địa hình không thể vượt qua
         continue;

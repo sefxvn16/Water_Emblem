@@ -43,9 +43,15 @@ export interface GridUnit {
   mov: number;
   moveType: MoveType;
   readonly weaponRanks?: Readonly<Record<string, WeaponRank>>;
+  /** WEx progress toward the next rank per weapon type (PLAN item 90). */
+  readonly weaponExp?: Readonly<Record<string, number>>;
   supportPoints?: Readonly<Record<string, number>>;
   isDead?: boolean;
   hasActed?: boolean;
+  /** Initiated a trade this turn (PLAN item 87): one initiation per turn. */
+  hasTraded?: boolean;
+  /** Used Storage this turn (PLAN item 88): movement ends on exit, like trade. */
+  hasStored?: boolean;
   /**
    * Display-only origin marker (PLAN item 79): true when the unit arrived as
    * a reinforcement, so the inspector and map tokens render it in the

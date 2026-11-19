@@ -8,6 +8,28 @@
     "bossUnitId": "gazzak",
     "description": "Defeat boss Gazzak guarding the Talys gate"
   },
+  "chests": [
+    {
+      "id": "test_chest",
+      "position": {
+        "x": 7,
+        "y": 4
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 1000
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "test_door",
+      "position": {
+        "x": 0,
+        "y": 3
+      }
+    }
+  ],
   "units": [
     {
       "id": "marth",
@@ -126,6 +148,26 @@
       "weaponId": "iron_bow",
       "aiRole": "pursue",
       "characterId": "galder_hunter"
+    }
+  ],
+  "reinforcements": [
+    {
+      "id": "test_reinforcements",
+      "turn": 2,
+      "units": [
+        {
+          "id": "enemy_pirate_reinforcement",
+          "name": "Galder Pirate R",
+          "faction": "enemy",
+          "position": {
+            "x": 7,
+            "y": 1
+          },
+          "weaponId": "iron_axe",
+          "aiRole": "pursue",
+          "characterId": "galder_pirate"
+        }
+      ]
     }
   ]
 }

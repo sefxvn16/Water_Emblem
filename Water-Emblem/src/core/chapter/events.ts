@@ -1,8 +1,12 @@
 import { getManhattanDistance } from '../combat/calculator';
-import type { ChapterData, ChapterReward, ChapterVillage, ExtendedUnitState } from '../data/chapterData';
+import type { ChapterChest, ChapterData, ChapterDoor, ChapterReward, ChapterVillage, ExtendedUnitState } from '../data/chapterData';
+import { addItemToInventory } from '../data/inventory';
+import { getClassDefinition } from '../class/classRules';
 import { evaluateChapterOutcome } from './types';
 
 export type VillageState = 'intact' | 'visited' | 'destroyed';
+export type ChestState = 'opened';
+export type DoorState = 'opened';
 
 export interface DialogueLine {
   readonly speaker: string;
@@ -13,18 +17,32 @@ export interface DialogueLine {
 export type DialogueKind = 'village' | 'recruit' | 'boss_start' | 'boss_death';
 
 export type GameEvent =
-  | { readonly type: 'gold_gained'; readonly unitId: string; readonly amount: number; readonly source: 'village' | 'seize' }
+  | { readonly type: 'gold_gained'; readonly unitId: string; readonly amount: number; readonly source: 'village' | 'seize' | 'chest' }
   | {
       readonly type: 'item_gained';
       readonly unitId: string;
       readonly unitName: string;
       readonly itemId: string;
       readonly itemName: string;
-      readonly source: 'village' | 'seize' | 'loot';
+      readonly source: 'village' | 'seize' | 'loot' | 'chest';
+      readonly fromUnitName?: string;
+    }
+  | {
+      // The receiving store (4 weapons / 4 items, PLAN item 86) is full:
+      // the item was not added; the UI asks what to discard (or, once
+      // PLAN item 88 lands, to send to the convoy).
+      readonly type: 'item_overflow';
+      readonly unitId: string;
+      readonly unitName: string;
+      readonly itemId: string;
+      readonly itemName: string;
+      readonly source: 'village' | 'seize' | 'loot' | 'chest';
       readonly fromUnitName?: string;
     }
   | { readonly type: 'village_visited'; readonly unitId: string; readonly unitName: string; readonly villageId: string; readonly villageName: string }
   | { readonly type: 'village_destroyed'; readonly unitId: string; readonly villageId: string; readonly villageName: string }
+  | { readonly type: 'chest_opened'; readonly unitId: string; readonly unitName: string; readonly chestId: string }
+  | { readonly type: 'door_opened'; readonly unitId: string; readonly unitName: string; readonly doorId: string }
   | { readonly type: 'unit_recruited'; readonly unitId: string; readonly speakerId: string }
   | { readonly type: 'chapter_seized'; readonly unitId: string }
   | { readonly type: 'dialogue'; readonly kind: DialogueKind; readonly lines: readonly DialogueLine[] };
@@ -34,6 +52,10 @@ export interface ChapterState {
   readonly units: readonly ExtendedUnitState[];
   readonly gold: number;
   readonly villageStates: Readonly<Record<string, VillageState>>;
+  /** Opened chests (PLAN item 92); absent = every chest still closed. */
+  readonly chestStates?: Readonly<Record<string, ChestState>>;
+  /** Opened doors (PLAN item 92); absent = every door still closed. */
+  readonly doorStates?: Readonly<Record<string, DoorState>>;
 }
 
 export interface EventResult {
@@ -45,6 +67,8 @@ export interface ItemInfo {
   readonly id: string;
   readonly name: string;
   readonly maxUses?: number;
+  /** Item type for inventory slot counting (PLAN item 86). */
+  readonly type?: string;
 }
 
 /** Chapter dialogue JSON; entries are looked up by key and checked when read. */
@@ -83,8 +107,14 @@ export function bossStartEvent(dialogues: DialogueTable, unitId: string, unitNam
   return text ? { type: 'dialogue', kind: 'boss_start', lines: [{ speaker: unitName, avatarUrl: '', text }] } : undefined;
 }
 
-function withItem(entry: ExtendedUnitState, item: ItemInfo): ExtendedUnitState {
-  return { ...entry, inventory: [...entry.inventory, { itemId: item.id, uses: item.maxUses ?? 1 }] };
+function tryWithItem(
+  entry: ExtendedUnitState,
+  item: ItemInfo,
+  items: readonly ItemInfo[],
+): { entry: ExtendedUnitState; added: boolean } {
+  const typeById = new Map(items.map((candidate) => [candidate.id, { type: candidate.type ?? 'consumable' }]));
+  const added = addItemToInventory(entry, item.id, item.maxUses ?? 1, typeById);
+  return added ? { entry: added, added: true } : { entry, added: false };
 }
 
 function mapUnit(units: readonly ExtendedUnitState[], unitId: string, change: (entry: ExtendedUnitState) => ExtendedUnitState): ExtendedUnitState[] {
@@ -95,7 +125,7 @@ function applyReward(
   state: ChapterState,
   unitId: string,
   reward: ChapterReward,
-  source: 'village' | 'seize',
+  source: 'village' | 'seize' | 'chest',
   items: readonly ItemInfo[],
 ): EventResult | undefined {
   if (reward.type === 'gold') {
@@ -108,8 +138,15 @@ function applyReward(
   const item = items.find(({ id }) => id === reward.itemId);
   const owner = state.units.find(({ unit }) => unit.id === unitId);
   if (!item || !owner) return undefined;
+  const { entry: withReward, added } = tryWithItem(owner, item, items);
+  if (!added) {
+    return {
+      state,
+      events: [{ type: 'item_overflow', unitId, unitName: owner.unit.name, itemId: item.id, itemName: item.name, source }],
+    };
+  }
   return {
-    state: { ...state, units: mapUnit(state.units, unitId, (entry) => withItem(entry, item)) },
+    state: { ...state, units: mapUnit(state.units, unitId, () => withReward) },
     events: [{ type: 'item_gained', unitId, unitName: owner.unit.name, itemId: item.id, itemName: item.name, source }],
   };
 }
@@ -223,6 +260,19 @@ export function resolveDefeat(
   }
   const dropId = defeated.dropItemId;
   const item: ItemInfo = items.find(({ id }) => id === dropId) ?? { id: dropId, name: dropId };
+  const { entry: withDrop, added } = tryWithItem(killer, item, items);
+  if (!added) {
+    events.push({
+      type: 'item_overflow',
+      unitId: killerId,
+      unitName: killer.unit.name,
+      itemId: item.id,
+      itemName: item.name,
+      source: 'loot',
+      fromUnitName: defeated.unit.name,
+    });
+    return { state, events };
+  }
   events.push({
     type: 'item_gained',
     unitId: killerId,
@@ -232,5 +282,74 @@ export function resolveDefeat(
     source: 'loot',
     fromUnitName: defeated.unit.name,
   });
-  return { state: { ...state, units: mapUnit(state.units, killerId, (entry) => withItem(entry, item)) }, events };
+  return { state: { ...state, units: mapUnit(state.units, killerId, () => withDrop) }, events };
+}
+
+/** Thief-line classes (data flag `canOpenLocks`) open locks innately (PLAN item 92). */
+export function opensLocksInately(entry: ExtendedUnitState): boolean {
+  return getClassDefinition(entry.unit.classId)?.canOpenLocks === true;
+}
+
+/** FE3: the lord opens chests only while carrying the Fire Emblem. */
+export function canOpenChest(entry: ExtendedUnitState, chapter: ChapterData): boolean {
+  if (opensLocksInately(entry)) return true;
+  return entry.unit.id === chapter.lordUnitId
+    && entry.inventory.some((item) => item.itemId === 'fire_emblem' && item.uses > 0);
+}
+
+/** Thief-line classes or a Door Key (consumed on use) open doors. */
+export function canOpenDoor(entry: ExtendedUnitState): boolean {
+  return opensLocksInately(entry)
+    || entry.inventory.some((item) => item.itemId === 'door_key' && item.uses > 0);
+}
+
+/** Open the chest the unit stands on; the reward follows village rules. */
+export function openChest(
+  state: ChapterState,
+  unitId: string,
+  chest: ChapterChest,
+  chapter: ChapterData,
+  items: readonly ItemInfo[],
+): EventResult {
+  const opener = state.units.find(({ unit }) => unit.id === unitId);
+  if (!opener || (state.chestStates?.[chest.id] ?? 'closed') !== 'closed') return unchanged(state);
+  if (opener.unit.position.x !== chest.position.x || opener.unit.position.y !== chest.position.y) {
+    return unchanged(state);
+  }
+  if (!canOpenChest(opener, chapter)) return unchanged(state);
+  const reward = applyReward(state, unitId, chest.reward, 'chest', items);
+  if (!reward) return unchanged(state);
+  return {
+    state: { ...reward.state, chestStates: { ...state.chestStates, [chest.id]: 'opened' } },
+    events: [
+      ...reward.events,
+      { type: 'chest_opened', unitId, unitName: opener.unit.name, chestId: chest.id },
+    ],
+  };
+}
+
+/** Open a door from an adjacent tile; a non-thief spends one Door Key use. */
+export function openDoor(
+  state: ChapterState,
+  unitId: string,
+  door: ChapterDoor,
+): EventResult {
+  const opener = state.units.find(({ unit }) => unit.id === unitId);
+  if (!opener || (state.doorStates?.[door.id] ?? 'closed') !== 'closed') return unchanged(state);
+  if (getManhattanDistance(opener.unit.position, door.position) !== 1) return unchanged(state);
+  if (!canOpenDoor(opener)) return unchanged(state);
+  let units = state.units;
+  if (!opensLocksInately(opener)) {
+    units = mapUnit(state.units, unitId, (entry) => ({
+      ...entry,
+      inventory: entry.inventory.flatMap((item) => {
+        if (item.itemId !== 'door_key') return [item];
+        return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
+      }),
+    }));
+  }
+  return {
+    state: { ...state, units, doorStates: { ...state.doorStates, [door.id]: 'opened' } },
+    events: [{ type: 'door_opened', unitId, unitName: opener.unit.name, doorId: door.id }],
+  };
 }

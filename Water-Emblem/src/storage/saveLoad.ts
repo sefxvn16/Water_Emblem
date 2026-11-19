@@ -6,7 +6,7 @@ import testMapJson from '../../data/maps/test_map_01.json';
 import itemsJson from '../../data/items.json';
 import type { ChapterOutcome } from '../core/chapter/types';
 import type { ItemDefinition } from '../core/combat/types';
-import { chapters, type ExtendedUnitState } from '../core/data/chapterData';
+import { chapters, type ExtendedUnitState, type InventoryEntry } from '../core/data/chapterData';
 import type { GamePhase } from '../core/turn/turnManager';
 import { getClassDefinition } from '../core/class/classRules';
 
@@ -22,12 +22,20 @@ export interface GameSnapshot {
   turnState: { turnNumber: number; activePhase: GamePhase };
   extendedUnits: ExtendedUnitState[];
   reserveUnits?: ExtendedUnitState[];
+  /** Convoy contents (PLAN item 88); absent in older saves = empty. */
+  convoy?: InventoryEntry[];
   rngSeed: number;
   chapterOutcome: ChapterOutcome;
   showStoryIntro: boolean;
   combatLog: string[];
   gold: number;
   villageStates: Record<string, 'intact' | 'visited' | 'destroyed'>;
+  /** Opened chests (PLAN item 92); absent in older saves = all closed. */
+  chestStates?: Record<string, 'opened'>;
+  /** Opened doors (PLAN item 92); absent in older saves = all closed. */
+  doorStates?: Record<string, 'opened'>;
+  /** Reinforcement groups already spawned (PLAN item 94); absent = none yet. */
+  spawnedReinforcements?: string[];
 }
 
 export interface SaveGameData extends GameSnapshot {
@@ -138,15 +146,37 @@ export function isGameSnapshot(value: unknown): value is GameSnapshot {
   const villageIds = new Set((chapter.villages ?? []).map(({ id }) => id));
   if (Object.entries(value.villageStates).some(([id, state]) =>
     !villageIds.has(id) || !['intact', 'visited', 'destroyed'].includes(state as string))) return false;
+  const chestStates = value.chestStates === undefined ? {} : value.chestStates;
+  if (!isRecord(chestStates)) return false;
+  const chestIds = new Set((chapter.chests ?? []).map(({ id }) => id));
+  if (Object.entries(chestStates).some(([id, state]) =>
+    !chestIds.has(id) || state !== 'opened')) return false;
+  const doorStates = value.doorStates === undefined ? {} : value.doorStates;
+  if (!isRecord(doorStates)) return false;
+  const doorIds = new Set((chapter.doors ?? []).map(({ id }) => id));
+  if (Object.entries(doorStates).some(([id, state]) =>
+    !doorIds.has(id) || state !== 'opened')) return false;
+  const spawnedReinforcements = value.spawnedReinforcements === undefined ? [] : value.spawnedReinforcements;
+  if (!Array.isArray(spawnedReinforcements)) return false;
+  const reinforcementGroupIds = new Set((chapter.reinforcements ?? []).map(({ id }) => id));
+  if (spawnedReinforcements.some((id: unknown) => typeof id !== 'string' || !reinforcementGroupIds.has(id))) return false;
+  const reinforcementUnits = (chapter.reinforcements ?? []).flatMap((group) => group.units);
   const reserveUnits = value.reserveUnits === undefined ? [] : value.reserveUnits;
   if (!Array.isArray(reserveUnits) || !reserveUnits.every(isSavedUnit)) return false;
+  const convoy = value.convoy === undefined ? [] : value.convoy;
+  if (!Array.isArray(convoy) || convoy.length > 128 || !convoy.every((entry: unknown) => {
+    if (!isRecord(entry) || typeof entry.itemId !== 'string') return false;
+    const item = itemById.get(entry.itemId);
+    return item !== undefined && Number.isInteger(entry.uses)
+      && (entry.uses as number) >= 1 && (entry.uses as number) <= item.maxUses;
+  })) return false;
   if (value.extendedUnits.length + reserveUnits.length < chapter.units.length
-    || value.extendedUnits.length + reserveUnits.length > chapter.units.length + chapter.optionalUnits.length
+    || value.extendedUnits.length + reserveUnits.length > chapter.units.length + chapter.optionalUnits.length + reinforcementUnits.length
     || !value.extendedUnits.every(isSavedUnit)) return false;
 
   const savedUnits = [...value.extendedUnits, ...reserveUnits] as ExtendedUnitState[];
   const reserveIds = new Set((reserveUnits as ExtendedUnitState[]).map(({ unit }) => unit.id));
-  const expected = new Map([...chapter.units, ...chapter.optionalUnits].map((item) => [item.unit.id, item]));
+  const expected = new Map([...chapter.units, ...chapter.optionalUnits, ...reinforcementUnits].map((item) => [item.unit.id, item]));
   const mandatoryIds = new Set(chapter.units.map((item) => item.unit.id));
   const ids = new Set<string>();
   const positions = new Set<string>();
@@ -204,6 +234,9 @@ export function migrateSaveGameData(value: unknown): SaveGameData | null {
   const migrated = structuredClone(value);
   migrated.gold ??= 0;
   migrated.villageStates ??= {};
+  migrated.chestStates ??= {};
+  migrated.doorStates ??= {};
+  migrated.spawnedReinforcements ??= [];
   const savedIds = new Set([...migrated.extendedUnits as unknown[],
     ...(Array.isArray(migrated.reserveUnits) ? migrated.reserveUnits as unknown[] : [])]
     .filter(isRecord).map((entry) => isRecord(entry.unit) ? entry.unit.id : undefined));
@@ -269,12 +302,16 @@ export function buildNewGameSnapshot(chapterId: string, rngSeed: number): GameSn
     turnState: { turnNumber: 1, activePhase: 'player_phase' },
     extendedUnits: structuredClone(chapter.units),
     reserveUnits: [],
+    convoy: [],
     rngSeed,
     chapterOutcome: 'ongoing',
     showStoryIntro: true,
     combatLog: [`📜 Started ${chapter.name}`],
     gold: 0,
     villageStates: {},
+    chestStates: {},
+    doorStates: {},
+    spawnedReinforcements: [],
   };
 }
 

@@ -132,6 +132,8 @@ export class TurnManager {
       for (const u of this.state.units) {
         if (u.faction === 'player' && !u.isDead) {
           u.hasActed = false;
+          u.hasTraded = false;
+          u.hasStored = false;
         }
       }
     } else if (newPhase === 'enemy_phase') {

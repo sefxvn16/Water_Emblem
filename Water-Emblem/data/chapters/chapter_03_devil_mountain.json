@@ -30,6 +30,28 @@
       }
     }
   ],
+  "chests": [
+    {
+      "id": "chest_devil_mountain",
+      "position": {
+        "x": 22,
+        "y": 2
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "steel_sword"
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "door_castle",
+      "position": {
+        "x": 1,
+        "y": 7
+      }
+    }
+  ],
   "units": [
     {
       "id": "marth",

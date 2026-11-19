@@ -14,6 +14,8 @@ export interface ClassDefinition {
   readonly promotions: readonly string[];
   readonly tier: 'base' | 'promoted' | 'dismounted';
   readonly mountKind?: 'ground' | 'flying';
+  /** Thief-line classes open chests and doors without a key (PLAN item 92). */
+  readonly canOpenLocks?: boolean;
   readonly hitBonus?: number;
   readonly critBonus?: number;
   readonly sourceClass?: string;
@@ -129,8 +131,10 @@ export function useVulnerary(entry: ExtendedUnitState, item: ItemDefinition): Ex
   return { ...spent, stats: { ...entry.stats, hp: Math.min(entry.stats.maxHp, entry.stats.hp + item.healAmount) } };
 }
 
-export function promoteWithMasterSeal(entry: ExtendedUnitState, targetClassId: string): ExtendedUnitState | null {
-  if (!entry.inventory.some((item) => item.itemId === 'master_seal' && item.uses > 0)) return null;
-  const promoted = promoteUnit(entry, targetClassId, true);
-  return promoted ? spendItem(promoted, 'master_seal') : null;
+/**
+ * Itemless promotion (owner decision A10, PLAN item 95): at level 10+ the
+ * player simply chooses to promote — no Master Seal or other item needed.
+ */
+export function promoteWithoutItem(entry: ExtendedUnitState, targetClassId: string): ExtendedUnitState | null {
+  return promoteUnit(entry, targetClassId, true);
 }
