@@ -186,6 +186,39 @@ describe('UI rendering tests', () => {
     expect(html).toContain('Move:');
   });
 
+  it('UnitInspectorWindow tints the panel by faction (treatment B)', () => {
+    const render = (unit: ExtendedUnitState) =>
+      renderToString(
+        React.createElement(UnitInspectorWindow, {
+          unit,
+          allUnits: [unit],
+          terrainId: 'plains',
+          tile: { x: 0, y: 0 },
+          onClose: () => {},
+        })
+      );
+    const as = (patch: Partial<ExtendedUnitState['unit']>): ExtendedUnitState => ({
+      ...mockUnit,
+      unit: { ...mockUnit.unit, ...patch },
+    });
+
+    const player = render(mockUnit);
+    expect(player).toContain('background-color:#101a2e');
+    expect(player).toContain('>Player<');
+
+    const enemy = render(as({ faction: 'enemy' }));
+    expect(enemy).toContain('background-color:#2b1719');
+    expect(enemy).toContain('>Enemy<');
+
+    const ally = render(as({ faction: 'ally' }));
+    expect(ally).toContain('background-color:#12241a');
+    expect(ally).toContain('>Ally<');
+
+    const reinforcement = render(as({ faction: 'ally', isReinforcement: true }));
+    expect(reinforcement).toContain('background-color:#1e1428');
+    expect(reinforcement).toContain('>Reinforcement<');
+  });
+
   it('CombatForecastWindow renders HP transition delta and hit/avoid stats', () => {
     const mockForecast: CombatForecast = {
       attacker: {

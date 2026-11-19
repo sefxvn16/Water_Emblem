@@ -166,20 +166,22 @@ test('design-system/A1 shared panel treatment', async ({ page }) => {
     borderColor: 'rgb(234, 179, 8)',
     color: 'rgb(255, 255, 255)',
   });
-  // Inspector (ally) and (enemy).
+  // Inspector (player) and (enemy): faction-tinted panels (treatment B).
   await openInspector(page, 24, 5);
   expect(await computedStyles(page, 'inspector')).toEqual({
-    backgroundColor: 'rgb(29, 78, 216)',
-    borderColor: 'rgb(234, 179, 8)',
-    color: 'rgb(243, 244, 246)',
+    backgroundColor: 'rgb(16, 26, 46)',
+    borderColor: 'rgb(201, 162, 39)',
+    color: 'rgb(248, 250, 252)',
   });
+  expect(await page.getByTestId('inspector-accent').evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(59, 130, 246)');
   await page.getByRole('button', { name: 'Close unit details' }).click();
   await openInspector(page, 6, 4);
   expect(await computedStyles(page, 'inspector')).toEqual({
-    backgroundColor: 'rgb(127, 29, 29)',
-    borderColor: 'rgb(234, 179, 8)',
-    color: 'rgb(243, 244, 246)',
+    backgroundColor: 'rgb(43, 23, 25)',
+    borderColor: 'rgb(201, 162, 39)',
+    color: 'rgb(248, 250, 252)',
   });
+  expect(await page.getByTestId('inspector-accent').evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(239, 68, 68)');
   await page.getByRole('button', { name: 'Close unit details' }).click();
   // Settings menu.
   await openSettings(page);
@@ -214,10 +216,13 @@ test('design-system/A2 one primary action per decision point', async ({ page }) 
   const saveBg = await page.getByRole('button', { name: /Save Game/i }).evaluate((el) => getComputedStyle(el).backgroundColor);
   expect(saveBg).toBe('rgb(234, 179, 8)');
   await closeSettings(page);
-  // Inspector: Close is the single primary action.
+  // Inspector: Close is the single action and uses the ghost treatment
+  // (zero gold primaries, per R10).
   await openInspector(page, 24, 5);
   const closeBg = await page.getByRole('button', { name: 'Close unit details' }).evaluate((el) => getComputedStyle(el).backgroundColor);
-  expect(closeBg).toBe('rgb(234, 179, 8)');
+  expect(closeBg).toBe('rgba(0, 0, 0, 0)');
+  const inspectorButtons = await page.getByTestId('inspector').locator('button').count();
+  expect(inspectorButtons).toBe(1);
   await page.getByRole('button', { name: 'Close unit details' }).click();
   // Forecast: Attack primary (gold), Cancel secondary.
   await openForecast(page);
@@ -445,40 +450,31 @@ test('unit-inspector/A3 close paths and target size', async ({ page }) => {
   await expect(page.getByTestId('inspector')).toHaveCount(0);
 });
 
-test('unit-inspector/A4 values share one right-aligned column per panel', async ({ page }) => {
+test('unit-inspector/A4 values share one right-aligned column per column/box', async ({ page }) => {
   await gotoBattle(page);
   await openInspector(page, 24, 5);
-  // Each of the 3 panels has its own right-aligned value column: within a
-  // panel all values share one right edge (the panel's right edge minus its
-  // 10px padding and 1px border, i.e. 11px). Group each <strong> with its
-  // panel and check both.
-  const rows = await page.getByTestId('inspector').locator('strong').evaluateAll((els) => {
-    const out: { strongRight: number; panelRight: number }[] = [];
-    for (const el of els) {
-      let panel: HTMLElement | null = el.parentElement;
-      while (panel && !(panel.parentElement && getComputedStyle(panel.parentElement).display === 'grid')) {
-        panel = panel.parentElement;
-      }
-      out.push({
-        strongRight: el.getBoundingClientRect().right,
-        panelRight: panel ? panel.getBoundingClientRect().right : -1,
-      });
-    }
-    return out;
+  // J2 layout: the Combat column, the Attributes column, and the Vitals box
+  // each carry their own right-aligned value column. For each group, every
+  // value shares the group's right edge (within 2px).
+  const groups = await page.getByTestId('inspector').evaluate((inspector) => {
+    const testIds = ['inspector-col-combat', 'inspector-col-attributes', 'inspector-box-vitals'];
+    return testIds.map((testId) => {
+      const container = inspector.querySelector(`[data-testid="${testId}"]`) as HTMLElement | null;
+      if (!container) return { testId, containerRight: -1, strongRights: [] as number[] };
+      return {
+        testId,
+        containerRight: container.getBoundingClientRect().right,
+        strongRights: [...container.querySelectorAll('strong')].map((el) => el.getBoundingClientRect().right),
+      };
+    });
   });
-  expect(rows.length).toBeGreaterThan(0);
-  for (const row of rows) {
-    expect(row.panelRight - row.strongRight).toBeCloseTo(11, 0);
-  }
-  const byPanel = new Map<number, number[]>();
-  for (const row of rows) {
-    const list = byPanel.get(row.panelRight) ?? [];
-    list.push(row.strongRight);
-    byPanel.set(row.panelRight, list);
-  }
-  expect(byPanel.size).toBe(3);
-  for (const rights of byPanel.values()) {
-    expect(Math.max(...rights) - Math.min(...rights)).toBeLessThanOrEqual(2);
+  expect(groups).toHaveLength(3);
+  for (const group of groups) {
+    expect(group.strongRights.length).toBeGreaterThan(0);
+    expect(Math.max(...group.strongRights) - Math.min(...group.strongRights)).toBeLessThanOrEqual(2);
+    for (const right of group.strongRights) {
+      expect(Math.abs(group.containerRight - right)).toBeLessThanOrEqual(2);
+    }
   }
 });
 
@@ -499,7 +495,14 @@ test('unit-inspector/A6 empty items state keeps its place', async ({ page }) => 
   await gotoBattle(page);
   await openInspector(page, 24, 5);
   const inspector = page.getByTestId('inspector');
-  await expect(inspector.getByText('No items')).toBeVisible();
+  // J2 empty state: four dashed slots, each "—".
+  const slots = inspector.getByTestId('inspector-items').locator(':scope > div');
+  await expect(slots).toHaveCount(4);
+  for (let i = 0; i < 4; i++) {
+    await expect(slots.nth(i)).toHaveText('—');
+    const borderStyle = await slots.nth(i).evaluate((el) => getComputedStyle(el).borderStyle);
+    expect(borderStyle).toBe('dashed');
+  }
   await expect(inspector.getByText('Max HP:')).toBeVisible();
   await expect(inspector.getByText('Move:')).toBeVisible();
 });

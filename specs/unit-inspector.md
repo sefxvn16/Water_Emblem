@@ -109,7 +109,7 @@ Then the panel background, accent bar, and chip match that group's tone
 (player `#101a2e` / `#3b82f6`, enemy `#2b1719` / `#ef4444`, intermediary
 `#12241a` / `#22c55e`, reinforcement `#1e1428` / `#a855f7`), and the chip
 reads Player / Enemy / Ally / Reinforcement
-Check: Playwright test "unit-inspector/B faction tones" + screenshots   Test-first: no
+Check: Playwright test "unit-inspector/B faction tones — player and enemy" (real game) + Vitest `tests/core/factionTones.test.ts` and the SSR render in `tests/core/uiRender.test.ts` (all four tones) + screenshots. The intermediary and reinforcement tones cannot be shown in the real game yet (no chapter fields an `ally` unit, and save validation rejects faction flips in saved games); their in-game screenshots are owed when a chapter fields such units.   Test-first: no
 
 ## Decisions
 - 2026-11-15: Language of the whole game is English (`Game_Design/decisions.md`, language section).
