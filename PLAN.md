@@ -180,6 +180,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
   - Kiểm bởi: tôi
 
+- [ ] 78. Mũi tên di chuyển: avatar đè lên mũi tên; mũi tên dày, trắng, nét liền, hơi trong suốt, đầu mũi tên dạng khối theo ảnh mẫu.
+  - Nguồn: yêu cầu của chủ dự án 2026-11-19 (kèm ảnh mũi tên mẫu — chỉ lấy hình dáng, không lấy màu).
+  - Tiêu chí xong: (1) Trên trình duyệt thật (2D): khi chọn quân và rê tới ô đích, avatar của mọi quân trên đường đi luôn hiển thị đè lên mũi tên (không bị mũi tên che); chụp ảnh kiểm chứng. (2) Mũi tên: thân dày hơn (rộng ~18px so với 9px cũ), màu trắng, nét liền (không còn đường đứt), hơi trong suốt (opacity ~0.85), có viền tối để không trùng nền; đầu mũi tên dạng khối tam giác rộng theo ảnh mẫu. (3) Không đổi luật chơi hay con số nào. (4) Gate `node .studio/gate.mjs` Result: PASS.
+  - Kết quả: Mới ghi nhận 2026-11-19, chưa làm.
+  - Kiểm bởi: tôi
+
 ## Giai đoạn 4 trở đi: mở rộng
 
 - [x] 68. Lưới bản đồ FE3 Book 1 Chương 4 (giao Antigravity, Claude kiểm soát).
