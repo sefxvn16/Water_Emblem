@@ -582,12 +582,14 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 - [] 137. Thiết kế lại giao diện Trade và Storage: có avatar để biết ai với ai.
   - Nguồn: chủ dự án 2026-11-19 22:10 (ảnh 2): "Lúc trade vẫn không có chọn nhân vật, giao diện trade cần có avatar để biết ai với ai chứ? Thiết kế lại giao diện mục này đi. Tương tự với mục Storage."
   - Tiêu chí xong: (1) Trade: 2 cột đều có avatar + tên quân rõ ràng ở đầu cột. (2) Storage (convoy): tương tự, có avatar quân đang thao tác. (3) Giữ nguyên thao tác + giới hạn 4+4 (mục 86–88). (4) Thiết kế trình chủ duyệt trước khi làm. (5) Test + gate PASS.
+  - Chủ 2026-11-20 10:20 chơi thử nhắc lại: "Avatar nhân vật vẫn chưa hiện ra trên giao diện trade?" — ra lệnh làm ngay trong đợt sửa chơi thử (mục 158–162).
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
 - [] 138. Không tự qua lượt địch khi hết quân hành động; thêm tùy chọn tự động kết thúc lượt trong Settings.
   - Nguồn: chủ dự án 2026-11-19 22:10: "Các nhân vật đi hết lượt không tự động qua lượt địch. Vì người chơi có thể dừng lại xem thông số, thông tin khác thì sao? Chỉ qua lượt khi bấm End Turn. Thêm chế độ trong Settings, là Tự động qua lượt đi khi hết (bật/tắt) để người chơi lựa chọn. Từ ngữ nào cho hợp game là được."
   - Tiêu chí xong: (1) Quân ta hành động hết KHÔNG tự chuyển pha địch; chỉ bấm End Turn mới qua. (2) Settings có công tắc bật/tắt tự động qua lượt (tên hợp game), mặc định tắt [Giả định]; bật thì giữ hành vi tự qua như cũ. (3) Lựa chọn được lưu. (4) Test + gate PASS.
+  - Chủ 2026-11-20 10:20 chơi thử nhắc lại: "Vẫn tự động End Turn khi người chơi đi xong toàn bộ? Và vẫn không có nút để bật tắt chế độ này trong Settings." — ra lệnh làm ngay trong đợt sửa chơi thử (mục 158–162).
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
@@ -602,6 +604,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 - [] 140. Pha địch hiển thị hành động: quân địch đi từng ô, chọn mục tiêu rồi đánh, có hoạt cảnh.
   - Nguồn: chủ dự án 2026-11-19 22:10: "Các lượt đi của địch cũng phải hiển thị để người chơi còn thấy (bật hiển thị hành động): đi cũng cần di chuyển từ ô đi đến ô đích, chọn quân ta để đánh, rồi đánh. Hiện không rõ địch lượt vừa rồi đi như thế nào, đánh ai, thấy mỗi kết quả nên toàn phải đoán."
   - Tiêu chí xong: (1) Mỗi quân địch di chuyển theo đường đi bằng hoạt cảnh bước như quân ta. (2) Hiện rõ quân địch đánh quân nào (theo thứ tự từng quân, kèm popup kết quả). (3) Tốc độ theo cài đặt tốc độ hoạt ảnh (mục 117). (4) Test + gate PASS. Làm sau mục 135 (tách lớp mô phỏng) để nối vào đúng chỗ.
+  - Chủ 2026-11-20 10:20 chơi thử nhắc lại: "Vẫn không thấy quân địch di chuyển" — ra lệnh làm ngay trong đợt sửa chơi thử (mục 158–162). Lưu ý: chủ đồng thời ra lệnh bỏ các nút Normal/Fast/Off trong Settings (mục 162) nên tốc độ hoạt ảnh dùng mặc định cố định, không còn cài đặt tốc độ.
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
@@ -719,6 +722,36 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Tiêu chí xong: Chủ duyệt phạm vi sửa; mọi baseStats/growths/personalGrowths/class growths đối chiếu FE11 (Book 1) / FE12 (Book 2) theo Serenes Forest, ghi nguồn từng bảng; các số tạm trong `balance.json` hoặc thay bằng số FE có nguồn hoặc ghi rõ [Giả định] chờ chủ chốt; test dữ liệu cho các số đã sửa; `tsc` PASS; Vitest PASS; gate PASS.
   - Chủ 2026-11-20 01:18 chốt phạm vi (a): chỉ sửa chỉ số nhân vật/class về FE11/FE12; "Tôi không thêm các số không có trong dòng game Fire Emblem" — không thêm/thay số hệ thống trong `balance.json` bằng số tự đặt; giữ nguyên các class như đã chốt (Navarre giữ mercenary, không thêm myrmidon). Chủ đồng ý sửa test của cơ chế đã gỡ/đổi (mục 147–150/154).
   - Kết quả: XONG — commit `a6ff336` (áp số FE11/FE12 theo Serenes Forest cho Julian/Navarre/Lena/Tiki/Xane/Feena và class paladin/manakete/chameleon; Navarre giữ mercenary, growth hiệu dụng giữ nguyên theo `Game_Design/characters.md`; nhãn `sourceClass` của paladin vẫn ghi "FE11 Dismounted Knight" — chỉ là nhãn, số đã sửa; test mới `tests/core/feStats.test.ts` 7 test; gate tại trạng thái `a6ff336` đã PASS, gate cuối 2026-11-20 tại commit `9af476d`: `Result: PASS`).
+  - Kiểm bởi: tôi
+
+- [] 158. Luồng Attack: chọn đối tượng trước, chọn vũ khí sau, rồi mới hiện dự báo.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:20: "Khi bấm attack thì popup hiện vũ khí che mất đối tượng. Và để khi chọn đối tượng xong mới chọn vũ khí, vì sau đó hiện ra thông tin dự báo. Người chơi mới so sánh được chọn vũ khí nào lợi hơn".
+  - Tiêu chí xong: (1) Bấm Attack → chọn đối tượng trên bản đồ (popup vũ khí không che đối tượng). (2) Chọn xong đối tượng → chọn vũ khí. (3) Chọn vũ khí xong → hiện dự báo chiến đấu với vũ khí đó; đổi vũ khí thì dự báo cập nhật để so sánh. (4) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 159. Lỗi: đánh xong nhân vật chưa mất lượt, phải bấm vào mới hết lượt.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:20: "Khi đánh xong nhân vật vẫn chưa mất lượt, phải bấm vào mới tự hết lượt".
+  - Tiêu chí xong: (1) Sau khi tấn công xong, quân chuyển trạng thái đã hành động ngay, không cần bấm lại. (2) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 160. Trade: chưa chuyển đồ thì coi như chưa hành động, hủy được di chuyển.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:20: "Khi nhân vật di chuyển, chọn Trade, xong huỷ không trade, thì cũng không huỷ lệnh di chuyển được vì lệnh Trade chỉ có nút Done nghĩa là xác nhận đã Trade, trong khi game gốc thì nếu không chuyển gì thì coi như chưa có hành động, người chơi vẫn huỷ di chuyển/hành động trước đó được."
+  - Tiêu chí xong: (1) Mở Trade rồi đóng mà không chuyển món nào → chưa tính hành động, quay lại trạng thái trước Trade, hủy di chuyển được như FE. (2) Đã chuyển ít nhất 1 món → tính là hành động Trade như cũ. (3) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 161. Bố cục bảng dự báo chiến đấu theo ảnh chủ gửi 2026-11-20.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:20 (kèm ảnh bảng dự báo của Cain): "chuyển tên nhân vật lên chỗ chữ HP chữ to; thanh HP làm dày hơn nhưng ngắn lại chút (co bên phải lại), để đảm bảo mép xa nhất của thanh HP cách góc hình quả trám của vũ khí bằng với mép bên trái thanh HP và avatar; và cho chữ số HP vào đó (căn trái gần phía avatar); số level nhân vật thay chỗ icon class; bỏ icon class trong hình; các chỉ số chia thành 2 cột, 3 hàng để không bị che khuất bởi vũ khí".
+  - Tiêu chí xong: (1) Tên nhân vật ở vị trí dòng HP hiện tại, chữ to. (2) Thanh HP dày hơn, ngắn lại phía phải; khoảng cách từ mép phải thanh HP tới góc hình quả trám vũ khí bằng khoảng cách từ mép trái thanh HP tới avatar. (3) Số HP nằm trong thanh HP, căn trái gần avatar. (4) Số level đặt ở vị trí icon class hiện tại; bỏ icon class. (5) Chỉ số chia 2 cột × 3 hàng, không bị hình vũ khí che. (6) Giữ đủ số liệu dự báo + nút Attack/Cancel của mục 125/136. (7) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
+- [] 162. Settings: bỏ combat log và bỏ các nút Normal/Fast/Off tự thêm.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:20: "Bỏ combat log trong settings" và "Tự bịa thêm các nút Normal, Fast, Off trong Settings dù tôi không yêu cầu."
+  - Tiêu chí xong: (1) Settings không còn mục combat log. (2) Settings không còn các nút Normal/Fast/Off. (3) Không thêm nút/mục nào khác ngoài lệnh chủ. (4) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
