@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sectionHeadingStyle, sharedPanelStyle } from './designSystem';
-import type { AnimationSpeed } from '../renderer/movementAnimation';
 
 interface BattleSettingsMenuProps {
   /** Changes whenever the chapter changes or a full-screen modal opens or closes; the menu closes. */
@@ -16,7 +15,6 @@ interface BattleSettingsMenuProps {
   /** Master volume 0..1 (PLAN item 128); 0 = muted. */
   volume: number;
   onVolume: (volume: number) => void;
-  combatLog: readonly string[];
   onChapterChange: (chapterId: string) => void;
   onTitle: () => void;
   onWorldMap: () => void;
@@ -24,9 +22,10 @@ interface BattleSettingsMenuProps {
   onSave: () => void;
   onLoad: () => void;
   onViewMode: (mode: '3d' | '2d') => void;
-  /** Animation speed setting (PLAN item 117). */
-  animationSpeed: AnimationSpeed;
-  onAnimationSpeed: (speed: AnimationSpeed) => void;
+  /** Auto End Turn toggle (PLAN item 138): when on, the player phase
+      ends automatically once every unit has acted. */
+  autoEndTurn: boolean;
+  onAutoEndTurn: (enabled: boolean) => void;
   onToggleMute: () => void;
   /** Primary battle action shown left of the gear in the top-right cluster (End Turn). */
   leading?: React.ReactNode;
@@ -238,13 +237,6 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                   🗺️ 2D Grid
                 </button>
               </div>
-              <div style={{ display: 'flex', flex: 1, backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}`, minHeight: 44 }} role="group" aria-label="Animation speed">
-                {(['normal', 'fast', 'off'] as const).map((speed) => (
-                  <button key={speed} onClick={() => props.onAnimationSpeed(speed)} style={viewButtonStyle(props.animationSpeed === speed)}>
-                    {speed === 'normal' ? '🐢 Normal' : speed === 'fast' ? '🐇 Fast' : '⏩ Off'}
-                  </button>
-                ))}
-              </div>
             </div>
             {/* Volume slider (PLAN item 128): drag to 0 = muted. */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: 44, padding: '0 4px' }}>
@@ -262,21 +254,20 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                 {Math.round(props.volume * 100)}%
               </span>
             </div>
-          </section>
-
-          {/* Combat Log */}
-          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <h3 style={sectionHeadingStyle}>Combat Log</h3>
-            <div style={{ backgroundColor: DS_COLORS.navyDark, padding: '10px', borderRadius: DS_RADII.panel, border: `1px solid ${DS_COLORS.secondaryBorder}` }}>
-              <div style={{ maxHeight: '160px', overflowY: 'auto', fontSize: '12px', lineHeight: '1.5', color: '#e2e8f0' }}>
-                {props.combatLog.length === 0 ? (
-                  <span style={{ color: DS_COLORS.caption }}>No battle engagements yet.</span>
-                ) : (
-                  props.combatLog.map((log, idx) => <div key={idx} style={{ marginBottom: '4px' }}>{log}</div>)
-                )}
+            {/* Auto End Turn (PLAN item 138): off = press End Turn manually. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: 44, padding: '0 4px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#e2e8f0', flex: 1 }}>⏭️ Auto End Turn</span>
+              <div style={{ display: 'flex', backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}` }} role="group" aria-label="Auto End Turn">
+                <button onClick={() => props.onAutoEndTurn(true)} style={{ ...viewButtonStyle(props.autoEndTurn), minHeight: 36, padding: '6px 14px' }}>
+                  On
+                </button>
+                <button onClick={() => props.onAutoEndTurn(false)} style={{ ...viewButtonStyle(!props.autoEndTurn), minHeight: 36, padding: '6px 14px' }}>
+                  Off
+                </button>
               </div>
             </div>
           </section>
+
         </div>
       )}
     </div>

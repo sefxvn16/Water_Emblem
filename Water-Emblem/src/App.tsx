@@ -27,7 +27,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
-import { runMovementAnimation, setAnimationSpeed, type ActiveMovingUnit, type AnimationSpeed } from './renderer/movementAnimation';
+import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import { computeCombinedThreatKeys, computeUnitThreatKeys } from './core/grid/threatRange';
 import {
@@ -200,15 +200,18 @@ export const App: React.FC = () => {
   // an action the unit's turn ends immediately, FE3-style.
   // PLAN item 115: playthrough difficulty (enemy stat bonuses).
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
-  // PLAN item 117: animation speed setting, persisted locally.
-  const [animationSpeed, setAnimationSpeedState] = useState<AnimationSpeed>(() => {
-    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('water-emblem-anim-speed') : null;
-    return saved === 'fast' || saved === 'off' ? saved : 'normal';
+  // PLAN item 138: Auto End Turn toggle, persisted locally; default off
+  // (the player presses End Turn manually). PLAN item 162: the
+  // Normal/Fast/Off animation-speed buttons were removed from Settings
+  // (self-added, never requested); animation runs at the fixed default.
+  const [autoEndTurn, setAutoEndTurnState] = useState<boolean>(() => {
+    const saved = typeof localStorage !== 'undefined' ? localStorage.getItem('water-emblem-auto-end-turn') : null;
+    return saved === 'on';
   });
   useEffect(() => {
-    setAnimationSpeed(animationSpeed);
-    try { localStorage.setItem('water-emblem-anim-speed', animationSpeed); } catch { /* storage unavailable */ }
-  }, [animationSpeed]);
+    turnManager.setAutoEndTurn(autoEndTurn);
+    try { localStorage.setItem('water-emblem-auto-end-turn', autoEndTurn ? 'on' : 'off'); } catch { /* storage unavailable */ }
+  }, [autoEndTurn]);
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
@@ -1905,7 +1908,6 @@ export const App: React.FC = () => {
         isMuted={isMuted}
         volume={volume}
         onVolume={handleVolume}
-        combatLog={combatLog}
         onChapterChange={loadChapter}
         onTitle={() => setActiveScreen('title')}
         onWorldMap={() => setActiveScreen('world_map')}
@@ -1916,8 +1918,8 @@ export const App: React.FC = () => {
         onSave={() => handleSave()}
         onLoad={() => handleLoad()}
         onViewMode={setViewMode}
-        animationSpeed={animationSpeed}
-        onAnimationSpeed={setAnimationSpeedState}
+        autoEndTurn={autoEndTurn}
+        onAutoEndTurn={setAutoEndTurnState}
         onToggleMute={handleToggleMute}
         leading={turnState.activePhase === 'player_phase' && (
           <button

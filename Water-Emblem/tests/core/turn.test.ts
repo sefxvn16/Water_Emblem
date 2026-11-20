@@ -71,8 +71,9 @@ describe('TurnManager & Phase Transition', () => {
     expect(manager.getState().activePhase).toBe('player_phase');
   });
 
-  it('tự động chuyển sang Enemy Phase khi tất cả quân ta đã hành động', () => {
+  it('tự động chuyển sang Enemy Phase khi tất cả quân ta đã hành động (khi bật Auto End Turn — PLAN 138)', () => {
     const manager = new TurnManager(getInitialUnits());
+    manager.setAutoEndTurn(true);
 
     const fakeReachable = new Map();
     fakeReachable.set('0,1', {
@@ -93,8 +94,21 @@ describe('TurnManager & Phase Transition', () => {
     expect(manager.getState().activePhase).toBe('enemy_phase');
   });
 
+  it('mặc định tắt Auto End Turn: hết quân hành động vẫn ở Player Phase (PLAN 138)', () => {
+    const manager = new TurnManager(getInitialUnits());
+    const fakeReachable = new Map();
+
+    manager.selectUnit('marth', fakeReachable);
+    manager.waitSelectedUnit();
+    manager.selectUnit('jagen', fakeReachable);
+    manager.waitSelectedUnit();
+
+    expect(manager.getState().activePhase).toBe('player_phase');
+  });
+
   it('kết thúc Enemy Phase sẽ sang Turn 2, Player Phase và reset trạng thái hasActed', () => {
     const manager = new TurnManager(getInitialUnits());
+    manager.setAutoEndTurn(true);
 
     // Đơn vị đi hết
     const dummyRange = new Map();

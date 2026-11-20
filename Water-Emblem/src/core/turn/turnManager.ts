@@ -28,6 +28,13 @@ export type TurnEvent =
  */
 export class TurnManager {
   private state: TurnState;
+  // PLAN item 138 (owner 2026-11-19): the player phase ends automatically
+  // only when this is on; default off — End Turn is pressed manually.
+  private autoEndTurn = false;
+
+  setAutoEndTurn(enabled: boolean): void {
+    this.autoEndTurn = enabled;
+  }
 
   constructor(initialUnits: GridUnit[]) {
     this.state = {
@@ -124,6 +131,7 @@ export class TurnManager {
   }
 
   checkAutoPhaseEnd(): void {
+    if (!this.autoEndTurn) return;
     if (this.state.activePhase === 'player_phase') {
       const activePlayerUnits = this.state.units.filter(
         (u) => u.faction === 'player' && !u.isDead && !u.hasActed
