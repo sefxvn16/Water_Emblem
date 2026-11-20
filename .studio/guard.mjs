@@ -9,7 +9,7 @@
 // --rev   compare that commit instead of the working tree (CI uses the pushed commit)
 //
 // HARD BLOCK: any change to the gate machinery itself
-//   .studio/**, .githooks/**, .github/workflows/**
+//   .studio/**, .githooks/**, .github/workflows/**, Game_Design/features.lock.json
 // HARD BLOCK: tests weakened — a test file deleted, fewer it()/test() cases, fewer expect() assertions,
 //   or more .skip/.only/.todo than the baseline.
 // Adding tests and assertions is always allowed.
@@ -22,7 +22,9 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
-const MACHINERY = [/^\.studio\//, /^\.githooks\//, /^\.github\/workflows\//];
+// `features.lock.json` là danh mục cơ chế đã duyệt (PLAN mục 173). Nó phải nằm trong nhóm này:
+// nếu AI tự thêm id vào đó thì test khóa danh mục hết tác dụng, vì cách qua test là sửa danh mục.
+const MACHINERY = [/^\.studio\//, /^\.githooks\//, /^\.github\/workflows\//, /^Game_Design\/features\.lock\.json$/];
 // scope.json là bản khai báo phạm vi, mỗi việc một lần, nên ai làm việc cũng phải ghi được;
 // nó bị `done.mjs scope` kiểm riêng. last-gate.json là sổ ghi của máy, không theo dõi trong git.
 const MACHINERY_EXEMPT = ['.studio/scope.json', '.studio/last-gate.json'];

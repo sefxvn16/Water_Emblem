@@ -40,7 +40,13 @@ Bật cổng một lần cho mỗi clone (nếu chưa):
 - Chỉ sửa đúng phạm vi mục được giao. Phát hiện thêm việc: ghi thành mục mới trong `PLAN.md`, không tự làm.
 - **Không sửa, làm yếu, bỏ qua hay xóa test có sẵn để thay đổi pass.** `guard.mjs` đếm số `it()/test()`,
   số `expect()` và số `.skip/.only/.todo`; giảm test hoặc thêm skip là bị chặn commit và chặn push.
-- **Không sửa `.studio/**`, `.githooks/**`, `.github/workflows/**`.** Đây là cổng kiểm; chỉ chủ dự án đổi.
+- **Không sửa `.studio/**`, `.githooks/**`, `.github/workflows/**`, `Game_Design/features.lock.json`.**
+  Đây là cổng kiểm; chỉ chủ dự án đổi.
+- **Cơ chế nào không có trong `Game_Design/features.lock.json` thì không tồn tại.** Thêm một skill, một
+  loại điều kiện thắng, hay một nhánh mới trong union kiểu nào trong `src/core/` đều làm
+  `tests/core/featureLock.test.ts` đỏ. Cách qua test là sửa danh mục, mà danh mục thì `guard` chặn —
+  nên muốn thêm cơ chế thì ghi mục mới vào `PLAN.md`, báo chủ dự án, chờ chủ thêm id. Đây là chỗ chặn
+  việc tự bịa cơ chế **bên trong** một file đã được phép sửa.
 - Cần đổi test hoặc cổng thật: dừng, báo chủ dự án, nêu lý do, chờ duyệt.
 - `WE_GATE_CHANGE_OK=1` chỉ được dùng khi **chủ dự án ra lệnh đổi cổng ngay trong lượt đó**. Khi dùng,
   phải ghi nguyên văn câu lệnh của chủ vào commit message, để chủ soát lại được. Tự đặt biến này mà

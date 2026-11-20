@@ -1,0 +1,122 @@
+{
+  "_doc": "Danh muc co che da duoc khoa. Cai gi khong co trong day thi khong ton tai: tests/core/featureLock.test.ts so BANG NHAU TUYET DOI giua file nay va registry that trong src/core va data. Them mot co che moi se lam test do, va cach duy nhat de qua la sua file nay - mot diff mot dong, do chu du an duyet.",
+  "_canh_bao": "DAY LA ANH CHUP HIEN TRANG ngay 2026-11-20, CHUA phai danh muc chu du an da xac nhan tung id. Muc dich truoc mat la DONG BANG hien trang de khong co co che moi nao lot vao nua. Viec soat lai tung id xem co dung Fire Emblem va dung quyet dinh cua chu du an hay khong van con lai: PLAN muc 173.",
+  "_cach_them": "Them co che moi: ghi thanh muc moi trong PLAN.md, bao chu du an, cho duyet, roi chu du an them id vao day. AI khong tu sua file nay.",
+  "skills": [
+    "axefaire",
+    "bowfaire",
+    "bulwark",
+    "calm",
+    "charisma",
+    "deadeye",
+    "focus",
+    "gentle",
+    "healer",
+    "hot_blood",
+    "lancefaire",
+    "locktouch",
+    "nimble",
+    "pavise",
+    "sureshot",
+    "swordfaire",
+    "tomefaire",
+    "veteran",
+    "winged_grace"
+  ],
+  "objective_types": [
+    "defeat_boss",
+    "escape",
+    "protect",
+    "rout",
+    "seize"
+  ],
+  "type_unions": {
+    "AIRole": [
+      "flee",
+      "patrol",
+      "pillage",
+      "pursue",
+      "retreat",
+      "stationary",
+      "thief"
+    ],
+    "ChapterOutcome": [
+      "defeat",
+      "ongoing",
+      "victory"
+    ],
+    "ChestState": [
+      "opened"
+    ],
+    "DialogueKind": [
+      "boss_death",
+      "boss_start",
+      "recruit",
+      "village"
+    ],
+    "Difficulty": [
+      "hard",
+      "lunatic",
+      "normal"
+    ],
+    "DoorState": [
+      "opened"
+    ],
+    "FactionToneKey": [
+      "ally",
+      "enemy",
+      "player",
+      "reinforcement"
+    ],
+    "GamePhase": [
+      "enemy_phase",
+      "player_phase"
+    ],
+    "MoveType": [
+      "armor",
+      "bandit",
+      "cavalry",
+      "flier",
+      "foot",
+      "mage"
+    ],
+    "ObstacleType": [
+      "difficult",
+      "fly_only",
+      "impassable",
+      "none",
+      "structure",
+      "water"
+    ],
+    "SlotKind": [
+      "item",
+      "weapon"
+    ],
+    "UnitFaction": [
+      "ally",
+      "enemy",
+      "player"
+    ],
+    "VillageState": [
+      "destroyed",
+      "intact",
+      "visited"
+    ],
+    "WeaponRank": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "WeaponType": [
+      "axe",
+      "bow",
+      "consumable",
+      "lance",
+      "staff",
+      "sword",
+      "tome"
+    ]
+  }
+}
