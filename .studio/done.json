@@ -1,0 +1,6 @@
+{
+  "plan_file": "PLAN.md",
+  "enforce_token_from_item": 169,
+  "integration_branch": "main",
+  "ignore_dirty": ["PLAN.md", "CHECKLIST.md", ".studio/last-gate.json", "work/"]
+}

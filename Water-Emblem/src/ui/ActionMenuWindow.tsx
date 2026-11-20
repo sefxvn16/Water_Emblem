@@ -92,35 +92,37 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
 
   const descriptors: ActionDescriptor[] = [];
   if (actions !== null) {
-    if (actions.canSeize) descriptors.push({ key: 'seize', glyph: '👑', label: 'Seize Gate', onClick: props.onSeize, priority: 1 });
-    if (actions.canEscape) descriptors.push({ key: 'escape', glyph: '🏃', label: 'Escape', onClick: props.onEscape, priority: 2 });
-    if (actions.villageName !== null) descriptors.push({ key: 'village', glyph: '🏠', label: `Visit (${actions.villageName})`, onClick: props.onVisitVillage, priority: 3 });
-    if (actions.hasAttackTargets) descriptors.push({ key: 'attack', glyph: '⚔️', label: 'Attack', onClick: props.onAttack, priority: 4 });
+    // PLAN item 139: Fixed action order per Fire Emblem canon:
+    // Talk > Visit > Seize > Escape > Chest > Door > Shop > Arena > Attack > Staff > Equip > Vulnerary > Trade > Storage > Transform > Dance > Imitate > Promote > Mount > Wait > Cancel Move
+    if (actions.talkTargetName !== null) descriptors.push({ key: 'talk', glyph: '💬', label: `Talk: ${actions.talkTargetName}`, onClick: props.onTalk, priority: 1 });
+    if (actions.villageName !== null) descriptors.push({ key: 'village', glyph: '🏠', label: `Visit (${actions.villageName})`, onClick: props.onVisitVillage, priority: 2 });
+    if (actions.canSeize) descriptors.push({ key: 'seize', glyph: '👑', label: 'Seize Gate', onClick: props.onSeize, priority: 3 });
+    if (actions.canEscape) descriptors.push({ key: 'escape', glyph: '🏃', label: 'Escape', onClick: props.onEscape, priority: 4 });
+    if (actions.canOpenChest) descriptors.push({ key: 'chest', glyph: '🎁', label: 'Open Chest', onClick: props.onOpenChest, priority: 5 });
+    if (actions.canOpenDoor) descriptors.push({ key: 'door', glyph: '🚪', label: 'Open Door', onClick: props.onOpenDoor, priority: 6 });
+    if (actions.canShop) descriptors.push({ key: 'shop', glyph: '🏪', label: 'Shop', onClick: props.onShop, priority: 7 });
+    if (actions.canArena) descriptors.push({ key: 'arena', glyph: '🏟️', label: 'Arena', onClick: props.onArena, priority: 8 });
+    if (actions.hasAttackTargets) descriptors.push({ key: 'attack', glyph: '⚔️', label: 'Attack', onClick: props.onAttack, priority: 9 });
     for (const option of actions.staffOptions) {
-      descriptors.push({ key: `staff-${option.itemId}`, glyph: '✨', label: `Staff: ${option.name}`, onClick: () => props.onStaff(option.itemId), priority: 5 });
+      descriptors.push({ key: `staff-${option.itemId}`, glyph: '✨', label: `Staff: ${option.name}`, onClick: () => props.onStaff(option.itemId), priority: 10 });
     }
-    if (actions.talkTargetName !== null) descriptors.push({ key: 'talk', glyph: '💬', label: `Talk: ${actions.talkTargetName}`, onClick: props.onTalk, priority: 6 });
-    if (actions.canOpenChest) descriptors.push({ key: 'chest', glyph: '🎁', label: 'Open Chest', onClick: props.onOpenChest, priority: 7 });
-    if (actions.canOpenDoor) descriptors.push({ key: 'door', glyph: '🚪', label: 'Open Door', onClick: props.onOpenDoor, priority: 8 });
-    if (actions.canShop) descriptors.push({ key: 'shop', glyph: '🏪', label: 'Shop', onClick: props.onShop, priority: 9 });
-    if (actions.canArena) descriptors.push({ key: 'arena', glyph: '🏟️', label: 'Arena', onClick: props.onArena, priority: 10 });
-    if (actions.canTransform) descriptors.push({ key: 'transform', glyph: '🐉', label: 'Transform', onClick: props.onTransform, priority: 11 });
-    if (actions.danceTargetName !== null) descriptors.push({ key: 'dance', glyph: '💃', label: `Dance: ${actions.danceTargetName}`, onClick: props.onDance, priority: 12 });
-    if (actions.imitateTargetName !== null) descriptors.push({ key: 'imitate', glyph: '🎭', label: `Imitate: ${actions.imitateTargetName}`, onClick: props.onImitate, priority: 13 });
-    for (const p of actions.promotions) {
-      descriptors.push({ key: `promote-${p.id}`, glyph: '⬆️', label: `Promote: ${p.name}`, onClick: () => props.onPromote(p.id), priority: 14 });
-    }
-    if (actions.canUseVulnerary) descriptors.push({ key: 'vulnerary', glyph: '🧪', label: 'Use Vulnerary', onClick: props.onUseVulnerary, priority: 15 });
-    if (actions.canTrade) descriptors.push({ key: 'trade', glyph: '🔁', label: 'Trade', onClick: props.onTrade, priority: 16 });
-    if (actions.canStorage) descriptors.push({ key: 'storage', glyph: '📦', label: 'Storage', onClick: props.onStorage, priority: 17 });
     for (const option of actions.equipOptions) {
-      descriptors.push({ key: `equip-${option.itemId}`, glyph: '🗡️', label: `Equip: ${option.name}`, onClick: () => props.onEquip(option.itemId), priority: 18 });
+      descriptors.push({ key: `equip-${option.itemId}`, glyph: '🗡️', label: `Equip: ${option.name}`, onClick: () => props.onEquip(option.itemId), priority: 11 });
     }
-    descriptors.push({ key: 'wait', glyph: '⏳', label: 'Wait', onClick: props.onWait, priority: 19 });
-    if (actions.canCancelMove) descriptors.push({ key: 'cancel', glyph: '↩️', label: 'Cancel Move', onClick: props.onCancelMove, priority: 20, danger: true });
+    if (actions.canUseVulnerary) descriptors.push({ key: 'vulnerary', glyph: '🧪', label: 'Use Vulnerary', onClick: props.onUseVulnerary, priority: 12 });
+    if (actions.canTrade) descriptors.push({ key: 'trade', glyph: '🔁', label: 'Trade', onClick: props.onTrade, priority: 13 });
+    if (actions.canStorage) descriptors.push({ key: 'storage', glyph: '📦', label: 'Storage', onClick: props.onStorage, priority: 14 });
+    if (actions.canTransform) descriptors.push({ key: 'transform', glyph: '🐉', label: 'Transform', onClick: props.onTransform, priority: 15 });
+    if (actions.danceTargetName !== null) descriptors.push({ key: 'dance', glyph: '💃', label: `Dance: ${actions.danceTargetName}`, onClick: props.onDance, priority: 16 });
+    if (actions.imitateTargetName !== null) descriptors.push({ key: 'imitate', glyph: '🎭', label: `Imitate: ${actions.imitateTargetName}`, onClick: props.onImitate, priority: 17 });
+    for (const p of actions.promotions) {
+      descriptors.push({ key: `promote-${p.id}`, glyph: '⬆️', label: `Promote: ${p.name}`, onClick: () => props.onPromote(p.id), priority: 18 });
+    }
+    descriptors.push({ key: 'wait', glyph: '⏳', label: 'Wait', onClick: props.onWait, priority: 20 });
+    if (actions.canCancelMove) descriptors.push({ key: 'cancel', glyph: '↩️', label: 'Cancel Move', onClick: props.onCancelMove, priority: 21, danger: true });
   }
   if (mountLabel !== null) {
-    descriptors.push({ key: 'mount', glyph: '🐴', label: mountLabel, onClick: props.onToggleMount, priority: 18.5 });
+    descriptors.push({ key: 'mount', glyph: '🐴', label: mountLabel, onClick: props.onToggleMount, priority: 19 });
   }
   descriptors.sort((a, b) => a.priority - b.priority);
   const topKey = descriptors.find((d) => d.key !== 'wait' && d.key !== 'cancel')?.key;

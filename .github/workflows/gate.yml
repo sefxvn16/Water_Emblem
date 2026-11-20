@@ -1,0 +1,45 @@
+name: gate
+
+# Lớp cuối cùng, chạy trên máy của GitHub. Không AI nào tắt được nó từ trong phiên làm việc:
+# `git push --no-verify` bỏ qua được hook ở máy, nhưng không bỏ qua được job này.
+# Sửa chính file này cũng bị guard chặn và hiện rõ trong diff của PR để chủ dự án thấy.
+on:
+  push:
+    branches-ignore: []
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # guard cần origin/main làm mốc so sánh
+
+      - name: Fetch main
+        run: git fetch origin main:refs/remotes/origin/main || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Guard (chống tự sửa cổng kiểm và làm yếu test)
+        run: node .studio/guard.mjs
+
+      - name: Scope (thay đổi phải nằm trong phạm vi đã khai báo)
+        run: node .studio/done.mjs scope
+
+      - name: Done audit (PLAN.md và token DONE-OK)
+        run: node .studio/done.mjs audit
+
+      - name: Install
+        run: npm --prefix Water-Emblem ci
+
+      - name: Install Playwright browsers
+        run: npx --prefix Water-Emblem playwright install --with-deps chromium
+
+      - name: Gate (test, build, e2e)
+        run: node .studio/gate.mjs --base "origin/main"

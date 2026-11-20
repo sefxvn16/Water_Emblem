@@ -440,12 +440,14 @@ export const App: React.FC = () => {
   const displayDangerZoneKeys = inspectedThreatKeys ?? combinedDangerZoneKeys;
 
   // Danh sách các mục tiêu có thể tấn công từ vị trí hiện tại
+  // PLAN items 141 & 142: bao gồm cả trường hợp quân chưa di chuyển (đứng tại chỗ).
   const attackableTargets = useMemo(() => {
-    if (!selectedExtUnit || !pendingMovePos) return [];
+    if (!selectedExtUnit) return [];
+    const pos = pendingMovePos ?? selectedExtUnit.unit.position;
 
     const enemies = extendedUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
     return enemies.filter((enemy) => {
-      const dist = getManhattanDistance(pendingMovePos, enemy.unit.position);
+      const dist = getManhattanDistance(pos, enemy.unit.position);
       // Any usable weapon in the inventory counts (PLAN item 85): the
       // Attack command opens a weapon picker when several can reach.
       return canAttackAtDistance(selectedExtUnit, ITEM_BY_ID, dist);
@@ -561,28 +563,30 @@ export const App: React.FC = () => {
   // PLAN item 158 (owner playtest 2026-11-20): Attack flow is target
   // first, then weapon, then forecast — so the player compares weapons
   // through the forecast. Weapons usable against a chosen target:
-  const usableWeaponsForTarget = (target: ExtendedUnitState) => {
-    if (!selectedExtUnit || !pendingMovePos) return [];
-    const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+  const usableWeaponsForTarget = (target: ExtendedUnitState, fromPos?: Position) => {
+    if (!selectedExtUnit) return [];
+    const pos = fromPos ?? pendingMovePos ?? selectedExtUnit.unit.position;
+    const dist = getManhattanDistance(pos, target.unit.position);
     return getAttackWeapons(selectedExtUnit, ITEM_BY_ID).filter((weapon) => {
       const range = getAttackRange(selectedExtUnit.unit, weapon.definition);
       return range.max > 0 && dist >= range.min && dist <= range.max;
     });
   };
 
-  const openAttackForecast = (target: ExtendedUnitState, weaponDef?: ItemDefinition) => {
-    if (!selectedExtUnit || !pendingMovePos) return;
+  const openAttackForecast = (target: ExtendedUnitState, weaponDef?: ItemDefinition, fromPos?: Position) => {
+    if (!selectedExtUnit) return;
+    const pos = fromPos ?? pendingMovePos ?? selectedExtUnit.unit.position;
     soundManager.playSfx('cursor');
     setWeaponPickerOpen(false);
     setSelectedTarget(target);
-    const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+    const dist = getManhattanDistance(pos, target.unit.position);
     // PLAN item 85: when the equipped weapon cannot reach this target
     // but another usable weapon can, equip that weapon for the attack.
     const attackWeapon = weaponDef ?? findWeaponForDistance(selectedExtUnit, ITEM_BY_ID, dist);
     if (attackWeapon && attackWeapon.id !== selectedExtUnit.weapon?.id) {
       setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, attackWeapon.id, ITEM_BY_ID));
     }
-    const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
+    const attackerTerrain = mapData.grid[pos.y]?.[pos.x] ?? 'plains';
     const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
     // PLAN items 112/113: skill modifiers for both sides.
     const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
@@ -602,7 +606,7 @@ export const App: React.FC = () => {
       attackerTerrain,
       defenderTerrain,
       allGridUnits,
-      { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
+      { attacker: getElevation(mapData, pos), defender: getElevation(mapData, target.unit.position) },
       { attacker: attackerMods, defender: defenderMods },
       {
         attackerHasLight: holds(selectedExtUnit, 'lightsphere'),
@@ -615,15 +619,16 @@ export const App: React.FC = () => {
 
   // PLAN item 158: target chosen — with several usable weapons the picker
   // opens next; with one, the forecast opens right away.
-  const selectAttackTarget = (target: ExtendedUnitState) => {
-    const weapons = usableWeaponsForTarget(target);
+  const selectAttackTarget = (target: ExtendedUnitState, fromPos?: Position) => {
+    const pos = fromPos ?? pendingMovePos ?? selectedExtUnit?.unit.position;
+    const weapons = usableWeaponsForTarget(target, pos);
     if (weapons.length > 1) {
       soundManager.playSfx('cursor');
       setSelectedTarget(target);
       setWeaponPickerOpen(true);
       return;
     }
-    openAttackForecast(target, weapons[0]?.definition);
+    openAttackForecast(target, weapons[0]?.definition, pos);
   };
 
   const handleTileClick = (x: number, y: number) => {
@@ -738,10 +743,21 @@ export const App: React.FC = () => {
       return;
     }
 
-    // Nếu đã di chuyển và đang chọn mục tiêu tấn công
-    if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
+    // PLAN items 141 & 142: Bấm vào quân địch trong tầm để tấn công trực tiếp.
+    // Nếu quân chưa di chuyển (đứng tại chỗ), tự động xác nhận đứng yên tại chỗ
+    // rồi mở chọn vũ khí / dự báo giao tranh với địch.
+    if (selectedExtUnit && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
       && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
-      selectAttackTarget(clickedExt);
+      const pos = pendingMovePos ?? selectedExtUnit.unit.position;
+      if (!pendingMovePos) {
+        setMoveOrigin(pos);
+        setPendingMovePos(pos);
+        setPlannedPath([pos]);
+        setMoveCommitted(true);
+        turnManager.moveSelectedUnit(pos);
+      }
+      setAttackTargeting(false);
+      selectAttackTarget(clickedExt, pos);
       return;
     }
 

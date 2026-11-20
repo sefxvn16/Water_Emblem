@@ -63,3 +63,9 @@ work/
 # FE3 original asset store (kept outside game sources, see Game_Design/asset_sources.md)
 /Original/
 /scratch/
+
+# gate ledger (per-machine, see CHECKLIST.md)
+.studio/last-gate.json
+
+# Claude Code local session config (per machine, not part of the game)
+.claude/

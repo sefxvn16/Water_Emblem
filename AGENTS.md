@@ -1,6 +1,8 @@
 # AGENTS.md: Water Emblem
 
-File này là quy định chung cho mọi agent (ChatGPT/Codex, Antigravity/Gemini, Claude) và người làm việc trong repo. Khi hướng dẫn riêng của một công cụ mâu thuẫn với file này, theo file này và báo chủ dự án.
+File này là quy định chung cho mọi agent (ChatGPT/Codex, Antigravity/Gemini, Muse, Claude) và người làm việc trong repo. Khi hướng dẫn riêng của một công cụ mâu thuẫn với file này, theo file này và báo chủ dự án.
+
+**Đọc `CHECKLIST.md` trước khi làm bất cứ việc gì trong repo.** Đó là một trang các bước bắt buộc và các lệnh phải chạy, giống nhau cho mọi AI. Các bước đó không tùy ý: `pre-commit`, `pre-push` và CI chặn commit/push/merge khi chưa đạt. Không sửa `.studio/**`, `.githooks/**`, `.github/workflows/**` — `guard.mjs` chặn và báo cho chủ dự án.
 
 ## Mục tiêu và nguồn tham chiếu
 
@@ -26,7 +28,7 @@ Water Emblem - Mystery of Nothing là game chiến thuật theo lượt chạy t
 2. **Nhánh và commit:** không làm trực tiếp trên `main`. Mỗi việc một nhánh (`cs/<task-id>` hoặc `<agent>/<task-id>`); commit nhỏ, message tiếng Anh, mô tả đúng thay đổi. Không push, deploy, publish khi chưa được chủ dự án duyệt từng lệnh.
 3. **Hoàn tác bằng git, không bằng file backup:** commit trạng thái đang có trước khi sửa lớn. Không tạo thư mục `_backup/`, file `*.bak`, `New folder`, `scratch/` hay bản sao kiểu `App.old.tsx` trong repo. File tạm để ngoài repo hoặc trong `work/<task-id>/` (đã gitignore).
 4. **Phạm vi:** chỉ làm đúng mục được giao. Ý tưởng hoặc lỗi phát hiện thêm ghi vào `PLAN.md` thành mục mới (`CHỜ NGƯỜI DÙNG` nếu cần quyết định), không tự làm. Không tự thêm màn hình, nội dung Book/chương, cơ chế hay dependency chưa có trong `Game_Design/decisions.md` hoặc `PLAN.md`.
-5. **Báo xong:** chạy `node .studio/gate.mjs` ở gốc repo, chép nguyên dòng `Result`. Gate FAIL thì không ghi PASS, không báo hoàn thành; ghi FAIL kèm test fail và lý do.
+5. **Báo xong:** commit đã, rồi chạy `node .studio/done.mjs gate` và `node .studio/done.mjs check <số mục>` ở gốc repo. Chỉ khi `check` in ra dòng `DONE-OK <mục> <sha> <ngày>` thì mục mới được coi là xong: dán nguyên dòng đó vào sau `PASS:` trong dòng Kết quả rồi đánh `[x]`. `check` exit 1 thì không ghi PASS, không báo hoàn thành; ghi FAIL kèm test fail, lý do và đúng các dòng `THIẾU` nó in ra. Chi tiết: `CHECKLIST.md`.
 6. **Một AI tại một thời điểm, đồng bộ qua `PLAN.md`:** mỗi lúc chỉ một AI làm việc trong repo. Không tạo file bàn giao (`HANDOFF*.md` hay tương tự). Trước khi dừng, ghi trạng thái thật vào dòng Kết quả của mục đang làm trong `PLAN.md` (đã làm gì, commit nào, dòng `Result` của gate, việc còn dở, câu hỏi cho chủ dự án) và commit. AI tiếp theo bắt đầu bằng `git status`, `git log` và `PLAN.md`.
 
 ## Định dạng `PLAN.md`
@@ -35,7 +37,8 @@ Water Emblem - Mystery of Nothing là game chiến thuật theo lượt chạy t
 - Mỗi mục có ba dòng chính:
   - `- [ ] <số>. <tên việc>`
   - `  - Tiêu chí xong: <điều đo được, cách kiểm>`
-  - `  - Kết quả: PASS: <bằng chứng>`, hoặc `Kết quả: FAIL: <lý do>`, hoặc `Kết quả: CHỜ NGƯỜI DÙNG: <câu hỏi>`
+  - `  - Kết quả: PASS: <bằng chứng> · DONE-OK <mục> <sha> <ngày>`, hoặc `Kết quả: FAIL: <lý do>`, hoặc `Kết quả: ĐANG LÀM: <đang làm gì>`, hoặc `Kết quả: CHỜ NGƯỜI DÙNG: <câu hỏi>`, hoặc `Kết quả: CHỜ AGENT NỀN: <việc>`
+- Dòng `Tiêu chí xong` của mục mới (từ mục 169) phải trích dẫn bằng chứng máy kiểm được: `test: <đường dẫn> > <tên test>`, hoặc `manual: <đường dẫn ảnh/log trong repo>` cho việc chỉ kiểm được bằng mắt. Thiếu thì `done.mjs check` từ chối.
 - Bằng chứng viết ngay sau `PASS:` trên cùng dòng (lệnh, số test, dòng `Result` của gate, đường dẫn ảnh chụp trong repo); chi tiết thêm có thể xuống dòng bên dưới. Chỉ đánh `[x]` khi dòng Kết quả là PASS.
 - Không ghi PASS dựa trên code vừa viết, build thành công hay test do chính lượt đó sửa cho qua; phải kiểm đúng tiêu chí.
 
@@ -147,6 +150,9 @@ Kho asset gốc FE3 (trước đây là `public/models/Original/`) nằm ngoài 
 
 <!-- coding-studio-gate:begin -->
 ## Quality gate (every AI and person)
-- Before reporting work done, run `node .studio/gate.mjs` from the repo root; report its Result line. Do not edit `.studio/**`, `.githooks/**` or `.github/workflows/**` to make it pass; a FAIL is reported, not hidden.
-- Once per clone: `git config core.hooksPath .githooks` (the pre-push hook runs the gate). Machines with other tool paths set `GATE_CMD_<NAME>` (e.g. `GATE_CMD_TEST`) instead of editing `.studio/project.json`.
+- Read `CHECKLIST.md` first; it is the binding one-page procedure for every AI.
+- Once per clone: `git config core.hooksPath .githooks`. This installs `pre-commit` (guard + PLAN token check) and `pre-push` (guard + PLAN audit + full gate). Machines with other tool paths set `GATE_CMD_<NAME>` (e.g. `GATE_CMD_TEST`) instead of editing `.studio/project.json`.
+- Claiming an item done: commit, then `node .studio/done.mjs gate`, then `node .studio/done.mjs check <item>`. Only its `DONE-OK` line makes an item done. A FAIL is reported, not hidden.
+- Do not edit `.studio/**`, `.githooks/**` or `.github/workflows/**`, and never weaken, skip or delete an existing test to make a check pass. `node .studio/guard.mjs` blocks both and runs again in CI, where no local setting disables it. If a real change is needed there, stop and ask the owner.
+- Owner's one-command check: `node .studio/done.mjs audit --rerun`.
 <!-- coding-studio-gate:end -->

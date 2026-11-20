@@ -1,0 +1,20 @@
+#!/bin/sh
+# Water Emblem: cổng nhanh trước mỗi commit. Áp cho mọi AI và người, vì ai cũng commit qua git.
+# Bật một lần cho mỗi clone: git config core.hooksPath .githooks
+# Hai lớp ở đây đều nhanh (không chạy test):
+#   1. guard: chặn tự sửa cổng kiểm (.studio, .githooks, .github/workflows) và làm yếu test
+#   2. done audit --checked-only: mục PLAN đã đánh [x] phải có 'PASS:' và token DONE-OK
+# Test và build chạy ở pre-push và CI.
+if ! node .studio/guard.mjs; then
+  echo "pre-commit: guard BLOCK - commit bị chặn." >&2
+  exit 1
+fi
+if ! node .studio/done.mjs scope; then
+  echo "pre-commit: thay doi ngoai pham vi da khai bao - commit bi chan." >&2
+  exit 1
+fi
+if ! node .studio/done.mjs audit --checked-only; then
+  echo "pre-commit: PLAN.md chưa đạt - commit bị chặn." >&2
+  exit 1
+fi
+exit 0
