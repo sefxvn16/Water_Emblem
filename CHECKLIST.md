@@ -68,6 +68,13 @@ thật và có nằm trong lịch sử HEAD hay không.
 Việc chỉ kiểm được bằng mắt thì `check` in `DONE-MANUAL`: vẫn phải có ảnh/log trong repo, và chủ dự án
 còn phải tự xác nhận. Không dùng `manual:` cho việc test tự động được.
 
+## Một cái bẫy khi viết mục PLAN
+
+Trong một mục, chỉ dòng trạng thái được chứa nhãn trạng thái. Đừng trích dẫn nhãn đó trong dòng
+`Tiêu chí xong`, `Nguồn` hay ghi chú: trình kiểm của Claude (`plan_gate.py`) lấy **dòng đầu tiên**
+trong khối mục có chứa nhãn làm dòng trạng thái, nên nó sẽ đọc nhầm dòng trích dẫn và báo mục chưa xong.
+Cần nói về định dạng thì viết diễn giải ("dòng trạng thái", "mục đã tích"), đừng chép nguyên nhãn.
+
 ## Chủ dự án kiểm trong một lệnh
 
     node .studio/done.mjs audit --rerun

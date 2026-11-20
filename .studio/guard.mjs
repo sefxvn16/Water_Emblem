@@ -5,7 +5,7 @@
 //
 //   node .studio/guard.mjs [--base <ref>] [--rev <ref>]
 //
-// --base  baseline to compare against (default: origin/main, then main)
+// --base  baseline to compare against (default: HEAD locally, origin/main in CI)
 // --rev   compare that commit instead of the working tree (CI uses the pushed commit)
 //
 // HARD BLOCK: any change to the gate machinery itself
@@ -47,7 +47,11 @@ function parseArgs(argv) {
 }
 
 function pickBase(explicit) {
-  const candidates = explicit ? [explicit] : ['origin/main', 'main'];
+  // Ở máy: so với HEAD, tức là so với đúng những gì đang chuẩn bị commit. Nếu so với main thì sau lần
+  // đầu đổi cổng, MỌI commit sau trên nhánh đó đều bị chặn, và người làm sẽ học cách dùng --no-verify.
+  // Trong CI: so với main, để chủ dự án thấy mọi thay đổi cổng của cả nhánh trong PR.
+  const local = !process.env.GITHUB_ACTIONS ? ['HEAD'] : ['origin/main', 'main'];
+  const candidates = explicit ? [explicit] : local;
   for (const c of candidates) {
     const sha = git(['rev-parse', '--verify', '--quiet', `${c}^{commit}`], { allowFail: true });
     if (sha) return { ref: c, sha: sha.trim() };

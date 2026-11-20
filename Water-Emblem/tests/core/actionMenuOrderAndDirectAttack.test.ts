@@ -8,7 +8,7 @@ import itemsJson from '../../data/items.json';
 import type { ItemDefinition } from '../../src/core/combat/types';
 
 const ITEM_BY_ID = new Map((itemsJson.items as unknown as ItemDefinition[]).map((item) => [item.id, item]));
-import type { ExtendedUnitState } from '../../src/core/turn/types';
+import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 import { getManhattanDistance } from '../../src/core/combat/calculator';
 
 describe('PLAN Item 139: ActionMenuWindow button order and priority', () => {
@@ -114,15 +114,15 @@ describe('PLAN Items 141 & 142: Direct attack & stay in place attack targets', (
       faction: 'player',
       classId: 'lord',
       position: { x: 24, y: 5 },
-      level: 1,
-      experience: 0,
       mov: 7,
       moveType: 'foot',
       isDead: false,
       hasActed: false,
     },
-    stats: { hp: 18, maxHp: 18, str: 5, skl: 3, spd: 7, lck: 7, def: 7, res: 0 },
-    weapon: { id: 'rapier', name: 'Rapier', type: 'sword', might: 7, hit: 100, crit: 10, weight: 5, range: { min: 1, max: 1 }, uses: 28, maxUses: 28 },
+    level: 1,
+    exp: 0,
+    stats: { hp: 18, maxHp: 18, str: 5, mag: 0, skill: 3, spd: 7, lck: 7, def: 7, res: 0 },
+    weapon: ITEM_BY_ID.get('rapier'),
     inventory: [
       { itemId: 'rapier', uses: 28 },
       { itemId: 'iron_sword', uses: 40 },
@@ -136,15 +136,15 @@ describe('PLAN Items 141 & 142: Direct attack & stay in place attack targets', (
       faction: 'enemy',
       classId: 'pirate',
       position: { x: 24, y: 6 },
-      level: 5,
-      experience: 0,
       mov: 6,
       moveType: 'bandit',
       isDead: false,
       hasActed: false,
     },
-    stats: { hp: 30, maxHp: 30, str: 9, skl: 3, spd: 6, lck: 1, def: 6, res: 0 },
-    weapon: { id: 'steel_axe', name: 'Steel Axe', type: 'axe', might: 9, hit: 75, crit: 0, weight: 11, range: { min: 1, max: 1 }, uses: 30, maxUses: 30 },
+    level: 5,
+    exp: 0,
+    stats: { hp: 30, maxHp: 30, str: 9, mag: 0, skill: 3, spd: 6, lck: 1, def: 6, res: 0 },
+    weapon: ITEM_BY_ID.get('steel_axe'),
     inventory: [{ itemId: 'steel_axe', uses: 30 }],
   };
 
@@ -155,15 +155,15 @@ describe('PLAN Items 141 & 142: Direct attack & stay in place attack targets', (
       faction: 'enemy',
       classId: 'pirate',
       position: { x: 24, y: 8 },
-      level: 2,
-      experience: 0,
       mov: 6,
       moveType: 'bandit',
       isDead: false,
       hasActed: false,
     },
-    stats: { hp: 20, maxHp: 20, str: 7, skl: 2, spd: 5, lck: 0, def: 4, res: 0 },
-    weapon: { id: 'iron_axe', name: 'Iron Axe', type: 'axe', might: 7, hit: 80, crit: 0, weight: 7, range: { min: 1, max: 1 }, uses: 35, maxUses: 35 },
+    level: 2,
+    exp: 0,
+    stats: { hp: 20, maxHp: 20, str: 7, mag: 0, skill: 2, spd: 5, lck: 0, def: 4, res: 0 },
+    weapon: ITEM_BY_ID.get('iron_axe'),
     inventory: [{ itemId: 'iron_axe', uses: 35 }],
   };
 

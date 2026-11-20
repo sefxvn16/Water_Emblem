@@ -27,7 +27,7 @@ jobs:
           node-version: 20
 
       - name: Guard (chống tự sửa cổng kiểm và làm yếu test)
-        run: node .studio/guard.mjs
+        run: node .studio/guard.mjs --base origin/main
 
       - name: Scope (thay đổi phải nằm trong phạm vi đã khai báo)
         run: node .studio/done.mjs scope

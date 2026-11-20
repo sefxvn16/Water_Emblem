@@ -90,6 +90,7 @@ describe('PLAN.md: mục mới phải có bằng chứng máy kiểm được', 
     for (const i of enforced) {
       const refs = (i.fields['Tiêu chí xong'] || '').matchAll(/\b(test|manual):\s*([^\s,;)]+)/g);
       for (const [, kind, rel] of refs) {
+        if (!rel) continue;
         const found = [rel, path.posix.join('Water-Emblem', rel)].some((c) => fs.existsSync(path.join(ROOT, c)));
         if (!found) bad.push(`${where(i)}: ${kind} '${rel}' không tồn tại`);
       }
