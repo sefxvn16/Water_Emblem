@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { CombatForecast } from '../core/combat/types';
 import type { ExtendedUnitState } from '../core/data/chapterData';
-import { getClassDefinition } from '../core/class/classRules';
 import { DS_COLORS, DS_RADII, DS_Z, sharedPanelStyle, statRowStyle, statValueStyle } from './designSystem';
 import { useAnchoredOverlay } from './overlayAnchor';
 import { getItemIcon } from './itemIcon';
@@ -38,11 +37,12 @@ const CrossGlyph: React.FC = () => (
  * button between them confirms the attack and the slate X below it
  * cancels (item 125). Item 136 rebuild (owner-picked "Mẫu 1"): wide
  * panels, large gold-bordered shield avatar at the outer edge
- * overflowing the panel top, HP forecast as the largest text with a
- * thin two-colour bar, combat stats in two lines, weapon shown as a
- * diamond icon only at the inner side, name and Level on one bottom
- * row, small class badge at the bottom-outer corner. All numbers still
- * come verbatim from the core forecast.
+ * overflowing the panel top, weapon shown as a diamond icon only at
+ * the inner side. Item 161 (owner playtest 2026-11-20): name on top in
+ * large text, HP numbers inside a thicker bar shortened on the weapon
+ * side, combat stats in 2 columns x 3 rows, level number at the
+ * bottom-outer corner (class badge removed). All numbers still come
+ * verbatim from the core forecast.
  */
 export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   forecast,
@@ -120,8 +120,6 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     // centred; HP forecast on top, stats in two lines, name + Level on
     // one bottom row; small class badge at the bottom-outer corner.
     const shieldClip = 'polygon(50% 0%, 100% 10%, 100% 68%, 50% 100%, 0% 68%, 0% 10%)';
-    const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';
-    const classInitial = className.charAt(0).toUpperCase();
 
     return (
       <div
@@ -187,16 +185,18 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           </div>
         </div>
 
-        {/* Small class badge at the bottom-outer corner */}
+        {/* Level number at the bottom-outer corner (PLAN item 161:
+            replaces the class badge, which is removed). */}
         <div
-          className="we-forecast-class"
-          title={className}
+          className="we-forecast-level"
+          title={`Lv ${u.level ?? 1}`}
           style={{
             position: 'absolute',
             bottom: '6px',
             ...(isPlayer ? { left: '8px' } : { right: '8px' }),
-            width: '26px',
+            minWidth: '26px',
             height: '26px',
+            padding: '0 4px',
             borderRadius: '6px',
             backgroundColor: 'rgba(0,0,0,0.55)',
             border: `1px solid ${DS_COLORS.goldText}`,
@@ -209,7 +209,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             zIndex: 2,
           }}
         >
-          {classInitial}
+          {u.level ?? 1}
         </div>
 
         {/* Weapon diamond icon only (no name/uses — item 136), inner side, vertically centred */}
@@ -240,76 +240,73 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         </div>
 
         <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          {/* HP Prediction & Progress Bar — largest text in the panel */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
-              <span className="we-forecast-hp" style={{ fontSize: '20px', fontWeight: 'bold', color: '#e2e8f0' }}>
-                {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#ef4444' : afterHp < currentHp ? '#fde047' : '#4ade80' }}>{afterHp}</span>
+          {/* PLAN item 161: name on top in large text (where the HP line
+              was), HP numbers inside a thicker, shorter bar. */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
+            <span className="we-forecast-name" style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '20px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {u.unit.name}
+            </span>
+            {hpLoss > 0 ? (
+              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87171', backgroundColor: 'rgba(239,68,68,0.2)', padding: '0 5px', borderRadius: '3px', flexShrink: 0 }}>
+                -{hpLoss}{afterHp === 0 ? ' KO' : ''}
               </span>
-              {hpLoss > 0 ? (
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87171', backgroundColor: 'rgba(239,68,68,0.2)', padding: '0 5px', borderRadius: '3px' }}>
-                  -{hpLoss}{afterHp === 0 ? ' KO' : ''}
-                </span>
-              ) : (
-                <span style={{ fontSize: '12px', color: '#94a3b8' }}>-0</span>
-              )}
-            </div>
-            <div style={{ width: '100%', height: '7px', backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
-              {/* Depleted loss portion */}
-              <div style={{ width: `${hpCurRatio * 100}%`, height: '100%', backgroundColor: '#ef4444', position: 'absolute', left: 0, top: 0 }} />
-              {/* Retained remaining HP portion */}
-              <div style={{ width: `${hpAfterRatio * 100}%`, height: '100%', backgroundColor: '#22c55e', position: 'absolute', left: 0, top: 0 }} />
-            </div>
+            ) : (
+              <span style={{ fontSize: '12px', color: '#94a3b8', flexShrink: 0 }}>-0</span>
+            )}
           </div>
 
-          {/* Combat Stats — two lines (item 136) */}
+          {/* HP bar: thicker, shortened on the weapon side so the gap to
+              the weapon diamond matches the avatar-side gap (item 161);
+              HP numbers inside, aligned toward the avatar. */}
+          <div
+            style={{
+              width: 'calc(100% - 12px)',
+              alignSelf: isPlayer ? 'flex-start' : 'flex-end',
+              height: '20px',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              borderRadius: '4px',
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Depleted loss portion */}
+            <div style={{ width: `${hpCurRatio * 100}%`, height: '100%', backgroundColor: '#ef4444', position: 'absolute', left: 0, top: 0 }} />
+            {/* Retained remaining HP portion */}
+            <div style={{ width: `${hpAfterRatio * 100}%`, height: '100%', backgroundColor: '#22c55e', position: 'absolute', left: 0, top: 0 }} />
+            <span
+              className="we-forecast-hp"
+              style={{
+                position: 'absolute',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                ...(isPlayer ? { left: '6px' } : { right: '6px' }),
+                fontSize: '13px',
+                fontWeight: 'bold',
+                color: '#ffffff',
+                textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#fecaca' : afterHp < currentHp ? '#fde047' : '#ffffff' }}>{afterHp}</span>
+            </span>
+          </div>
+
+          {/* Combat stats — 2 columns x 3 rows so the weapon diamond
+              never covers them (item 161). */}
           {!isPlayer && !canCounter ? (
             <div style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '12px', textAlign: 'center', padding: '10px 0' }}>
               Cannot counter
             </div>
           ) : (
-            <div className="we-forecast-stats" style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '13px' }}>
-              <div style={{ display: 'flex', gap: '14px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
-                <div style={{ flex: 1, minWidth: 0 }}>{renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>{renderStatRow('Hit:', `${hitRate}%`)}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>{renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}</div>
-              </div>
-              <div style={{ display: 'flex', gap: '14px', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
-                <div style={{ flex: 1, minWidth: 0 }}>{renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>{renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}</div>
-                <div style={{ flex: 1, minWidth: 0 }} />
-              </div>
+            <div className="we-forecast-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 14px', fontSize: '13px' }}>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Hit:', `${hitRate}%`)}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}</div>
+              <div style={{ minWidth: 0 }} />
             </div>
           )}
-
-          {/* Name + Level on the same bottom row (item 136) */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              flexDirection: isPlayer ? 'row' : 'row-reverse',
-              marginTop: 'auto',
-            }}
-          >
-            <span className="we-forecast-name" style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {u.unit.name}
-            </span>
-            <span
-              style={{
-                fontSize: '12px',
-                fontWeight: 'bold',
-                color: '#fde047',
-                backgroundColor: 'rgba(0,0,0,0.45)',
-                border: '1px solid rgba(253,224,71,0.5)',
-                borderRadius: '4px',
-                padding: '0 5px',
-                flexShrink: 0,
-              }}
-            >
-              {`Lv ${u.level ?? 1}`}
-            </span>
-          </div>
         </div>
       </div>
     );
@@ -342,10 +339,10 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           .we-forecast-avatar-inner { width: 55px !important; height: 93px !important; }
           .we-forecast-weapon { width: 34px !important; height: 34px !important; }
           .we-forecast-weapon img { width: 22px !important; height: 22px !important; }
-          .we-forecast-hp { font-size: 15px !important; }
+          .we-forecast-hp { font-size: 11px !important; }
           .we-forecast-stats { font-size: 11px !important; }
-          .we-forecast-name { font-size: 13px !important; }
-          .we-forecast-class { width: 22px !important; height: 22px !important; font-size: 11px !important; }
+          .we-forecast-name { font-size: 15px !important; }
+          .we-forecast-level { min-width: 22px !important; height: 22px !important; font-size: 11px !important; }
         }
       `}</style>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
