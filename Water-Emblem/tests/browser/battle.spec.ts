@@ -105,15 +105,19 @@ test('a carried Vulnerary heals once and promotion needs no item', async ({ page
   await clickTile(page, 24, 5);
   await expect(page.getByRole('button', { name: /(?:Use Vulnerary|Dùng thuốc hồi máu)/i })).toBeVisible();
   await page.getByRole('button', { name: /(?:Use Vulnerary|Dùng thuốc hồi máu)/i }).click();
-  await openSettings(page);
-  await expect(page.getByText(/Marth (?:used Vulnerary|dùng Thuốc hồi máu): HP 18\/18/i)).toBeVisible();
-  await closeSettings(page);
+  // PLAN item 162: the Combat Log is no longer shown in Settings; assert
+  // the heal through game state instead.
+  await expect.poll(async () => page.evaluate(() => {
+    const state = (window as any).__WATER_EMBLEM_STATE__;
+    return state?.extendedUnits?.find((u: any) => u.unit.id === 'marth')?.stats?.hp;
+  })).toBe(18);
   await clickTile(page, 23, 3);
   await clickTile(page, 23, 3);
   await page.getByRole('button', { name: /(?:Promote: Sniper|Thăng cấp: Thiện xạ)/i }).click();
-  await openSettings(page);
-  await expect(page.getByText(/Gordin (?:promoted to Sniper|thăng cấp thành Thiện xạ)/i)).toBeVisible();
-  await closeSettings(page);
+  await expect.poll(async () => page.evaluate(() => {
+    const state = (window as any).__WATER_EMBLEM_STATE__;
+    return state?.extendedUnits?.find((u: any) => u.unit.id === 'gordin')?.unit?.classId;
+  })).toBe('sniper');
   await openSettings(page);
   await page.getByRole('button', { name: /(?:Save Game|Lưu Game)/i }).click();
   await expect(page.getByText(/(?:Game progress saved|Đã lưu tiến độ)/i)).toBeVisible();
@@ -177,10 +181,14 @@ test('Chapter 3 can save and reload its map and roster', async ({ page }) => {
   await expect(page.locator('select')).toHaveValue('chapter_03');
 });
 
-test('enemy phase starts automatically after every player unit waits', async ({ page }) => {
+test('enemy phase starts automatically after every player unit waits (Auto End Turn on)', async ({ page }) => {
   test.setTimeout(90_000);
   await page.goto('/');
   await enterBattle(page);
+  // PLAN item 138: Auto End Turn defaults off; enable it in Settings.
+  await openSettings(page);
+  await page.getByRole('group', { name: 'Auto End Turn' }).getByRole('button', { name: 'On' }).click();
+  await closeSettings(page);
   const playerTiles = [[24, 5], [25, 5], [23, 4], [22, 7], [23, 7], [22, 3], [23, 3]] as const;
   for (const [x, y] of playerTiles) {
     await clickTile(page, x, y);

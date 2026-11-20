@@ -85,6 +85,13 @@ async function confirmAttack(page: Page, target: Position): Promise<void> {
   if (!opened) {
     await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click().catch(() => undefined);
     await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
+    // PLAN item 158: after the target is chosen, the weapon picker may
+    // open (several usable weapons) before the forecast.
+    const picker = page.getByTestId('weapon-picker');
+    const pickerOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
+    if (pickerOpened) {
+      await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
+    }
     await forecast.waitFor({ state: 'visible', timeout: 8000 });
   }
   await forecast.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
