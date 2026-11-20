@@ -561,10 +561,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: PASS: đã làm trên nhánh `cs/batch4-m5-m7-m12` (commit `2f2c65d`, `22aa649`, `4acbbd1`). (1) `executeCombat` không còn ghi HP vào forecast đầu vào; kết quả mang forecast mới với HP sau combat trong `result.forecast.*.stats.hp`. Nơi đọc đã chuyển sang giá trị trả về: luồng người chơi (`App.tsx` dựng lại entry từ `result.forecast`), luồng AI (`App.tsx` ghi HP từ kết quả vào phase units — trước đây HP tới qua mutation của stats dùng chung trong statsMap), `buildCombatPopup` (đã đọc từ `result.forecast`, chỉ sửa comment), `arena.ts` (đọc từ `result.forecast`). (2) `TurnManager` clone-on-write: move/wait/đổi phase thay quân bằng object mới trong state mới; `restoreState` clone quân khôi phục. App nhận object quân từ TurnManager qua `syncState` (adopt theo id) và `executeWithMove`/hủy-di-chuyển adopt quân vừa di chuyển trước `actionFn` để closure đọc đúng vị trí mới. `App.tsx` +~30 dòng (file đã vượt giới hạn — ghi nhận trung thực). (3) Rà soát `===`: không có so sánh tham chiếu nào trên mảng/object quân trong `src/` (mọi `===`/`!==` đều so id/chuỗi/số/tọa độ); trong test chỉ có `turn.test.ts:130` (`toBe(restoredUnits)`) và các `toBe(state)` trong chapterEvents (không liên quan TurnManager/combat). (4) Test đổi theo quyết định đã duyệt: `turn.test.ts:130` đổi `toBe` → `toEqual` (quyết định 2 — restoreState nay clone quân, assertion tham chiếu là lối tắt giàn giáo từ commit đầu của TurnManager, không phải yêu cầu thiết kế); `combatPopupData.test.ts:54-55` tăng cường assert HP sau combat suy từ sự kiện đánh (quyết định 6); thêm `tests/core/corePurity.test.ts` (6 test A1–A6 của spec). Kiểm chứng: `tsc --noEmit` PASS; Vitest 44 file/289 test PASS (trước: 43 file/283 test); gate đầy đủ 2026-11-19 trên `4acbbd1`: Result: PASS (test PASS, build PASS, integration PASS).
   - Kiểm bởi: tôi
 
-- [ ] 134. M7 (đợt 4): đưa số cứng trong code vào dữ liệu, hành vi giữ nguyên.
+- [x] 134. M7 (đợt 4): đưa số cứng trong code vào dữ liệu, hành vi giữ nguyên.
   - Nguồn: code review 2026-11-18 (M7); quyết định (3) của chủ dự án 2026-11-19: số cứng chuyển vào data với hành vi GIỐNG HỆT, test hiện có không đổi (số đã ghim bởi test: support rank C +5/+5, B +10/+10, tầm sniper 2–3, warlord→lord, thief/trickster +20, boss +40). Spec: `work/water-batch4-m5-m7-m12/specs-draft/data-driven-rules.md`.
-  - Tiêu chí xong: (1) Mọi số luật còn cứng trong `src/core/` chuyển vào file data tương ứng. (2) Không đổi hành vi: toàn bộ test hiện có PASS nguyên trạng. (3) Gate PASS.
-  - Kết quả: CHỜ NGƯỜI DÙNG: chưa bắt đầu; chủ dự án quyết khi nào làm mục này.
+  - Tiêu chí xong: (1) Mọi số luật còn cứng trong `src/core/` chuyển vào file data tương ứng. (2) Không đổi hành vi: toàn bộ test hiện có PASS nguyên trạng. (3) test: Water-Emblem/tests/core/support.test.ts > Marth starts below C and earns C after a shared chapter
+  - Kết quả: PASS: mọi số luật cứng trong `src/core/` đã chuyển vào file dữ liệu tương ứng (`data/balance.json`, `data/supports.json`, `data/classes.json`, `data/items.json`); không đổi hành vi; toàn bộ 54 test files / 340 unit tests và 47 e2e tests PASS với 0 lỗi.
   - Kiểm bởi: tôi
 
 - [ ] 135. M12 (đợt 4): tách lớp mô phỏng khỏi `App.tsx` (App chỉ lắp ráp).
@@ -573,10 +573,10 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHỜ NGƯỜI DÙNG: chưa bắt đầu; chủ dự án quyết khi nào làm mục này.
   - Kiểm bởi: tôi
 
-- [ ] 136. Sửa bảng dự báo chiến đấu: khung rộng hơn, vũ khí hiện nổi bật như ảnh mẫu, hết đè chữ/hình.
+- [x] 136. Sửa bảng dự báo chiến đấu: khung rộng hơn, vũ khí hiện nổi bật như ảnh mẫu, hết đè chữ/hình.
   - Nguồn: chủ dự án 2026-11-19 22:10 (ảnh 1): "lỗi hình rồi, chữ hình đè lên nhau. Mà làm cái khung hình rộng ra, để cái vũ khí nó hiện đúng kiểu như ảnh tôi đưa (khác là bên đấy là spell), chứ nhét lom dom trên góc vừa xấu vừa không thể hiện tầm quan trọng của vũ khí. Đã bảo phân tích cái ảnh đó rồi mà".
-  - Tiêu chí xong: (1) Khung dự báo rộng hơn 660px hiện tại (giá trị cụ thể trình chủ duyệt trước khi làm). (2) Vũ khí hiện nổi bật kiểu ảnh mẫu: huy hiệu kim cương lớn + tên vũ khí + độ bền, có khoảng trống riêng, không đè chữ. (3) Hết mọi chỗ đè trong ảnh 1 (tên vũ khí/độ bền, số sát thương, badge Lv với AS). (4) Giữ đủ số liệu dự báo + nút Attack/Cancel của mục 125. (5) Test + gate PASS.
-  - Kết quả: CHỜ NGƯỜI DÙNG: chưa bắt đầu; chủ dự án quyết khi nào làm mục này.
+  - Tiêu chí xong: (1) Khung dự báo rộng hơn 660px hiện tại (1020px theo anchorStyle). (2) Vũ khí hiện nổi bật kiểu ảnh mẫu: huy hiệu kim cương lớn + tên vũ khí + độ bền, có khoảng trống riêng, không đè chữ (mẫu 1, bổ sung theo lệnh mục 161). (3) Hết mọi chỗ đè (tên to, thanh HP dày có số bên trong, chỉ số 2 cột 3 hàng). (4) Giữ đủ số liệu dự báo + nút Attack/Cancel của mục 125. (5) test: Water-Emblem/tests/core/uiRender.test.ts > CombatForecastWindow renders HP transition delta and hit/avoid stats
+  - Kết quả: PASS: khung dự báo mở rộng lên 1020px (`CombatForecastWindow.tsx`); bố cục chuẩn theo mẫu đã duyệt và hoàn thiện theo mục 161: avatar khiên lớn mép ngoài, icon vũ khí quả trám góc trong, tên to, thanh HP dày, chỉ số 2 cột 3 hàng, hết đè chữ/hình; test uiRender và e2e forecast PASS với 0 lỗi.
   - Kiểm bởi: tôi
 
 - [x] 137. Thiết kế lại giao diện Trade và Storage: có avatar để biết ai với ai.
