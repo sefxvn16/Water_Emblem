@@ -77,7 +77,9 @@ export function parsePlan(text) {
       cur.fields[key] = cur.fields[key] ? `${cur.fields[key]} ${f[2].trim()}` : f[2].trim();
       cur.lastField = key;
     } else if (lines[i].trim() && cur.lastField) {
-      cur.fields[cur.lastField] += ` ${lines[i].trim()}`;
+      // Nối bằng newline, không bằng dấu cách: nếu nối bằng dấu cách thì một 'test: <file> > <tên>'
+      // đứng cuối dòng sẽ bắt lan sang dòng tiếp theo và tên test thành sai.
+      cur.fields[cur.lastField] += `\n${lines[i].trim()}`;
     }
   }
   return items;
@@ -86,7 +88,7 @@ export function parsePlan(text) {
 /** test:/manual: references inside a done-criterion. */
 export function parseRefs(criterion) {
   const refs = [];
-  const re = /\b(test|manual):\s*([^\s,;)]+)(?:\s*>\s*([^,;)]+))?/g;
+  const re = /\b(test|manual):\s*([^\s,;)]+)(?:\s*>\s*([^,;)\n]+))?/g;
   let m;
   while ((m = re.exec(criterion))) refs.push({ kind: m[1], file: m[2].trim(), name: (m[3] || '').trim() });
   return refs;
