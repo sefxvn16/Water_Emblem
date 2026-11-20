@@ -7,7 +7,8 @@ import { closeSettings, openSettings } from './settingsMenu';
 
 const VW = 1366;
 const VH = 768;
-const SHOTS = '/home/hatch/workspace/water-emblem/repo/work/water-action-menu-80';
+// Đường dẫn tương đối, không phải đường dẫn tuyệt đối của một máy cụ thể: `work/` đã gitignore.
+const SHOTS = 'work/water-action-menu-80';
 
 async function gotoBattle(page: Page) {
   await page.setViewportSize({ width: VW, height: VH });

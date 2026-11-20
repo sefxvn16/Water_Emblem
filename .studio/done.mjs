@@ -268,6 +268,16 @@ function cmdAudit(root, cfg, flags) {
   console.log(`# done audit: ${items.length} mục trong ${cfg.planFile}, ngưỡng token từ mục ${cfg.enforceFrom}`);
   for (const w of warned) console.log(`- note ${w}`);
   for (const b of bad) console.log(`- FAIL ${b}`);
+  // Repo riêng tư trên gói GitHub free không bật được branch protection, nên không có lớp nào
+  // CHẶN được merge. Thứ duy nhất còn lại là hook ở máy, mà hook chỉ chạy khi core.hooksPath được
+  // đặt. Không chặn được việc không đặt nó, nhưng phải làm cho nó nhìn thấy được.
+  if (!process.env.GITHUB_ACTIONS) {
+    const hp = (git(['config', 'core.hooksPath'], { allowFail: true }) || '').trim();
+    if (!hp.replace(/\\/g, '/').endsWith('.githooks')) {
+      console.log(`- WARN core.hooksPath = '${hp || '(chưa đặt)'}': pre-commit và pre-push KHÔNG chạy ở clone này.`);
+      console.log('  Chạy một lần: git config core.hooksPath .githooks');
+    }
+  }
   const ledger = readLedger(root);
   if (!ledger) console.log('- note chưa có .studio/last-gate.json trên máy này (chạy: node .studio/done.mjs gate)');
   else console.log(`- note gate lần cuối: ${ledger.result} tại ${String(ledger.head).slice(0, 12)} (${ledger.at})`);

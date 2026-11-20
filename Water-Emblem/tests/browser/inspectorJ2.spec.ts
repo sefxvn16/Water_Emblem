@@ -9,7 +9,8 @@ import { closeSettings } from './settingsMenu';
 
 const VW = 1366;
 const VH = 768;
-const AFTER = '/home/hatch/workspace/water-emblem/repo/work/water-inspector-j2/after';
+// Đường dẫn tương đối, không phải đường dẫn tuyệt đối của một máy cụ thể: `work/` đã gitignore.
+const AFTER = 'work/water-inspector-j2/after';
 
 async function gotoBattle(page: Page) {
   await page.setViewportSize({ width: VW, height: VH });

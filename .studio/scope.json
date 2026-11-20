@@ -20,7 +20,8 @@
     171,
     172,
     173,
-    174
+    174,
+    175
   ],
   "declared_by": "claude",
   "declared_at": "2026-11-20",
@@ -67,6 +68,7 @@
     "Water-Emblem/tools/e2e_record/recorder.ts",
     "Game_Design/features.lock.json",
     "Water-Emblem/tests/core/featureLock.test.ts",
-    "Water-Emblem/vite.config.ts"
+    "Water-Emblem/vite.config.ts",
+    "Water-Emblem/tests/browser/inspectorJ2.spec.ts"
   ]
 }

@@ -520,7 +520,7 @@ test('combat-forecast-ui/A2 Attack is the only primary action', async ({ page })
   expect(attackBg).not.toContain('rgb(220, 38, 38)');
   expect(cancelBg).toContain('rgb(30, 41, 59)');
   await expect(page.getByTestId('forecast-window')).toBeVisible();
-  await page.screenshot({ path: '/home/hatch/workspace/water-emblem/repo/work/water-ui-redesign/after/05-forecast.png' });
+  await page.screenshot({ path: 'work/water-ui-redesign/after/05-forecast.png' });
 });
 
 test('combat-forecast-ui/A5 forecast clears attacker and defender tiles on scroll and resize', async ({ page }) => {
@@ -653,5 +653,5 @@ test('settings-menu/A7 menu controls meet 44px and menu is not cut off', async (
   }
   const selectBox = await menu.locator('select').boundingBox();
   expect(selectBox!.height).toBeGreaterThanOrEqual(44);
-  await page.screenshot({ path: '/home/hatch/workspace/water-emblem/repo/work/water-ui-redesign/after/06-settings.png' });
+  await page.screenshot({ path: 'work/water-ui-redesign/after/06-settings.png' });
 });
