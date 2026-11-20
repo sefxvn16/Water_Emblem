@@ -241,7 +241,9 @@ function cmdAudit(root, cfg, flags) {
     if (!tok) { bad.push(`${label}: đánh [x] nhưng không có token DONE-OK/DONE-MANUAL — chạy 'node .studio/done.mjs check ${item.number}'`); continue; }
     if (Number(tok[2]) !== item.number) { bad.push(`${label}: token ghi mục ${tok[2]}, không khớp`); continue; }
     const sha = tok[3];
-    if (!git(['cat-file', '-e', `${sha}^{commit}`], { allowFail: true })) { bad.push(`${label}: commit ${sha} trong token không tồn tại`); continue; }
+    // `cat-file -e` khi thành công thì không in gì, nên phải xem exit code chứ không xem stdout:
+    // dùng stdout sẽ coi mọi commit có thật là không tồn tại và báo sai mọi token hợp lệ.
+    if (spawnSync('git', ['cat-file', '-e', `${sha}^{commit}`]).status !== 0) { bad.push(`${label}: commit ${sha} trong token không tồn tại`); continue; }
     if (spawnSync('git', ['merge-base', '--is-ancestor', sha, head]).status !== 0) {
       bad.push(`${label}: commit ${sha} trong token không nằm trong lịch sử của HEAD`);
       continue;
