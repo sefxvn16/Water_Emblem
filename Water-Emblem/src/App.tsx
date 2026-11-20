@@ -27,7 +27,7 @@ import { defaultRNG } from './core/combat/rng';
 import { evaluateAITurn } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
-import { runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
+import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import { computeCombinedThreatKeys, computeUnitThreatKeys } from './core/grid/threatRange';
 import {
@@ -226,6 +226,8 @@ export const App: React.FC = () => {
   }, [attackTargeting, weaponPickerOpen, staffTargeting, warpTargeting, tradeTargeting]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
+  const popupQueueRef = useRef<CombatPopupData[]>([]);
+  useEffect(() => { popupQueueRef.current = popupQueue; }, [popupQueue]);
   const popupIdRef = useRef(0);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [gold, setGold] = useState<number>(0);
@@ -1565,8 +1567,37 @@ export const App: React.FC = () => {
   };
 
   // Chạy AI Turn
-  const runAITurn = () => {
+  // PLAN item 140 (owner 2026-11-19): the enemy phase plays back one
+  // enemy at a time — walk along the path, then attack with its result
+  // popup — instead of resolving instantly. Under Playwright/headless
+  // (isFastAnimation) the waits collapse so tests stay fast; the RNG
+  // order and decisions are unchanged.
+  const runAITurn = async () => {
     setIsProcessingAI(true);
+    const fastPlayback = isFastAnimation();
+    const sleep = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, fastPlayback ? 0 : ms));
+    const animateEnemyMove = async (enemy: ExtendedUnitState, dest: Position) => {
+      if (enemy.unit.position.x === dest.x && enemy.unit.position.y === dest.y) return;
+      const range = calculateMovementRange(enemy.unit, {
+        map: mapData,
+        terrains: defaultTerrainRegistry,
+        units: phaseUnits.map((u) => u.unit),
+        openedDoors: openedDoorKeys,
+      });
+      const path = range.get(`${dest.x},${dest.y}`)?.path;
+      if (path && path.length > 1) {
+        await new Promise<void>((resolve) => {
+          runMovementAnimation(path, enemy.unit.moveType, soundManager, (pos) => setActiveMovingUnit({ unitId: enemy.unit.id, pos }), () => {
+            setActiveMovingUnit(null);
+            resolve();
+          });
+        });
+      }
+      enemy.unit.position = { ...dest };
+    };
+    const scrollToTile = (pos: Position) => {
+      document.querySelector(`[data-testid="tile-${pos.x}-${pos.y}"]`)?.scrollIntoView({ block: 'center', inline: 'center' });
+    };
     let phaseUnits = healUnitsOnTerrain(
       extendedUnits.map((entry) => ({ ...entry, unit: { ...entry.unit }, stats: { ...entry.stats } })),
       'enemy', mapData, defaultTerrainRegistry,
@@ -1603,7 +1634,9 @@ export const App: React.FC = () => {
       });
 
       if (decision.type === 'attack') {
-        enemy.unit.position = { ...decision.movePosition };
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, decision.movePosition);
+        await sleep(200);
         logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
         const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
@@ -1618,6 +1651,12 @@ export const App: React.FC = () => {
         if (targetEntry) {
           const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, hpBefore, result);
           setPopupQueue((queue) => [...queue, popup]);
+          // PLAN item 140: hold the phase on this combat's popup until it
+          // is dismissed (click or the 2.5s auto-dismiss), FE-style.
+          while (!fastPlayback && popupQueueRef.current.some((entry) => entry.id === popup.id)) {
+            await sleep(100);
+          }
+          await sleep(150);
         }
         for (const ev of result.events) {
           const atk = phaseUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
@@ -1665,7 +1704,9 @@ export const App: React.FC = () => {
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
         logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
-        enemy.unit.position = { ...decision.movePosition };
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, decision.movePosition);
+        await sleep(100);
         logs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
       } else {
         logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
@@ -1689,6 +1730,7 @@ export const App: React.FC = () => {
       }
 
       enemy.unit.hasActed = true;
+      setExtendedUnits([...phaseUnits]);
       if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber }) !== 'ongoing') break;
     }
 
