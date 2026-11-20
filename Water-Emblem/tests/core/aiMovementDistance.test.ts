@@ -93,4 +93,42 @@ describe('AI Movement & Teleport Verification (PLAN item 168)', () => {
       }
     }
   });
+
+  it('verifies pirate water movement costs and distance', () => {
+    const pirate = chapter01.units.find((u) => u.unit.id === 'enemy_pirate_1')!;
+    expect(pirate).toBeDefined();
+    expect(pirate.unit.classId).toBe('pirate');
+    expect(pirate.unit.moveType).toBe('bandit');
+    expect(pirate.unit.mov).toBe(6);
+
+    // Sea cost for pirate
+    const seaCost = defaultTerrainRegistry.getMovementCost('sea', pirate.unit.moveType, pirate.unit.classId);
+    expect(seaCost).toBe(2);
+
+    // River cost for pirate
+    const riverCost = defaultTerrainRegistry.getMovementCost('river', pirate.unit.moveType, pirate.unit.classId);
+    expect(riverCost).toBe(2);
+
+    // Fighter cannot enter sea or river
+    const fighterCostSea = defaultTerrainRegistry.getMovementCost('sea', 'foot', 'fighter');
+    expect(fighterCostSea).toBeNull();
+    const fighterCostRiver = defaultTerrainRegistry.getMovementCost('river', 'foot', 'fighter');
+    expect(fighterCostRiver).toBeNull();
+
+    // From (4,0) in sea, pirate can move at most 3 tiles entirely in sea (6 mov / 2 cost = 3 tiles)
+    const range = calculateMovementRange(pirate.unit, {
+      map: mapData,
+      terrains: defaultTerrainRegistry,
+      units: [pirate.unit],
+    });
+
+    // Check pure sea destinations: (1, 0) is 3 tiles away: cost = 2 + 2 + 2 = 6, costRemaining = 0
+    const tile10 = range.get('1,0');
+    expect(tile10).toBeDefined();
+    expect(tile10!.costRemaining).toBe(0);
+
+    // (0, 0) is 4 tiles away: cost would be 8 > 6, so it must NOT be reachable
+    const tile00 = range.get('0,0');
+    expect(tile00).toBeUndefined();
+  });
 });
