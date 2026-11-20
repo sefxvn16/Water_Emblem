@@ -23,7 +23,7 @@ import {
   getUsableWeapons,
 } from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
-import { evaluateAITurn } from './core/ai/decision';
+import { evaluateAITurn, type AIDecision } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
@@ -1644,7 +1644,22 @@ export const App: React.FC = () => {
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
 
     for (const enemy of activeEnemies) {
-      const decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
+      const openingMove = enemy.openingMove;
+      const isOpeningMoveActive = openingMove && (turnState.turnNumber === (openingMove.turn ?? 1));
+      let decision: AIDecision;
+
+      if (isOpeningMoveActive) {
+        const target = openingMove.targetPosition;
+        if (enemy.unit.position.x !== target.x || enemy.unit.position.y !== target.y) {
+          decision = { type: 'move_only', movePosition: target };
+        } else {
+          decision = { type: 'wait' };
+        }
+        if (openingMove.nextAiRole) {
+          enemy.aiRole = openingMove.nextAiRole;
+        }
+      } else {
+        decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
         map: mapData,
         terrains: defaultTerrainRegistry,
         units: phaseUnits.map((u) => u.unit),
@@ -1665,7 +1680,8 @@ export const App: React.FC = () => {
         patrolTargets: enemy.patrolPoints,
         turnNumber: turnState.turnNumber,
         openedDoors: openedDoorKeys,
-      });
+        });
+      }
 
       if (decision.type === 'attack') {
         scrollToTile(enemy.unit.position);

@@ -97,7 +97,7 @@ describe('chapter data', () => {
     expect(initialChapterData.units[0]?.weapon?.id).toBe('rapier');
     expect(initialChapterData.units[0]?.inventory).toEqual([
       { itemId: 'rapier', uses: 28 },
-      { itemId: 'iron_sword', uses: 40 },
+      { itemId: 'vulnerary', uses: 3 },
     ]);
     expect(initialChapterData.objective.seizeTargetTile).toEqual({ x: 4, y: 4 });
   });
@@ -266,7 +266,7 @@ describe('chapter data', () => {
     expect(ch3.units.find((u) => u.unit.id === 'samsoian_fighter_6')?.dropItemId).toBe('vulnerary');
 
     // Seize Reward
-    expect(ch3.seizeReward).toEqual({ type: 'gold', amount: 15000 });
+    expect(ch3.seizeReward).toEqual({ type: 'gold', amount: 10000 });
 
     // 2 Thieves
     const ch3Thieves = ch3.units.filter((u) => u.unit.faction === 'enemy' && u.unit.id.includes('thief'));

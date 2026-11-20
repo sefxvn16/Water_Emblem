@@ -31,6 +31,12 @@ export interface BossPhase {
   aiRole?: AIRole;
 }
 
+export interface UnitOpeningMove {
+  targetPosition: Position;
+  nextAiRole?: AIRole;
+  turn?: number;
+}
+
 export interface ExtendedUnitState {
   unit: GridUnit;
   stats: UnitCombatStats;
@@ -46,6 +52,8 @@ export interface ExtendedUnitState {
   patrolPoints?: Position[];
   /** Multi-phase boss stages (PLAN item 111); applied as HP falls. */
   bossPhases?: BossPhase[];
+  /** Scripted opening move on specified turn (B01 Gazzak / Gate move). */
+  openingMove?: UnitOpeningMove;
   /** Personal skill id from the character (PLAN item 112, N01). */
   personalSkill?: string;
   /** Stats/weapon saved while imitating another unit (PLAN item 124). */
@@ -335,10 +343,22 @@ export function loadChapterData(
       stats: readStats({ ...baseStats, maxHp: hp }, `character ${characterId}.baseStats`),
       weapon,
       inventory,
-      level: requireInteger(character.level, `character ${characterId}.level`, 1),
+      level: item.level !== undefined
+        ? requireInteger(item.level, `${label}.level`, 1)
+        : requireInteger(character.level, `character ${characterId}.level`, 1),
       exp: 0,
       ...(character.isBoss === undefined ? {} : { isBoss: character.isBoss === true }),
       ...(item.aiRole === undefined ? {} : { aiRole: requireChoice(item.aiRole, AI_ROLES, `${label}.aiRole`) }),
+      ...(item.openingMove === undefined ? {} : {
+        openingMove: (() => {
+          const move = requireRecord(item.openingMove, `${label}.openingMove`);
+          return {
+            targetPosition: readPosition(move.targetPosition, map, `${label}.openingMove.targetPosition`),
+            ...(move.nextAiRole === undefined ? {} : { nextAiRole: requireChoice(move.nextAiRole, AI_ROLES, `${label}.openingMove.nextAiRole`) }),
+            turn: move.turn === undefined ? 1 : requireInteger(move.turn, `${label}.openingMove.turn`, 1),
+          };
+        })(),
+      }),
       ...(item.patrolPoints === undefined ? {} : {
         patrolPoints: (() => {
           if (!Array.isArray(item.patrolPoints) || item.patrolPoints.length === 0) {

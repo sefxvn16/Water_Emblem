@@ -34,8 +34,8 @@ describe('trade (PLAN item 87)', () => {
     const updated = tradeSwap(units, 'marth', 'caeda', 1, 0, itemById);
 
     expect(find(updated, 'marth').inventory[1]?.itemId).toBe(caedaBefore[0]);
-    expect(find(updated, 'caeda').inventory[0]?.itemId).toBe('iron_sword');
-    expect(find(units, 'marth').inventory[1]?.itemId).toBe('iron_sword');
+    expect(find(updated, 'caeda').inventory[0]?.itemId).toBe('vulnerary');
+    expect(find(units, 'marth').inventory[1]?.itemId).toBe('vulnerary');
   });
 
   it('rejects a swap that would break the 4+4 limits', () => {
@@ -82,9 +82,9 @@ describe('trade (PLAN item 87)', () => {
   it('giving away the equipped weapon equips the next usable one', () => {
     const units = freshUnits();
 
-    const updated = tradeMove(units, 'marth', 'caeda', 0, itemById);
+    const updated = tradeMove(units, 'abel', 'caeda', 0, itemById);
 
-    expect(find(updated, 'marth').weapon?.id).toBe('iron_sword');
+    expect(find(updated, 'abel').weapon?.id).toBe('javelin');
   });
 
   it('a spent partner re-equips its first usable weapon after any trade', () => {

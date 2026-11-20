@@ -52,30 +52,35 @@ test('unit-inspector/J2 weapons and items show their icons', async ({ page }) =>
   await openInspector(page, 24, 5);
   const inspector = page.getByTestId('inspector');
 
-  // Weapons: 2×2 grid; Marth carries 2 weapons (Rapier + Iron Sword), so
-  // 2 filled cells + 2 empty. (Before PLAN item 82 the equipped Rapier was
-  // shown twice, filling 3 cells.)
+  // Weapons: 2×2 grid; Marth carries 1 weapon (Rapier), so
+  // 1 filled cell + 3 empty.
   const cells = inspector.getByTestId('inspector-weapons').locator(':scope > div');
   await expect(cells).toHaveCount(4);
-  for (let i = 0; i < 2; i++) {
-    const img = cells.nth(i).locator('img');
-    await expect(img).toHaveCount(1);
-    const naturalWidth = await img.evaluate((el) => (el as HTMLImageElement).naturalWidth);
-    expect(naturalWidth).toBeGreaterThan(0);
-    const box = await img.boundingBox();
-    expect(Math.round(box!.width)).toBe(26);
-    expect(Math.round(box!.height)).toBe(26);
-  }
+  const rapierImg = cells.nth(0).locator('img');
+  await expect(rapierImg).toHaveCount(1);
+  const rapierNaturalWidth = await rapierImg.evaluate((el) => (el as HTMLImageElement).naturalWidth);
+  expect(rapierNaturalWidth).toBeGreaterThan(0);
+  const rapierBox = await rapierImg.boundingBox();
+  expect(Math.round(rapierBox!.width)).toBe(26);
+  expect(Math.round(rapierBox!.height)).toBe(26);
   await expect(cells.nth(0).locator('img')).toHaveAttribute('src', /Is_fe03_rapier\.png$/);
+  await expect(cells.nth(1)).toHaveText('—');
   await expect(cells.nth(2)).toHaveText('—');
   await expect(cells.nth(3)).toHaveText('—');
 
-  // Items: Marth carries none — four dashed empty slots.
+  // Items: Marth carries Vulnerary in slot 0, and 3 empty slots.
   const slots = inspector.getByTestId('inspector-items').locator(':scope > div');
   await expect(slots).toHaveCount(4);
-  for (let i = 0; i < 4; i++) {
-    await expect(slots.nth(i)).toHaveText('—');
-  }
+  const vulnImg = slots.nth(0).locator('img');
+  await expect(vulnImg).toHaveCount(1);
+  const vulnNaturalWidth = await vulnImg.evaluate((el) => (el as HTMLImageElement).naturalWidth);
+  expect(vulnNaturalWidth).toBeGreaterThan(0);
+  const vulnBox = await vulnImg.boundingBox();
+  expect(Math.round(vulnBox!.width)).toBe(26);
+  expect(Math.round(vulnBox!.height)).toBe(26);
+  await expect(slots.nth(1)).toHaveText('—');
+  await expect(slots.nth(2)).toHaveText('—');
+  await expect(slots.nth(3)).toHaveText('—');
 
   // HP bar: full HP, so the fill spans the whole track (minus its 1px borders).
   const bar = inspector.getByText('HP 18 / 18').locator('xpath=..');

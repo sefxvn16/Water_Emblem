@@ -108,15 +108,15 @@ describe('shop (PLAN item 91)', () => {
   it('sells an item for gold and re-equips when the equipped weapon is sold', () => {
     const units = freshUnits();
 
-    const soldIron = sellItem(units, 0, 'marth', 1, itemById);
-    expect(soldIron).not.toBeNull();
-    expect(soldIron!.gold).toBe(200);
-    expect(find(soldIron!.units, 'marth').inventory.map((i) => i.itemId)).toEqual(['rapier']);
+    const soldVuln = sellItem(units, 0, 'marth', 1, itemById);
+    expect(soldVuln).not.toBeNull();
+    expect(soldVuln!.gold).toBe(180);
+    expect(find(soldVuln!.units, 'marth').inventory.map((i) => i.itemId)).toEqual(['rapier']);
 
-    const soldEquipped = sellItem(units, 0, 'marth', 0, itemById);
+    const soldEquipped = sellItem(units, 0, 'abel', 0, itemById);
     expect(soldEquipped).not.toBeNull();
-    expect(soldEquipped!.gold).toBe(560);
-    expect(find(soldEquipped!.units, 'marth').weapon?.id).toBe('iron_sword');
+    expect(soldEquipped!.gold).toBe(200);
+    expect(find(soldEquipped!.units, 'abel').weapon?.id).toBe('javelin');
 
     expect(sellItem(units, 0, 'marth', 99, itemById)).toBeNull();
   });

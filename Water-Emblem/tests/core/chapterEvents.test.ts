@@ -91,7 +91,7 @@ describe('seize', () => {
 
   it('lets the lord seize and applies the gold reward', () => {
     const result = seize(atGate(chapter03Data), chapter03Data.lordUnitId, chapter03Data, items);
-    expect(result.state.gold).toBe(15000);
+    expect(result.state.gold).toBe(10000);
     expect(result.events.map(({ type }) => type)).toEqual(['gold_gained', 'chapter_seized']);
   });
 

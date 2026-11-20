@@ -136,28 +136,41 @@ export function executeSingleEnemyAction(
   let workingGold = context.gold;
   let workingUnits = [...currentUnits];
 
-  const decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
-    map: context.mapData,
-    terrains,
-    units: workingUnits.map((u) => u.unit),
-    unitStatsMap: statsMap,
-    unitWeaponsMap: weaponsMap,
-    unitSkillsMap: new Map(workingUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
-    unitLevelsMap: new Map(workingUnits.map((u) => [u.unit.id, u.level])),
-    sphereHolders: {
-      light: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
-      dark: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
-    },
-    villageTargets: (context.chapter.villages as any[])?.filter(
-      (v: any) => (workingVillageStates[v.id] ?? 'intact') === 'intact',
-    ).map((v: any) => v.position),
-    chestTargets: ((context.chapter.chests as any[]) ?? [])
-      .filter((c: any) => workingChestStates[c.id] !== 'opened')
-      .map((c: any) => c.position),
-    patrolTargets: enemy.patrolPoints,
-    turnNumber: context.turnNumber,
-    openedDoors: context.openedDoors,
-  });
+  const openingMove = enemy.openingMove;
+  const isOpeningMoveActive = openingMove && (context.turnNumber === (openingMove.turn ?? 1));
+  let decision: AIDecision;
+
+  if (isOpeningMoveActive) {
+    const target = openingMove.targetPosition;
+    if (enemy.unit.position.x !== target.x || enemy.unit.position.y !== target.y) {
+      decision = { type: 'move_only', movePosition: target };
+    } else {
+      decision = { type: 'wait' };
+    }
+  } else {
+    decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
+      map: context.mapData,
+      terrains,
+      units: workingUnits.map((u) => u.unit),
+      unitStatsMap: statsMap,
+      unitWeaponsMap: weaponsMap,
+      unitSkillsMap: new Map(workingUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+      unitLevelsMap: new Map(workingUnits.map((u) => [u.unit.id, u.level])),
+      sphereHolders: {
+        light: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
+        dark: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
+      },
+      villageTargets: (context.chapter.villages as any[])?.filter(
+        (v: any) => (workingVillageStates[v.id] ?? 'intact') === 'intact',
+      ).map((v: any) => v.position),
+      chestTargets: ((context.chapter.chests as any[]) ?? [])
+        .filter((c: any) => workingChestStates[c.id] !== 'opened')
+        .map((c: any) => c.position),
+      patrolTargets: enemy.patrolPoints,
+      turnNumber: context.turnNumber,
+      openedDoors: context.openedDoors,
+    });
+  }
 
   const stepLogs: string[] = [];
   let combatResolutionResult: CombatResolutionResult | undefined;
@@ -219,6 +232,9 @@ export function executeSingleEnemyAction(
   const updatedEnemy = workingUnits.find((u) => u.unit.id === enemy.unit.id);
   if (updatedEnemy) {
     updatedEnemy.unit.hasActed = true;
+    if (isOpeningMoveActive && openingMove?.nextAiRole) {
+      updatedEnemy.aiRole = openingMove.nextAiRole;
+    }
   }
 
   return {

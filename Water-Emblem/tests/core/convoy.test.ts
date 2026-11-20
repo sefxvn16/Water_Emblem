@@ -26,7 +26,7 @@ describe('convoy (PLAN item 88)', () => {
 
     expect(result).not.toBeNull();
     expect(find(result!.units, 'marth').inventory.map((i) => i.itemId)).toEqual(['rapier']);
-    expect(result!.convoy).toEqual([{ itemId: 'iron_sword', uses: 40 }]);
+    expect(result!.convoy).toEqual([{ itemId: 'vulnerary', uses: 3 }]);
     expect(find(units, 'marth').inventory).toHaveLength(2);
     expect(convoy).toHaveLength(0);
   });
@@ -34,9 +34,9 @@ describe('convoy (PLAN item 88)', () => {
   it('depositing the equipped weapon equips the next usable one', () => {
     const units = freshUnits();
 
-    const result = depositToConvoy(units, [], 'marth', 0, itemById);
+    const result = depositToConvoy(units, [], 'abel', 0, itemById);
 
-    expect(find(result!.units, 'marth').weapon?.id).toBe('iron_sword');
+    expect(find(result!.units, 'abel').weapon?.id).toBe('javelin');
   });
 
   it('withdraws an item when the unit store has room', () => {

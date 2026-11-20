@@ -33,7 +33,7 @@
       },
       "startingWeapons": [
         "rapier",
-        "iron_sword"
+        "vulnerary"
       ],
       "avatarUrl": "/avatars/marth.png",
       "personalGrowths": {
@@ -223,7 +223,7 @@
         "res": 0
       },
       "startingWeapons": [
-        "iron_lance",
+        "iron_sword",
         "javelin"
       ],
       "avatarUrl": "/avatars/abel.png",
@@ -316,7 +316,8 @@
         "res": 0
       },
       "startingWeapons": [
-        "iron_bow"
+        "iron_bow",
+        "steel_bow"
       ],
       "avatarUrl": "/avatars/gordin.png",
       "personalGrowths": {
@@ -1322,7 +1323,6 @@
         "res": 50
       },
       "startingWeapons": [
-        "mend_staff",
         "warp_staff"
       ],
       "avatarUrl": "/avatars/lena.png",

@@ -24,11 +24,11 @@ function find(units: ExtendedUnitState[], id: string): ExtendedUnitState {
 
 describe('weapon switching (PLAN item 85)', () => {
   it('lists usable weapons in inventory order, equipped flagged', () => {
-    const marth = find(freshUnits(), 'marth');
+    const abel = find(freshUnits(), 'abel');
 
-    const usable = getUsableWeapons(marth, itemById);
+    const usable = getUsableWeapons(abel, itemById);
 
-    expect(usable.map((w) => w.itemId)).toEqual(['rapier', 'iron_sword']);
+    expect(usable.map((w) => w.itemId)).toEqual(['iron_sword', 'javelin']);
     expect(usable[0]?.equipped).toBe(true);
     expect(usable[1]?.equipped).toBe(false);
   });
@@ -50,10 +50,10 @@ describe('weapon switching (PLAN item 85)', () => {
   it('equips another usable weapon without mutating the input', () => {
     const units = freshUnits();
 
-    const updated = equipWeapon(units, 'marth', 'iron_sword', itemById);
+    const updated = equipWeapon(units, 'abel', 'javelin', itemById);
 
-    expect(find(updated, 'marth').weapon?.id).toBe('iron_sword');
-    expect(find(units, 'marth').weapon?.id).toBe('rapier');
+    expect(find(updated, 'abel').weapon?.id).toBe('javelin');
+    expect(find(units, 'abel').weapon?.id).toBe('iron_sword');
     expect(find(updated, 'gordin')).toBe(find(units, 'gordin'));
   });
 

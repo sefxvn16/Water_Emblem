@@ -9,6 +9,7 @@ describe('chapter transition', () => {
     const marth = current.find(({ unit }) => unit.id === 'marth')!;
     marth.stats.hp = 7;
     marth.weapon = chapter01Data.units.find(({ unit }) => unit.id === 'cain')!.weapon;
+    marth.inventory.push({ itemId: marth.weapon!.id, uses: marth.weapon!.maxUses });
 
     const next = carryUnitsToChapter(current, chapter02Data);
     const carriedMarth = next.find(({ unit }) => unit.id === 'marth')!;

@@ -61,7 +61,7 @@ describe('class rules', () => {
   it('uses one Vulnerary charge and never heals above maximum HP', () => {
     const marth = structuredClone(chapter01Data.units.find(({ unit }) => unit.id === 'marth')!);
     const vulnerary = itemsJson.items.find((item) => item.id === 'vulnerary') as ItemDefinition;
-    marth.inventory.push({ itemId: 'vulnerary', uses: 2 });
+    marth.inventory = [{ itemId: 'rapier', uses: 28 }, { itemId: 'vulnerary', uses: 2 }];
     marth.stats.hp = marth.stats.maxHp - 3;
     const healed = useVulnerary(marth, vulnerary)!;
     expect(healed.stats.hp).toBe(marth.stats.maxHp);

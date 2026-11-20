@@ -60,7 +60,7 @@
         "x": 23,
         "y": 7
       },
-      "weaponId": "iron_lance",
+      "weaponId": "iron_sword",
       "characterId": "abel"
     },
     {
@@ -91,10 +91,18 @@
         "x": 6,
         "y": 4
       },
-      "mov": 0,
+      "mov": 2,
       "weaponId": "iron_axe",
       "aiRole": "stationary",
-      "characterId": "gazzak"
+      "characterId": "gazzak",
+      "openingMove": {
+        "targetPosition": {
+          "x": 4,
+          "y": 4
+        },
+        "nextAiRole": "stationary",
+        "turn": 1
+      }
     },
     {
       "id": "enemy_pirate_1",
@@ -178,7 +186,15 @@
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue",
-      "characterId": "galder_pirate"
+      "characterId": "galder_pirate",
+      "openingMove": {
+        "targetPosition": {
+          "x": 4,
+          "y": 5
+        },
+        "nextAiRole": "stationary",
+        "turn": 1
+      }
     },
     {
       "id": "enemy_pirate_8",
@@ -190,7 +206,15 @@
       },
       "weaponId": "iron_axe",
       "aiRole": "pursue",
-      "characterId": "galder_pirate"
+      "characterId": "galder_pirate",
+      "openingMove": {
+        "targetPosition": {
+          "x": 5,
+          "y": 5
+        },
+        "nextAiRole": "stationary",
+        "turn": 1
+      }
     },
     {
       "id": "enemy_hunter",
