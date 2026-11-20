@@ -1,6 +1,9 @@
 {
   "task_id": "gate-guardrails",
   "plan_items": [
+    134,
+    135,
+    136,
     137,
     138,
     140,
@@ -69,6 +72,11 @@
     "Game_Design/features.lock.json",
     "Water-Emblem/tests/core/featureLock.test.ts",
     "Water-Emblem/vite.config.ts",
-    "Water-Emblem/tests/browser/inspectorJ2.spec.ts"
+    "Water-Emblem/tests/browser/inspectorJ2.spec.ts",
+    "Water-Emblem/src/core/combat/combatResolution.ts",
+    "Water-Emblem/src/core/simulation/enemyTurnSimulation.ts",
+    "Water-Emblem/tests/core/combatResolution.test.ts",
+    "Water-Emblem/tests/core/enemyTurnSimulation.test.ts",
+    "Water-Emblem/tests/core/executeWithMoveGuards.test.ts"
   ]
 }

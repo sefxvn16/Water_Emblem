@@ -59,6 +59,7 @@ _backup/
 # coding-studio
 work/
 .claude/worktrees/
+.worktrees/
 
 # FE3 original asset store (kept outside game sources, see Game_Design/asset_sources.md)
 /Original/

@@ -15,7 +15,6 @@ import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
 import { CombatForecast, type ItemDefinition } from './core/combat/types';
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
-import { applyCombatDurability } from './core/combat/durability';
 import {
   canAttackAtDistance,
   equipWeapon,
@@ -29,7 +28,8 @@ import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
-import { computeCombinedThreatKeys, computeUnitThreatKeys } from './core/grid/threatRange';
+import { resolveCombatConsequences } from './core/combat/combatResolution';
+import { computeDangerZone, computeInspectedEnemyThreatKeys } from './core/simulation/enemyTurnSimulation';
 import {
   bossStartEvent,
   canOpenChest,
@@ -38,7 +38,6 @@ import {
   openDoor,
   pillageVillage,
   recruit,
-  resolveDefeat,
   seize,
   visitVillage,
   type ChapterState,
@@ -54,7 +53,6 @@ import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transiti
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
-import { applyCombatExperience } from './core/progression/experience';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
@@ -79,13 +77,11 @@ import { ShopWindow } from './ui/ShopWindow';
 import { ArenaWindow } from './ui/ArenaWindow';
 import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
 import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
-import { applyBossPhases } from './core/chapter/bossPhases';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { getSkillModifiers } from './core/combat/skills';
 import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import { applyStaffUse, applyWarpUse, getStaffTargets, getUsableStaves, getWarpDestinations, isHealStaff, isWarpStaff } from './core/combat/staff';
-import { applyCombatWeaponExp } from './core/combat/weaponExp';
 import type { InventoryEntry } from './core/data/chapterData';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
 import { DialogueBox } from './ui/DialogueBox';
@@ -405,16 +401,10 @@ export const App: React.FC = () => {
     units: extendedUnits.map((u) => u.unit),
     openedDoors: openedDoorKeys,
   };
-  const combinedDangerZoneKeys = useMemo(() => computeCombinedThreatKeys(
-    extendedUnits
-      .filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead)
-      .map((enemy) => ({
-        unit: enemy.unit,
-        attackRange: getAttackRange(enemy.unit, enemy.weapon),
-        stationary: enemy.aiRole === 'stationary',
-      })),
-    threatContext,
-  ), [extendedUnits, openedDoorKeys, mapData]);
+  const combinedDangerZoneKeys = useMemo(
+    () => computeDangerZone(extendedUnits, mapData, defaultTerrainRegistry, openedDoorKeys),
+    [extendedUnits, openedDoorKeys, mapData],
+  );
 
   // Địch đang được xem (bấm vào địch): hiện vùng của riêng địch đó thay vùng
   // gộp, kiểu Fire Emblem (PLAN items 145/167).
@@ -422,11 +412,10 @@ export const App: React.FC = () => {
   const inspectedEnemy = inspectedTargetTile
     ? extendedUnits.find((u) => !u.unit.isDead && u.unit.faction === 'enemy' && u.unit.position.x === inspectedTargetTile.x && u.unit.position.y === inspectedTargetTile.y)
     : undefined;
-  const inspectedThreatKeys = useMemo(() => (inspectedEnemy ? computeUnitThreatKeys({
-    unit: inspectedEnemy.unit,
-    attackRange: getAttackRange(inspectedEnemy.unit, inspectedEnemy.weapon),
-    stationary: inspectedEnemy.aiRole === 'stationary',
-  }, threatContext) : null), [inspectedEnemy, extendedUnits, openedDoorKeys, mapData]);
+  const inspectedThreatKeys = useMemo(
+    () => (inspectedEnemy ? computeInspectedEnemyThreatKeys(inspectedEnemy, extendedUnits, mapData, defaultTerrainRegistry, openedDoorKeys) : null),
+    [inspectedEnemy, extendedUnits, openedDoorKeys, mapData],
+  );
 
   // PLAN item 167: When an enemy is selected, its reachable movement tiles are computed
   // so the player can see both its movement range (blue) and its attack threat range (red).
@@ -871,6 +860,10 @@ export const App: React.FC = () => {
 
   // Chạy di chuyển có hoạt cảnh trước khi hoàn tất hành động
   const executeWithMove = (actionFn: () => void) => {
+    // Decision 5: Guard against null, dead, or already acted units before movement
+    if (!selectedExtUnit || selectedExtUnit.unit.isDead || selectedExtUnit.unit.hasActed) {
+      return;
+    }
     // PLAN item 98: the unit already walked to the destination on click.
     if (moveCommitted) {
       actionFn();
@@ -924,46 +917,34 @@ export const App: React.FC = () => {
       const startEvent = bossStartEvent(currentDialogues, defender.unit.id, defender.unit.name);
       if (startEvent) logs.push(...eventLogLines([startEvent]));
       logs.push(`⚔️ ENGAGEMENT: ${attacker.unit.name} vs ${defender.unit.name}`);
-      for (const ev of result.events) {
-        const atk = extendedUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || 'Unknown';
-        const def = extendedUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || 'Unknown';
-        if (!ev.isHit) {
-          soundManager.playSfx('miss');
-          logs.push(`${atk} attacked ${def} but MISSED!`);
-        } else {
-          if (ev.isCrit) soundManager.playSfx('crit');
-          else if (ev.damageDealt === 0) soundManager.playSfx('nodamage');
-          else soundManager.playWeaponHit(extendedUnits.find((u) => u.unit.id === ev.attackerId)?.weapon?.type ?? 'sword');
-          const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
-          logs.push(`${atk} hit ${def} for ${ev.damageDealt} damage!${critText} (${def} remaining HP: ${ev.defenderHpAfter})`);
-        }
+
+      // PLAN item 135: Combat consequences handled by the stateless simulation layer
+      const resolution = resolveCombatConsequences({
+        units: extendedUnits,
+        result,
+        rng: defaultRNG,
+        itemById: ITEM_BY_ID,
+        itemsList: itemsJson.items as any,
+        chapter: currentChapter,
+        dialogues: currentDialogues as any,
+        gold,
+        villageStates,
+      });
+
+      for (const cue of resolution.soundCues) {
+        if (cue.type === 'weapon') soundManager.playWeaponHit(cue.weaponType ?? 'sword');
+        else soundManager.playSfx(cue.type);
       }
 
-      // PLAN item 133: post-combat HP comes from the result, not from a mutated forecast.
-      let updatedUnits: ExtendedUnitState[] = extendedUnits.map((item) => {
-        if (item.unit.id === attacker.unit.id) return { ...item, stats: { ...result.forecast.attacker.stats }, unit: { ...item.unit, isDead: result.forecast.attacker.stats.hp <= 0 } };
-        if (item.unit.id === defender.unit.id) return { ...item, stats: { ...result.forecast.defender.stats }, unit: { ...item.unit, isDead: result.forecast.defender.stats.hp <= 0 } };
-        return item;
-      });
-      if (result.unitDefeatedId) {
-        soundManager.playSfx('death');
-        logs.push(`💀 ${updatedUnits.find((u) => u.unit.id === result.unitDefeatedId)?.unit.name} was defeated!`);
-        const killerId = result.unitDefeatedId === attacker.unit.id ? defender.unit.id : attacker.unit.id;
-        const defeat = resolveDefeat(chapterState(updatedUnits), result.unitDefeatedId, killerId, itemsJson.items, currentDialogues);
-        logs.push(...eventLogLines(defeat.events));
-        queueOverflows(defeat.events);
-        updatedUnits = [...defeat.state.units];
+      logs.push(...resolution.logs);
+      if (resolution.defeatEvents.length > 0) {
+        logs.push(...eventLogLines(resolution.defeatEvents));
+        queueOverflows(resolution.defeatEvents);
       }
-      const experience = applyCombatExperience(updatedUnits, result, defaultRNG);
-      updatedUnits = experience.entries;
-      updatedUnits = applyCombatDurability(updatedUnits, result, ITEM_BY_ID);
-      updatedUnits = applyCombatWeaponExp(updatedUnits, result);
-      const bossPhases = applyBossPhases(updatedUnits, ITEM_BY_ID);
-      updatedUnits = bossPhases.units;
-      for (const event of bossPhases.events) {
-        logs.push(`👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
-      }
-      logs.push(...experience.messages);
+      setGold(resolution.gold);
+      setVillageStates(resolution.villageStates);
+
+      const updatedUnits = resolution.units;
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
       setExtendedUnits(updatedUnits);
@@ -1711,52 +1692,33 @@ export const App: React.FC = () => {
           }
           await sleep(150);
         }
-        for (const ev of result.events) {
-          const atk = phaseUnits.find((u) => u.unit.id === ev.attackerId)?.unit.name || '';
-          const def = phaseUnits.find((u) => u.unit.id === ev.defenderId)?.unit.name || '';
-          if (!ev.isHit) {
-            soundManager.playSfx('miss');
-            logs.push(`  ${atk} missed ${def}!`);
-          } else {
-            if (ev.isCrit) {
-              soundManager.playSfx('crit');
-            } else if (ev.damageDealt === 0) {
-              soundManager.playSfx('nodamage');
-            } else {
-              const attackerUnit = phaseUnits.find((u) => u.unit.id === ev.attackerId);
-              soundManager.playWeaponHit(attackerUnit?.weapon?.type ?? 'axe');
-            }
-            const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
-            const dmgText = ev.damageDealt === 0 ? '0 damage (No Damage)' : `${ev.damageDealt} damage`;
-            logs.push(`  ${atk} strikes ${def} for ${dmgText}!${critText}`);
-          }
+        // PLAN item 135: Combat consequences handled by the stateless simulation layer
+        const resolution = resolveCombatConsequences({
+          units: phaseUnits,
+          result,
+          rng: defaultRNG,
+          itemById: ITEM_BY_ID,
+          itemsList: itemsJson.items as any,
+          chapter: currentChapter,
+          dialogues: currentDialogues as any,
+          gold,
+          villageStates: nextVillageStates,
+        });
+
+        for (const cue of resolution.soundCues) {
+          if (cue.type === 'weapon') soundManager.playWeaponHit(cue.weaponType ?? 'axe');
+          else soundManager.playSfx(cue.type);
         }
-        if (result.unitDefeatedId) {
-          soundManager.playSfx('death');
-          const defeatedUnit = phaseUnits.find((u) => u.unit.id === result.unitDefeatedId);
-          if (defeatedUnit) defeatedUnit.unit.isDead = true;
-          logs.push(`  💀 ${defeatedUnit?.unit.name} has fallen!`);
-          const killerId = result.unitDefeatedId === enemy.unit.id ? decision.targetUnit.id : enemy.unit.id;
-          const defeat = resolveDefeat(
-            { units: phaseUnits, gold, villageStates: nextVillageStates },
-            result.unitDefeatedId, killerId, itemsJson.items, currentDialogues,
-          );
-          logs.push(...eventLogLines(defeat.events, '  '));
-          queueOverflows(defeat.events);
-          phaseUnits = [...defeat.state.units];
+
+        logs.push(...resolution.logs);
+        if (resolution.defeatEvents.length > 0) {
+          logs.push(...eventLogLines(resolution.defeatEvents, '  '));
+          queueOverflows(resolution.defeatEvents);
         }
-        const experience = applyCombatExperience(phaseUnits, result, defaultRNG);
-        phaseUnits = experience.entries;
-        phaseUnits = applyCombatDurability(phaseUnits, result, ITEM_BY_ID);
-        phaseUnits = applyCombatWeaponExp(phaseUnits, result);
-        const bossPhases = applyBossPhases(phaseUnits, ITEM_BY_ID);
-        phaseUnits = bossPhases.units;
-        for (const event of bossPhases.events) {
-          logs.push(`  👹 ${event.unitName} enters phase ${event.phaseIndex}!`);
-        }
+        nextVillageStates = resolution.villageStates;
+        phaseUnits = resolution.units;
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
-        logs.push(...experience.messages);
       } else if (decision.type === 'move_only') {
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, decision.movePosition);
