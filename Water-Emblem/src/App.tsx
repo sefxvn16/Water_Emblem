@@ -212,7 +212,7 @@ export const App: React.FC = () => {
     if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !warpTargeting && !tradeTargeting) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setWarpTargeting(null); setTradeTargeting(false);
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setWarpTargeting(null); setTradeTargeting(false); setSelectedTarget(null);
       }
     };
     document.addEventListener('keydown', onKeyDown);
@@ -536,6 +536,74 @@ export const App: React.FC = () => {
     turnManager.waitSelectedUnit();
   };
 
+  // PLAN item 158 (owner playtest 2026-11-20): Attack flow is target
+  // first, then weapon, then forecast — so the player compares weapons
+  // through the forecast. Weapons usable against a chosen target:
+  const usableWeaponsForTarget = (target: ExtendedUnitState) => {
+    if (!selectedExtUnit || !pendingMovePos) return [];
+    const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+    return getAttackWeapons(selectedExtUnit, ITEM_BY_ID).filter((weapon) => {
+      const range = getAttackRange(selectedExtUnit.unit, weapon.definition);
+      return range.max > 0 && dist >= range.min && dist <= range.max;
+    });
+  };
+
+  const openAttackForecast = (target: ExtendedUnitState, weaponDef?: ItemDefinition) => {
+    if (!selectedExtUnit || !pendingMovePos) return;
+    soundManager.playSfx('cursor');
+    setWeaponPickerOpen(false);
+    setSelectedTarget(target);
+    const dist = getManhattanDistance(pendingMovePos, target.unit.position);
+    // PLAN item 85: when the equipped weapon cannot reach this target
+    // but another usable weapon can, equip that weapon for the attack.
+    const attackWeapon = weaponDef ?? findWeaponForDistance(selectedExtUnit, ITEM_BY_ID, dist);
+    if (attackWeapon && attackWeapon.id !== selectedExtUnit.weapon?.id) {
+      setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, attackWeapon.id, ITEM_BY_ID));
+    }
+    const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
+    const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
+    // PLAN items 112/113: skill modifiers for both sides.
+    const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
+    const allGridUnits = extendedUnits.map((u) => u.unit);
+    const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds, selectedExtUnit.level);
+    const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds, target.level);
+    const holds = (entry: ExtendedUnitState, itemId: string) => entry.inventory.some((i) => i.itemId === itemId);
+    setCombatForecast(calculateCombatForecast(
+      selectedExtUnit.unit,
+      selectedExtUnit.stats,
+      attackWeapon ?? selectedExtUnit.weapon,
+      target.unit,
+      target.stats,
+      target.weapon,
+      dist,
+      defaultTerrainRegistry,
+      attackerTerrain,
+      defenderTerrain,
+      allGridUnits,
+      { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
+      { attacker: attackerMods, defender: defenderMods },
+      {
+        attackerHasLight: holds(selectedExtUnit, 'lightsphere'),
+        attackerHasDark: holds(selectedExtUnit, 'darksphere'),
+        defenderHasLight: holds(target, 'lightsphere'),
+        defenderHasDark: holds(target, 'darksphere'),
+      }
+    ));
+  };
+
+  // PLAN item 158: target chosen — with several usable weapons the picker
+  // opens next; with one, the forecast opens right away.
+  const selectAttackTarget = (target: ExtendedUnitState) => {
+    const weapons = usableWeaponsForTarget(target);
+    if (weapons.length > 1) {
+      soundManager.playSfx('cursor');
+      setSelectedTarget(target);
+      setWeaponPickerOpen(true);
+      return;
+    }
+    openAttackForecast(target, weapons[0]?.definition);
+  };
+
   const handleTileClick = (x: number, y: number) => {
     if (animCleanupRef.current) {
       animCleanupRef.current();
@@ -568,49 +636,6 @@ export const App: React.FC = () => {
     const clickedExt = extendedUnits.find(
       (u) => !u.unit.isDead && u.unit.position.x === x && u.unit.position.y === y
     );
-
-    const openAttackForecast = (target: ExtendedUnitState) => {
-      if (!selectedExtUnit || !pendingMovePos) return;
-      soundManager.playSfx('cursor');
-      setWeaponPickerOpen(false);
-      setSelectedTarget(target);
-      const dist = getManhattanDistance(pendingMovePos, target.unit.position);
-      // PLAN item 85: when the equipped weapon cannot reach this target
-      // but another usable weapon can, equip that weapon for the attack.
-      const attackWeapon = findWeaponForDistance(selectedExtUnit, ITEM_BY_ID, dist);
-      if (attackWeapon && attackWeapon.id !== selectedExtUnit.weapon?.id) {
-        setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, attackWeapon.id, ITEM_BY_ID));
-      }
-      const attackerTerrain = mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains';
-      const defenderTerrain = mapData.grid[target.unit.position.y]?.[target.unit.position.x] ?? 'plains';
-      // PLAN items 112/113: skill modifiers for both sides.
-      const allySkillIds = new Map(extendedUnits.map((u) => [u.unit.id, skillIdsOf(u)]));
-      const allGridUnits = extendedUnits.map((u) => u.unit);
-      const attackerMods = getSkillModifiers(skillIdsOf(selectedExtUnit), selectedExtUnit.unit, selectedExtUnit.stats, attackWeapon ?? selectedExtUnit.weapon, target.weapon, true, allGridUnits, allySkillIds, selectedExtUnit.level);
-      const defenderMods = getSkillModifiers(skillIdsOf(target), target.unit, target.stats, target.weapon, attackWeapon ?? selectedExtUnit.weapon, false, allGridUnits, allySkillIds, target.level);
-      const holds = (entry: ExtendedUnitState, itemId: string) => entry.inventory.some((i) => i.itemId === itemId);
-      setCombatForecast(calculateCombatForecast(
-        selectedExtUnit.unit,
-        selectedExtUnit.stats,
-        attackWeapon ?? selectedExtUnit.weapon,
-        target.unit,
-        target.stats,
-        target.weapon,
-        dist,
-        defaultTerrainRegistry,
-        attackerTerrain,
-        defenderTerrain,
-        allGridUnits,
-        { attacker: getElevation(mapData, pendingMovePos), defender: getElevation(mapData, target.unit.position) },
-        { attacker: attackerMods, defender: defenderMods },
-        {
-          attackerHasLight: holds(selectedExtUnit, 'lightsphere'),
-          attackerHasDark: holds(selectedExtUnit, 'darksphere'),
-          defenderHasLight: holds(target, 'lightsphere'),
-          defenderHasDark: holds(target, 'darksphere'),
-        }
-      ));
-    };
 
     // PLAN item 132: trade target lock — click a highlighted ally on the
     // map to open the trade screen; click the unit's tile to go back.
@@ -683,7 +708,7 @@ export const App: React.FC = () => {
       if (clickedExt && clickedExt.unit.faction === 'enemy'
         && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
         setAttackTargeting(false);
-        openAttackForecast(clickedExt);
+        selectAttackTarget(clickedExt);
       } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
         setAttackTargeting(false);
       }
@@ -693,7 +718,7 @@ export const App: React.FC = () => {
     // Nếu đã di chuyển và đang chọn mục tiêu tấn công
     if (pendingMovePos && attackableTargets.length > 0 && clickedExt && clickedExt.unit.faction === 'enemy'
       && attackableTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
-      openAttackForecast(clickedExt);
+      selectAttackTarget(clickedExt);
       return;
     }
 
@@ -1195,21 +1220,14 @@ export const App: React.FC = () => {
     });
   };
 
-  // Nút Attack trong menu hành động (PLAN item 80): đúng 1 mục tiêu thì mở
-  // dự báo ngay; từ 2 mục tiêu thì khóa chọn mục tiêu trong tầm đánh.
+  // Nút Attack trong menu hành động (PLAN items 80/158): chọn mục tiêu
+  // trước — đúng 1 mục tiêu thì chọn luôn, từ 2 mục tiêu thì khóa chọn
+  // mục tiêu trong tầm đánh. Vũ khí chọn sau khi đã có mục tiêu
+  // (selectAttackTarget), rồi mới hiện dự báo.
   const handleAttack = () => {
-    // PLAN item 85: with several usable attack weapons, choose one first.
-    if (selectedExtUnit && getAttackWeapons(selectedExtUnit, ITEM_BY_ID).length > 1) {
-      setWeaponPickerOpen(true);
-      return;
-    }
-    proceedAttack();
-  };
-
-  const proceedAttack = () => {
     if (attackableTargets.length === 1) {
       const target = attackableTargets[0];
-      if (target) handleTileClick(target.unit.position.x, target.unit.position.y);
+      if (target) selectAttackTarget(target);
     } else if (attackableTargets.length > 0) {
       setAttackTargeting(true);
     }
@@ -1219,9 +1237,11 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, itemId, ITEM_BY_ID));
     setWeaponPickerOpen(false);
-    // Always go through target lock after picking, so the forecast is
-    // computed from the newly equipped weapon (state settles first).
-    setAttackTargeting(true);
+    // PLAN item 158: the target is already chosen; open the forecast with
+    // the picked weapon so weapons can be compared through the forecast.
+    if (selectedTarget) {
+      openAttackForecast(selectedTarget, ITEM_BY_ID.get(itemId));
+    }
   };
 
   const handleEquip = (itemId: string) => {
@@ -1905,7 +1925,18 @@ export const App: React.FC = () => {
           attacker={selectedExtUnit}
           defender={selectedTarget}
           onConfirm={handleConfirmAttack}
-          onCancel={() => { setCombatForecast(null); setSelectedTarget(null); }}
+          onCancel={() => {
+            // PLAN items 158/163: cancelling the forecast returns to the
+            // weapon picker when several weapons can reach the target (to
+            // compare another weapon), otherwise back to the action menu
+            // where Cancel Move is available again.
+            setCombatForecast(null);
+            if (selectedTarget && usableWeaponsForTarget(selectedTarget).length > 1) {
+              setWeaponPickerOpen(true);
+            } else {
+              setSelectedTarget(null);
+            }
+          }}
         />
       )}
 
@@ -1981,9 +2012,9 @@ export const App: React.FC = () => {
         <WeaponPickerWindow
           anchorTile={pendingMovePos}
           unit={selectedExtUnit.unit}
-          weapons={getAttackWeapons(selectedExtUnit, ITEM_BY_ID)}
+          weapons={selectedTarget ? usableWeaponsForTarget(selectedTarget) : getAttackWeapons(selectedExtUnit, ITEM_BY_ID)}
           onPick={handlePickWeapon}
-          onCancel={() => setWeaponPickerOpen(false)}
+          onCancel={() => { setWeaponPickerOpen(false); setSelectedTarget(null); }}
         />
       )}
 
