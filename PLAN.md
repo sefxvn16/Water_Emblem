@@ -754,6 +754,12 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Kết quả: CHƯA LÀM.
   - Kiểm bởi: tôi
 
+- [] 163. Hủy ở bảng dự báo tấn công phải quay lại được trạng thái hủy di chuyển.
+  - Nguồn: Chủ chơi thử 2026-11-20 10:21: "Khi chọn Attack, chọn nhân vật, hiện ra bảng thông báo, nhưng bấm Huỷ, nhân vật không cancel Move được".
+  - Tiêu chí xong: (1) Sau khi di chuyển → Attack → chọn đối tượng → bảng dự báo hiện → bấm Hủy → quay về menu hành động tại ô đã di chuyển, vẫn hủy di chuyển (Cancel Move) được như FE. (2) Test + gate PASS.
+  - Kết quả: CHƯA LÀM.
+  - Kiểm bởi: tôi
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".
