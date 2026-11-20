@@ -80,21 +80,51 @@ async function waitActionMenu(page: Page): Promise<void> {
 }
 
 async function confirmAttack(page: Page, target: Position): Promise<void> {
+  console.log(`[confirmAttack] start targeting (${target.x}, ${target.y})`);
   const forecast = page.getByTestId('forecast-window');
-  const opened = await forecast.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
-  if (!opened) {
-    await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click().catch(() => undefined);
-    await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
-    // PLAN item 158: after the target is chosen, the weapon picker may
-    // open (several usable weapons) before the forecast.
-    const picker = page.getByTestId('weapon-picker');
-    const pickerOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
-    if (pickerOpened) {
-      await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
-    }
-    await forecast.waitFor({ state: 'visible', timeout: 8000 });
+  const picker = page.getByTestId('weapon-picker');
+
+  // PLAN item 158: clicking the target tile may directly open the weapon picker
+  // (when multiple weapons can attack) or open the forecast immediately.
+  const pickerInitiallyOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
+  console.log(`[confirmAttack] pickerInitiallyOpened: ${pickerInitiallyOpened}`);
+  if (pickerInitiallyOpened) {
+    const btn = picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first();
+    await btn.waitFor({ state: 'visible', timeout: 3000 }).catch(() => undefined);
+    await btn.dispatchEvent('click');
+    console.log(`[confirmAttack] dispatched click on weapon in picker`);
   }
+
+  let opened = await forecast.waitFor({ state: 'visible', timeout: 2500 }).then(() => true).catch(() => false);
+  console.log(`[confirmAttack] forecast opened: ${opened}`);
+  if (!opened) {
+    if (await picker.isVisible()) {
+      const btn = picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first();
+      await btn.dispatchEvent('click');
+      opened = await forecast.waitFor({ state: 'visible', timeout: 2500 }).then(() => true).catch(() => false);
+    }
+  }
+  if (!opened) {
+    const attackBtn = page.getByRole('button', { name: /(?:Attack|Tấn công)/i });
+    const attackVisible = (await attackBtn.count()) > 0 && (await attackBtn.isVisible());
+    console.log(`[confirmAttack] attackVisible: ${attackVisible}`);
+    if (attackVisible) {
+      await attackBtn.click();
+      console.log(`[confirmAttack] clicked attack button`);
+      await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
+      console.log(`[confirmAttack] clicked target tile (${target.x}, ${target.y})`);
+      const pickerOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
+      console.log(`[confirmAttack] pickerOpened: ${pickerOpened}`);
+      if (pickerOpened) {
+        const pickerBtn = picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first();
+        await pickerBtn.dispatchEvent('click');
+      }
+    }
+    await forecast.waitFor({ state: 'visible', timeout: 6000 });
+  }
+  console.log(`[confirmAttack] clicking confirm attack button in forecast`);
   await forecast.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
+  console.log(`[confirmAttack] done`);
 }
 
 test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and seize gate', async ({ page }) => {
@@ -207,9 +237,6 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
       let attackCandidate: { position: Position; target: ExtendedUnitState } | null = null;
       if (isTalkMove && talkDest) {
         destination = talkDest;
-      } else if (bestAttack) {
-        destination = bestAttack.position;
-        attackCandidate = bestAttack;
       } else if (id === 'caeda' && navarreEnemy) {
         // Caeda advances towards Navarre safely, avoiding bow threats
         const scored = destinations.map((pos) => {
@@ -224,6 +251,9 @@ test('Chapter 3 can be played from opening, recruit Navarre, defeat Hyman, and s
         });
         scored.sort((a, b) => b.score - a.score);
         destination = scored[0]?.pos ?? actor.unit.position;
+      } else if (bestAttack) {
+        destination = bestAttack.position;
+        attackCandidate = bestAttack;
       } else if (id === 'marth') {
         if (fieldEnemies.length > 0) {
           // Marth stays in backline away from threats

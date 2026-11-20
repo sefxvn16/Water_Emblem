@@ -184,6 +184,10 @@
    "name": "Wait"
   },
   {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
    "kind": "tile",
    "testId": "tile-27-12"
   },
@@ -309,15 +313,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-8"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-19-8"
+   "testId": "tile-22-14"
   },
   {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
   },
   {
    "kind": "tile",
@@ -332,6 +332,10 @@
    "name": "Wait"
   },
   {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
    "kind": "tile",
    "testId": "tile-25-4"
   },
@@ -340,12 +344,8 @@
    "testId": "tile-23-2"
   },
   {
-   "kind": "tile",
-   "testId": "tile-22-2"
-  },
-  {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
   },
   {
    "kind": "tile",
@@ -353,7 +353,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-22-2"
+   "testId": "tile-23-3"
   },
   {
    "kind": "button",
@@ -370,6 +370,10 @@
   {
    "kind": "tile",
    "testId": "tile-10-15"
+  },
+  {
+   "kind": "button",
+   "name": "Iron AxeRng 1 · 40/40"
   },
   {
    "kind": "button",
@@ -397,15 +401,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-21-4"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-22-4"
+   "testId": "tile-24-2"
   },
   {
    "kind": "button",
-   "name": "⚔️ Attack!"
+   "name": "Wait"
   },
   {
    "kind": "tile",
@@ -449,6 +449,18 @@
   },
   {
    "kind": "tile",
+   "testId": "tile-22-14"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-13"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
    "testId": "tile-29-19"
   },
   {
@@ -460,16 +472,24 @@
    "name": "Wait"
   },
   {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
    "kind": "tile",
    "testId": "tile-23-2"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-3"
+   "testId": "tile-22-5"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-4"
+   "testId": "tile-23-5"
+  },
+  {
+   "kind": "button",
+   "name": "Silver LanceRng 1 · 18/20"
   },
   {
    "kind": "button",
@@ -477,15 +497,15 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-22-2"
+   "testId": "tile-23-3"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-4"
+   "testId": "tile-21-4"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-5"
+   "testId": "tile-22-4"
   },
   {
    "kind": "button",
@@ -498,6 +518,26 @@
   {
    "kind": "tile",
    "testId": "tile-11-15"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-15"
+  },
+  {
+   "kind": "button",
+   "name": "Iron AxeRng 1 · 38/40"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-15"
   },
   {
    "kind": "tile",
@@ -509,55 +549,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-25-5"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-23-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-3"
+   "testId": "tile-24-2"
   },
   {
    "kind": "tile",
@@ -569,11 +561,83 @@
   },
   {
    "kind": "button",
+   "name": "Iron LanceRng 1 · 40/40"
+  },
+  {
+   "kind": "button",
    "name": "⚔️ Attack!"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-4"
+   "testId": "tile-27-12"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-13"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-8"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-18-8"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-22-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-20-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-21-4"
   },
   {
    "kind": "tile",
@@ -585,47 +649,31 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-12"
+   "testId": "tile-11-15"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-12"
+   "testId": "tile-9-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-9-15"
   },
   {
    "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-23-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-2"
+   "name": "Iron AxeRng 1 · 37/40"
   },
   {
    "kind": "button",
-   "name": "Wait"
+   "name": "⚔️ Attack!"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-11"
+   "testId": "tile-10-15"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
+   "testId": "tile-5-16"
   },
   {
    "kind": "button",
@@ -645,18 +693,6 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-27-12"
   },
   {
@@ -669,23 +705,51 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-2"
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-8"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-13-10"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
    "testId": "tile-20-6"
   },
   {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
    "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
+   "testId": "tile-17-2"
   },
   {
    "kind": "button",
@@ -693,11 +757,35 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-29-19"
+   "testId": "tile-19-2"
   },
   {
    "kind": "tile",
-   "testId": "tile-29-19"
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-9-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-5-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-15"
   },
   {
    "kind": "button",
@@ -717,35 +805,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
    "testId": "tile-27-12"
   },
   {
    "kind": "tile",
    "testId": "tile-27-12"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
   },
   {
    "kind": "button",
@@ -765,99 +829,15 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-29-19"
+   "testId": "tile-13-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
+   "testId": "tile-9-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-14-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-10-3"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-19-2"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-10-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-4-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-3-6"
+   "testId": "tile-8-10"
   },
   {
    "kind": "button",
@@ -865,11 +845,39 @@
   },
   {
    "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-17-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-12-3"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
    "testId": "tile-19-2"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-3"
+   "testId": "tile-19-2"
   },
   {
    "kind": "button",
@@ -877,27 +885,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-12"
+   "testId": "tile-10-16"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-24-13"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-10-16"
   },
   {
    "kind": "button",
@@ -905,111 +897,7 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-11"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-6"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-4-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-2-5"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-2-6"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-25-3"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-8"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-25-13"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-25-13"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-24-13"
-  },
-  {
-   "kind": "button",
-   "name": "⚔️ Attack!"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-7"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-29-19"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-2-5"
+   "testId": "tile-3-15"
   },
   {
    "kind": "tile",
@@ -1025,7 +913,19 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-8"
+   "testId": "tile-14-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-3"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
   },
   {
    "kind": "tile",
@@ -1037,11 +937,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "button",
@@ -1049,11 +949,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-7"
+   "testId": "tile-9-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-9"
+   "testId": "tile-9-10"
   },
   {
    "kind": "button",
@@ -1066,6 +966,46 @@
   {
    "kind": "tile",
    "testId": "tile-29-19"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-12-3"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
   },
   {
    "kind": "button",
@@ -1077,23 +1017,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
+   "testId": "tile-4-6"
   },
   {
    "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-12"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-27-11"
+   "testId": "tile-3-6"
   },
   {
    "kind": "button",
@@ -1101,11 +1029,31 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-10-3"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-6"
+  },
+  {
+   "kind": "button",
+   "name": "Iron LanceRng 1 · 38/40"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
   },
   {
    "kind": "button",
@@ -1113,11 +1061,143 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-27-9"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
    "testId": "tile-27-11"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-9-10"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-10"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-29-19"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "button",
+   "name": "End Turn"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-6"
+  },
+  {
+   "kind": "button",
+   "name": "Silver LanceRng 1 · 17/20"
+  },
+  {
+   "kind": "button",
+   "name": "⚔️ Attack!"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-12"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-10"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",
@@ -1136,12 +1216,64 @@
    "name": "Wait"
   },
   {
-   "kind": "tile",
-   "testId": "tile-3-15"
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -1154,18 +1286,6 @@
   {
    "kind": "tile",
    "testId": "tile-27-12"
-  },
-  {
-   "kind": "button",
-   "name": "Wait"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
-  },
-  {
-   "kind": "tile",
-   "testId": "tile-20-6"
   },
   {
    "kind": "button",
@@ -1177,7 +1297,19 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-27-11"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-10"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",
@@ -1196,12 +1328,64 @@
    "name": "Wait"
   },
   {
-   "kind": "tile",
-   "testId": "tile-3-15"
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -1221,11 +1405,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "button",
@@ -1233,11 +1417,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",
@@ -1256,12 +1440,64 @@
    "name": "Wait"
   },
   {
-   "kind": "tile",
-   "testId": "tile-3-15"
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -1281,11 +1517,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "button",
@@ -1293,11 +1529,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",
@@ -1316,12 +1552,64 @@
    "name": "Wait"
   },
   {
-   "kind": "tile",
-   "testId": "tile-3-15"
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -1341,11 +1629,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "button",
@@ -1353,11 +1641,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",
@@ -1376,12 +1664,64 @@
    "name": "Wait"
   },
   {
-   "kind": "tile",
-   "testId": "tile-3-15"
+   "kind": "button",
+   "name": "End Turn"
   },
   {
    "kind": "tile",
-   "testId": "tile-3-15"
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-2-5"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-19-2"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-10-16"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-4-6"
+  },
+  {
+   "kind": "button",
+   "name": "Wait"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
+  },
+  {
+   "kind": "tile",
+   "testId": "tile-3-5"
   },
   {
    "kind": "button",
@@ -1401,11 +1741,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "tile",
-   "testId": "tile-20-6"
+   "testId": "tile-27-11"
   },
   {
    "kind": "button",
@@ -1413,11 +1753,11 @@
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "tile",
-   "testId": "tile-25-13"
+   "testId": "tile-6-10"
   },
   {
    "kind": "button",

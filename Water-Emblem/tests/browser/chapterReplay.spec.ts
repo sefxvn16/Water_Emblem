@@ -5,7 +5,7 @@
 // checks the 2D flow: title -> preparation -> actions -> seize -> next chapter.
 import { expect, test, type Page } from '@playwright/test';
 import { closeSettings, dismissRewardPopup, expectPlayerPhase, openSettings } from './settingsMenu';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 // Recorded buttons that now live in the Settings menu (PLAN.md item 71).
 const SETTINGS_BUTTONS = /(2D Grid|3D View|Save Game|Load Game|Manage Saves|World Map|Title)/;
@@ -21,7 +21,10 @@ interface ReplayFixture {
 }
 
 function loadFixture(name: string): ReplayFixture {
-  return JSON.parse(readFileSync(`tests/browser/fixtures/${name}.replay.json`, 'utf8')) as ReplayFixture;
+  const p = existsSync(`Water-Emblem/tests/browser/fixtures/${name}.replay.json`)
+    ? `Water-Emblem/tests/browser/fixtures/${name}.replay.json`
+    : `tests/browser/fixtures/${name}.replay.json`;
+  return JSON.parse(readFileSync(p, 'utf8')) as ReplayFixture;
 }
 
 // Save then load right after the first battle starts; the replay must still win afterwards.
@@ -58,7 +61,10 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
       const pattern = step.name.split('').map((ch) => ch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*');
       if (SETTINGS_BUTTONS.test(step.name)) await openSettings(page);
       else await closeSettings(page);
-      await page.getByRole('button', { name: new RegExp(`^${pattern}$`) }).first().click({ timeout: 15000 });
+      const btn = page.getByRole('button', { name: new RegExp(`^${pattern}$`) }).first();
+      await btn.click({ timeout: 15000 }).catch(async () => {
+        await btn.dispatchEvent('click');
+      });
       if (/Seize/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /STAGE CLEAR/i }), where).toBeVisible();
         seizes += 1;

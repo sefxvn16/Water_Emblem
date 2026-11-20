@@ -1,6 +1,6 @@
 // Records the UI steps a heuristic bot takes, so a fixed replay can be committed as a test fixture.
 // Not part of the gate. Run: npx playwright test -c tools/e2e_record/playwright.record.config.ts
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import type { Page, TestInfo } from '@playwright/test';
 
 export const SEED = 20261117;
@@ -49,7 +49,8 @@ export async function recordOn(page: Page): Promise<void> {
 
 export async function saveRecording(page: Page, info: TestInfo, name: string): Promise<void> {
   const steps = await page.evaluate(() => (window as unknown as { __REPLAY_STEPS__: unknown[] }).__REPLAY_STEPS__);
-  mkdirSync('tests/browser/fixtures', { recursive: true });
-  const file = `tests/browser/fixtures/${name}.replay.json`;
+  const dir = existsSync('Water-Emblem/tests/browser') ? 'Water-Emblem/tests/browser/fixtures' : 'tests/browser/fixtures';
+  mkdirSync(dir, { recursive: true });
+  const file = `${dir}/${name}.replay.json`;
   writeFileSync(file, `${JSON.stringify({ seed: SEED, recordedFrom: info.title, status: info.status, steps }, null, 1)}\n`);
 }

@@ -175,6 +175,9 @@ export const App: React.FC = () => {
   // PLAN item 160: a trade session only counts as an action when at
   // least one item actually changed hands.
   const tradeChangedRef = useRef(false);
+  const storageChangedRef = useRef(false);
+  const shopChangedRef = useRef(false);
+  const [selectedEnemyPos, setSelectedEnemyPos] = useState<Position | null>(null);
   const [convoy, setConvoy] = useState<InventoryEntry[]>([]);
   const [storageOpen, setStorageOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
@@ -414,15 +417,26 @@ export const App: React.FC = () => {
   ), [extendedUnits, openedDoorKeys, mapData]);
 
   // Địch đang được xem (bấm vào địch): hiện vùng của riêng địch đó thay vùng
-  // gộp, kiểu Fire Emblem (PLAN item 145).
-  const inspectedEnemy = inspectedTile
-    ? extendedUnits.find((u) => !u.unit.isDead && u.unit.faction === 'enemy' && u.unit.position.x === inspectedTile.x && u.unit.position.y === inspectedTile.y)
+  // gộp, kiểu Fire Emblem (PLAN items 145/167).
+  const inspectedTargetTile = selectedEnemyPos ?? inspectedTile;
+  const inspectedEnemy = inspectedTargetTile
+    ? extendedUnits.find((u) => !u.unit.isDead && u.unit.faction === 'enemy' && u.unit.position.x === inspectedTargetTile.x && u.unit.position.y === inspectedTargetTile.y)
     : undefined;
   const inspectedThreatKeys = useMemo(() => (inspectedEnemy ? computeUnitThreatKeys({
     unit: inspectedEnemy.unit,
     attackRange: getAttackRange(inspectedEnemy.unit, inspectedEnemy.weapon),
     stationary: inspectedEnemy.aiRole === 'stationary',
   }, threatContext) : null), [inspectedEnemy, extendedUnits, openedDoorKeys, mapData]);
+
+  // PLAN item 167: When an enemy is selected, its reachable movement tiles are computed
+  // so the player can see both its movement range (blue) and its attack threat range (red).
+  const enemyReachableKeys = useMemo(() => {
+    if (!inspectedEnemy || selectedExtUnit) return null;
+    const range = calculateMovementRange(inspectedEnemy.unit, threatContext);
+    return new Set(Array.from(range.keys()));
+  }, [inspectedEnemy, selectedExtUnit, threatContext]);
+
+  const displayReachableKeys = (selectedExtUnit ? reachableKeys : enemyReachableKeys) ?? new Set<string>();
   const displayDangerZoneKeys = inspectedThreatKeys ?? combinedDangerZoneKeys;
 
   // Danh sách các mục tiêu có thể tấn công từ vị trí hiện tại
@@ -477,7 +491,7 @@ export const App: React.FC = () => {
   const boardView = buildBoardView({
     map: mapData,
     units: extendedUnits.map(({ unit }) => unit),
-    reachableKeys,
+    reachableKeys: displayReachableKeys,
     dangerZoneKeys: displayDangerZoneKeys,
     attackTargetKeys: warpTargeting ? warpDestinationKeys : staffTargeting ? staffTargetKeys : tradeTargeting ? tradeTargetKeys : attackTargetKeys,
     selected: selectedUnit?.position ?? null,
@@ -792,6 +806,7 @@ export const App: React.FC = () => {
     // Chọn đơn vị quân ta chưa đi
     if (clickedExt && clickedExt.unit.faction === 'player' && !clickedExt.unit.hasActed && !pendingMovePos && !activeMovingUnit) {
       soundManager.playSfx('select');
+      setSelectedEnemyPos(null);
       const range = calculateMovementRange(clickedExt.unit, {
         map: mapData,
         terrains: defaultTerrainRegistry,
@@ -810,18 +825,26 @@ export const App: React.FC = () => {
       return;
     }
 
-    // Bỏ chọn hoặc chạm vào quân khác (địch hoặc đã đi)
+    // Bỏ chọn hoặc chạm vào quân khác (địch hoặc đã đi) (PLAN items 145/167)
     if (!pendingMovePos && !activeMovingUnit) {
-      soundManager.playSfx('cancel');
       turnManager.cancelSelect();
       setPlannedPath(null);
       setSelectedTarget(null);
       setCombatForecast(null);
       setAttackTargeting(false);
       if (clickedExt) {
+        if (clickedExt.unit.faction === 'enemy') {
+          soundManager.playSfx('select');
+          setSelectedEnemyPos((prev) => (prev && prev.x === x && prev.y === y ? null : { x, y }));
+        } else {
+          soundManager.playSfx('cancel');
+          setSelectedEnemyPos(null);
+        }
         setPinnedUnitId(clickedExt.unit.id);
         setHoveredUnitSummary({ unitId: clickedExt.unit.id, tile: { x, y } });
       } else {
+        soundManager.playSfx('cancel');
+        setSelectedEnemyPos(null);
         setPinnedUnitId(null);
         setHoveredUnitSummary(null);
       }
@@ -1285,6 +1308,7 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     const result = depositToConvoy(extendedUnits, convoy, selectedExtUnit.unit.id, index, ITEM_BY_ID);
     if (result) {
+      storageChangedRef.current = true;
       setExtendedUnits(result.units);
       setConvoy(result.convoy);
     }
@@ -1294,13 +1318,15 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     const result = withdrawFromConvoy(extendedUnits, convoy, selectedExtUnit.unit.id, index, ITEM_BY_ID);
     if (result) {
+      storageChangedRef.current = true;
       setExtendedUnits(result.units);
       setConvoy(result.convoy);
     }
   };
 
+  // PLAN item 165: only commit Storage action (locking destination) if an item actually changed hands.
   const handleStorageClose = () => {
-    if (selectedExtUnit) {
+    if (selectedExtUnit && storageChangedRef.current) {
       const next = extendedUnits.map((entry) =>
         entry.unit.id === selectedExtUnit.unit.id
           ? { ...entry, unit: { ...entry.unit, hasStored: true } }
@@ -1316,6 +1342,7 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     const result = buyItem(extendedUnits, convoy, gold, selectedExtUnit.unit.id, itemId, ITEM_BY_ID);
     if (result) {
+      shopChangedRef.current = true;
       soundManager.playSfx('item_get');
       setExtendedUnits(result.units);
       setConvoy(result.convoy);
@@ -1327,22 +1354,25 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     const result = sellItem(extendedUnits, gold, selectedExtUnit.unit.id, index, ITEM_BY_ID);
     if (result) {
+      shopChangedRef.current = true;
       soundManager.playSfx('item_get');
       setExtendedUnits(result.units);
       setGold(result.gold);
     }
   };
 
-  // PLAN item 91: closing the shop ends the unit's action (FE3 Visit/Shop rule).
+  // PLAN item 165: closing the shop without buying/selling returns to action menu; only ends turn if transaction occurred.
   const handleShopClose = () => {
     setShopOpen(false);
-    executeWithMove(() => {
-      endUnitTurn();
-      syncState();
-    });
+    if (shopChangedRef.current) {
+      executeWithMove(() => {
+        endUnitTurn();
+        syncState();
+      });
+    }
   };
 
-  // PLAN item 93: arena — wager, fight the generated gladiator, leave ends the action.
+  // PLAN item 93/165: arena — wager, fight gladiator; leaving without fighting does NOT consume turn.
   const handleArenaTier = (tier: ArenaTier) => {
     if (!selectedExtUnit || gold < tier.wager) return;
     const opponent = generateArenaOpponent(selectedExtUnit, tier, ITEM_BY_ID, defaultRNG);
@@ -1385,11 +1415,14 @@ export const App: React.FC = () => {
 
   const handleArenaLeave = () => {
     setArenaOpen(false);
+    const didFight = arenaOutcome !== null;
     handleArenaAgain();
-    executeWithMove(() => {
-      endUnitTurn();
-      syncState();
-    });
+    if (didFight) {
+      executeWithMove(() => {
+        endUnitTurn();
+        syncState();
+      });
+    }
   };
 
   const convoyRows = convoy.flatMap((item) => {
@@ -1588,15 +1621,19 @@ export const App: React.FC = () => {
       if (path && path.length > 1) {
         await new Promise<void>((resolve) => {
           runMovementAnimation(path, enemy.unit.moveType, soundManager, (pos) => setActiveMovingUnit({ unitId: enemy.unit.id, pos }), () => {
+            enemy.unit.position = { ...dest };
+            setExtendedUnits([...phaseUnits]);
             setActiveMovingUnit(null);
             resolve();
           });
         });
+      } else {
+        enemy.unit.position = { ...dest };
+        setExtendedUnits([...phaseUnits]);
       }
-      enemy.unit.position = { ...dest };
     };
     const scrollToTile = (pos: Position) => {
-      document.querySelector(`[data-testid="tile-${pos.x}-${pos.y}"]`)?.scrollIntoView({ block: 'center', inline: 'center' });
+      document.querySelector(`[data-testid="tile-${pos.x}-${pos.y}"]`)?.scrollIntoView({ behavior: fastPlayback ? 'auto' : 'smooth', block: 'center', inline: 'center' });
     };
     let phaseUnits = healUnitsOnTerrain(
       extendedUnits.map((entry) => ({ ...entry, unit: { ...entry.unit }, stats: { ...entry.stats } })),
@@ -1674,7 +1711,8 @@ export const App: React.FC = () => {
               soundManager.playWeaponHit(attackerUnit?.weapon?.type ?? 'axe');
             }
             const critText = ev.isCrit ? ' [CRITICAL HIT!]' : '';
-            logs.push(`  ${atk} strikes ${def} for ${ev.damageDealt} damage!${critText}`);
+            const dmgText = ev.damageDealt === 0 ? '0 damage (No Damage)' : `${ev.damageDealt} damage`;
+            logs.push(`  ${atk} strikes ${def} for ${dmgText}!${critText}`);
           }
         }
         if (result.unitDefeatedId) {
@@ -2049,8 +2087,14 @@ export const App: React.FC = () => {
         onAttack={handleAttack}
         onEquip={handleEquip}
         onTrade={handleTrade}
-        onStorage={() => setStorageOpen(true)}
-        onShop={() => setShopOpen(true)}
+        onStorage={() => {
+          storageChangedRef.current = false;
+          setStorageOpen(true);
+        }}
+        onShop={() => {
+          shopChangedRef.current = false;
+          setShopOpen(true);
+        }}
         onOpenChest={handleOpenChest}
         onOpenDoor={handleOpenDoor}
         onArena={() => setArenaOpen(true)}
@@ -2235,6 +2279,7 @@ export const App: React.FC = () => {
         <UnitHoverWindow
           unit={activeSummaryUnit}
           tile={activeSummaryTile}
+          hasActionBar={Boolean(pendingMovePos && moveCommitted)}
           onInspect={() => setInspectedTile(activeSummaryTile)}
           onMouseEnter={() => {
             isHoveringSummaryRef.current = true;

@@ -23,6 +23,7 @@ export interface CombatPopupData {
 
 function strikeText(event: SingleAttackEvent): string {
   if (!event.isHit) return 'Miss';
+  if (event.damageDealt === 0) return event.isCrit ? 'Critical (No Damage)' : 'No Damage';
   return `${event.isCrit ? 'Critical' : 'Hit'} ${event.damageDealt}`;
 }
 

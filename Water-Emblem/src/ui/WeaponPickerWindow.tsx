@@ -28,10 +28,19 @@ function rangeLabel(unit: GridUnit | null, weapon: UsableWeapon): string {
 
 export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => {
   const rootRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-
   const anchor = getTileRect(props.anchorTile);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(() => {
+    if (!anchor) return null;
+    return computeActionMenuPosition(
+      anchor,
+      [],
+      ACTION_MENU_WIDTH,
+      160,
+      typeof window !== 'undefined' ? window.innerWidth : 1280,
+      typeof window !== 'undefined' ? window.innerHeight : 720,
+    );
+  });
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   useLayoutEffect(() => {
     const box = rootRef.current;
@@ -57,12 +66,12 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
       data-testid="weapon-picker"
       style={{
         position: 'fixed',
-        ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { top: '16px', right: '28px' }),
+        ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { bottom: '80px', right: '16px' }),
         width: `${ACTION_MENU_WIDTH}px`,
         maxHeight: 'calc(100vh - 160px)',
         overflowY: 'auto',
         boxSizing: 'border-box',
-        zIndex: 950,
+        zIndex: 1050,
         backgroundColor: '#0c1e5b',
         border: '2px solid #eab308',
         borderRadius: '6px',

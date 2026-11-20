@@ -10,6 +10,7 @@ import { getItemIcon } from './itemIcon';
 interface UnitHoverWindowProps {
   unit: ExtendedUnitState;
   tile: Position;
+  hasActionBar?: boolean;
   onInspect?: () => void;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -19,23 +20,28 @@ interface UnitHoverWindowProps {
 export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
   unit: u,
   tile,
+  hasActionBar,
   onInspect,
   onMouseEnter,
   onMouseLeave,
 }) => {
   // The banner sits on the side opposite the tile's horizontal half, and flips
   // when the map scrolls or the window resizes (hud-basic-info R4/R6).
+  // When an action menu is active at bottom-right (PLAN item 164), prefer bottom-left
+  // and avoid the action bar so the two never overlap.
   const rect = getTileRect(tile);
   const tileCenterX = rect ? (rect.left + rect.right) / 2 : null;
-  const prefer: OverlayCorner =
-    tileCenterX === null || typeof window === 'undefined' || tileCenterX >= window.innerWidth / 2
+  const prefer: OverlayCorner = hasActionBar
+    ? 'bottom-left'
+    : (tileCenterX === null || typeof window === 'undefined' || tileCenterX >= window.innerWidth / 2
       ? 'bottom-left'
-      : 'bottom-right';
+      : 'bottom-right');
   const { ref, style: anchorStyle } = useAnchoredOverlay({
     tile,
     width: 440,
     prefer,
     avoidHudCluster: true,
+    avoidActionBar: hasActionBar,
   });
   const weaponIcon = u.weapon ? getItemIcon(u.weapon.id, u.weapon.type) : '';
   const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';

@@ -81,18 +81,27 @@ async function waitActionMenu(page: Page): Promise<void> {
 
 async function confirmAttack(page: Page, target: Position): Promise<void> {
   const forecast = page.getByTestId('forecast-window');
-  const opened = await forecast.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+  const picker = page.getByTestId('weapon-picker');
+
+  // PLAN item 158: clicking the target tile may directly open the weapon picker
+  // (when multiple weapons can attack) or open the forecast immediately.
+  const pickerInitiallyOpened = await picker.waitFor({ state: 'visible', timeout: 1000 }).then(() => true).catch(() => false);
+  if (pickerInitiallyOpened) {
+    await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
+  }
+
+  const opened = await forecast.waitFor({ state: 'visible', timeout: 2000 }).then(() => true).catch(() => false);
   if (!opened) {
-    await page.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click().catch(() => undefined);
-    await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
-    // PLAN item 158: after the target is chosen, the weapon picker may
-    // open (several usable weapons) before the forecast.
-    const picker = page.getByTestId('weapon-picker');
-    const pickerOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
-    if (pickerOpened) {
-      await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
+    const attackBtn = page.getByRole('button', { name: /(?:Attack|Tấn công)/i });
+    if ((await attackBtn.count()) > 0 && (await attackBtn.isVisible())) {
+      await attackBtn.click();
+      await page.getByText(`${target.x},${target.y}`, { exact: true }).dispatchEvent('click');
+      const pickerOpened = await picker.waitFor({ state: 'visible', timeout: 1500 }).then(() => true).catch(() => false);
+      if (pickerOpened) {
+        await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
+      }
     }
-    await forecast.waitFor({ state: 'visible', timeout: 8000 });
+    await forecast.waitFor({ state: 'visible', timeout: 6000 });
   }
   await forecast.getByRole('button', { name: /(?:Attack|Tấn công)/i }).click();
 }

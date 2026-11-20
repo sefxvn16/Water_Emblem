@@ -137,6 +137,10 @@ async function openForecast(page: Page) {
   await clickTile(page, 4, 4);
   await clickTile(page, 5, 4);
   await clickTile(page, 6, 4);
+  const picker = page.getByTestId('weapon-picker');
+  if (await picker.isVisible()) {
+    await picker.locator('[data-testid^="weapon-pick-"]:not([data-testid="weapon-pick-cancel"])').first().click();
+  }
   await expect(page.getByTestId('forecast-window')).toBeVisible({ timeout: 10000 });
 }
 
@@ -627,7 +631,8 @@ test('settings-menu/A6 status group and empty combat log', async ({ page }) => {
   await expect(menu.getByText(/💰 0 G/)).toBeVisible();
   // PLAN item 128: Turn/Phase info was removed from Settings.
   await expect(menu.getByText('PLAYER PHASE')).toHaveCount(0);
-  await expect(menu.getByText('No battle engagements yet.')).toBeVisible();
+  // PLAN item 162: Combat Log was removed from Settings (owner playtest 2026-11-20).
+  await expect(menu.getByText('No battle engagements yet.')).toHaveCount(0);
 });
 
 test('settings-menu/A7 menu controls meet 44px and menu is not cut off', async ({ page }) => {

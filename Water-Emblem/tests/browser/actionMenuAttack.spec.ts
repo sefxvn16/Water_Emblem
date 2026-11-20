@@ -81,9 +81,12 @@ test('action-menu/80 picking a new destination closes the stale forecast', async
   await gotoBattle(page);
   await seedPositions(page, { enemy_pirate_5: { x: 24, y: 4 } });
   await openMarthMenu(page);
-  // Red tile: the forecast opens. (This branch predates the UI redesign, so
-  // the forecast window has no data-testid — match its heading text.)
+  // Red tile: pick target -> pick weapon -> forecast opens (PLAN item 158).
   await clickTile(page, 24, 4);
+  const picker = page.locator('[data-testid="weapon-picker"]');
+  if (await picker.isVisible()) {
+    await picker.locator('button').first().click();
+  }
   await expect(page.getByText(/COMBAT FORECAST/)).toBeVisible();
   // Pick a different destination instead of confirming: the stale forecast
   // must close (before the fix it stayed armed and Attack both attacked the
@@ -113,12 +116,19 @@ test('action-menu/80 Attack locks target selection to enemies in range', async (
   // Clicking the destination tile returns to the menu.
   await clickTile(page, 24, 5);
   await expect(page.getByText('Actions (Marth)')).toBeVisible();
-  // Attack again, then pick a target: its forecast opens.
+  // Attack again, then pick a target: pick weapon if shown -> forecast opens.
   await page.getByRole('button', { name: 'Attack', exact: true }).click();
   await clickTile(page, 24, 4);
+  const picker = page.locator('[data-testid="weapon-picker"]');
+  if (await picker.isVisible()) {
+    await picker.locator('button').first().click();
+  }
   await expect(page.getByText(/COMBAT FORECAST/)).toBeVisible();
-  // Cancel the forecast, re-enter the lock, and leave it with Escape.
+  // Cancel the forecast (returns to picker if multiple weapons reach), close picker, and verify menu.
   await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  if (await picker.isVisible()) {
+    await picker.getByRole('button', { name: 'Cancel', exact: true }).click();
+  }
   await expect(page.getByText('Actions (Marth)')).toBeVisible();
   await page.getByRole('button', { name: 'Attack', exact: true }).click();
   await expect(page.getByText('Actions (Marth)')).toHaveCount(0);

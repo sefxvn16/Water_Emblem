@@ -258,10 +258,10 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: 44, padding: '0 4px' }}>
               <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#e2e8f0', flex: 1 }}>⏭️ Auto End Turn</span>
               <div style={{ display: 'flex', backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}` }} role="group" aria-label="Auto End Turn">
-                <button onClick={() => props.onAutoEndTurn(true)} style={{ ...viewButtonStyle(props.autoEndTurn), minHeight: 36, padding: '6px 14px' }}>
+                <button onClick={() => props.onAutoEndTurn(true)} style={{ ...viewButtonStyle(props.autoEndTurn), minHeight: 44, minWidth: 44, padding: '6px 14px' }}>
                   On
                 </button>
-                <button onClick={() => props.onAutoEndTurn(false)} style={{ ...viewButtonStyle(!props.autoEndTurn), minHeight: 36, padding: '6px 14px' }}>
+                <button onClick={() => props.onAutoEndTurn(false)} style={{ ...viewButtonStyle(!props.autoEndTurn), minHeight: 44, minWidth: 44, padding: '6px 14px' }}>
                   Off
                 </button>
               </div>

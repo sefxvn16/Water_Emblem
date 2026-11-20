@@ -16,6 +16,8 @@ export interface OverlayAnchorOptions {
   prefer: OverlayCorner;
   /** Also avoid the bottom-right End Turn / gear cluster. */
   avoidHudCluster?: boolean;
+  /** Also avoid the bottom-right Action Menu cluster (PLAN item 164). */
+  avoidActionBar?: boolean;
 }
 
 const EDGE = 16;
@@ -145,6 +147,16 @@ export function useAnchoredOverlay(options: OverlayAnchorOptions): {
       right: vw - HUD_EDGE,
       top: HUD_EDGE,
       bottom: HUD_EDGE + 48,
+    });
+  }
+  if (options.avoidActionBar) {
+    // PLAN item 164: avoid the bottom-right action bar cluster so hover banners
+    // never cover the action buttons.
+    avoidRects.push({
+      left: vw - 480,
+      right: vw,
+      top: vh - 220,
+      bottom: vh,
     });
   }
   const position = computeOverlayPosition(
