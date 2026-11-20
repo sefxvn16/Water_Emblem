@@ -172,6 +172,9 @@ export const App: React.FC = () => {
   >([]);
   const [rewardPopups, setRewardPopups] = useState<RewardPopupData[]>([]);
   const [tradeState, setTradeState] = useState<{ partnerId: string | null } | null>(null);
+  // PLAN item 160: a trade session only counts as an action when at
+  // least one item actually changed hands.
+  const tradeChangedRef = useRef(false);
   const [convoy, setConvoy] = useState<InventoryEntry[]>([]);
   const [storageOpen, setStorageOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false);
@@ -642,6 +645,7 @@ export const App: React.FC = () => {
     if (tradeTargeting) {
       if (clickedExt && tradePartners.some((t) => t.unit.id === clickedExt.unit.id)) {
         setTradeTargeting(false);
+        tradeChangedRef.current = false;
         setTradeState({ partnerId: clickedExt.unit.id });
       } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
         setTradeTargeting(false);
@@ -1419,6 +1423,7 @@ export const App: React.FC = () => {
     // PLAN item 132: one partner opens the trade screen directly; with
     // several, the player picks the partner on the map (FE style).
     if (tradePartners.length === 1) {
+      tradeChangedRef.current = false;
       setTradeState({ partnerId: tradePartners[0]!.unit.id });
     } else {
       setTradeTargeting(true);
@@ -1459,19 +1464,29 @@ export const App: React.FC = () => {
 
   const handleTradeSwap = (leftIndex: number, rightIndex: number) => {
     if (!selectedExtUnit || !tradeState?.partnerId) return;
-    setExtendedUnits((prev) =>
-      tradeSwap(prev, selectedExtUnit.unit.id, tradeState.partnerId!, leftIndex, rightIndex, ITEM_BY_ID));
+    setExtendedUnits((prev) => {
+      const next = tradeSwap(prev, selectedExtUnit.unit.id, tradeState.partnerId!, leftIndex, rightIndex, ITEM_BY_ID);
+      if (next !== prev) tradeChangedRef.current = true;
+      return next;
+    });
   };
 
   const handleTradeMove = (fromSide: 'left' | 'right', index: number) => {
     if (!selectedExtUnit || !tradeState?.partnerId) return;
     const fromId = fromSide === 'left' ? selectedExtUnit.unit.id : tradeState.partnerId;
     const toId = fromSide === 'left' ? tradeState.partnerId : selectedExtUnit.unit.id;
-    setExtendedUnits((prev) => tradeMove(prev, fromId, toId, index, ITEM_BY_ID));
+    setExtendedUnits((prev) => {
+      const next = tradeMove(prev, fromId, toId, index, ITEM_BY_ID);
+      if (next !== prev) tradeChangedRef.current = true;
+      return next;
+    });
   };
 
   const handleTradeClose = () => {
-    if (selectedExtUnit && tradeState?.partnerId) {
+    // PLAN item 160 (owner playtest 2026-11-20): closing Trade without
+    // transferring anything is not an action — the unit may still cancel
+    // its move, as in FE. Only a real transfer marks hasTraded.
+    if (selectedExtUnit && tradeState?.partnerId && tradeChangedRef.current) {
       // PLAN item 87: one initiation per turn; movement ends on exit.
       const next = extendedUnits.map((entry) =>
         entry.unit.id === selectedExtUnit.unit.id
@@ -1487,6 +1502,7 @@ export const App: React.FC = () => {
   const tradeSide = (entry: ExtendedUnitState): TradeSide => ({
     unitId: entry.unit.id,
     unitName: entry.unit.name,
+    avatarUrl: entry.avatarUrl,
     items: entry.inventory.flatMap((item) => {
       const def = ITEM_BY_ID.get(item.itemId);
       return def
@@ -2058,8 +2074,8 @@ export const App: React.FC = () => {
           <TradeWindow
             left={tradeSide(selectedExtUnit)}
             right={partner ? tradeSide(partner) : null}
-            partnerChoices={tradePartners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name }))}
-            onPickPartner={(unitId) => setTradeState({ partnerId: unitId })}
+            partnerChoices={tradePartners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name, avatarUrl: p.avatarUrl }))}
+            onPickPartner={(unitId) => { tradeChangedRef.current = false; setTradeState({ partnerId: unitId }); }}
             onSwap={handleTradeSwap}
             onMove={handleTradeMove}
             onClose={handleTradeClose}
@@ -2070,6 +2086,7 @@ export const App: React.FC = () => {
       {storageOpen && selectedExtUnit && (
         <ConvoyWindow
           unitName={selectedExtUnit.unit.name}
+          unitAvatarUrl={selectedExtUnit.avatarUrl}
           unitItems={tradeSide(selectedExtUnit).items}
           convoyItems={convoyRows}
           convoyCount={convoy.length}
@@ -2131,6 +2148,7 @@ export const App: React.FC = () => {
         return (
           <ConvoyWindow
             unitName={entry.unit.name}
+            unitAvatarUrl={entry.avatarUrl}
             unitItems={tradeSide(entry).items}
             convoyItems={convoyRows}
             convoyCount={convoy.length}
@@ -2152,7 +2170,7 @@ export const App: React.FC = () => {
           <TradeWindow
             left={tradeSide(left)}
             right={partner ? tradeSide(partner) : null}
-            partnerChoices={partners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name }))}
+            partnerChoices={partners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name, avatarUrl: p.avatarUrl }))}
             onPickPartner={(unitId) => setPrepTrade({ unitId: left.unit.id, partnerId: unitId })}
             onSwap={(leftIndex, rightIndex) => {
               if (prepTrade.partnerId) applyPrepTrade((units) => tradeSwap(units, left.unit.id, prepTrade.partnerId!, leftIndex, rightIndex, ITEM_BY_ID));

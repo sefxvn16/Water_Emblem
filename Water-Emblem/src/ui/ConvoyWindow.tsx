@@ -6,6 +6,7 @@ interface ConvoyWindowProps {
   /** Convoy screen (PLAN item 88): click a held item to deposit it,
       click a convoy item to withdraw it. */
   unitName: string;
+  unitAvatarUrl?: string;
   unitItems: readonly TradeItemRow[];
   convoyItems: readonly TradeItemRow[];
   convoyCount: number;
@@ -101,7 +102,18 @@ export const ConvoyWindow: React.FC<ConvoyWindowProps> = (props) => {
       </div>
       <div style={{ display: 'flex', gap: '10px' }}>
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          <div style={headerStyle}>{props.unitName}</div>
+          <div style={{ ...headerStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {props.unitAvatarUrl ? (
+              <img
+                src={props.unitAvatarUrl}
+                alt={props.unitName}
+                style={{ width: '34px', height: '34px', objectFit: 'cover', borderRadius: '5px', border: '1px solid rgba(234, 179, 8, 0.6)', flexShrink: 0 }}
+              />
+            ) : (
+              <span style={{ fontSize: '20px', flexShrink: 0 }}>👤</span>
+            )}
+            <span>{props.unitName}</span>
+          </div>
           {props.unitItems.length === 0 && (
             <div style={{ fontSize: '12px', color: '#94a3b8', padding: '4px 8px' }}>No items</div>
           )}

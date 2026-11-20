@@ -13,6 +13,7 @@ export interface TradeItemRow {
 export interface TradeSide {
   unitId: string;
   unitName: string;
+  avatarUrl?: string;
   items: readonly TradeItemRow[];
 }
 
@@ -21,7 +22,7 @@ interface TradeWindowProps {
   left: TradeSide;
   right: TradeSide | null;
   /** Adjacent allies the player can pick as the trade partner. */
-  partnerChoices: readonly { unitId: string; unitName: string }[];
+  partnerChoices: readonly { unitId: string; unitName: string; avatarUrl?: string }[];
   onPickPartner: (unitId: string) => void;
   onSwap: (leftIndex: number, rightIndex: number) => void;
   onMove: (fromSide: 'left' | 'right', index: number) => void;
@@ -45,18 +46,35 @@ export const TradeWindow: React.FC<TradeWindowProps> = (props) => {
     <div style={panelStyle}>
       <div
         style={{
-          fontWeight: 'bold',
-          color: '#93c5fd',
-          fontSize: '13px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
           padding: '4px 8px 6px',
           borderBottom: '1px solid rgba(234, 179, 8, 0.4)',
           marginBottom: '2px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
         }}
       >
-        {side.unitName}
+        {side.avatarUrl ? (
+          <img
+            src={side.avatarUrl}
+            alt={side.unitName}
+            style={{ width: '38px', height: '38px', objectFit: 'cover', borderRadius: '6px', border: '1px solid rgba(234, 179, 8, 0.6)', flexShrink: 0 }}
+          />
+        ) : (
+          <span style={{ fontSize: '22px', flexShrink: 0 }}>👤</span>
+        )}
+        <span
+          style={{
+            fontWeight: 'bold',
+            color: '#93c5fd',
+            fontSize: '14px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {side.unitName}
+        </span>
       </div>
       {side.items.map((item, index) => {
         const selected = selection?.side === sideKey && selection.index === index;
@@ -172,6 +190,9 @@ export const TradeWindow: React.FC<TradeWindowProps> = (props) => {
               data-testid={`trade-partner-${choice.unitId}`}
               onClick={() => props.onPickPartner(choice.unitId)}
               style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
                 width: '100%',
                 padding: '6px 10px',
                 backgroundColor: 'transparent',
@@ -185,7 +206,16 @@ export const TradeWindow: React.FC<TradeWindowProps> = (props) => {
                 borderRadius: '4px',
               }}
             >
-              {choice.unitName}
+              {choice.avatarUrl ? (
+                <img
+                  src={choice.avatarUrl}
+                  alt={choice.unitName}
+                  style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '5px', border: '1px solid rgba(234, 179, 8, 0.6)', flexShrink: 0 }}
+                />
+              ) : (
+                <span style={{ fontSize: '18px', flexShrink: 0 }}>👤</span>
+              )}
+              <span>{choice.unitName}</span>
             </button>
           ))}
         </div>
