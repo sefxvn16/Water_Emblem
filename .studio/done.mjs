@@ -134,7 +134,12 @@ function runGate(root, cfg) {
     tail: out.split(/\r?\n/).slice(-25).join('\n'),
   };
   fs.writeFileSync(path.join(root, '.studio', 'last-gate.json'), `${JSON.stringify(ledger, null, 2)}\n`);
+  // gate.mjs chỉ in 40 dòng cuối, nên một lần FAIL thường không chẩn đoán được. Giữ nguyên văn
+  // toàn bộ output: không có nó thì người đọc báo lỗi phải đoán, và đoán thì dẫn tới ghi PASS khống.
+  const logPath = path.join(root, '.studio', 'last-gate.log');
+  fs.writeFileSync(logPath, out);
   process.stdout.write(`done: recorded .studio/last-gate.json (result ${ledger.result}, head ${head.slice(0, 12)}, dirty ${dirty.length})\n`);
+  process.stdout.write('done: toàn bộ output của gate ở .studio/last-gate.log\n');
   return ledger.result === 'PASS' && r.status === 0 ? 0 : 1;
 }
 

@@ -1,6 +1,6 @@
 {
   "task_id": "gate-guardrails",
-  "plan_items": [137, 138, 140, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172],
+  "plan_items": [137, 138, 140, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174],
   "declared_by": "claude",
   "declared_at": "2026-11-20",
   "note": "Nhánh cs/playtest-fixes-158 mang hai phần: (a) mục 137-168 do phiên trước làm, khai báo lại ở đây vì diff của nhánh so với main phải được khai báo đủ; (b) mục 169-172 là cổng kiểm.",

@@ -69,3 +69,4 @@ work/
 
 # Claude Code local session config (per machine, not part of the game)
 .claude/
+.studio/last-gate.log

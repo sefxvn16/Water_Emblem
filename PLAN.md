@@ -816,6 +816,16 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Tiêu chí xong: (1) Chủ dự án chốt danh sách registry nào bị khóa. (2) `features.lock.json` được lập từ `Game_Design/decisions.md` và code hiện có, **từng id một do chủ xác nhận** — không tự suy, vì làm vậy sẽ hợp pháp hóa luôn các cơ chế đã bị bịa từ trước. (3) Test so khớp registry với danh mục, chạy trong Vitest nên vào gate và CI. (4) `guard.mjs` chặn AI sửa `features.lock.json`. (5) manual: Game_Design/decisions.md
   - Kết quả: CHỜ NGƯỜI DÙNG: chủ dự án quyết (a) có làm khóa danh mục này không, (b) khóa những registry nào, (c) ai duyệt từng id trong danh mục đầu tiên. Bước (2) là phần tốn công nhất và không AI nào được tự làm thay.
 
+- [ ] 174. CHỜ CHỦ DỰ ÁN: suite Playwright chập chờn — cùng một commit, chạy riêng PASS 47/47, chạy qua gate thì 35 fail.
+  - Nguồn: Phát hiện khi chạy gate để đóng mục 169–171 (2026-11-20). Bằng chứng, cùng commit `d47e786`, cây làm việc sạch, dấu vân tay trước/sau lần chạy giống nhau (`156bfe96`) nên **không** phải do AI khác sửa file:
+    - `npx playwright test --reporter=line`: **47 passed (2.3m)**, 0 fail.
+    - `node .studio/done.mjs gate` (gọi `npm run test:e2e`, cùng lệnh `playwright test`): **12 passed, 35 failed (1.9m)**, `Result: FAIL`.
+    - Trước đó tại `d82aff8`: gate chạy đầy đủ `Result: PASS`, integration exit 0. Giữa `d82aff8` và `d47e786` chỉ đổi một dòng trong `.studio/done.mjs` và nội dung `PLAN.md`; không file nào trong `src/` thay đổi.
+    - Lần FAIL đầu (tại `c4b16ba`) là `ERR_CONNECTION_REFUSED` trên `127.0.0.1:5173` vì `build` FAIL nên không có `dist`; lần này build PASS nên nguyên nhân khác.
+  - Nghi vấn chưa kiểm: `playwright.config.ts` đặt `webServer.timeout: 30000` và `reuseExistingServer: !process.env.CI`. Khi gate chạy, vite dev phải khởi động ngay sau `vitest run` + `tsc && vite build` trên cùng máy, trong thư mục OneDrive đang đồng bộ; nếu server chưa sẵn sàng trong 30 giây hoặc bị nạp lại giữa suite thì hàng loạt test đổ. Chưa chứng minh.
+  - Tiêu chí xong: (1) Xác định nguyên nhân thật bằng log đầy đủ (`.studio/last-gate.log` nay giữ nguyên văn). (2) Suite e2e PASS 3 lần liên tiếp khi chạy qua `node .studio/done.mjs gate`, không chỉ khi chạy riêng. (3) Không nới lỏng, bỏ qua hay xóa test nào để đạt điều đó. (4) manual: CHECKLIST.md
+  - Kết quả: CHỜ NGƯỜI DÙNG: đây là việc trong test và cấu hình của game, chủ dự án đã nói không phải việc của tôi, nên tôi chỉ ghi nhận kèm bằng chứng. Chủ quyết ai sửa và khi nào. Cho tới khi sửa, gate sẽ FAIL ngẫu nhiên ở bước integration, nghĩa là không ai lấy được token mới một cách đáng tin — đây là việc chặn đường quan trọng nhất còn lại.
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".

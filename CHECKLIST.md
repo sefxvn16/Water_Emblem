@@ -53,7 +53,9 @@ Bật cổng một lần cho mỗi clone (nếu chưa):
     node .studio/done.mjs gate
     node .studio/done.mjs check <số mục>
 
-- `gate` chạy test + build + e2e và ghi kết quả vào `.studio/last-gate.json` (kèm commit SHA).
+- `gate` chạy test + build + e2e, ghi kết quả vào `.studio/last-gate.json` (kèm commit SHA) và ghi
+  nguyên văn toàn bộ output vào `.studio/last-gate.log`. Gate FAIL thì **đọc file log đó** rồi báo lỗi
+  thật; bản in trên màn hình chỉ có 40 dòng cuối nên thường không đủ để chẩn đoán.
 - `check` chỉ in dòng `DONE-OK <mục> <sha> <ngày>` khi **đủ cả 5**: mục có tiêu chí; tiêu chí trích dẫn
   test/manual tồn tại thật và đã commit; gate PASS **0 lỗi**; gate chạy ở đúng commit HEAD hiện tại;
   cây làm việc sạch. Thiếu điều nào, nó in ra đúng điều đó và **exit 1**.
