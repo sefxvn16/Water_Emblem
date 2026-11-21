@@ -1,9 +1,10 @@
 {
-  "task_id": "180-fix-runtime-ai-web",
+  "task_id": "181-modern-combat-forecast",
   "plan_items": [
     178,
     179,
-    180
+    180,
+    181
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
@@ -37,6 +38,8 @@
     "Water-Emblem/src/ui/BattleSettingsMenu.tsx",
     "Water-Emblem/vite.config.ts",
     "Water-Emblem/tests/browser/attackHealFlow.spec.ts",
-    "Water-Emblem/tests/core/aiUpgrade.test.ts"
+    "Water-Emblem/tests/core/aiUpgrade.test.ts",
+    "Water-Emblem/src/ui/CombatForecastWindow.tsx",
+    "Water-Emblem/tests/core/uiRender.test.ts"
   ]
 }

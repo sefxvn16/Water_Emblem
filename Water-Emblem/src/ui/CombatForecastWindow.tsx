@@ -5,7 +5,7 @@ import { DS_COLORS, DS_RADII, DS_Z, sharedPanelStyle, statRowStyle, statValueSty
 import { useAnchoredOverlay } from './overlayAnchor';
 import { getItemIcon } from './itemIcon';
 
-interface CombatForecastWindowProps {
+export interface CombatForecastWindowProps {
   forecast: CombatForecast;
   attacker: ExtendedUnitState;
   defender: ExtendedUnitState;
@@ -13,36 +13,23 @@ interface CombatForecastWindowProps {
   onCancel: () => void;
 }
 
-/** Sword glyph (Lucide "sword" outline) drawn in navy on the gold confirm button. */
 const SwordGlyph: React.FC = () => (
-  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.navy} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M14.5 17.5 3 6V3h3l11.5 11.5" />
-    <path d="M13 19l6-6" />
-    <path d="M16 16l4 4" />
-    <path d="M19 21l2-2" />
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.navy} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2" />
   </svg>
 );
 
-/** Bold red X glyph for the cancel button. */
 const CrossGlyph: React.FC = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.enemy} strokeWidth="3.2" strokeLinecap="round" aria-hidden="true">
-    <path d="M5 5 L19 19" />
-    <path d="M19 5 L5 19" />
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DS_COLORS.enemy} strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+    <path d="M5 5 L19 19M19 5 L5 19" />
   </svg>
 );
 
 /**
- * Combat forecast as a two-panel versus bar (PLAN items 96/127/136):
- * attacker panel left, defender panel right (mirrored), a gold sword
- * button between them confirms the attack and the slate X below it
- * cancels (item 125). Item 136 rebuild (owner-picked "Mẫu 1"): wide
- * panels, large gold-bordered shield avatar at the outer edge
- * overflowing the panel top, weapon shown as a diamond icon only at
- * the inner side. Item 161 (owner playtest 2026-11-20): name on top in
- * large text, HP numbers inside a thicker bar shortened on the weapon
- * side, combat stats in 2 columns x 3 rows, level number at the
- * bottom-outer corner (class badge removed). All numbers still come
- * verbatim from the core forecast.
+ * Modern Fire Emblem Combat Forecast Window (Three Houses / Engage inspired).
+ * Features dual-sided cards (Player Royal Blue vs Enemy Crimson), prominent weapon
+ * headers with durability and icons, dual-layer animated HP projection bars,
+ * high-contrast tactical stat rows (Dmg, Hit, Crit, Avo, AS), and central tactile action buttons.
  */
 export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   forecast,
@@ -54,14 +41,11 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   const [swordHover, setSwordHover] = useState(false);
   const [cancelHover, setCancelHover] = useState(false);
 
-  // Attacker projected combat
   const attDamagePerHit = forecast.attacker.damage;
   const attCount = forecast.attacker.attackCount;
-  const attTotalDamage = attDamagePerHit * attCount;
-  const defenderHpAfter = Math.max(0, defender.stats.hp - attTotalDamage);
+  const defenderHpAfter = Math.max(0, defender.stats.hp - attDamagePerHit * attCount);
   const defenderHpLoss = defender.stats.hp - defenderHpAfter;
 
-  // Defender projected combat counter (only counters if alive and canCounter)
   const defCanCounter = forecast.defender.canCounter;
   const defDamagePerHit = forecast.defender.damage;
   const defCount = forecast.defender.attackCount;
@@ -69,16 +53,12 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   const attackerHpAfter = Math.max(0, attacker.stats.hp - defTotalDamage);
   const attackerHpLoss = attacker.stats.hp - attackerHpAfter;
 
-  // Avoid rates: attackSpeed + Math.floor(stats.lck / 2)
   const attAvoid = forecast.attacker.attackSpeed + Math.floor(attacker.stats.lck / 2);
   const defAvoid = forecast.defender.attackSpeed + Math.floor(defender.stats.lck / 2);
 
-  // Weapon icons (empty when unarmed — PLAN item 84)
   const attWeaponIcon = attacker.weapon ? getItemIcon(attacker.weapon.id, attacker.weapon.type) : '';
   const defWeaponIcon = defender.weapon ? getItemIcon(defender.weapon.id, defender.weapon.type) : '';
 
-  // Bottom-center by default (PLAN item 100); slides left (or right when
-  // the left side has no room) so it never covers attacker/defender tiles.
   const { ref, style: anchorStyle } = useAnchoredOverlay({
     tile: attacker.unit.position,
     avoidTiles: [defender.unit.position],
@@ -87,15 +67,20 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     avoidHudCluster: true,
   });
 
-  // One label–value row: labels share a left edge, values a right-aligned column (R5).
   const renderStatRow = (label: string, value: React.ReactNode, valueColor?: string, isKeyStat?: boolean) => (
     <div style={statRowStyle}>
-      <span style={{ color: isKeyStat ? '#e2e8f0' : '#94a3b8', fontWeight: isKeyStat ? 600 : 400 }}>{label}</span>
+      <span style={{ color: isKeyStat ? '#e2e8f0' : '#94a3b8', fontWeight: isKeyStat ? 600 : 400 }}>{`${label}:`}</span>
       <strong style={{ ...statValueStyle, color: valueColor ?? '#ffffff', fontSize: isKeyStat ? '14px' : '13px' }}>{value}</strong>
     </div>
   );
 
-  const renderSidePanel = (
+  const renderCountBadge = (count: number) => count > 1 ? (
+    <span style={{ display: 'inline-block', marginLeft: '4px', padding: '0 5px', fontSize: '11px', fontWeight: 800, borderRadius: '3px', backgroundColor: '#f59e0b', color: '#0f172a', verticalAlign: 'middle', lineHeight: '16px' }}>
+      ×{count}
+    </span>
+  ) : null;
+
+  const renderCombatantCard = (
     u: ExtendedUnitState,
     side: 'attacker' | 'defender',
     currentHp: number,
@@ -114,12 +99,8 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
     const maxHp = u.stats.maxHp || currentHp || 1;
     const hpAfterRatio = Math.max(0, Math.min(1, afterHp / maxHp));
     const hpCurRatio = Math.max(0, Math.min(1, currentHp / maxHp));
-    // PLAN item 136 (owner-picked "Mẫu 1"): large shield avatar with a
-    // gold border at the OUTER edge, overflowing the panel top/bottom;
-    // weapon as a diamond icon only at the INNER side, vertically
-    // centred; HP forecast on top, stats in two lines, name + Level on
-    // one bottom row; small class badge at the bottom-outer corner.
     const shieldClip = 'polygon(50% 0%, 100% 10%, 100% 68%, 50% 100%, 0% 68%, 0% 10%)';
+    const weaponUses = u.weapon ? (u.inventory.find((i) => i.itemId === u.weapon?.id)?.uses ?? u.weapon.maxUses) : null;
 
     return (
       <div
@@ -127,127 +108,64 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         data-side={side}
         style={{
           position: 'relative',
-          backgroundColor: isPlayer ? '#0f275c' : '#450a0a',
+          background: isPlayer ? 'linear-gradient(145deg, #0b1e4a 0%, #132d69 55%, #0d2252 100%)' : 'linear-gradient(145deg, #3d0909 0%, #521111 55%, #380707 100%)',
           border: `1.5px solid ${isPlayer ? '#3b82f6' : '#ef4444'}`,
-          borderRadius: '6px',
-          // Inner side reserves room for the 46px weapon diamond so the
-          // stats column never runs underneath it (item 136).
-          padding: isPlayer ? '10px 66px 10px 10px' : '10px 10px 10px 66px',
+          borderRadius: '8px',
+          boxShadow: isPlayer ? '0 6px 20px rgba(30, 58, 138, 0.35), inset 0 1px 0 rgba(147, 197, 253, 0.2)' : '0 6px 20px rgba(185, 28, 28, 0.35), inset 0 1px 0 rgba(252, 165, 165, 0.2)',
+          padding: '12px 14px',
           display: 'flex',
           flexDirection: isPlayer ? 'row' : 'row-reverse',
-          gap: '12px',
+          gap: '14px',
           flex: 1,
           minWidth: 0,
         }}
       >
-        {/* Avatar shield with gold border at the outer edge, overflowing the panel */}
+        {/* Heraldic Shield Avatar Frame */}
         <div
           className="we-forecast-avatar"
           style={{
-            width: '94px',
-            height: '150px',
-            marginTop: '-20px',
-            marginBottom: '-20px',
-            marginLeft: isPlayer ? '-4px' : undefined,
-            marginRight: isPlayer ? undefined : '-4px',
-            clipPath: shieldClip,
-            backgroundColor: DS_COLORS.gold,
-            flexShrink: 0,
-            alignSelf: 'center',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.6))',
+            position: 'relative', width: '90px', height: '142px', clipPath: shieldClip,
+            backgroundColor: isPlayer ? '#facc15' : '#dc2626', flexShrink: 0, alignSelf: 'center',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.65))',
           }}
         >
           <div
             className="we-forecast-avatar-inner"
             style={{
-              width: '86px',
-              height: '142px',
-              clipPath: shieldClip,
-              overflow: 'hidden',
-              backgroundColor: isPlayer ? '#16283f' : '#5c1216',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: '82px', height: '134px', clipPath: shieldClip, overflow: 'hidden',
+              backgroundColor: isPlayer ? '#172554' : '#450a0a', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
             {u.avatarUrl ? (
-              <img
-                src={u.avatarUrl}
-                alt={u.unit.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
+              <img src={u.avatarUrl} alt={u.unit.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <span style={{ fontSize: '34px' }}>👤</span>
+              <span style={{ fontSize: '32px' }}>👤</span>
             )}
+          </div>
+          <div
+            className="we-forecast-level"
+            title={`Level ${u.level ?? 1}`}
+            style={{
+              position: 'absolute', bottom: '4px', padding: '1px 6px', borderRadius: '10px',
+              backgroundColor: '#090d16', border: `1.5px solid ${isPlayer ? '#fde047' : '#f87171'}`,
+              color: isPlayer ? '#fef08a' : '#fecaca', fontSize: '11px', fontWeight: 800, zIndex: 3,
+            }}
+          >
+            Lv.{u.level ?? 1}
           </div>
         </div>
 
-        {/* Level number at the bottom-outer corner (PLAN item 161:
-            replaces the class badge, which is removed). */}
-        <div
-          className="we-forecast-level"
-          title={`Lv ${u.level ?? 1}`}
-          style={{
-            position: 'absolute',
-            bottom: '6px',
-            ...(isPlayer ? { left: '8px' } : { right: '8px' }),
-            minWidth: '26px',
-            height: '26px',
-            padding: '0 4px',
-            borderRadius: '6px',
-            backgroundColor: 'rgba(0,0,0,0.55)',
-            border: `1px solid ${DS_COLORS.goldText}`,
-            color: '#fde047',
-            fontSize: '13px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 2,
-          }}
-        >
-          {u.level ?? 1}
-        </div>
-
-        {/* Weapon diamond icon only (no name/uses — item 136), inner side, vertically centred */}
-        <div
-          className="we-forecast-weapon"
-          style={{
-            position: 'absolute',
-            top: '50%',
-            transform: 'translateY(-50%) rotate(45deg)',
-            ...(isPlayer ? { right: '12px' } : { left: '12px' }),
-            width: '46px',
-            height: '46px',
-            backgroundColor: '#0b1530',
-            border: `2px solid ${DS_COLORS.gold}`,
-            borderRadius: '9px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.55)',
-          }}
-          title={u.weapon?.name ?? 'Unarmed'}
-        >
-          <img
-            src={weaponIcon}
-            alt=""
-            style={{ width: '30px', height: '30px', imageRendering: 'pixelated', transform: 'rotate(-45deg)' }}
-          />
-        </div>
-
+        {/* Content Details */}
         <div style={{ minWidth: 0, flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          {/* PLAN item 161: name on top in large text (where the HP line
-              was), HP numbers inside a thicker, shorter bar. */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: isPlayer ? 'row' : 'row-reverse' }}>
-            <span className="we-forecast-name" style={{ fontWeight: 'bold', color: '#ffffff', fontSize: '20px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <span
+              className="we-forecast-name"
+              style={{ fontWeight: 800, color: '#ffffff', fontSize: '19px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+            >
               {u.unit.name}
             </span>
             {hpLoss > 0 ? (
-              <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#f87171', backgroundColor: 'rgba(239,68,68,0.2)', padding: '0 5px', borderRadius: '3px', flexShrink: 0 }}>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#f87171', backgroundColor: 'rgba(239,68,68,0.22)', border: '1px solid #ef4444', padding: '1px 7px', borderRadius: '4px', flexShrink: 0 }}>
                 -{hpLoss}{afterHp === 0 ? ' KO' : ''}
               </span>
             ) : (
@@ -255,23 +173,56 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             )}
           </div>
 
-          {/* HP bar: thicker, shortened on the weapon side so the gap to
-              the weapon diamond matches the avatar-side gap (item 161);
-              HP numbers inside, aligned toward the avatar. */}
+          {/* Modern Fire Emblem Weapon Ribbon */}
           <div
             style={{
-              width: 'calc(100% - 12px)',
-              alignSelf: isPlayer ? 'flex-start' : 'flex-end',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              flexDirection: isPlayer ? 'row' : 'row-reverse',
+              backgroundColor: 'rgba(15, 23, 42, 0.7)',
+              border: `1px solid ${isPlayer ? 'rgba(59, 130, 246, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+              borderRadius: '5px',
+              padding: '3px 8px',
+            }}
+          >
+            {weaponIcon ? (
+              <img src={weaponIcon} alt="" style={{ width: '20px', height: '20px', imageRendering: 'pixelated', flexShrink: 0 }} />
+            ) : null}
+            <span
+              style={{
+                fontWeight: 700,
+                fontSize: '13px',
+                color: isPlayer ? '#93c5fd' : '#fca5a5',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                flex: 1,
+                textAlign: isPlayer ? 'left' : 'right',
+              }}
+            >
+              {u.weapon?.name ?? 'Unarmed'}
+            </span>
+            {weaponUses !== null ? (
+              <span style={{ fontSize: '11px', color: '#fde047', fontWeight: 700, flexShrink: 0 }}>
+                {weaponUses}/{u.weapon?.maxUses}
+              </span>
+            ) : null}
+          </div>
+
+          {/* Dual-layer Modern HP Bar */}
+          <div
+            style={{
+              width: '100%',
               height: '20px',
-              backgroundColor: 'rgba(0,0,0,0.5)',
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
               borderRadius: '4px',
               position: 'relative',
               overflow: 'hidden',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
             }}
           >
-            {/* Depleted loss portion */}
             <div style={{ width: `${hpCurRatio * 100}%`, height: '100%', backgroundColor: '#ef4444', position: 'absolute', left: 0, top: 0 }} />
-            {/* Retained remaining HP portion */}
             <div style={{ width: `${hpAfterRatio * 100}%`, height: '100%', backgroundColor: '#22c55e', position: 'absolute', left: 0, top: 0 }} />
             <span
               className="we-forecast-hp"
@@ -279,91 +230,30 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
                 position: 'absolute',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                ...(isPlayer ? { left: '6px' } : { right: '6px' }),
-                fontSize: '13px',
-                fontWeight: 'bold',
+                ...(isPlayer ? { left: '8px' } : { right: '8px' }),
+                fontSize: '12.5px',
+                fontWeight: 800,
                 color: '#ffffff',
-                textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+                textShadow: '0 1px 3px rgba(0,0,0,0.9)',
                 whiteSpace: 'nowrap',
               }}
             >
-              {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#fecaca' : afterHp < currentHp ? '#fde047' : '#ffffff' }}>{afterHp}</span>
+              {`HP: ${currentHp} → `}<span style={{ color: afterHp === 0 ? '#fca5a5' : afterHp < currentHp ? '#fde047' : '#ffffff' }}>{afterHp}</span>
             </span>
           </div>
 
-          {/* Combat stats — 2 columns x 3 rows so the weapon diamond
-              never covers them (item 161). */}
+          {/* Combat Statistics Grid */}
           {!isPlayer && !canCounter ? (
-            <div style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '12px', textAlign: 'center', padding: '10px 0' }}>
+            <div style={{ color: '#94a3b8', fontStyle: 'italic', fontSize: '13px', textAlign: 'center', padding: '12px 0', backgroundColor: 'rgba(0,0,0,0.25)', borderRadius: '6px', border: '1px dashed rgba(255,255,255,0.15)' }}>
               Cannot counter
             </div>
           ) : (
-            <div className="we-forecast-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 14px', fontSize: '13px' }}>
-              <div style={{ minWidth: 0 }}>
-                {renderStatRow(
-                  'Dmg:',
-                  <>
-                    {damage}
-                    {attackCount > 1 ? (
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          marginLeft: '4px',
-                          padding: '0 4px',
-                          fontSize: '11px',
-                          fontWeight: 700,
-                          borderRadius: '3px',
-                          backgroundColor: '#f59e0b',
-                          color: '#0f172a',
-                          verticalAlign: 'middle',
-                          lineHeight: '16px',
-                        }}
-                      >
-                        ×{attackCount}
-                      </span>
-                    ) : null}
-                  </>,
-                  '#fde047',
-                  true
-                )}
-              </div>
-              <div style={{ minWidth: 0 }}>
-                {renderStatRow('Hit:', `${hitRate}%`, hitRate >= 80 ? '#ffffff' : '#f87171', true)}
-              </div>
-              <div style={{ minWidth: 0 }}>
-                {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#94a3b8', critRate > 0)}
-              </div>
-              <div style={{ minWidth: 0 }}>
-                {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
-              </div>
-              <div style={{ minWidth: 0 }}>
-                {renderStatRow(
-                  'AS:',
-                  <>
-                    {as}
-                    {attackCount > 1 ? (
-                      <span
-                        style={{
-                          display: 'inline-block',
-                          marginLeft: '4px',
-                          padding: '0 4px',
-                          fontSize: '10px',
-                          fontWeight: 700,
-                          borderRadius: '3px',
-                          backgroundColor: 'rgba(59, 130, 246, 0.25)',
-                          color: '#60a5fa',
-                          border: '1px solid #3b82f6',
-                          verticalAlign: 'middle',
-                          lineHeight: '14px',
-                        }}
-                      >
-                        ×2
-                      </span>
-                    ) : null}
-                  </>,
-                  '#cbd5e1'
-                )}
-              </div>
+            <div className="we-forecast-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 14px', fontSize: '13px', marginTop: '2px' }}>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Dmg', <>{damage}{renderCountBadge(attackCount)}</>, '#fde047', true)}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Hit', `${hitRate}%`, hitRate >= 80 ? '#ffffff' : '#f87171', true)}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Crit', `${critRate}%`, critRate > 0 ? '#fde047' : '#94a3b8', critRate > 0)}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('Avo', `${avoidRate}%`, '#cbd5e1')}</div>
+              <div style={{ minWidth: 0 }}>{renderStatRow('AS', <>{as}{renderCountBadge(attackCount)}</>, '#cbd5e1')}</div>
               <div style={{ minWidth: 0 }} />
             </div>
           )}
@@ -384,35 +274,42 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
         maxHeight: 'calc(100vh - 40px)',
         overflowY: 'auto',
         zIndex: DS_Z.forecast,
-        padding: '20px 10px',
+        padding: '16px 14px 18px',
         borderRadius: DS_RADII.panel,
       }}
     >
       <style>{`
-        /* PLAN items 128/136: narrow screens shrink the forecast shields,
-           diamond and fonts so nothing is clipped or overlapped. */
+        @keyframes attack-glow {
+          0%, 100% { box-shadow: 0 0 12px rgba(234, 179, 8, 0.5), inset 0 3px 5px rgba(255,255,255,0.75); }
+          50% { box-shadow: 0 0 22px rgba(234, 179, 8, 0.85), inset 0 3px 5px rgba(255,255,255,0.9); }
+        }
         @media (max-width: 640px) {
           .we-forecast-panel { padding: 8px 6px !important; gap: 8px !important; }
-          .we-forecast-panel[data-side="attacker"] { padding-right: 48px !important; }
-          .we-forecast-panel[data-side="defender"] { padding-left: 48px !important; }
-          .we-forecast-avatar { width: 62px !important; height: 100px !important; margin-top: -12px !important; margin-bottom: -12px !important; }
+          .we-forecast-avatar { width: 62px !important; height: 100px !important; }
           .we-forecast-avatar-inner { width: 55px !important; height: 93px !important; }
-          .we-forecast-weapon { width: 34px !important; height: 34px !important; }
-          .we-forecast-weapon img { width: 22px !important; height: 22px !important; }
           .we-forecast-hp { font-size: 11px !important; }
           .we-forecast-stats { font-size: 11px !important; }
           .we-forecast-name { font-size: 15px !important; }
-          .we-forecast-level { min-width: 22px !important; height: 22px !important; font-size: 11px !important; }
+          .we-forecast-level { font-size: 10px !important; padding: 1px 4px !important; }
         }
       `}</style>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-        <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.03em' }}>
-          ⚔️ COMBAT FORECAST
+
+      {/* Header bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', borderBottom: '1px solid rgba(234, 179, 8, 0.3)', paddingBottom: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '16px' }}>⚔️</span>
+          <span style={{ fontWeight: 800, color: DS_COLORS.goldText, fontSize: '15px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            COMBAT FORECAST
+          </span>
+        </div>
+        <div style={{ fontSize: '12px', color: '#94a3b8', fontStyle: 'italic' }}>
+          Select action to proceed
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {renderSidePanel(
+      {/* Combatant Cards & Center Command Hub */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {renderCombatantCard(
           attacker,
           'attacker',
           attacker.stats.hp,
@@ -428,8 +325,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           attWeaponIcon,
         )}
 
-        {/* PLAN item 125: round 3D glossy buttons — Attack on top, Cancel
-            directly below it in the center column. */}
+        {/* Central Tactical Action Hub */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', flexShrink: 0 }}>
           <button
             type="button"
@@ -439,21 +335,16 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             onMouseEnter={() => setSwordHover(true)}
             onMouseLeave={() => setSwordHover(false)}
             style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              padding: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: '64px', height: '64px', borderRadius: '50%', padding: 0, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: 'radial-gradient(circle at 32% 28%, #fef9c3 0%, #facc15 38%, #eab308 62%, #a16207 100%)',
               border: `2px solid ${DS_COLORS.goldText}`,
               boxShadow: swordHover
-                ? 'inset 0 3px 5px rgba(255,255,255,0.85), inset 0 -8px 12px rgba(120,53,15,0.55), 0 0 18px rgba(234,179,8,0.85), 0 6px 14px rgba(0,0,0,0.65)'
-                : 'inset 0 3px 5px rgba(255,255,255,0.75), inset 0 -8px 12px rgba(120,53,15,0.5), 0 0 10px rgba(234,179,8,0.5), 0 5px 12px rgba(0,0,0,0.6)',
+                ? 'inset 0 3px 5px rgba(255,255,255,0.85), inset 0 -8px 12px rgba(120,53,15,0.55), 0 0 20px rgba(234,179,8,0.9), 0 6px 14px rgba(0,0,0,0.65)'
+                : 'inset 0 3px 5px rgba(255,255,255,0.75), inset 0 -8px 12px rgba(120,53,15,0.5), 0 0 12px rgba(234,179,8,0.5), 0 5px 12px rgba(0,0,0,0.6)',
               transform: swordHover ? 'scale(1.1) rotate(-6deg)' : 'scale(1)',
               transition: 'transform 0.12s ease, box-shadow 0.12s ease',
+              animation: 'attack-glow 2.5s ease-in-out infinite',
             }}
           >
             <SwordGlyph />
@@ -466,14 +357,8 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             onMouseEnter={() => setCancelHover(true)}
             onMouseLeave={() => setCancelHover(false)}
             style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '50%',
-              padding: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: '44px', height: '44px', borderRadius: '50%', padding: 0, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
               background: 'radial-gradient(circle at 32% 28%, #64748b 0%, #334155 45%, #1e293b 75%, #0f172a 100%)',
               border: `2px solid ${cancelHover ? DS_COLORS.enemy : '#94a3b8'}`,
               boxShadow: cancelHover
@@ -487,7 +372,7 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
           </button>
         </div>
 
-        {renderSidePanel(
+        {renderCombatantCard(
           defender,
           'defender',
           defender.stats.hp,
