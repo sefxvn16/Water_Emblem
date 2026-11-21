@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import shoppingDialogues from '../../data/dialogues/shopping.json' with { type: 'json' };
 import { getItemIcon } from './itemIcon';
 
 export interface ShopStockRow {
@@ -31,9 +32,23 @@ interface ShopWindowProps {
   onBuy: (itemId: string) => void;
   onSell: (index: number) => void;
   onClose: () => void;
+  shopType?: 'armory' | 'vendor' | 'secretShop';
 }
 
 export const ShopWindow: React.FC<ShopWindowProps> = (props) => {
+  const shopData = shoppingDialogues[props.shopType ?? 'armory'] ?? shoppingDialogues.armory;
+  const [speech, setSpeech] = useState<string>(() => `${shopData.welcome} ${shopData.buyPrompt}`);
+
+  const handleBuy = (itemId: string) => {
+    props.onBuy(itemId);
+    setSpeech(shopData.continuePrompt);
+  };
+
+  const handleSell = (index: number) => {
+    props.onSell(index);
+    setSpeech(shopData.sellMorePrompt);
+  };
+
   const headerStyle: React.CSSProperties = {
     fontWeight: 'bold',
     color: '#93c5fd',
@@ -111,6 +126,24 @@ export const ShopWindow: React.FC<ShopWindowProps> = (props) => {
           {props.gold.toLocaleString()} G
         </span>
       </div>
+      <div
+        data-testid="merchant-speech"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          backgroundColor: '#071233',
+          border: '1px solid rgba(234, 179, 8, 0.4)',
+          borderRadius: '4px',
+          padding: '6px 10px',
+          color: '#fef08a',
+          fontSize: '12px',
+          fontStyle: 'italic',
+        }}
+      >
+        <span style={{ fontSize: '14px', fontStyle: 'normal' }}>🏪</span>
+        <span>{speech}</span>
+      </div>
       <div style={{ display: 'flex', gap: '10px' }}>
         <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
           <div style={headerStyle}>Buy</div>
@@ -119,7 +152,7 @@ export const ShopWindow: React.FC<ShopWindowProps> = (props) => {
               key={item.itemId}
               data-testid={`shop-buy-${item.itemId}`}
               disabled={!item.canBuy}
-              onClick={() => props.onBuy(item.itemId)}
+              onClick={() => handleBuy(item.itemId)}
               style={rowStyle(!item.canBuy)}
             >
               {renderIcon(item.itemId, item.type)}
@@ -140,7 +173,7 @@ export const ShopWindow: React.FC<ShopWindowProps> = (props) => {
             <button
               key={`${item.itemId}-${index}`}
               data-testid={`shop-sell-${index}`}
-              onClick={() => props.onSell(index)}
+              onClick={() => handleSell(index)}
               style={rowStyle(false, item.equipped)}
             >
               {renderIcon(item.itemId, item.type)}

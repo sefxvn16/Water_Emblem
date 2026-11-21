@@ -1,5 +1,6 @@
 import classesJson from '../../../data/classes.json' with { type: 'json' };
 import balanceConfig from '../../../data/balance.json' with { type: 'json' };
+import palettesJson from '../../../data/character_palettes.json' with { type: 'json' };
 import type { ItemDefinition } from '../combat/types';
 import type { GridUnit, MoveType } from '../grid/types';
 import type { ExtendedUnitState } from '../data/chapterData';
@@ -241,4 +242,15 @@ export function useVulnerary(entry: ExtendedUnitState, item: ItemDefinition): Ex
  */
 export function promoteWithoutItem(entry: ExtendedUnitState, targetClassId: string): ExtendedUnitState | null {
   return promoteUnit(entry, targetClassId, true);
+}
+
+export interface CharacterPaletteInfo {
+  readonly idHex: string;
+  readonly name: string;
+  readonly variants: Readonly<Record<string, { readonly org: string; readonly binFile: string }>>;
+}
+
+export function getCharacterPalette(characterId: string): CharacterPaletteInfo | undefined {
+  const characters = (palettesJson as { characters: Record<string, CharacterPaletteInfo> }).characters;
+  return characters[characterId.toLowerCase()];
 }

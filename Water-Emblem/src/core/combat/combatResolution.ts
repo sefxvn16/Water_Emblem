@@ -1,8 +1,8 @@
 import type { CombatResult } from './types';
-import type { ExtendedUnitState } from '../data/chapterData';
+import type { ChapterData, ExtendedUnitState } from '../data/chapterData';
 import type { SeededRNG } from './rng';
 import type { ItemDefinition } from './types';
-import type { GameEvent, VillageState } from '../chapter/events';
+import type { DialogueTable, GameEvent, VillageState } from '../chapter/events';
 import { resolveDefeat } from '../chapter/events';
 import { applyCombatExperience } from '../progression/experience';
 import { applyCombatDurability } from './durability';
@@ -30,8 +30,8 @@ export interface ResolveCombatOptions {
   rng: SeededRNG;
   itemById: ReadonlyMap<string, ItemDefinition>;
   itemsList: readonly ItemDefinition[];
-  chapter?: any;
-  dialogues: any;
+  chapter?: ChapterData;
+  dialogues: DialogueTable;
   gold: number;
   villageStates: Record<string, VillageState>;
 }

@@ -1,13 +1,15 @@
 {
-  "task_id": "179-attack-heal-flow",
+  "task_id": "180-fix-runtime-ai-web",
   "plan_items": [
     178,
-    179
+    179,
+    180
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
   "allow": [
     "PLAN.md",
+    "AGENTS.md",
     "Water-Emblem/tests/core/fe3Integration.test.ts",
     "Water-Emblem/data/dialogues/chapter_01_dialogues.json",
     "Water-Emblem/data/dialogues/chapter_02_dialogues.json",
@@ -25,6 +27,16 @@
     "Water-Emblem/src/ui/StaffForecastWindow.tsx",
     "Water-Emblem/src/ui/WeaponPickerWindow.tsx",
     "Water-Emblem/src/core/combat/staff.ts",
-    "Water-Emblem/tests/core/attackHealFlow.test.ts"
+    "Water-Emblem/tests/core/attackHealFlow.test.ts",
+    "Water-Emblem/src/core/ai/decision.ts",
+    "Water-Emblem/src/core/combat/combatResolution.ts",
+    "Water-Emblem/src/core/simulation/enemyTurnSimulation.ts",
+    "Water-Emblem/src/ui/ShopWindow.tsx",
+    "Water-Emblem/src/ui/ArenaWindow.tsx",
+    "Water-Emblem/src/ui/BookSelectModal.tsx",
+    "Water-Emblem/src/ui/BattleSettingsMenu.tsx",
+    "Water-Emblem/vite.config.ts",
+    "Water-Emblem/tests/browser/attackHealFlow.spec.ts",
+    "Water-Emblem/tests/core/aiUpgrade.test.ts"
   ]
 }

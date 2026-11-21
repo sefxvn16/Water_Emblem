@@ -193,12 +193,29 @@ export function evaluateAITurn(
             const healAmount = Math.min(rawHeal, allyStats.maxHp - allyStats.hp);
             if (healAmount <= 0) continue;
 
-            const weights = balanceConfig.aiWeights as any;
+            interface AIWeights {
+              readonly counterDamagePenalty: number;
+              readonly damageMultiplier: number;
+              readonly fleeDistanceWeight: number;
+              readonly killBonus: number;
+              readonly lowHpTargetBonus: number;
+              readonly lowHpThreshold: number;
+              readonly retreatHpFraction: number;
+              readonly triangleAdvantageBonus: number;
+              readonly counterFreeBonus?: number;
+              readonly healStaffBaseScore?: number;
+              readonly healPerHpWeight?: number;
+            }
+            const weights = balanceConfig.aiWeights as AIWeights;
             let staffScore = (weights.healStaffBaseScore ?? 40) + healAmount * (weights.healPerHpWeight ?? 2);
             if (allyStats.hp <= allyStats.maxHp * (weights.lowHpThreshold ?? 0.4)) {
               staffScore += (weights.lowHpTargetBonus ?? 15) * 2;
             }
-            if (ally.id.includes('boss') || ally.id === 'gazzak') {
+            // Ưu tiên cao hồi máu cho chỉ huy / Boss
+            const isHighPriorityAlly = Boolean(ally.name?.toLowerCase().includes('boss'))
+              || Boolean(ally.name?.toLowerCase().includes('captain'))
+              || ally.classId === 'boss';
+            if (isHighPriorityAlly) {
               staffScore += 30;
             }
 
@@ -263,7 +280,18 @@ export function evaluateAITurn(
             } : undefined
           );
 
-          const weights = balanceConfig.aiWeights as any;
+          interface AttackAIWeights {
+            readonly counterDamagePenalty: number;
+            readonly damageMultiplier: number;
+            readonly fleeDistanceWeight: number;
+            readonly killBonus: number;
+            readonly lowHpTargetBonus: number;
+            readonly lowHpThreshold: number;
+            readonly retreatHpFraction: number;
+            readonly triangleAdvantageBonus: number;
+            readonly counterFreeBonus?: number;
+          }
+          const weights = balanceConfig.aiWeights as AttackAIWeights;
           let score = 0;
 
           const rngMode = balanceConfig.rngMode as '1RN' | '2RN';
@@ -294,12 +322,13 @@ export function evaluateAITurn(
             score += weights.lowHpTargetBonus;
           }
 
-          // Ưu tiên mục tiêu giá trị cao / mỏng manh
+          // Ưu tiên mục tiêu giá trị cao / mỏng manh theo chuẩn Fire Emblem
           if (target.classId === 'curate' || target.classId === 'cleric' || target.classId === 'priest') {
             score += 20;
           } else if ((target.classId === 'archer' || target.classId === 'sniper') && distance === 1) {
             score += 15;
-          } else if (target.id === 'marth') {
+          } else if (target.classId === 'lord') {
+            // Hạ Lord là điều kiện thắng/thua tối hậu
             score += 10;
           }
 

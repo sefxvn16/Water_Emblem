@@ -20,6 +20,24 @@ export default defineConfig({
     // "12 pass rồi 35 fail" ghi ở PLAN mục 174. Bỏ theo dõi chúng không làm yếu test nào.
     watch: { ignored: ['**/dist/**', '**/test-results/**', '**/playwright-report/**'] },
   },
+  build: {
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('node_modules/three')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+            return 'vendor-react';
+          }
+          if (id.includes('node_modules/howler') || id.includes('node_modules/dexie')) {
+            return 'vendor-audio-storage';
+          }
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'node',

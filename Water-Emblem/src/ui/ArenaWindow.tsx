@@ -1,4 +1,5 @@
 import React from 'react';
+import arenaDialogues from '../../data/dialogues/arena.json' with { type: 'json' };
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import { ARENA_TIERS, type ArenaFightOutcome, type ArenaTier } from '../core/combat/arena';
 import { DS_COLORS, primaryButtonStyle, secondaryButtonStyle, sharedPanelStyle } from './designSystem';
@@ -30,6 +31,16 @@ export const ArenaWindow: React.FC<ArenaWindowProps> = ({
   const statLine = (entry: ExtendedUnitState) =>
     `HP ${entry.stats.hp}/${entry.stats.maxHp} · Str ${entry.stats.str} · Skl ${entry.stats.skill} · Spd ${entry.stats.spd} · Def ${entry.stats.def} · Res ${entry.stats.res}`;
 
+  const masterQuote = outcome
+    ? outcome.won
+      ? arenaDialogues.victory.replace('{gold}', ((tier?.wager ?? 0) * 2).toLocaleString())
+      : arenaDialogues.defeat
+    : opponent && tier
+    ? arenaDialogues.matchRules
+        .replace('{level}', String(opponent.level))
+        .replace('{gold}', (tier.wager * 2).toLocaleString())
+    : arenaDialogues.welcomePrompt.replace('{gold}', '500–2,000');
+
   return (
     <div
       data-testid="arena-window"
@@ -48,6 +59,26 @@ export const ArenaWindow: React.FC<ArenaWindowProps> = ({
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
         <div style={{ fontWeight: 'bold', color: DS_COLORS.goldText, fontSize: '15px' }}>🏟️ ARENA — {unitName}</div>
         <div style={{ color: DS_COLORS.goldText, fontWeight: 'bold' }}>{gold.toLocaleString()} G</div>
+      </div>
+
+      <div
+        data-testid="arena-speech"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          backgroundColor: '#270808',
+          border: '1px solid #dc2626',
+          borderRadius: '6px',
+          padding: '8px 10px',
+          color: '#fecaca',
+          fontSize: '12px',
+          fontStyle: 'italic',
+          marginBottom: '10px',
+        }}
+      >
+        <span style={{ fontSize: '15px', fontStyle: 'normal' }}>📣</span>
+        <span>{masterQuote}</span>
       </div>
 
       {outcome ? (

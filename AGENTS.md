@@ -87,7 +87,12 @@ Dữ liệu nhân vật, class, vật phẩm, kỹ năng, bản đồ, chương 
 | Atlas tra cứu mọi bản đồ FE3 (lưới, quân, công trình) và bảng nguồn | `Game_Design/campaign.md` mục "Atlas bản đồ FE3 và bảng tra nguồn"; atlas ở `D:\OneDrive\AI Relax\projects\FE3_map_atlas\` |
 | Lưới tham chiếu FE3 (lập độc lập, chỉ dùng để đối chiếu và test) | `data/reference/fe3/<map-id>.json`; quy trình và script ở `tools/fe3_map_reference/` |
 | Mục tiêu, vị trí và phe của quân, ô triển khai, vũ khí trang bị, làng, sự kiện, ngoại lệ riêng của chương | `data/chapters/<chapter-id>.json` |
+| Bảng tra cứu điều kiện thắng 44 chương | `data/chapter_objectives.json` |
+| Bảng màu palette nhân vật theo Akaneia Refined | `data/character_palettes.json` |
 | Hội thoại từng chương | `data/dialogues/<chapter-id>_dialogues.json`; thoại làng mặc định khi chương không khai báo: `data/dialogues/default_dialogues.json` |
+| Lời thoại người bán hàng (armory, vendor, secret shop) | `data/dialogues/shopping.json` |
+| Lời thoại đấu trường (quy tắc, tiền cược, thắng, thua, đầu hàng) | `data/dialogues/arena.json` |
+| Mở màn và dẫn chuyện Book 1 & Book 2 | `data/prologues.json` |
 | Vị trí và thông tin vùng trên World Map | `data/world_map.json` |
 | Schema JSON | `data/schemas/` |
 | Quan hệ hỗ trợ và bonus theo điểm | `data/supports.json`, `src/core/combat/support.ts` |

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import chapterObjectives from '../../data/chapter_objectives.json' with { type: 'json' };
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sectionHeadingStyle, sharedPanelStyle } from './designSystem';
 
 interface BattleSettingsMenuProps {
@@ -90,6 +91,11 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
     setOpen(false);
     action();
   };
+
+  const objectiveEntry = chapterObjectives.find(
+    (o) => props.chapterId.includes(String(o.chapter).padStart(2, '0')) || o.chapterKey === props.chapterId
+  );
+  const displayObjective = props.objectiveText || objectiveEntry?.objectiveText || 'Seize gate / Defeat boss';
 
   return (
     <div ref={rootRef}>
@@ -211,7 +217,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
               <option value="test_chapter_01">🧪 Test Map (8x8)</option>
             </select>
             <span style={{ fontSize: '13px', color: DS_COLORS.muted }}>
-              {props.chapterName} (Objective: {props.objectiveText})
+              {props.chapterName} (Objective: {displayObjective})
             </span>
           </section>
 

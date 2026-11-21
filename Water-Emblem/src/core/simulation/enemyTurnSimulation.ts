@@ -1,8 +1,8 @@
 import type { MapData, Position } from '../grid/types';
 import type { TerrainRegistry } from '../grid/terrain';
 import { defaultTerrainRegistry, healUnitsOnTerrain } from '../grid/terrain';
-import type { ExtendedUnitState } from '../data/chapterData';
-import type { GameEvent, VillageState, ChestState } from '../chapter/events';
+import type { ChapterData, ExtendedUnitState } from '../data/chapterData';
+import type { GameEvent, VillageState, ChestState, DialogueTable } from '../chapter/events';
 import { pillageVillage } from '../chapter/events';
 import type { TurnManager } from '../turn/turnManager';
 import { evaluateAITurn, type AIDecision } from '../ai/decision';
@@ -13,19 +13,19 @@ import { resolveCombatConsequences, type CombatResolutionResult } from '../comba
 import { computeCombinedThreatKeys, computeUnitThreatKeys } from '../grid/threatRange';
 import { getAttackRange, skillIdsOf } from '../class/classRules';
 import { dueReinforcements, spawnReinforcements, announcedReinforcements } from '../chapter/reinforcements';
-import { evaluateChapterOutcome } from '../chapter/types';
+import { evaluateChapterOutcome, type ChapterObjective } from '../chapter/types';
 import { tickSpecialStates } from '../combat/transform';
 import { applyStaffUse } from '../combat/staff';
-import type { ItemDefinition } from '../combat/types';
+import type { CombatResult, ItemDefinition } from '../combat/types';
 
 export interface EnemyPhaseContext {
   mapData: MapData;
   terrains?: TerrainRegistry;
-  chapter: any;
-  chapterObjective: any;
+  chapter: ChapterData;
+  chapterObjective: ChapterObjective;
   items: readonly ItemDefinition[];
   itemById: ReadonlyMap<string, ItemDefinition>;
-  dialogues: any;
+  dialogues: DialogueTable;
   rng?: SeededRNG;
   turnNumber: number;
   openedDoors: ReadonlySet<string>;
@@ -40,7 +40,7 @@ export interface EnemyActionStep {
   decision: AIDecision;
   movePosition: Position;
   combatResult?: CombatResolutionResult;
-  rawCombatResult?: any;
+  rawCombatResult?: CombatResult;
   hpBefore?: { attacker: number; defender: number };
   pillageEvents?: readonly GameEvent[];
   lootedChestId?: string;
@@ -161,12 +161,12 @@ export function executeSingleEnemyAction(
         light: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
         dark: new Set(workingUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
       },
-      villageTargets: (context.chapter.villages as any[])?.filter(
-        (v: any) => (workingVillageStates[v.id] ?? 'intact') === 'intact',
-      ).map((v: any) => v.position),
-      chestTargets: ((context.chapter.chests as any[]) ?? [])
-        .filter((c: any) => workingChestStates[c.id] !== 'opened')
-        .map((c: any) => c.position),
+      villageTargets: (context.chapter.villages ?? []).filter(
+        (v) => (workingVillageStates[v.id] ?? 'intact') === 'intact',
+      ).map((v) => v.position),
+      chestTargets: (context.chapter.chests ?? [])
+        .filter((c) => workingChestStates[c.id] !== 'opened')
+        .map((c) => c.position),
       patrolTargets: enemy.patrolPoints,
       turnNumber: context.turnNumber,
       openedDoors: context.openedDoors,
@@ -177,7 +177,7 @@ export function executeSingleEnemyAction(
 
   const stepLogs: string[] = [];
   let combatResolutionResult: CombatResolutionResult | undefined;
-  let rawResult: any;
+  let rawResult: CombatResult | undefined;
   let hpBefore: { attacker: number; defender: number } | undefined;
   const movePos = 'movePosition' in decision ? decision.movePosition : enemy.unit.position;
 
@@ -254,8 +254,8 @@ export function executeSingleEnemyAction(
 
   let lootedChestId: string | undefined;
   if (enemy.aiRole === 'thief' && !enemy.unit.isDead) {
-    const chest = ((context.chapter.chests as any[]) ?? []).find(
-      (c: any) => workingChestStates[c.id] !== 'opened' && c.position.x === enemy.unit.position.x && c.position.y === enemy.unit.position.y,
+    const chest = (context.chapter.chests ?? []).find(
+      (c) => workingChestStates[c.id] !== 'opened' && c.position.x === enemy.unit.position.x && c.position.y === enemy.unit.position.y,
     );
     if (chest) {
       workingChestStates = { ...workingChestStates, [chest.id]: 'opened' };
