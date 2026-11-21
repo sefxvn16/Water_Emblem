@@ -135,19 +135,27 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     const face = variant === 'primary'
       ? 'radial-gradient(circle at 32% 28%, #fef9c3 0%, #facc15 45%, #eab308 70%, #a16207 100%)'
       : variant === 'danger'
-        ? 'radial-gradient(circle at 32% 28%, #7f1d1d 0%, #450a0a 60%, #2b0606 100%)'
+        ? 'radial-gradient(circle at 32% 28%, #991b1b 0%, #581c1c 55%, #2b0606 100%)'
         : 'radial-gradient(circle at 32% 28%, #3b5bb5 0%, #16296b 55%, #0c1e5b 100%)';
+    const isCancel = key === 'cancel';
     return (
       <div
         key={key}
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px', width: 'clamp(64px, 9vw, 96px)' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '3px',
+          width: 'clamp(64px, 9vw, 96px)',
+          ...(isCancel ? { marginLeft: '8px', paddingLeft: '8px', borderLeft: '1px dashed rgba(239, 68, 68, 0.4)' } : {}),
+        }}
       >
         <button
           type="button"
           className={variant === 'primary' ? 'we-action-primary' : undefined}
           data-testid={`action-${key}`}
           aria-label={label}
-          title={label}
+          title={isCancel ? `${label} (Esc / Right Click)` : label}
           onClick={onClick}
           onMouseEnter={() => setHoveredKey(key)}
           onMouseLeave={() => setHoveredKey(null)}
@@ -157,10 +165,12 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
             borderRadius: '50%',
             padding: 0,
             background: face,
-            border: `2px solid ${ring}`,
+            border: `2.5px solid ${ring}`,
             boxShadow: isHovered
-              ? `inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 14px ${ring}88, 0 5px 12px rgba(0,0,0,0.65)`
-              : 'inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -5px 8px rgba(0,0,0,0.55), 0 4px 10px rgba(0,0,0,0.6)',
+              ? `inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 16px ${ring}aa, 0 5px 12px rgba(0,0,0,0.65)`
+              : isCancel
+                ? 'inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -5px 8px rgba(0,0,0,0.55), 0 0 10px rgba(239,68,68,0.45), 0 4px 10px rgba(0,0,0,0.6)'
+                : 'inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -5px 8px rgba(0,0,0,0.55), 0 4px 10px rgba(0,0,0,0.6)',
             transform: isHovered ? 'scale(1.1)' : 'scale(1)',
             transition: 'transform 0.1s ease, box-shadow 0.1s ease',
             cursor: 'pointer',

@@ -88,10 +88,10 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
   });
 
   // One label–value row: labels share a left edge, values a right-aligned column (R5).
-  const renderStatRow = (label: string, value: React.ReactNode, valueColor?: string) => (
+  const renderStatRow = (label: string, value: React.ReactNode, valueColor?: string, isKeyStat?: boolean) => (
     <div style={statRowStyle}>
-      <span style={{ color: '#94a3b8' }}>{label}</span>
-      <strong style={{ ...statValueStyle, color: valueColor ?? '#ffffff' }}>{value}</strong>
+      <span style={{ color: isKeyStat ? '#e2e8f0' : '#94a3b8', fontWeight: isKeyStat ? 600 : 400 }}>{label}</span>
+      <strong style={{ ...statValueStyle, color: valueColor ?? '#ffffff', fontSize: isKeyStat ? '14px' : '13px' }}>{value}</strong>
     </div>
   );
 
@@ -299,11 +299,71 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
             </div>
           ) : (
             <div className="we-forecast-stats" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 14px', fontSize: '13px' }}>
-              <div style={{ minWidth: 0 }}>{renderStatRow('Dmg:', <>{damage} {attackCount > 1 ? `×${attackCount}` : ''}</>, '#fde047')}</div>
-              <div style={{ minWidth: 0 }}>{renderStatRow('Hit:', `${hitRate}%`)}</div>
-              <div style={{ minWidth: 0 }}>{renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#cbd5e1')}</div>
-              <div style={{ minWidth: 0 }}>{renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}</div>
-              <div style={{ minWidth: 0 }}>{renderStatRow('AS:', `${as}${attackCount > 1 ? ' · Double Attack' : ''}`, '#cbd5e1')}</div>
+              <div style={{ minWidth: 0 }}>
+                {renderStatRow(
+                  'Dmg:',
+                  <>
+                    {damage}
+                    {attackCount > 1 ? (
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: '4px',
+                          padding: '0 4px',
+                          fontSize: '11px',
+                          fontWeight: 700,
+                          borderRadius: '3px',
+                          backgroundColor: '#f59e0b',
+                          color: '#0f172a',
+                          verticalAlign: 'middle',
+                          lineHeight: '16px',
+                        }}
+                      >
+                        ×{attackCount}
+                      </span>
+                    ) : null}
+                  </>,
+                  '#fde047',
+                  true
+                )}
+              </div>
+              <div style={{ minWidth: 0 }}>
+                {renderStatRow('Hit:', `${hitRate}%`, hitRate >= 80 ? '#ffffff' : '#f87171', true)}
+              </div>
+              <div style={{ minWidth: 0 }}>
+                {renderStatRow('Crit:', `${critRate}%`, critRate > 0 ? '#fde047' : '#94a3b8', critRate > 0)}
+              </div>
+              <div style={{ minWidth: 0 }}>
+                {renderStatRow('Avo:', `${avoidRate}%`, '#cbd5e1')}
+              </div>
+              <div style={{ minWidth: 0 }}>
+                {renderStatRow(
+                  'AS:',
+                  <>
+                    {as}
+                    {attackCount > 1 ? (
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          marginLeft: '4px',
+                          padding: '0 4px',
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          borderRadius: '3px',
+                          backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                          color: '#60a5fa',
+                          border: '1px solid #3b82f6',
+                          verticalAlign: 'middle',
+                          lineHeight: '14px',
+                        }}
+                      >
+                        ×2
+                      </span>
+                    ) : null}
+                  </>,
+                  '#cbd5e1'
+                )}
+              </div>
               <div style={{ minWidth: 0 }} />
             </div>
           )}

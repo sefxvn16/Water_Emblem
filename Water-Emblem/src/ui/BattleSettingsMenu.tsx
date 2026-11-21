@@ -149,8 +149,41 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             gap: '12px',
           }}
         >
+          {/* Header với tiêu đề và nút đóng trực quan (ui-design review) */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid rgba(234, 179, 8, 0.25)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span aria-hidden="true" style={{ fontSize: '16px' }}>⚙️</span>
+              <span style={{ fontSize: '14px', fontWeight: 'bold', color: DS_COLORS.goldText, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                Settings &amp; Options
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close Settings"
+              title="Close"
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                border: '1px solid rgba(148, 163, 184, 0.4)',
+                backgroundColor: 'rgba(30, 41, 59, 0.8)',
+                color: '#cbd5e1',
+                fontSize: '13px',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              ✕
+            </button>
+          </div>
+
           {/* Chapter */}
-          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.07)' }}>
             <h3 style={sectionHeadingStyle}>Chapter</h3>
             <select
               value={props.chapterId}
@@ -181,7 +214,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
           </section>
 
           {/* Status: gold only (PLAN item 128: phase/turn info removed). */}
-          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.07)' }}>
             <h3 style={sectionHeadingStyle}>Status</h3>
             <div
               style={{
@@ -204,7 +237,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
 
           {/* Navigation: uniform 44px buttons in a 2-column grid; Save/Load
               side by side (PLAN item 128). */}
-          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingBottom: '8px', borderBottom: '1px solid rgba(255, 255, 255, 0.07)' }}>
             <h3 style={sectionHeadingStyle}>Navigation</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               <button onClick={navigate(props.onSave)} style={navButtonStyle(true)}>
@@ -226,7 +259,7 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
           </section>
 
           {/* View & Sound */}
-          <section style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <section style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h3 style={sectionHeadingStyle}>View &amp; Sound</h3>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', flex: 1, backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}`, minHeight: 44 }}>

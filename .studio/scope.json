@@ -30,6 +30,10 @@
     "Water-Emblem/src/ui/CombatResultPopup.tsx",
     "Water-Emblem/src/renderer/Grid2D.tsx",
     "Water-Emblem/tests/core/aiUpgrade.test.ts",
-    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts"
+    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts",
+    "Water-Emblem/src/ui/ActionMenuWindow.tsx",
+    "Water-Emblem/src/ui/CombatForecastWindow.tsx",
+    "Water-Emblem/src/ui/BattleSettingsMenu.tsx",
+    "Water-Emblem/tests/core/uiRender.test.ts"
   ]
 }
