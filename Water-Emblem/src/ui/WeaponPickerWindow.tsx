@@ -68,33 +68,44 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
       style={{
         position: 'fixed',
         ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { bottom: '80px', right: '16px' }),
-        width: `${ACTION_MENU_WIDTH}px`,
-        maxHeight: 'calc(100vh - 160px)',
+        width: 'clamp(220px, 18vw, 260px)',
+        maxHeight: 'calc(100vh - 120px)',
         overflowY: 'auto',
         boxSizing: 'border-box',
         zIndex: 1050,
-        backgroundColor: '#0c1e5b',
+        background: 'linear-gradient(160deg, #0b1a42 0%, #11255e 60%, #0d1e4e 100%)',
         border: '2px solid #eab308',
-        borderRadius: '6px',
-        boxShadow: '0 6px 20px rgba(0,0,0,0.7)',
-        padding: '6px',
+        borderRadius: '8px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.8), inset 0 1px 0 rgba(254, 240, 138, 0.25)',
+        padding: '8px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '2px',
+        gap: '4px',
+        backdropFilter: 'blur(8px)',
       }}
     >
       <div
         style={{
-          fontWeight: 'bold',
-          color: '#93c5fd',
-          fontSize: '13px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           padding: '4px 8px 6px',
           borderBottom: '1px solid rgba(234, 179, 8, 0.4)',
-          marginBottom: '2px',
-          letterSpacing: '0.02em',
+          marginBottom: '4px',
         }}
       >
-        {props.title ?? 'Choose weapon'}
+        <span
+          style={{
+            fontWeight: 800,
+            color: '#fde047',
+            fontSize: '13px',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+          }}
+        >
+          ⚔️ {props.title ?? 'Choose Weapon'}
+        </span>
       </div>
       {props.weapons.map((weapon) => {
         const isHovered = hoveredId === weapon.itemId;
@@ -102,6 +113,7 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
         return (
           <button
             key={weapon.itemId}
+            type="button"
             data-testid={`weapon-pick-${weapon.itemId}`}
             onMouseEnter={() => setHoveredId(weapon.itemId)}
             onMouseLeave={() => setHoveredId(null)}
@@ -111,50 +123,72 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
               alignItems: 'center',
               gap: '8px',
               width: '100%',
+              minHeight: '44px',
               padding: '6px 10px',
-              backgroundColor: weapon.equipped ? 'rgba(234, 179, 8, 0.18)' : 'transparent',
-              border: 'none',
-              color: isHovered ? '#fde047' : '#ffffff',
-              fontSize: '14px',
-              fontWeight: 'bold',
+              backgroundColor: isHovered
+                ? 'rgba(234, 179, 8, 0.28)'
+                : weapon.equipped
+                  ? 'rgba(234, 179, 8, 0.16)'
+                  : 'rgba(15, 23, 42, 0.65)',
+              border: isHovered
+                ? '1.5px solid #facc15'
+                : weapon.equipped
+                  ? '1.5px solid rgba(234, 179, 8, 0.5)'
+                  : '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '6px',
+              boxShadow: isHovered ? '0 0 10px rgba(250, 204, 21, 0.4)' : 'none',
+              transform: isHovered ? 'translateX(3px)' : 'none',
+              color: isHovered || weapon.equipped ? '#fde047' : '#ffffff',
               cursor: 'pointer',
               textAlign: 'left',
-              textShadow: '1px 1px 0 #000',
-              borderRadius: '4px',
-              transition: 'color 0.1s ease',
+              transition: 'transform 0.1s ease, border-color 0.1s ease',
+              boxSizing: 'border-box',
             }}
           >
-            {icon && (
+            {icon ? (
               <img
                 src={icon}
                 alt=""
-                style={{ width: '20px', height: '20px', imageRendering: 'pixelated', flexShrink: 0 }}
+                style={{ width: '22px', height: '22px', imageRendering: 'pixelated', flexShrink: 0 }}
               />
-            )}
-            <span style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {weapon.definition.name}
-            </span>
-            <span style={{ fontSize: '12px', color: '#cbd5e1' }}>
-              {rangeLabel(props.unit, weapon)} · {weapon.uses}/{weapon.definition.maxUses}
+            ) : null}
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontWeight: 800, fontSize: '13.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {weapon.definition.name}
+                </span>
+                {weapon.equipped && (
+                  <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 4px', borderRadius: '3px', backgroundColor: '#eab308', color: '#0f172a' }}>
+                    E
+                  </span>
+                )}
+              </div>
+            </div>
+            <span style={{ fontSize: '11.5px', color: '#cbd5e1', fontWeight: 700, flexShrink: 0 }}>
+              {rangeLabel(props.unit, weapon)} · <span style={{ color: '#fde047' }}>{weapon.uses}</span>/{weapon.definition.maxUses}
             </span>
           </button>
         );
       })}
       <button
+        type="button"
         data-testid="weapon-pick-cancel"
         onClick={props.onCancel}
         style={{
           width: '100%',
+          minHeight: '38px',
           padding: '6px 10px',
-          backgroundColor: 'transparent',
-          border: 'none',
+          backgroundColor: 'rgba(69, 10, 10, 0.5)',
+          border: '1px solid rgba(239, 68, 68, 0.4)',
           color: '#fca5a5',
-          fontSize: '14px',
-          fontWeight: 'bold',
+          fontSize: '13px',
+          fontWeight: 800,
           cursor: 'pointer',
-          textAlign: 'left',
-          textShadow: '1px 1px 0 #000',
-          borderRadius: '4px',
+          textAlign: 'center',
+          textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+          borderRadius: '5px',
+          marginTop: '4px',
+          transition: 'background 0.1s ease',
         }}
       >
         Cancel

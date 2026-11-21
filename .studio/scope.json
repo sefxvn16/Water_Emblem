@@ -1,10 +1,11 @@
 {
-  "task_id": "181-modern-combat-forecast",
+  "task_id": "182-modern-ui-overhaul",
   "plan_items": [
     178,
     179,
     180,
-    181
+    181,
+    182
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
@@ -27,6 +28,8 @@
     "Water-Emblem/src/App.tsx",
     "Water-Emblem/src/ui/StaffForecastWindow.tsx",
     "Water-Emblem/src/ui/WeaponPickerWindow.tsx",
+    "Water-Emblem/src/ui/TradeWindow.tsx",
+    "Water-Emblem/src/ui/ConvoyWindow.tsx",
     "Water-Emblem/src/core/combat/staff.ts",
     "Water-Emblem/tests/core/attackHealFlow.test.ts",
     "Water-Emblem/src/core/ai/decision.ts",
@@ -40,6 +43,7 @@
     "Water-Emblem/tests/browser/attackHealFlow.spec.ts",
     "Water-Emblem/tests/core/aiUpgrade.test.ts",
     "Water-Emblem/src/ui/CombatForecastWindow.tsx",
-    "Water-Emblem/tests/core/uiRender.test.ts"
+    "Water-Emblem/tests/core/uiRender.test.ts",
+    "Water-Emblem/tests/core/actionMenuOrderAndDirectAttack.test.ts"
   ]
 }

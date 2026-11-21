@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import type { Position } from '../core/grid/types';
+import { ACTION_MENU_WIDTH, computeActionMenuPosition, getTileRect } from './tileAnchor';
 
 export interface PendingActions {
   unitName: string | undefined;
@@ -41,7 +42,7 @@ export interface PendingActions {
 }
 
 interface ActionMenuWindowProps {
-  /** Kept for compatibility; the bar is fixed at the bottom-right (PLAN item 98). */
+  /** Tile of the acting unit; the menu anchors directly beside it on grid. */
   anchorTile: Position | null;
   avoidPositions?: readonly Position[];
   mountLabel: string | null;
@@ -71,13 +72,10 @@ interface ActionMenuWindowProps {
 }
 
 /**
- * Action bar (PLAN items 98/126/130): a row of circular, glossy 3D buttons
- * at the bottom-right — navy enamel with a muted-gold ring in the classic
- * European FE style. Buttons are ordered by priority; the highest-priority
- * available action is gold and pulses. Size scales with the viewport
- * (56px floor on small screens, 84px = 1.5× on large ones).
+ * Modern Fire Emblem Action Menu (FE11/FE12, Awakening, Three Houses inspired).
+ * Vertically stacked tactile command banner column dynamically anchored beside
+ * the acting unit tile, dodging interactable and enemy targets.
  */
-
 interface ActionDescriptor {
   key: string;
   glyph: string;
@@ -90,12 +88,34 @@ interface ActionDescriptor {
 export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
   const { mountLabel, actions } = props;
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const box = rootRef.current;
+    const anchor = getTileRect(props.anchorTile);
+    let next: { left: number; top: number } | null = null;
+    if (box && anchor) {
+      const avoids = (props.actions?.targetPositions ?? props.avoidPositions ?? [])
+        .map(getTileRect)
+        .filter((r): r is NonNullable<typeof r> => r !== null);
+      next = computeActionMenuPosition(
+        anchor,
+        avoids,
+        box.offsetWidth || ACTION_MENU_WIDTH,
+        box.offsetHeight || 280,
+        window.innerWidth,
+        window.innerHeight,
+      );
+    }
+    setPos((prev) => (prev?.left === next?.left && prev?.top === next?.top ? prev : next));
+  });
 
   if (mountLabel === null && actions === null) return null;
 
   const descriptors: ActionDescriptor[] = [];
   if (actions !== null) {
-    // PLAN item 139: Fixed action order per Fire Emblem canon:
+    // Fixed action order per Fire Emblem canon:
     // Talk > Visit > Seize > Escape > Chest > Door > Shop > Arena > Attack > Staff > Equip > Vulnerary > Trade > Storage > Transform > Dance > Imitate > Promote > Mount > Wait > Cancel Move
     if (actions.talkTargetName !== null) descriptors.push({ key: 'talk', glyph: '💬', label: `Talk: ${actions.talkTargetName}`, onClick: props.onTalk, priority: 1 });
     if (actions.villageName !== null) descriptors.push({ key: 'village', glyph: '🏠', label: `Visit (${actions.villageName})`, onClick: props.onVisitVillage, priority: 2 });
@@ -138,118 +158,122 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     const { key, glyph, label, onClick } = descriptor;
     const variant = descriptor.danger ? 'danger' : key === topKey ? 'primary' : 'normal';
     const isHovered = hoveredKey === key;
-    const ring = variant === 'danger' ? '#ef4444' : variant === 'primary' ? '#fde047' : '#c9a227';
-    const face = variant === 'primary'
-      ? 'radial-gradient(circle at 32% 28%, #fef9c3 0%, #facc15 45%, #eab308 70%, #a16207 100%)'
-      : variant === 'danger'
-        ? 'radial-gradient(circle at 32% 28%, #991b1b 0%, #581c1c 55%, #2b0606 100%)'
-        : 'radial-gradient(circle at 32% 28%, #3b5bb5 0%, #16296b 55%, #0c1e5b 100%)';
     const isCancel = key === 'cancel';
+
     return (
-      <div
+      <button
         key={key}
+        type="button"
+        className={variant === 'primary' ? 'we-action-primary' : undefined}
+        data-testid={`action-${key}`}
+        aria-label={label}
+        title={isCancel ? `${label} (Right Click / Esc)` : label}
+        onClick={onClick}
+        onMouseEnter={() => setHoveredKey(key)}
+        onMouseLeave={() => setHoveredKey(null)}
         style={{
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
-          gap: '3px',
-          width: 'clamp(64px, 9vw, 96px)',
-          ...(isCancel ? { marginLeft: '8px', paddingLeft: '8px', borderLeft: '1px dashed rgba(239, 68, 68, 0.4)' } : {}),
+          gap: '10px',
+          width: '100%',
+          minHeight: '44px',
+          padding: '6px 12px',
+          borderRadius: '5px',
+          background: isHovered
+            ? (variant === 'danger'
+                ? 'linear-gradient(90deg, #7f1d1d 0%, #991b1b 100%)'
+                : 'linear-gradient(90deg, #1e3a8a 0%, #2563eb 100%)')
+            : (variant === 'danger'
+                ? 'rgba(69, 10, 10, 0.65)'
+                : variant === 'primary'
+                  ? 'linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(30, 58, 138, 0.6) 100%)'
+                  : 'rgba(15, 23, 42, 0.6)'),
+          border: isHovered
+            ? (variant === 'danger' ? '1.5px solid #ef4444' : '1.5px solid #facc15')
+            : (variant === 'primary' ? '1.5px solid #eab308' : '1px solid rgba(234, 179, 8, 0.3)'),
+          boxShadow: isHovered
+            ? (variant === 'danger' ? '0 0 10px rgba(239, 68, 68, 0.45)' : '0 0 10px rgba(250, 204, 21, 0.45)')
+            : 'none',
+          transform: isHovered ? 'translateX(3px)' : 'none',
+          transition: 'transform 0.1s ease, background 0.1s ease, border-color 0.1s ease',
+          cursor: 'pointer',
+          textAlign: 'left',
+          boxSizing: 'border-box',
         }}
       >
-        <button
-          type="button"
-          className={variant === 'primary' ? 'we-action-primary' : undefined}
-          data-testid={`action-${key}`}
-          aria-label={label}
-          title={isCancel ? `${label} (Right Click)` : label}
-          onClick={onClick}
-          onMouseEnter={() => setHoveredKey(key)}
-          onMouseLeave={() => setHoveredKey(null)}
-          style={{
-            width: 'clamp(56px, 8vw, 84px)',
-            height: 'clamp(56px, 8vw, 84px)',
-            borderRadius: '50%',
-            padding: 0,
-            background: face,
-            border: `2.5px solid ${ring}`,
-            boxShadow: isHovered
-              ? `inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 16px ${ring}aa, 0 5px 12px rgba(0,0,0,0.65)`
-              : isCancel
-                ? 'inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -5px 8px rgba(0,0,0,0.55), 0 0 10px rgba(239,68,68,0.45), 0 4px 10px rgba(0,0,0,0.6)'
-                : 'inset 0 2px 3px rgba(255,255,255,0.35), inset 0 -5px 8px rgba(0,0,0,0.55), 0 4px 10px rgba(0,0,0,0.6)',
-            transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-            transition: 'transform 0.1s ease, box-shadow 0.1s ease',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: 'clamp(24px, 3.4vw, 36px)',
-            lineHeight: 1,
-            flexShrink: 0,
-          }}
-        >
-          <span aria-hidden="true">{glyph}</span>
-        </button>
         <span
           style={{
-            fontSize: 'clamp(10px, 1.5vw, 13px)',
-            fontWeight: 'bold',
-            color: variant === 'danger' ? '#fca5a5' : '#e2e8f0',
-            textShadow: '1px 1px 0 #000, 0 0 4px rgba(0,0,0,0.8)',
+            fontSize: '18px',
+            lineHeight: 1,
+            width: '24px',
             textAlign: 'center',
-            maxWidth: 'clamp(72px, 10vw, 104px)',
+            flexShrink: 0,
+            filter: isHovered ? 'drop-shadow(0 0 4px #fde047)' : 'none',
+          }}
+          aria-hidden="true"
+        >
+          {glyph}
+        </span>
+        <span
+          style={{
+            fontSize: '13.5px',
+            fontWeight: 800,
+            color: variant === 'danger' ? '#fca5a5' : isHovered || variant === 'primary' ? '#fde047' : '#ffffff',
+            letterSpacing: '0.02em',
+            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            flex: 1,
           }}
         >
           {label}
         </span>
-      </div>
+      </button>
     );
   };
 
   return (
     <div
+      ref={rootRef}
       data-testid="action-menu"
       className="we-action-bar"
       style={{
         position: 'fixed',
-        right: '16px',
-        bottom: '16px',
+        ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { right: '16px', bottom: '16px' }),
         zIndex: 900,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-end',
-        gap: '6px',
-        maxWidth: 'calc(100vw - 32px)',
+        gap: '4px',
+        width: 'clamp(180px, 15vw, 220px)',
+        backgroundColor: 'rgba(11, 26, 66, 0.96)',
+        border: '1.5px solid #c9a227',
+        borderRadius: '8px',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.75), inset 0 1px 0 rgba(254,240,138,0.25)',
+        padding: '6px',
+        backdropFilter: 'blur(8px)',
       }}
     >
       <style>{`
         @keyframes we-action-glow {
-          0%, 100% { box-shadow: inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 10px rgba(253,224,71,0.55), 0 4px 10px rgba(0,0,0,0.6); }
-          50% { box-shadow: inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -5px 8px rgba(0,0,0,0.5), 0 0 26px rgba(253,224,71,0.95), 0 4px 10px rgba(0,0,0,0.6); }
+          0%, 100% { box-shadow: 0 0 8px rgba(253,224,71,0.4), inset 0 1px 0 rgba(255,255,255,0.3); }
+          50% { box-shadow: 0 0 18px rgba(253,224,71,0.85), inset 0 1px 0 rgba(255,255,255,0.4); }
         }
         .we-action-primary { animation: we-action-glow 1.6s ease-in-out infinite; }
-        /* PLAN item 128: on narrow screens the bar sits above the unit
-           summary card instead of covering it. */
-        @media (max-width: 640px) {
-          .we-action-bar { bottom: 132px !important; }
-        }
       `}</style>
       {actions !== null && (
         <div
           style={{
-            fontWeight: 'bold',
+            fontWeight: 800,
             color: '#fde047',
-            fontSize: 'clamp(12px, 1.6vw, 15px)',
-            letterSpacing: '0.02em',
-            backgroundColor: 'rgba(12, 30, 91, 0.92)',
-            border: '1px solid #c9a227',
-            borderRadius: '999px',
-            padding: '3px 12px',
-            boxShadow: '0 3px 8px rgba(0,0,0,0.55)',
+            fontSize: '13px',
+            letterSpacing: '0.04em',
+            textTransform: 'uppercase',
+            padding: '4px 8px 6px',
+            borderBottom: '1px solid rgba(201, 162, 39, 0.4)',
+            marginBottom: '4px',
+            textAlign: 'center',
+            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
           }}
         >
           {`Actions (${actions.unitName})`}
@@ -258,11 +282,9 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: '10px',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-end',
+          flexDirection: 'column',
+          gap: '4px',
+          width: '100%',
         }}
       >
         {descriptors.map(renderButton)}
