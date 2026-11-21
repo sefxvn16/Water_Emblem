@@ -1,0 +1,354 @@
+[
+  {
+    "index": 1,
+    "book": 1,
+    "chapter": 1,
+    "chapterKey": "b1_ch01",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 2,
+    "book": 1,
+    "chapter": 2,
+    "chapterKey": "b1_ch02",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 3,
+    "book": 1,
+    "chapter": 3,
+    "chapterKey": "b1_ch03",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 4,
+    "book": 1,
+    "chapter": 4,
+    "chapterKey": "b1_ch04",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 5,
+    "book": 1,
+    "chapter": 5,
+    "chapterKey": "b1_ch05",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 6,
+    "book": 1,
+    "chapter": 6,
+    "chapterKey": "b1_ch06",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 7,
+    "book": 1,
+    "chapter": 7,
+    "chapterKey": "b1_ch07",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 8,
+    "book": 1,
+    "chapter": 8,
+    "chapterKey": "b1_ch08",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 9,
+    "book": 1,
+    "chapter": 9,
+    "chapterKey": "b1_ch09",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 10,
+    "book": 1,
+    "chapter": 10,
+    "chapterKey": "b1_ch10",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 11,
+    "book": 1,
+    "chapter": 11,
+    "chapterKey": "b1_ch11",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 12,
+    "book": 1,
+    "chapter": 12,
+    "chapterKey": "b1_ch12",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 13,
+    "book": 1,
+    "chapter": 13,
+    "chapterKey": "b1_ch13",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 14,
+    "book": 1,
+    "chapter": 14,
+    "chapterKey": "b1_ch14",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 15,
+    "book": 1,
+    "chapter": 15,
+    "chapterKey": "b1_ch15",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 16,
+    "book": 1,
+    "chapter": 16,
+    "chapterKey": "b1_ch16",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 17,
+    "book": 1,
+    "chapter": 17,
+    "chapterKey": "b1_ch17",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 18,
+    "book": 1,
+    "chapter": 18,
+    "chapterKey": "b1_ch18",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 19,
+    "book": 1,
+    "chapter": 19,
+    "chapterKey": "b1_ch19",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 20,
+    "book": 1,
+    "chapter": 20,
+    "chapterKey": "b1_ch20",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 21,
+    "book": 2,
+    "chapter": 1,
+    "chapterKey": "b2_ch01",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 22,
+    "book": 2,
+    "chapter": 2,
+    "chapterKey": "b2_ch02",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 23,
+    "book": 2,
+    "chapter": 3,
+    "chapterKey": "b2_ch03",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 24,
+    "book": 2,
+    "chapter": 4,
+    "chapterKey": "b2_ch04",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 25,
+    "book": 2,
+    "chapter": 5,
+    "chapterKey": "b2_ch05",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 26,
+    "book": 2,
+    "chapter": 6,
+    "chapterKey": "b2_ch06",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 27,
+    "book": 2,
+    "chapter": 7,
+    "chapterKey": "b2_ch07",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 28,
+    "book": 2,
+    "chapter": 8,
+    "chapterKey": "b2_ch08",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 29,
+    "book": 2,
+    "chapter": 9,
+    "chapterKey": "b2_ch09",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 30,
+    "book": 2,
+    "chapter": 10,
+    "chapterKey": "b2_ch10",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 31,
+    "book": 2,
+    "chapter": 11,
+    "chapterKey": "b2_ch11",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 32,
+    "book": 2,
+    "chapter": 12,
+    "chapterKey": "b2_ch12",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 33,
+    "book": 2,
+    "chapter": 13,
+    "chapterKey": "b2_ch13",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 34,
+    "book": 2,
+    "chapter": 14,
+    "chapterKey": "b2_ch14",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 35,
+    "book": 2,
+    "chapter": 15,
+    "chapterKey": "b2_ch15",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 36,
+    "book": 2,
+    "chapter": 16,
+    "chapterKey": "b2_ch16",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 37,
+    "book": 2,
+    "chapter": 17,
+    "chapterKey": "b2_ch17",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 38,
+    "book": 2,
+    "chapter": 18,
+    "chapterKey": "b2_ch18",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 39,
+    "book": 2,
+    "chapter": 19,
+    "chapterKey": "b2_ch19",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 40,
+    "book": 2,
+    "chapter": 20,
+    "chapterKey": "b2_ch20",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 41,
+    "book": 2,
+    "chapter": 21,
+    "chapterKey": "b2_ch21",
+    "objectiveText": "Seize castle",
+    "objectiveType": "seize_castle"
+  },
+  {
+    "index": 42,
+    "book": 2,
+    "chapter": 22,
+    "chapterKey": "b2_ch22",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 43,
+    "book": 2,
+    "chapter": 23,
+    "chapterKey": "b2_ch23",
+    "objectiveText": "Seize throne",
+    "objectiveType": "seize_throne"
+  },
+  {
+    "index": 44,
+    "book": 2,
+    "chapter": 24,
+    "chapterKey": "b2_ch24",
+    "objectiveText": "Defeat Medeus Seize throne",
+    "objectiveType": "defeat_boss_and_seize"
+  }
+]

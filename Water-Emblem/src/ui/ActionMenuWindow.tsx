@@ -36,6 +36,8 @@ export interface PendingActions {
   danceTargetName: string | null;
   /** Adjacent ally Xane can imitate (PLAN item 124). */
   imitateTargetName: string | null;
+  /** Adjacent drawbridge lever unit can lower (FE3 menuCommands, PLAN item 178). */
+  canLowerBridge?: boolean;
 }
 
 interface ActionMenuWindowProps {
@@ -53,6 +55,7 @@ interface ActionMenuWindowProps {
   onShop: () => void;
   onOpenChest: () => void;
   onOpenDoor: () => void;
+  onLowerBridge?: () => void;
   onArena: () => void;
   onSeize: () => void;
   onEscape: () => void;
@@ -100,6 +103,9 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     if (actions.canEscape) descriptors.push({ key: 'escape', glyph: '🏃', label: 'Escape', onClick: props.onEscape, priority: 4 });
     if (actions.canOpenChest) descriptors.push({ key: 'chest', glyph: '🎁', label: 'Open Chest', onClick: props.onOpenChest, priority: 5 });
     if (actions.canOpenDoor) descriptors.push({ key: 'door', glyph: '🚪', label: 'Open Door', onClick: props.onOpenDoor, priority: 6 });
+    if (actions.canLowerBridge && props.onLowerBridge) {
+      descriptors.push({ key: 'lower-bridge', glyph: '🌉', label: 'Lower Bridge', onClick: props.onLowerBridge, priority: 6.5 });
+    }
     if (actions.canShop) descriptors.push({ key: 'shop', glyph: '🏪', label: 'Shop', onClick: props.onShop, priority: 7 });
     if (actions.canArena) descriptors.push({ key: 'arena', glyph: '🏟️', label: 'Arena', onClick: props.onArena, priority: 8 });
     if (actions.hasAttackTargets) descriptors.push({ key: 'attack', glyph: '⚔️', label: 'Attack', onClick: props.onAttack, priority: 9 });
@@ -122,7 +128,8 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
     if (actions.canCancelMove) descriptors.push({ key: 'cancel', glyph: '↩️', label: 'Cancel Move', onClick: props.onCancelMove, priority: 21, danger: true });
   }
   if (mountLabel !== null) {
-    descriptors.push({ key: 'mount', glyph: '🐴', label: mountLabel, onClick: props.onToggleMount, priority: 19 });
+    const isDismount = mountLabel.toLowerCase().includes('dismount');
+    descriptors.push({ key: 'mount', glyph: isDismount ? '🚶' : '🐴', label: mountLabel, onClick: props.onToggleMount, priority: 19 });
   }
   descriptors.sort((a, b) => a.priority - b.priority);
   const topKey = descriptors.find((d) => d.key !== 'wait' && d.key !== 'cancel')?.key;

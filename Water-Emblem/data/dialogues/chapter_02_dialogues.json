@@ -4,94 +4,75 @@
     {
       "speaker": "Ogma",
       "avatarUrl": "/avatars/ogma.png",
-      "text": "Prince Marth! I am Ogma, captain of the mercenaries sent by King Mostyn of Talys. Joining me are three skilled axe fighters: Barst, Bord, and Cord."
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "Having you and the Talys warriors at our side is worth ten thousand soldiers. What is the situation at the port of Galder, Ogma?"
+      "text": "Prince Marth, I am Ogma, a mercenary of Talys. I have been ordered by my king to join your army, along with my three subordinates."
     },
     {
       "speaker": "Ogma",
       "avatarUrl": "/avatars/ogma.png",
-      "text": "Galder has fallen into the hands of Gomer's pirate horde, dividing the terrain with deep waters and treacherous bridges. What is worse, Grustian cavaliers patrol the area searching for you. We must proceed with extreme caution!"
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "Understood. Keep our formation tight across the narrow bridges and advance on Gomer's stronghold!"
+      "text": "This is the port of Galder, which is currently controlled by pirates. The Grustian army has also come to defeat your highness. Please be cautious."
     }
   ],
   "recruit_castor": [
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Castor?! Is that you over there, Castor the hunter from Talys?!"
+      "text": "Castor!? You're Castor! Why are you doing this...?"
     },
     {
       "speaker": "Castor",
       "avatarUrl": "/avatars/castor.png",
-      "text": "Ah... Princess Caeda?! Princess... please, do not look at me with such eyes..."
+      "text": "Ah... Lady Caeda, I'm sorry. My mother is ill. I desperately need gold to buy medicine..."
     },
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Why is an honest man like you taking up a bow for these merciless pirates? Did something happen to you?"
+      "text": "So you were hired by the pirates? I see. Well, I have some gold with me. Take it to buy medicine for your mother."
     },
     {
       "speaker": "Castor",
       "avatarUrl": "/avatars/castor.png",
-      "text": "My mother... she is bedridden with a grave illness. We are desperately poor, and I had no money for her medicine, so I was driven to take their coin... I am ashamed to call myself a man!"
-    },
-    {
-      "speaker": "Caeda",
-      "avatarUrl": "/avatars/caeda.png",
-      "text": "It was out of devotion to your mother... Castor, take this gold to buy medicine and care for her. Never consort with thieves again. Join Prince Marth's ranks and fight with us for justice!"
-    },
-    {
-      "speaker": "Castor",
-      "avatarUrl": "/avatars/castor.png",
-      "text": "Princess... your mercy knows no bounds! You have saved my mother's life. From this moment onward, my bow and my life belong to you and Prince Marth!"
+      "text": "...! You would be so kind to me, even though I betrayed my country... Lady Caeda, please forgive me! I... Lady Caeda, I will dedicate my life to you!"
     }
   ],
   "villages": {
-    "village_galder": [
+    "village_center": [
       {
-        "speaker": "Galder Elder",
+        "speaker": "Galder Villager",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Hail Prince Marth and the Altean army! You have liberated our port from the clutches of the pirates!"
-      },
+        "text": "Citizens of Altea, please rescue Sister Lena. Sister Lena went to that terrifying Devil Mountain to cure the illnesses of the poor people, despite our pleas for her to stay, and she hasn't returned. Sister Lena is like an angel to us. Please, you must rescue her. As payment for this, here is 3000 Gold. Please, we beg you, help Sister Lena."
+      }
+    ]
+  },
+  "houses": {
+    "house_stats_tip": [
       {
-        "speaker": "Galder Elder",
+        "speaker": "Villager",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Our village has gathered 3,000 gold as a gift for your army. A word of warning: the path ahead leads through the Devil Mountain, the dreaded stronghold of the Samsoian bandits."
-      },
+        "text": "As your Skill increases, it becomes more likely for you to land a critical hit. As your Speed increases, it becomes more likely for you to dodge enemy attacks."
+      }
+    ],
+    "house_ranged_tip": [
       {
-        "speaker": "Galder Elder",
+        "speaker": "Villager",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Most perilous of all is the mercenary swordsman Navarre. His blade cuts with lethal precision, and no one has ever survived his strike. Please, my prince, take utmost care!"
+        "text": "Archers and Hunters can only attack from a distance. Since they can't engage in close-quarters combat, they should avoid it."
       }
     ]
   },
   "boss_gomer": {
-    "startCombat": "You vermin dare meddle in Gomer's business? See how my throwing axe takes your heads one by one!",
-    "death": "Inconceivable... The master of Galder... felled here...!"
+    "startCombat": "Don't underestimate the Galder pirates. I'll show you how sharp my hand axe is!",
+    "death": "Curse you... damn Altean dogs...!"
   },
   "ending": [
     {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "The port of Galder is liberated! I thank every warrior for their courage and sacrifice."
+      "speaker": "Galder Elder",
+      "avatarUrl": "/avatars/village_man.png",
+      "text": "Your highness, thank you very much for driving out the pirates. Now we can live in peace. To reach Aurelis from here, you must cross Devil Mountain."
     },
     {
-      "speaker": "Jagen",
-      "avatarUrl": "/avatars/jagen.png",
-      "text": "Sire, this victory will inspire all who hear of it. But ahead lies the treacherous pass of Devil Mountain, teeming with ambushes before we can reach Duke Hardin in Aurelis."
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "Though our path be perilous, we shall not waver. Form up our lines, everyone—we enter Devil Mountain!"
+      "speaker": "Galder Elder",
+      "avatarUrl": "/avatars/village_man.png",
+      "text": "Please be careful. There is a group of bandits called the Soothsires on Devil Mountain. They are greatly feared for raiding nearby villages and attacking travelers. I hear that one of their bodyguards, Navarre, is particularly skilled. Please do not let your guard down. I am praying for your safety."
     }
   ]
 }

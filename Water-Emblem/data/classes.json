@@ -45,7 +45,9 @@
         "def": 5,
         "res": -5
       },
-      "classSkill": "swordfaire"
+      "classSkill": "swordfaire",
+      "description": "Marth, Prince of Altea. Wields swords with exceptional speed and leadership as the army commander.",
+      "descriptionVi": "Marth, Hoàng tử xứ Altea. Sử dụng kiếm với tốc độ và khả năng chỉ huy xuất chúng."
     },
     {
       "id": "warlord",
@@ -91,7 +93,9 @@
         "res": -5
       },
       "classSkill": "swordfaire",
-      "dismountedClassId": "lord"
+      "dismountedClassId": "lord",
+      "description": "Promoted Lord. Sovereign warrior of unmatched charisma, leading the vanguard with mastery over swords and lances.",
+      "descriptionVi": "Lãnh chúa thăng cấp. Bậc quân vương kiệt xuất thống lĩnh tiền tuyến với sở trường kiếm và thương."
     },
     {
       "id": "cavalier",
@@ -141,7 +145,9 @@
         "res": -5
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "paladin"
+      "dismountedClassId": "paladin",
+      "description": "Armored knights on horseback. Possess balanced strength, defense, and speed with high battlefield mobility.",
+      "descriptionVi": "Kỵ sĩ giáp trên lưng ngựa. Sức mạnh, phòng thủ và tốc độ cân bằng với độ cơ động cao."
     },
     {
       "id": "cataphract",
@@ -188,7 +194,9 @@
         "res": -5
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "paladin"
+      "dismountedClassId": "paladin",
+      "description": "Heavily armored shock cavalry. Sacrifices some speed for formidable physical defense and crushing charge attacks.",
+      "descriptionVi": "Thiết kỵ xung kích bọc giáp nặng. Đổi lấy phòng thủ vật lý kiên cố và đòn húc uy lực."
     },
     {
       "id": "outrider",
@@ -235,7 +243,9 @@
         "res": -15
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "paladin"
+      "dismountedClassId": "paladin",
+      "description": "Light reconnaissance cavalry. Specialized in skirmishing, scouting, and hit-and-run tactics across open plains.",
+      "descriptionVi": "Khinh kỵ trinh sát. Chuyên tác chiến quấy rối và đánh chớp nhoáng trên thảo nguyên rộng lớn."
     },
     {
       "id": "paladin",
@@ -280,7 +290,9 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "description": "Experienced Cavaliers who have promoted. Superior to Cavaliers in all combat attributes and leadership.",
+      "descriptionVi": "Kỵ sĩ dày dạn kinh nghiệm đã thăng cấp. Vượt trội hơn Cavalier về mọi chỉ số và khả năng dẫn dắt."
     },
     {
       "id": "knight",
@@ -327,7 +339,9 @@
         "def": 30,
         "res": -10
       },
-      "classSkill": "pavise"
+      "classSkill": "pavise",
+      "description": "Clad in heavy steel armor giving excellent defense. Sluggish movements with reduced mobility.",
+      "descriptionVi": "Mặc giáp sắt hạng nặng mang lại phòng thủ vượt trội. Di chuyển chậm và tầm đi hạn chế."
     },
     {
       "id": "general",
@@ -372,7 +386,9 @@
         "def": 30,
         "res": -10
       },
-      "classSkill": "pavise"
+      "classSkill": "pavise",
+      "description": "Experienced Armor Knights who have promoted. Impassable living fortresses possessing colossal strength and defense.",
+      "descriptionVi": "Chiến tướng trọng giáp đã thăng cấp. Pháo đài thép sống với sức mạnh và phòng thủ áp đảo."
     },
     {
       "id": "pegasus_knight",
@@ -421,7 +437,9 @@
         "res": 0
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "dismounted_pegasus"
+      "dismountedClassId": "dismounted_pegasus",
+      "description": "Knights riding winged pegasi with exceptional mobility and speed across skies, but vulnerable to bows.",
+      "descriptionVi": "Hiệp sĩ cưỡi ngựa có cánh với tốc độ và độ cơ động bầu trời vượt trội, nhưng yếu trước cung tên."
     },
     {
       "id": "seraph_knight",
@@ -468,7 +486,9 @@
         "res": 0
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "dismounted_pegasus"
+      "dismountedClassId": "dismounted_pegasus",
+      "description": "Veteran Pegasus Knights blessed with divine grace, boasting superior magic resistance and swift aerial strikes.",
+      "descriptionVi": "Kỵ sĩ Thiên Mã kỳ cựu được ban phước, sở hữu kháng phép cao và đòn không chiến chớp nhoáng."
     },
     {
       "id": "dragon_knight",
@@ -515,7 +535,9 @@
         "res": 0
       },
       "classSkill": "lancefaire",
-      "dismountedClassId": "dismounted_pegasus"
+      "dismountedClassId": "dismounted_pegasus",
+      "description": "Promoted Pegasus Knights who ride wyverns. Boast overwhelming strength and tough scales, though still weak to bows.",
+      "descriptionVi": "Kỵ sĩ Rồng đã thăng cấp cưỡi Wyvern. Sức mạnh áp đảo và lớp vảy cứng cáp, nhưng vẫn e sợ cung tên."
     },
     {
       "id": "archer",
@@ -562,7 +584,9 @@
         "res": -10
       },
       "classSkill": "sureshot",
-      "canUseBallista": true
+      "canUseBallista": true,
+      "description": "Bowmen clad in armor with dependable defense. Excel at ranged attacks but cannot counter in close quarters.",
+      "descriptionVi": "Xạ thủ mặc giáp với phòng thủ ổn định. Đánh xa hiệu quả nhưng không thể cận chiến khi bị áp sát."
     },
     {
       "id": "sniper",
@@ -615,7 +639,9 @@
           "max": 3
         }
       },
-      "canUseBallista": true
+      "canUseBallista": true,
+      "description": "Experienced archers who have promoted. The master marksmen of the battlefield with pinpoint accuracy and critical hits.",
+      "descriptionVi": "Thiện xạ đã thăng cấp. Bậc thầy bách phát bách trúng với độ chính xác và tỷ lệ bạo kích cao."
     },
     {
       "id": "hunter",
@@ -662,7 +688,9 @@
         "res": -15
       },
       "classSkill": "bowfaire",
-      "canUseBallista": true
+      "canUseBallista": true,
+      "description": "Lightly armored bowmen skilled in forest and mountain terrain. Strong and agile, but lacking in physical defense.",
+      "descriptionVi": "Thợ săn dùng cung giáp nhẹ, thiện chiến nơi rừng núi. Nhanh nhẹn và chuẩn xác nhưng giáp yếu."
     },
     {
       "id": "mangudai",
@@ -715,7 +743,9 @@
           "max": 2
         }
       },
-      "canUseBallista": true
+      "canUseBallista": true,
+      "description": "Promoted Hunters fighting as horse archers. Extreme mobility specialized in deadly ranged hit-and-run attacks.",
+      "descriptionVi": "Kỵ xạ thủ thăng cấp từ Thợ săn. Cơ động tột bậc chuyên lối đánh bắn tỉa rút lui thần tốc."
     },
     {
       "id": "mercenary",
@@ -762,7 +792,9 @@
         "def": 5,
         "res": -10
       },
-      "classSkill": "swordfaire"
+      "classSkill": "swordfaire",
+      "description": "Professional sellswords. Exceptional skill and speed, specializing in landing fatal critical strikes with swords.",
+      "descriptionVi": "Lính đánh thuê chuyên nghiệp. Kỹ năng và tốc độ xuất sắc, chuyên ra đòn chí mạng bằng kiếm."
     },
     {
       "id": "hero",
@@ -807,7 +839,9 @@
         "def": 5,
         "res": -10
       },
-      "classSkill": "swordfaire"
+      "classSkill": "swordfaire",
+      "description": "Promoted Mercenaries of legendary renown. Lightning-swift swordsmen able to land a decisive kill in a single strike.",
+      "descriptionVi": "Dũng sĩ huyền thoại thăng cấp từ Lính đánh thuê. Đường kiếm sắc lẹm hạ gục đối thủ trong chớp mắt."
     },
     {
       "id": "blade_dancer",
@@ -852,7 +886,9 @@
         "def": 5,
         "res": -5
       },
-      "classSkill": "swordfaire"
+      "classSkill": "swordfaire",
+      "description": "Agile dual-blade virtuosos who weave through enemy lines with dance-like grace, landing rapid critical flurry strikes.",
+      "descriptionVi": "Kiếm vũ sư song kiếm uyển chuyển lướt qua hàng ngũ địch với những chuỗi đòn chém bão táp."
     },
     {
       "id": "thief",
@@ -900,7 +936,9 @@
         "res": -10
       },
       "classSkill": "locktouch",
-      "killExpBonus": 20
+      "killExpBonus": 20,
+      "description": "Agile rogues able to pick locks, open treasure chests, and navigate difficult terrain without keys.",
+      "descriptionVi": "Đạo tặc nhanh nhẹn có thể phá khóa, mở rương báu và luồn lách qua các địa hình hiểm trở."
     },
     {
       "id": "trickster",
@@ -946,7 +984,9 @@
         "res": -10
       },
       "classSkill": "locktouch",
-      "killExpBonus": 20
+      "killExpBonus": 20,
+      "description": "Promoted Thieves versed in acrobatic subterfuge and utility staves, disorienting enemies while aiding allies.",
+      "descriptionVi": "Ảo thuật gia thăng cấp từ Đạo tặc, kết hợp thân thủ né đòn tài tình và quyền năng dùng gậy hỗ trợ."
     },
     {
       "id": "fighter",
@@ -993,7 +1033,9 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire"
+      "classSkill": "axefaire",
+      "description": "Rugged warriors from the frontier lands. Boast massive health and raw axe power, but have weak physical defense.",
+      "descriptionVi": "Chiến binh rìu dũng mãnh từ biên thùy. Máu dồi dào và sức chém khủng khiếp nhưng giáp mỏng."
     },
     {
       "id": "marauder",
@@ -1038,7 +1080,9 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire"
+      "classSkill": "axefaire",
+      "description": "Fierce raiders who break frontlines with relentless offensive pressure and terrifying axe swings.",
+      "descriptionVi": "Kẻ cướp bóc cuồng bạo xé toang phòng tuyến địch bằng những nhát rìu uy lực không ngừng nghỉ."
     },
     {
       "id": "axe_knight",
@@ -1084,7 +1128,9 @@
         "res": -5
       },
       "classSkill": "axefaire",
-      "dismountedClassId": "paladin"
+      "dismountedClassId": "paladin",
+      "description": "Mounted cavalrymen specializing in heavy axes, breaking enemy formations with brute horse charge power.",
+      "descriptionVi": "Kỵ sĩ rìu trên lưng ngựa, công phá đội hình đối phương bằng sức càn quét nặng nề."
     },
     {
       "id": "pirate",
@@ -1130,7 +1176,9 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire"
+      "classSkill": "axefaire",
+      "description": "Seafaring axe fighters capable of traversing open water and coastal shallows with ease.",
+      "descriptionVi": "Hải tặc thiện chiến sông nước, có khả năng di chuyển linh hoạt trên biển và vùng nước nông."
     },
     {
       "id": "berserker",
@@ -1175,7 +1223,9 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire"
+      "classSkill": "axefaire",
+      "description": "Promoted Pirates overcome by primal battle fury. Possess devastating raw power and staggering critical chance.",
+      "descriptionVi": "Chiến binh Cuồng nộ thăng cấp từ Hải tặc. Sở hữu đòn đánh bạo kích kinh hoàng đè bẹp kẻ thù."
     },
     {
       "id": "curate",
@@ -1221,7 +1271,9 @@
         "def": -10,
         "res": 30
       },
-      "classSkill": "healer"
+      "classSkill": "healer",
+      "description": "Holy men dedicated to aiding allies. Wield sacred staves to heal wounds and bolster defenses, but cannot attack.",
+      "descriptionVi": "Mục sư tận tụy sử dụng quyền trượng thánh để trị thương và bảo vệ đồng đội, không thể tấn công."
     },
     {
       "id": "bishop",
@@ -1266,7 +1318,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "healer"
+      "classSkill": "healer",
+      "description": "Promoted Clerics and Curates. Holy masters proficient in casting both protective staves and divine light magic.",
+      "descriptionVi": "Giám mục tôn kính thăng cấp từ Mục sư. Thông thạo cả quyền trượng chữa lành và pháp thuật ánh sáng."
     },
     {
       "id": "mage_m",
@@ -1312,7 +1366,9 @@
         "def": -15,
         "res": 10
       },
-      "classSkill": "focus"
+      "classSkill": "focus",
+      "description": "Scholarly spellcasters wielding elemental tomes. Highly effective against armored units with poor resistance.",
+      "descriptionVi": "Pháp sư nghiên cứu ma pháp nguyên tố. Cực kỳ hiệu quả khi đối đầu các đơn vị trọng giáp yếu kháng phép."
     },
     {
       "id": "sage",
@@ -1357,7 +1413,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "tomefaire"
+      "classSkill": "tomefaire",
+      "description": "Promoted Mages who have achieved arcane enlightenment. Wield both devastating offensive magic and healing staves.",
+      "descriptionVi": "Hiền giả đạt đến đỉnh cao huyền thuật. Sử dụng cả ma pháp hủy diệt lẫn quyền trượng cứu sinh."
     },
     {
       "id": "dark_mage",
@@ -1403,7 +1461,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "focus"
+      "classSkill": "focus",
+      "description": "Practitioners of forbidden dark arts. Sacrifice defense to unleash sinister hexes that bypass enemy shields.",
+      "descriptionVi": "Pháp sư Hắc ám thao túng tà thuật, xuyên phá các tấm khiên phòng ngự kiên cố của đối phương."
     },
     {
       "id": "warlock",
@@ -1448,7 +1508,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "tomefaire"
+      "classSkill": "tomefaire",
+      "description": "Promoted Dark Mages of dreadful occult power, draining enemy vitality and inflicting debilitating curses.",
+      "descriptionVi": "Thuật sĩ Hắc ám tối cao, rút cạn sinh lực đối thủ và reo rắc những lời nguyền suy nhược."
     },
     {
       "id": "mage_f",
@@ -1494,7 +1556,9 @@
         "def": -15,
         "res": 10
       },
-      "classSkill": "focus"
+      "classSkill": "focus",
+      "description": "Female spellcasters gifted with focused elemental spellcasting, piercing cleanly through heavy plate armor.",
+      "descriptionVi": "Nữ pháp sư tinh thông pháp thuật nguyên tố, bắn phá uy lực qua các lớp giáp dày đặc."
     },
     {
       "id": "sorceress",
@@ -1539,7 +1603,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "tomefaire"
+      "classSkill": "tomefaire",
+      "description": "Promoted female mages combining elegant spellcraft with devastating burst magical power.",
+      "descriptionVi": "Nữ phù thủy thăng cấp, kết hợp phong thái ma pháp tao nhã với sức mạnh bộc phát hủy diệt."
     },
     {
       "id": "sister",
@@ -1585,7 +1651,9 @@
         "def": -10,
         "res": 30
       },
-      "classSkill": "healer"
+      "classSkill": "healer",
+      "description": "Gentle maidens of faith who heal the sick and wounded with sacred staves on the battlefield.",
+      "descriptionVi": "Nữ tu nhân từ dùng quyền trượng chữa lành vết thương và xoa dịu nỗi đau của đồng đội."
     },
     {
       "id": "oracle",
@@ -1630,7 +1698,9 @@
         "def": -15,
         "res": 20
       },
-      "classSkill": "healer"
+      "classSkill": "healer",
+      "description": "Promoted Sisters blessed with prophetic vision. Wield miracle staves of wide-area salvation and divine warding.",
+      "descriptionVi": "Nhà Tiên tri thăng cấp từ Nữ tu, nắm giữ các phép màu cứu rỗi diện rộng và hộ mệnh linh thiêng."
     },
     {
       "id": "dancer",
@@ -1665,7 +1735,9 @@
       "promotions": [
         "enchantress"
       ],
-      "sourceClass": "FE12 Dancer"
+      "sourceClass": "FE12 Dancer",
+      "description": "Performers who invigorate allies with mysterious dances, granting moved units the ability to act again.",
+      "descriptionVi": "Vũ công dùng những điệu múa kỳ bí tiếp thêm nhuệ khí, giúp đồng đội đã hành động được đánh tiếp."
     },
     {
       "id": "enchantress",
@@ -1699,7 +1771,9 @@
       "tier": "promoted",
       "promotions": [],
       "sourceClass": "FE12 Dancer (class analogue)",
-      "classSkill": "tomefaire"
+      "classSkill": "tomefaire",
+      "description": "Mystical support weavers who empower friendly ranks with supernatural enchantments and battlefield buffs.",
+      "descriptionVi": "Nữ phù ma niệm chú yểm trợ, cường hóa năng lực chiến đấu cho toàn quân bằng bùa chú thần bí."
     },
     {
       "id": "manakete",
@@ -1744,7 +1818,9 @@
         "res": -10
       },
       "canTransform": true,
-      "transformWeaponId": "dragon_breath"
+      "transformWeaponId": "dragon_breath",
+      "description": "Ancient race possessing dragon blood. Use sacred dragonstones to transform into fearsome elemental dragons.",
+      "descriptionVi": "Tộc Rồng cổ xưa mang huyết thống thần thánh, dùng Long Thạch để hóa thân thành rồng nguyên tố uy nghi."
     },
     {
       "id": "chameleon",
@@ -1788,7 +1864,9 @@
         "def": 15,
         "res": -15
       },
-      "canImitate": true
+      "canImitate": true,
+      "description": "Mysterious tricksters with the unique ability to imitate the appearance, stats, and weapons of allied comrades.",
+      "descriptionVi": "Tắc kè hoa kỳ bí với năng lực độc nhất vô nhị: sao chép hình dạng, chỉ số và vũ khí của đồng đội."
     },
     {
       "id": "dismounted_pegasus",
@@ -1833,7 +1911,9 @@
         "def": 10,
         "res": 10
       },
-      "classSkill": "lancefaire"
+      "classSkill": "lancefaire",
+      "description": "Pegasus Knights who have descended to the ground. Fight with swords with excellent agility and speed indoors.",
+      "descriptionVi": "Kỵ sĩ Thiên Mã xuống đất tác chiến. Sử dụng kiếm với sự linh hoạt và tốc độ cao trong nhà."
     }
   ]
 }

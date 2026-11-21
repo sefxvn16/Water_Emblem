@@ -1,0 +1,9 @@
+{
+  "welcomePrompt": "This is the arena. Do you want to pay the wager of {gold} gold?",
+  "matchRules": "Your enemy is level {level}. The prize is {gold} gold. You can only leave by pressing B before the next round begins or when you win or lose. Try your best not to die.",
+  "refusal": "What are you, window shopping? Alright, next time.",
+  "insufficientGold": "You don't have enough gold!",
+  "surrender": "What, are you surrendering? In that case, I'm keeping the wager. Come again.",
+  "victory": "You won. Here's your prize of {gold} gold.",
+  "defeat": "Oh, you died. What an idiot..."
+}

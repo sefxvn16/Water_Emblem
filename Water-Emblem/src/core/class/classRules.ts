@@ -8,6 +8,8 @@ export interface ClassDefinition {
   readonly id: string;
   readonly name: string;
   readonly nameVi: string;
+  readonly description?: string;
+  readonly descriptionVi?: string;
   readonly moveType: MoveType;
   readonly baseMov: number;
   readonly usableWeapons: readonly string[];

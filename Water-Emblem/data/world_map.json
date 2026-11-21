@@ -7,138 +7,678 @@
       "id": "talys",
       "name": "Kingdom of Talys",
       "nameVi": "Vương quốc đảo Talys",
-      "coordinates": { "x": 86, "y": 74 },
+      "coordinates": {
+        "x": 86,
+        "y": 74
+      },
       "type": "island_kingdom",
       "ruler": "King Mostyn",
-      "notableCharacters": ["Marth", "Caeda", "Ogma", "Barst", "Bord", "Cord"],
+      "notableCharacters": [
+        "Marth",
+        "Caeda",
+        "Ogma",
+        "Barst",
+        "Bord",
+        "Cord"
+      ],
       "description": "A tranquil island kingdom located off the southeastern coast of the Archanean mainland. It granted refuge to Prince Marth of Altea after his homeland fell to Dolhr.",
-      "chapters": ["chapter_01"],
+      "chapters": [
+        "chapter_01"
+      ],
       "bannerColor": "#2563eb"
     },
     {
       "id": "galder",
       "name": "Port Town of Galder",
       "nameVi": "Thị trấn cảng Galder",
-      "coordinates": { "x": 76, "y": 62 },
+      "coordinates": {
+        "x": 76,
+        "y": 62
+      },
       "type": "harbor",
       "ruler": "Galder Pirates (formerly autonomous)",
-      "notableCharacters": ["Castor", "Gomer", "Darros"],
+      "notableCharacters": [
+        "Castor",
+        "Gomer",
+        "Darros"
+      ],
       "description": "A busy port town on the northeastern coast of the Lefcandith Peninsula. Overrun by Galder pirates allied with Dolhr, it serves as Marth's first mainland battleground.",
-      "chapters": ["chapter_02"],
+      "chapters": [
+        "chapter_02"
+      ],
       "bannerColor": "#0891b2"
     },
     {
       "id": "devil_mountain",
       "name": "Devil Mountain (Samsoian)",
       "nameVi": "Núi Quỷ (Samsoian / Ghoul's Teeth)",
-      "coordinates": { "x": 68, "y": 48 },
+      "coordinates": {
+        "x": 68,
+        "y": 48
+      },
       "type": "mountain_range",
       "ruler": "Hyman (Samsoian Bandits)",
-      "notableCharacters": ["Navarre", "Julian", "Lena"],
+      "notableCharacters": [
+        "Navarre",
+        "Julian",
+        "Lena"
+      ],
       "description": "A treacherous, craggy mountain range infested with vicious bandits. The brave swordfighter Navarre and deserters Julian and Lena seek escape here.",
-      "chapters": ["chapter_03"],
+      "chapters": [
+        "chapter_03"
+      ],
       "bannerColor": "#dc2626"
     },
     {
       "id": "aurelis",
       "name": "Kingdom of Aurelis",
       "nameVi": "Vương quốc Aurelis",
-      "coordinates": { "x": 62, "y": 25 },
+      "coordinates": {
+        "x": 62,
+        "y": 25
+      },
       "type": "plains_kingdom",
       "ruler": "King of Aurelis / Prince Hardin",
-      "notableCharacters": ["Hardin", "Wolf", "Sedgar", "Roshea", "Vyland", "Princess Nyna"],
+      "notableCharacters": [
+        "Hardin",
+        "Wolf",
+        "Sedgar",
+        "Roshea",
+        "Vyland",
+        "Princess Nyna"
+      ],
       "description": "A vast northern kingdom of boundless grasslands and noble cavalrymen. Prince Hardin leads the Wolfguard and protects Princess Nyna of Archanea against Macedon's forces.",
-      "chapters": ["chapter_04", "chapter_05"],
+      "chapters": [
+        "chapter_04",
+        "chapter_05"
+      ],
       "bannerColor": "#d97706"
     },
     {
       "id": "altea",
       "name": "Kingdom of Altea",
       "nameVi": "Vương quốc Altea",
-      "coordinates": { "x": 42, "y": 64 },
+      "coordinates": {
+        "x": 42,
+        "y": 64
+      },
       "type": "kingdom",
       "ruler": "Prince Marth (heir) / Late King Cornelius",
-      "notableCharacters": ["Marth", "Elice", "Jagen", "Cain", "Abel", "Draug", "Gordin", "Frey"],
+      "notableCharacters": [
+        "Marth",
+        "Elice",
+        "Jagen",
+        "Cain",
+        "Abel",
+        "Draug",
+        "Gordin",
+        "Frey"
+      ],
       "description": "The homeland of the heroic Anri and Prince Marth. Famed for its valiant paladins, it was betrayed by neighboring Gra and overrun by the forces of Dolhr.",
-      "chapters": ["chapter_17"],
+      "chapters": [
+        "chapter_17"
+      ],
       "bannerColor": "#3b82f6"
     },
     {
       "id": "gra",
       "name": "Kingdom of Gra",
       "nameVi": "Vương quốc Gra",
-      "coordinates": { "x": 46, "y": 55 },
+      "coordinates": {
+        "x": 46,
+        "y": 55
+      },
       "type": "kingdom",
       "ruler": "King Jiol",
-      "notableCharacters": ["Jiol", "Sheena"],
+      "notableCharacters": [
+        "Jiol",
+        "Sheena"
+      ],
       "description": "A kingdom born alongside Altea, which betrayed King Cornelius during the Battle of Menendi, resulting in Altea's catastrophic collapse.",
-      "chapters": ["chapter_14"],
+      "chapters": [
+        "chapter_14"
+      ],
       "bannerColor": "#64748b"
     },
     {
       "id": "grust",
       "name": "Kingdom of Grust",
       "nameVi": "Vương quốc Grust",
-      "coordinates": { "x": 22, "y": 56 },
+      "coordinates": {
+        "x": 22,
+        "y": 56
+      },
       "type": "military_kingdom",
       "ruler": "King Ludwik / General Camus",
-      "notableCharacters": ["Camus", "Lorenz", "Yuliya", "Jubelo"],
+      "notableCharacters": [
+        "Camus",
+        "Lorenz",
+        "Yuliya",
+        "Jubelo"
+      ],
       "description": "A mighty military empire on the southwestern coast possessing the famed Sable Order. Reluctantly allied with Dolhr due to cowardice of its king.",
-      "chapters": ["chapter_20"],
+      "chapters": [
+        "chapter_20"
+      ],
       "bannerColor": "#475569"
     },
     {
       "id": "macedon",
       "name": "Kingdom of Macedon",
       "nameVi": "Vương quốc Macedon",
-      "coordinates": { "x": 68, "y": 82 },
+      "coordinates": {
+        "x": 68,
+        "y": 82
+      },
       "type": "draconic_kingdom",
       "ruler": "King Michalis",
-      "notableCharacters": ["Michalis", "Minerva", "Maria", "Catria", "Palla", "Est"],
+      "notableCharacters": [
+        "Michalis",
+        "Minerva",
+        "Maria",
+        "Catria",
+        "Palla",
+        "Est"
+      ],
       "description": "A rugged southern land of forests and volcanic peaks, home to the ferocious Dracoknights and the Whitewings pegasus knights.",
-      "chapters": ["chapter_10", "chapter_21"],
+      "chapters": [
+        "chapter_10",
+        "chapter_21"
+      ],
       "bannerColor": "#15803d"
     },
     {
       "id": "khadein",
       "name": "City of Magic Khadein",
       "nameVi": "Thành phố Pháp thuật Khadein",
-      "coordinates": { "x": 38, "y": 38 },
+      "coordinates": {
+        "x": 38,
+        "y": 38
+      },
       "type": "sorcery_state",
       "ruler": "Pontifex Miloah / Gotoh",
-      "notableCharacters": ["Merric", "Wendell", "Arlen", "Gharnef"],
+      "notableCharacters": [
+        "Merric",
+        "Wendell",
+        "Arlen",
+        "Gharnef"
+      ],
       "description": "A mystical city of sorcery isolated deep in the western burning desert sands. The cradle of elemental magic and scholarly wisdom.",
-      "chapters": ["chapter_09", "chapter_11"],
+      "chapters": [
+        "chapter_09",
+        "chapter_11"
+      ],
       "bannerColor": "#9333ea"
     },
     {
       "id": "archanea",
       "name": "Holy Kingdom of Archanea (Pales)",
       "nameVi": "Thánh quốc Archanea (Kinh đô Pales)",
-      "coordinates": { "x": 55, "y": 48 },
+      "coordinates": {
+        "x": 55,
+        "y": 48
+      },
       "type": "holy_empire",
       "ruler": "Princess Nyna / Emperor Hardin (Book 2)",
-      "notableCharacters": ["Princess Nyna", "Boah", "Midia", "Astram"],
+      "notableCharacters": [
+        "Princess Nyna",
+        "Boah",
+        "Midia",
+        "Astram"
+      ],
       "description": "The millennium-old heart and supreme monarchy of the continent. Its capital Pales was ransacked by Dolhr, forcing Princess Nyna into exile.",
-      "chapters": ["chapter_12", "chapter_13"],
+      "chapters": [
+        "chapter_12",
+        "chapter_13"
+      ],
       "bannerColor": "#eab308"
     },
     {
       "id": "dolhr",
       "name": "Dolhr Dragon Empire",
       "nameVi": "Đế quốc Rồng Dolhr",
-      "coordinates": { "x": 48, "y": 85 },
+      "coordinates": {
+        "x": 48,
+        "y": 85
+      },
       "type": "dragon_empire",
       "ruler": "Shadow Dragon Medeus",
-      "notableCharacters": ["Medeus", "Morzas", "Khozen", "Gharnef"],
+      "notableCharacters": [
+        "Medeus",
+        "Morzas",
+        "Khozen",
+        "Gharnef"
+      ],
       "description": "A dark, impenetrable domain of primal jungles and ancient dragon fortresses ruled by the revived Shadow Dragon Medeus.",
-      "chapters": ["chapter_24", "chapter_25"],
+      "chapters": [
+        "chapter_24",
+        "chapter_25"
+      ],
       "bannerColor": "#4c0519"
     }
   ],
   "routes": [
-    { "from": "talys", "to": "galder", "status": "completed", "name": "Voyage across the Talys Sea" },
-    { "from": "galder", "to": "devil_mountain", "status": "completed", "name": "March through Lefcandith" },
-    { "from": "devil_mountain", "to": "aurelis", "status": "active", "name": "Traversing the Ghoul's Teeth to Aurelis" }
-  ]
+    {
+      "from": "talys",
+      "to": "galder",
+      "status": "completed",
+      "name": "Voyage across the Talys Sea"
+    },
+    {
+      "from": "galder",
+      "to": "devil_mountain",
+      "status": "completed",
+      "name": "March through Lefcandith"
+    },
+    {
+      "from": "devil_mountain",
+      "to": "aurelis",
+      "status": "active",
+      "name": "Traversing the Ghoul's Teeth to Aurelis"
+    }
+  ],
+  "chapterNarrations": {
+    "b1_ch01": [
+      "Prince Marth of Altea was driven from his homeland by the Dolhr Empire.",
+      "He was protected by a small band of knights, led by the veteran knight, Jagen.",
+      "He escaped, after much struggle, to the eastern island kingdom of Talys.",
+      "The Kingdom of Talys was a small, remote country that did not even have its own order of knights.",
+      "The King of Talys lent his eastern fortress to Marth and his knights, and provided him with all the assistance he could.",
+      "He spoke gently to Marth, who was trembling with frustration after his parents were killed and his beloved sister was captured.",
+      "He said, \"Prince Marth... I understand your concern for your sister.",
+      "However you're only 14 years old. You are far too young to fight against the Empire.",
+      "Be patient for now. Stay in this land, gather your strength, and wait for the right time...\"",
+      "Protected by the kindness of the people of Talys, Marth spent 2 years in this country.",
+      "And then, one day, when he was about to turn 16..."
+    ],
+    "chapter_01": [
+      "Prince Marth of Altea was driven from his homeland by the Dolhr Empire.",
+      "He was protected by a small band of knights, led by the veteran knight, Jagen.",
+      "He escaped, after much struggle, to the eastern island kingdom of Talys.",
+      "The Kingdom of Talys was a small, remote country that did not even have its own order of knights.",
+      "The King of Talys lent his eastern fortress to Marth and his knights, and provided him with all the assistance he could.",
+      "He spoke gently to Marth, who was trembling with frustration after his parents were killed and his beloved sister was captured.",
+      "He said, \"Prince Marth... I understand your concern for your sister.",
+      "However you're only 14 years old. You are far too young to fight against the Empire.",
+      "Be patient for now. Stay in this land, gather your strength, and wait for the right time...\"",
+      "Protected by the kindness of the people of Talys, Marth spent 2 years in this country.",
+      "And then, one day, when he was about to turn 16..."
+    ],
+    "b1_ch02": [
+      "Across the sea from the Kingdom of Talys was Galder Harbor.",
+      "It was originally a poor, but peaceful port town.",
+      "However, one day it was suddenly attacked by a pirate gang and it has since been their stronghold.",
+      "It was here in Galder Harbor that Marth took his first steps toward liberating his homeland."
+    ],
+    "chapter_02": [
+      "Across the sea from the Kingdom of Talys was Galder Harbor.",
+      "It was originally a poor, but peaceful port town.",
+      "However, one day it was suddenly attacked by a pirate gang and it has since been their stronghold.",
+      "It was here in Galder Harbor that Marth took his first steps toward liberating his homeland."
+    ],
+    "b1_ch03": [
+      "The greatest obstacle to crossing from the frontier regions to Archanea is",
+      "The rugged mountain range known as Samsooth, which streches across the peninsula from north to south.",
+      "For some time, bandits have lurked in these mountains, attacking nearby villages and travellers.",
+      "Raids, abductions, setting fires... Their wicked deeds know no bounds.",
+      "Out of fear, the people call the mountain Devil Mountain.",
+      "And they call those who dwell on Samsooth the demonic Soothsires..."
+    ],
+    "chapter_03": [
+      "The greatest obstacle to crossing from the frontier regions to Archanea is",
+      "The rugged mountain range known as Samsooth, which streches across the peninsula from north to south.",
+      "For some time, bandits have lurked in these mountains, attacking nearby villages and travellers.",
+      "Raids, abductions, setting fires... Their wicked deeds know no bounds.",
+      "Out of fear, the people call the mountain Devil Mountain.",
+      "And they call those who dwell on Samsooth the demonic Soothsires..."
+    ],
+    "b1_ch04": [
+      "The grasslands to the northeast of the continent belong to the Kingdom of Aurelis.",
+      "Since its founding, this powerful northern kingdom has had a close relationship with the Holy Kingdom of Archanea.",
+      "While other nations have already fallen, and most of the territory of Aurelis has been occupied by Macedon,",
+      "Duke Hardin, known as the Wolf of the Plains, remained unyielding and continued to fight bravely.",
+      "Princess Nyna of Archanea had sought refurge with Duke Hardin,",
+      "and for several months she had been issuing calls to arms to overthrow the Dolhr Empire...",
+      "But with their desparate cries unanswered, and facing the elite Macedonian army, their fates appeared to be sealed..."
+    ],
+    "b1_ch05": [
+      "After defeating the main force of the Macedonian army, the allied army advanced further to liberate Aurelis Castle.",
+      "They had to recover the valuable treasures hidden inside the castle before the enemy stole them.",
+      "\"The chests can only be opened by Thieves, but do we have any within our ranks?\"",
+      "Someone muttered those words..."
+    ],
+    "b1_ch06": [
+      "After liberating Aurelis, the allied army marched south along the central road towards Archanea's capital city, Pales.",
+      "Their greatest obstacle was the numerous forts built in Lefcandy Valley,",
+      "as well as the guarding Dragon Knights and Macedonian Whitewings under the command of General Minerva.",
+      "In Lefcandy Valley, the only passageway to the Kingdom of Archanea, an intense battle was about to begin."
+    ],
+    "b1_ch07": [
+      "General Minerva's sudden retreat allowed the allied forces to safely enter the territory of Archanea.",
+      "To allow their soldiers to rest, they stopped at the port town of Warren, which was known for its trading port.",
+      "The town maintained its autonomy by paying substantial taxes to the Empire, and was",
+      "also favorably disposed towards the allied army.",
+      "In this town, which was surrounded by sea and mountains and protected by many mercenaries,",
+      "the soldiers were happy to get some much-needed rest.",
+      "...But, as if to mock them, a message arrived informing them of an enemy attack."
+    ],
+    "b1_ch08": [
+      "Having accepted Catria's request, Prince Marth decided to mount an attack on the fortress of Deil,",
+      "to rescue Princess Maria of Macedon, who was being held hostage there.",
+      "Within the allied army, some suggested that it was a trap set by General Minerva.",
+      "However, Marth didn't believe that the gentle-looking woman",
+      "he had seen at the battle of Lefcandy was the terrifying enemy that everyone described.",
+      "She had the same eyes as his older sister... She looked so sad and pained...",
+      "In Minerva, Marth saw the figure of his older sister, Elice,",
+      "who had been captured by the Empire in his place, and whose whereabouts were unknown.",
+      "Princess Maria must be rescued. Then perhaps Minerva could also be saved...",
+      "Marth had decided on this course of action."
+    ],
+    "b1_ch09": [
+      "After a long battle, the allied army, led by Marth, had finally reached Nyna's homeland of Archanea.",
+      "The golden city of Pales, also known as the Millennium Palace, lay beyond this mountain.",
+      "Many of its treasures had been stolen, and there were many soldiers imprisoned within.",
+      "Marth's long journey was about to reach one of its decisive chapters."
+    ],
+    "b1_ch10": [
+      "Approximately 600 years ago, the Holy Kingdom of Archanea was formed through the unification of the many city-states in the region.",
+      "The founder of Archanea, King Adrah the First, was said to have embarked on a holy war to unify the continent, wielding",
+      "three sacred weapons entrusted to him by the gods.",
+      "Since then, the Kingdom of Archanea had been called the Holy Kingdom, a nation protected by the gods.",
+      "The royal bloodline had been highly revered by the people.",
+      "The fact that 6 kingdoms had recently gained independence was entirely due to the assistance of Archanea.",
+      "Prince Marth was about to set foot in the great holy city of Pales in Archanea for the very first time."
+    ],
+    "b1_ch11": [
+      "Gra had long been an ally of Altea. However, during the war against Grust, they suddenly betrayed Altea.",
+      "The Altean army was attacked from behind and completely annihilated.",
+      "Altea's King Cornelius disappeared at Gra, and the Falchion sword along with him.",
+      "Two years had passed since that tragic day...",
+      "Marth has finally arrived at Gra Castle, which was guarded by Jiol, the man who drove his father to his death."
+    ],
+    "b1_ch12": [
+      "Khadein was known as the land of magic.",
+      "It was a sanctuary for mages, ruled by the Dark Pontifex, Gharnef.",
+      "When the mages cast their spells, even the bravest soldiers have no way of defending themselves.",
+      "One after another...",
+      "Brave soldiers fall, wounded and defeated.",
+      "Khadein... A cursed city of darkness..."
+    ],
+    "b1_ch13": [
+      "After a crushing defeat at the hands of Gharnef and his dark magic, Imhullu,",
+      "Prince Marth marched his army south, to achieve his hope of reclaiming his homeland of Altea.",
+      "The Kingdom of Altea was a beautiful country, surrounded by abundant water and lush vegetation.",
+      "However, since its occupation by Dolhr, the country had",
+      "fallen into ruin, and its people had endured long years of suffering.",
+      "But now, they were about to witness the long-awaited day of liberation."
+    ],
+    "b1_ch14": [
+      "After defeating Holstad's knights, the allied army swiftly conquered all of Altea.",
+      "All that remained was the forces of the Mage Dragon Morzas, which were holed up in Altea Castle.",
+      "Morzas succeeded General Camus as the commander of the occupation army, and was a ruthless man guilty of killing many people.",
+      "Marth was now about to confront the hateful Morzas once again."
+    ],
+    "b1_ch15": [
+      "In order to obtain the Lightsphere and Starsphere which the Archsage Gotoh sought,",
+      "Marth and his companions headed for Chiasmir's Fane of Raman.",
+      "At Chiasmir strait, they engaged in a fierce battle with the Grustian Sable Order, who attempted to prevent them",
+      "from passing.",
+      "Though they were once known as the world's finest,",
+      "the Grustian Sable Order no longer possessed their former glory and were defeated.",
+      "Then, at Raman... The temple of Naga, where ancient treasures are said to lie, Another story was about to begin..."
+    ],
+    "b1_ch16": [
+      "The Kingdom of Grust was a nation of knights, which was founded by one of the three heroes of the liberation wars, General Ordwin.",
+      "Since its founding, backed by the power of its formidable",
+      "knightly order, it subjugated the neighboring uncivilized tribes, and eventually became",
+      "one of the strongest of Archanea's seven kingdoms.",
+      "However, the current King, Louis, was weak.",
+      "He feared the power of the resurrected Medeus, so he allied with Dolhr.",
+      "Following a series of defeats, King Louis fell ill.",
+      "The once brave and mighty Kingdom of Grust was now on the verge of collapse."
+    ],
+    "b1_ch17": [
+      "Minerva and Maria's homeland, Macedon, was a peaceful and prosperous kingdom known as",
+      "the birthplace of Flying Dragons.",
+      "However, its ambitious Prince Michalis ignored his sisters' objections and aided Dolhr with its ambitions.",
+      "He led the Macedonian Dragon Knights to attack numerous countries, instilling fear in the people.",
+      "With a vast army that seemed to fill the entire sky,",
+      "he was about to challenge Marth and his allies to a final battle..."
+    ],
+    "b1_ch18": [
+      "Marth and his companions were transported by Archsage Gotoh's great Warp magic to the ancient city of Thabes.",
+      "Once, it was a proud city, boasting advanced civilization, but now it was desolate and lifeless...",
+      "In the center of the city stood the Topwer of Thabes... It was there that the Dark Pontifex Gharnef resided.",
+      "Marth and his companions needed to recover the lost divine Falchion sword...",
+      "And, they needed to rescue Princess Elice, who was captured by Gharnef..."
+    ],
+    "b1_ch19": [
+      "The kingdom of Manaketes was shrouded in a veil of mystery.",
+      "Everything started with the resurrection of the Shadow Dragon, Medeus, in this land.",
+      "The continent of Archanea had been ruined by endless war.",
+      "Many tragic tales began and ended,",
+      "but time flows fast.",
+      "Medeus's ambitions of Manaketes ruling the world must finally be brought to an end.",
+      "And Marth's journey must also reach its final destination."
+    ],
+    "b1_ch20": [
+      "After a fierce battle, the allied army had driven the enemy to Dolhr Castle.",
+      "They had surrounded the castle, and attempted to storm in through four open gates.",
+      "However, this was a trap set by Medeus to separate Marth's forces.",
+      "The final battle of life and death was about to begin.",
+      "The battle between those chosen by fate..."
+    ],
+    "b2_ch01": [
+      "One year had passed since the War of Darkness ended.",
+      "Thanks to the efforts of Prince Marth, the Kingdom of Altea, devastated by war, finally began to stabilize.",
+      "The knight Jagen, who succeeded the ill Malledus, became the prince's advisor and helped him with national affairs.",
+      "Afterwards, Princess Sheeda was welcomed to Altea, and her marriage with Prince Marth was announced.",
+      "The citizens of Altea were delighted to see the couple happy together, and welcomed Sheeda warmly. However...",
+      "Soon before the wedding day, an order was suddenly delivered from the imperial palace of Pales.",
+      "\"Dear Prince Marth of Altea,",
+      "It appears that a large-scale rebellion has broken out in the Kingdom of Grust, which is under Archanea's occupation.",
+      "I request for your country to subdue Grust.",
+      "Your highness is to send Altea's full army immediately, to quell Grust's rebellion. -Emperor Hardin.\"",
+      "The Kingdom of Archanea was the suzerain state to Altea, so its orders must be followed.",
+      "Marth, unable to refuse, ordered the knight Cain to protect his kingdom.",
+      "Together with Jagen and the others, he set out on an expedition to Grust."
+    ],
+    "b2_ch02": [
+      "With regretful feelings, Marth and his companions left Grust and landed in Macedon to rescue Princess Minerva.",
+      "After the war of Darkness, Macedon was ruled by Princess Minerva, who expelled the generals",
+      "who had been oppressing the people, and worked to reform the army.",
+      "However, the powerful General Rucke opposed Minerva's actions.",
+      "He gathered the ousted soldiers and staged a coup.",
+      "Minerva was caught unprepared and was captured by Rucke's followers.",
+      "Macedon then fell under the control of the rebels.",
+      "They then dispached a powerful unit of dragon knights to the forest at the nation's border, to strengthen their defences."
+    ],
+    "b2_ch03": [
+      "The region now known as Macedon was once part of the Dolhr Empire.",
+      "100 years ago, the dragon tribe, who rued the entire continent, sent a large number",
+      "of slaves into the untamed wilds of Macedon.",
+      "The slaves were forced to excavate ancient ruins and develop the land.",
+      "Many were denied food, forced to work against their will, whipped, and then killed.",
+      "Amidst these tragic conditions, one young man named Iote rose up.",
+      "He and his companions escaped from the forests and fought, riding dragons, for the liberation of the slaves.",
+      "After Dolhr's fall, the slaves established their own country in the fertile land that they had cultivated.",
+      "The hero Iote was welcomed as its first king.",
+      "This was how the Kingdom of Macedon, later feared as the land of dragon knights, was born.",
+      "However, the mighty nation of Macedon had lost its Prince Michalis, said to be the second coming of Iote.",
+      "It had also stood to lose Princess Minerva, who was also known as the Crimson Dragoon."
+    ],
+    "b2_ch04": [
+      "Unable to reunite with Princess Minerva, Marth set out to find Ogma and the Grustian royal children.",
+      "He dicided to visit bishop Wendell, who had once been their guardian.",
+      "The bishop resided at Holm Coast, which was ruled by the infamous Macedonian Vikings.",
+      "Countless pirates lay in wait, blocking the path of Marth and his companions.",
+      "Will they be able to rescue the children safely?..."
+    ],
+    "b2_ch05": [
+      "Caeda's disturbing news was a terrible blow to Marth.",
+      "Hardin was once a comrade that Marth had fought alongside. He was a trusted and irreplaceable friend.",
+      "\"But why...? Why has he attacked Altea? What have I done to incur his wrath?\" He thought.",
+      "Shaking with frustration, Marth and his companions hurried back to their",
+      "homeland, only to find the first of many obstacles in their path.",
+      "They had reached Olbern Castle, the headquarters of the Grustian occupation forces",
+      "headed by the evil General Lang. Its nickname was the \"Nest of Evil\"."
+    ],
+    "b2_ch06": [
+      "Grust had been liberated.",
+      "The last holdout was Olbern Castle, guarded by the commander of the occupation army, General Lang.",
+      "Lang had used his position to steal possessions from the Grustian citizens, to abduct young girls, and to take lives.",
+      "He was among the cruellest men in history.",
+      "\"He cannot be allowed to live. I will definitely defeat him!\"",
+      "Prince Marth raised his sword towards the skies and shouted out an order:",
+      "\"Altean knights, charge!\""
+    ],
+    "b2_ch07": [
+      "After liberating Grust, Marth accepted Wendell's request to find the lost Spheres, and headed to the Fane of Raman.",
+      "However, the ancient temple, which was built to worship Naga, had been ruined by constant war and had now become a hideout for thieves.",
+      "\"They're escaping with the temple's precious treasures. We must not let them take them. We must recover them!\"",
+      "\"We must not attract the attention of the mercenaries guarding Chiasmir Bridge.",
+      "We don't stand a chance of winning, so be sure not to approach them.\"",
+      "\"Also, it seems that a travelling dancer has lost her way in the forest.",
+      "We must rescue her before she gets ambushed by the thieves!\"",
+      "After the troops received their orders, they surrounded The Fane of Raman.",
+      "The flame of a new battle was about to ignite."
+    ],
+    "b2_ch08": [
+      "After reclaiming the Fane of Raman, Marth and his companions, fearing pursuit by Archanea's army, fled",
+      "towards Chiasmir Strait.",
+      "However, just as they reached the central islet, the Altean army was attacked by a new enemy.",
+      "\"Archanea's army is approaching from the north. If we continue like this, we will be surrounded.\"",
+      "The situation was dire. Can Marth and the others safely overcome this danger?"
+    ],
+    "b2_ch09": [
+      "Having barely managed to escape, Marth landed in the Khadein Desert.",
+      "He then waited for the rest of his troops to catch up.",
+      "The magic city, Khadein, was a sanctuary for mages.",
+      "Many prospective mages came to this land to undergo rigorous training.",
+      "Magic involves sealing the power of nature into tomes and staves, and freely using them to unleash great power.",
+      "Hundreds of years ago, a sage founded an academy in this land where he taught his secret techiniques to the people.",
+      "While it was originally designed to bring happiness to people, magic was used in wars and was bought and sold for money.",
+      "The sage was disappointed and disappeared without a trace.",
+      "Some people say that the sage was the legendary Archsage Gotoh.",
+      "Currently, only a very small number of high bishops are able to create tomes and staves.",
+      "Even they can only create lower-level magic, such as Fire and Heal.",
+      "More powerful magic like Aura cannot be created without the power of the Sacred Spheres.",
+      "Furthermore, those who can wield such powerful magic are limited in number.",
+      "The users are determined by the creator, and the tomes can only be passed down by the will of the chosen person.",
+      "Magic city Khadein... A proud Sanctuary of Sorcery."
+    ],
+    "b2_ch10": [
+      "Khadein was a free city. It was not under the rule of any country, and was thus a sovereign nation.",
+      "There were numerous high bishops under the ruling Pontifex, and the city was run by their council.",
+      "However, because Pontifex Gharnef joined forces with Dolhr in the previous war, the city was dragged into",
+      "conflict, suffering great losses.",
+      "After losing all of its high bishops, Khadein was ruled by the newly appointed Pontifex, Wendell, who embarked on the",
+      "path to reconstruction.",
+      "However, Wendell set out on a journey to fulfill Archsage Gotoh's mission. He entrusted Khadein's affairs to two young men before",
+      "leaving the city.",
+      "Merric and Arlen... They were both exemplary young men with promising futures."
+    ],
+    "b2_ch11": [
+      "Seeking the Lightsphere, Marth headed towards the Tower of Thabes.",
+      "Buried beneath the sands lay the ancient city of Thabes, along with many priceless treasures.",
+      "The legend of Thabes, the city of illusion, has lured many men to the desert.",
+      "However... None of them have ever returned.",
+      "In the words of the sages...",
+      "Do not approach Marmothod, the Desert of Death. It is a cursed city of darkness."
+    ],
+    "b2_ch12": [
+      "Marth and his companions followed Xane and headed north.",
+      "Through High mountains... Steep cliffs... Deep valleys...",
+      "Then, after crossing countless mountains... Suddenly, they were covercome by a piercing heat.",
+      "Lava flowed out in rivers, roaring loudly and blocking their path.",
+      "It was truly a hellish scene."
+    ],
+    "b2_ch13": [
+      "It was truly a journey beyond imagination.",
+      "5000 metres... No, they must have climbed higher than that. Looking down, they could see",
+      "clouds below them as they climbed the frozen mountain slope.",
+      "Breathing became difficult... Dizziness hindered them... Their endurance was approaching its limits."
+    ],
+    "b2_ch14": [
+      "The unexpected truth revealed by Xane was a shock to Marth.",
+      "Tiki was born as the daughter of the Divine Dragon King, Naga, and by the king's will,",
+      "she fell into a deep sleep in the temple.",
+      "The king was a loving father, but feared Tiki's power.",
+      "If Tiki were to awaken, her tremendous power would eventually destroy the world...",
+      "That is what the Divine Dragon King believed.",
+      "However, Bantu, the king's servant, became attached to Tiki after watching over her for a period of hundreds of years.",
+      "He woke her from her sleep and took her away. Tiki only had 10 years of memories of life as a human...",
+      "\"I feel so sorry for Tiki...\" Marth couldn't control the emotions welling up inside him."
+    ],
+    "b2_ch15": [
+      "Marth and his companions were transported to the outskirts of Altea by Archsage Gato's great warp magic,",
+      "and finally begin the battle to liberate their homeland.",
+      "The commander of Archanea's army, General Eibel, ordered the Gra Knights to charge, in order to buy time.",
+      "At the same time he prepared many dishonourable tactics, and was waiting for the chance to defeat Altea's army in one swift blow.",
+      "With his beloved homeland before him, Marth's battle was about to begin once again.",
+      "\"Recapture the royal capital of Anri! We must take back our homeland!\"",
+      "Prince Marth's voice resounded through Altea's clear, bright skies.",
+      "His arduous journey was finally about to reach its destination."
+    ],
+    "b2_ch16": [
+      "It was a fierce battle like no other, but Marth's homeland of Altea had been liberated.",
+      "All that remained was to take the castle... \"If we can regain Altea Castle, where I was born...",
+      "Thank you, everyone... Thank you so much for believing in me...\"",
+      "A single tear glistened on Marth's cheek...",
+      "And the eyes of the girl, who gently wiped it away, were also streaming with tears..."
+    ],
+    "b2_ch17": [
+      "Marth and his companions once again moved out from Altea, and headed toward Pales, the capital of Archanea.",
+      "In their path was the Kingdom of Gra, an ally of Archanea.",
+      "In the previous war, Gra sided with the Dolhr Empire, and lost its king, Jiol, in battle.",
+      "After that, The kingdom fell into ruin.",
+      "The country was annexed by Altea, but later, it was returned to Archanea by order of Emperor Hardin.",
+      "Hardin found Princess Sheena, he daughter of King Jiol, and placed her on the throne, thus supporting Gra.",
+      "Sheema received fervent support from the people of Gra.",
+      "To them, Sheema was their only hope. The young people all volunteered to become soldiers.",
+      "They were happy to set out for battle and have a chance to defeat their archenemy, Altea.",
+      "But, that dream was shattered...",
+      "Faced with the approaching Altean elites, Gra's soldiers lost the will to fight and fled for their lives."
+    ],
+    "b2_ch18": [
+      "To avoid unnecessary battles, the Altean army decided to cross the central mountains, said to be impassable for a large army.",
+      "Once they crossed Adria Pass, they would be in the city of Pales.",
+      "\"Hurry, we must not let the enemy spot us! We must charge through in one go!\"",
+      "Marth's army carried on their advance across the narrow mountain path with a sense of hopeful anticipation.",
+      "However, their hopes were in vain. Halfway up the mountain pass, they were attacked by an unexpected enemy.",
+      "It was the elite squad of the northern kingdom of Aurelis, the Wolf Knights,",
+      "which was heading south to aid Archanea."
+    ],
+    "b2_ch19": [
+      "It is the second month of the third year of the Imperial calendar...",
+      "Archanea's holy capital of Pales was enveloped in an unusually quiet atmosphere.",
+      "Due to the civil war in Archanea, many talented knights, including the paladin Midia, were captured.",
+      "Even so, Archanea still had a military force twice the size of Altea's, filling the streets of Pales.",
+      "Nearly a year had passed since the Grustian Expedition.",
+      "And so, the final battle, which would decide the fate of both nations, was about to begin."
+    ],
+    "b2_ch20": [
+      "Saint Archanea was the largest country on the continent.",
+      "Its golden capital of Pales boasted a history of 600 years.",
+      "It fell in just one day to the army of the Altean Alliance.",
+      "The citizens of Archanea welcomed them as liberators, and offered their full cooperation.",
+      "They also expressed their hatred towards Hardin and his personal guards inside the castle.",
+      "People called Hardin the Dark Emperor. They hated him for the murder of countless people.",
+      "Avoiding a battle would have been preferable, but at this point it was inevitable...",
+      "Marth raised the flag of Anri high, and gave his final command.",
+      "\"Go forth, heroes of Altea! This is the final battle. All troops, charge into Pales Castle!\""
+    ],
+    "b2_ch21": [
+      "Guided by Archsage Gotoh, Marth and his companions travelled to the Wyvern Valley in northern Macedon.",
+      "It was an untamed wilderness inhabited by wild flying dragons and ruled by barbarians.",
+      "There was no time for delay, because the fate of the world rested in Marth's hands!"
+    ],
+    "b2_ch22": [
+      "A stone bridge spanned across the towering, rocky mountains,",
+      "and a stone staircase spiraled upward, seemingly reaching all the way to the distant heavens.",
+      "The jagged rock face rumbled eerily, occasionally breathing as though it were alive.",
+      "The Dragon's Altar... An ancient ruin of the dragon tribe, The place where the Divine Dragon King, Naga, sealed away the Earth Dragons.",
+      "Now, after 600 years, the Earth Dragons were awakening once again, and countless evil demons were being born..."
+    ]
+  }
 }

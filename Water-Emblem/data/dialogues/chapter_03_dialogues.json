@@ -4,44 +4,39 @@
     {
       "speaker": "Julian",
       "avatarUrl": "/avatars/julian.png",
-      "text": "Lena, run! The Samsoian bandits are right on our heels. Don't worry about me—make for the valley!"
+      "text": "Hey, Sister Lena! If we don't get out of here quickly, things are going to get really bad. I heard the Altean knights have arrived at the foot of the mountain. Now's our chance to escape. Please keep going! Hang in there!"
     },
     {
       "speaker": "Lena",
       "avatarUrl": "/avatars/lena.png",
-      "text": "Julian, you risked your life and turned your back on the bandit crew just to save me... I could never abandon you in this forsaken place!"
+      "text": "I'm sorry... But I left my precious Mend staff behind. I have to get it back... Julian! Forget about me and just escape yourself! If it's just you, I can transport you away to safety with my Warp staff."
     },
     {
-      "speaker": "Caeda",
-      "avatarUrl": "/avatars/caeda.png",
-      "text": "Marth! Do you hear those cries echoing down from the mountain pass? Someone is being hunted down by bandits!"
-    },
-    {
-      "speaker": "Marth",
-      "avatarUrl": "/avatars/marth.png",
-      "text": "That is the Devil Mountain, lair of the infamous Samsoian clan. Knights of Altea, double time! Rescue the innocents and clear the mountain of bandit filth!"
+      "speaker": "Julian",
+      "avatarUrl": "/avatars/julian.png",
+      "text": "That's not going to happen. If we did that, what would have been the point of me betraying them? ...Anyway. I will get the staff back later. For now, just focus on escaping! Come on, let's go!!"
     }
   ],
   "recruit_navarre": [
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "Swordsman Navarre! Please stay your blade. If your sword craves blood, strike me down first..."
+      "text": "Swordfighter Navarre! Why would a person like you become a bodyguard for these bandits?"
     },
     {
       "speaker": "Navarre",
       "avatarUrl": "/avatars/navarre.png",
-      "text": "An unarmed maiden... putting herself in harm's way before my sword?"
+      "text": "...!? Who are you? I have no business with women or children! Get out of here immediately!"
     },
     {
       "speaker": "Caeda",
       "avatarUrl": "/avatars/caeda.png",
-      "text": "I can see the honor in your eyes. You are no heartless butcher for ruthless cutthroats. Please, lower your weapon!"
+      "text": "Please, stop this unnecessary fighting... Please lend your strength to us. If you're unwilling, then do whatever you want to me with that sword."
     },
     {
       "speaker": "Navarre",
       "avatarUrl": "/avatars/navarre.png",
-      "text": "My blade does not cut women. Tell me who your enemies are. From this day forward, I shall fight for you."
+      "text": "...I will not strike a woman down with my sword. If you want me so much that you're willing to risk your life, I don't have a choice... I will lend my strength to you."
     }
   ],
   "villages": {
@@ -49,39 +44,33 @@
       {
         "speaker": "Mountain Elder",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Ah, brave Altean warriors! You dare venture into this accursed den? Hyman's Samsoian bandits have terrorized this mountain for years."
-      },
+        "text": "Hoho! You're looking very lively, young man! Since you've come this deep into the mountains, I will give you this axe as a souvenir. What do you think? Isn't it impressive? However... This is a Devil Axe, a demonic axe that draws blood from its user and strips their flesh. You must never use it!"
+      }
+    ]
+  },
+  "houses": {
+    "house_mercenary_tip": [
       {
-        "speaker": "Mountain Elder",
+        "speaker": "Villager",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Deep in the caves I found this Devil Axe. Its striking power is devastating, but it carries a sinister curse that turns on its wielder if fortune fails. Take it, but swing it with caution!"
+        "text": "Be careful of Mercenaries. They're very skilled, so if you're careless, they'll cut your head off with one strike."
       }
     ]
   },
   "boss_hyman": {
-    "startCombat": "You insolent Altean dogs dare invade Hyman's stronghold? My axe will feed your corpses to the mountain vultures!",
-    "death": "Curses... The great Samsoian bandits... crushed by mere youngsters..."
+    "startCombat": "So you guys want to die? I'll grant your wish!",
+    "death": "You... you will pay for this in blood..."
   },
   "ending": [
     {
-      "speaker": "Julian",
-      "avatarUrl": "/avatars/julian.png",
-      "text": "Prince Marth! I am Julian. I lost my way and fell in with those brigands, but thanks to your rescue, I wish to dedicate my life to your righteous cause!"
-    },
-    {
-      "speaker": "Lena",
-      "avatarUrl": "/avatars/lena.png",
-      "text": "Your Highness, your compassion has saved us both. I am Lena, a cleric of Macedon. Please allow my healing staves to protect your brave soldiers."
+      "speaker": "Jagen",
+      "avatarUrl": "/avatars/jagen.png",
+      "text": "Look, your highness. We found 10000 Gold inside the castle that the bandits left behind. With this, we can get some new equipment."
     },
     {
       "speaker": "Marth",
       "avatarUrl": "/avatars/marth.png",
-      "text": "We are honored to have you with us. Devil Mountain is finally liberated! Ahead of us stretch the great plains of Aurelis."
-    },
-    {
-      "speaker": "Jagen",
-      "avatarUrl": "/avatars/jagen.png",
-      "text": "Sire, Duke Hardin and the Wolfguard of Aurelis are bravely holding out against Dolhr forces ahead. Let us hasten onward to meet them!"
+      "text": "Excellent! Tomorrow we will reach Aurelis. Please get a good rest tonight."
     }
   ]
 }

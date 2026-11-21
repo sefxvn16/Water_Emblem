@@ -1,0 +1,868 @@
+{
+  "version": "1.0.0",
+  "source": "FE3 Akaneia Refined palette_data.asm",
+  "characters": {
+    "marth": {
+      "idHex": "00",
+      "name": "Marth",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/00_Marth.bin"
+        }
+      }
+    },
+    "sheeda": {
+      "idHex": "01",
+      "name": "Sheeda",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/01_Sheeda_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/01_Sheeda_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/01_Sheeda_Promoted.bin"
+        }
+      }
+    },
+    "jeigan": {
+      "idHex": "02",
+      "name": "Jeigan",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/02_Jeigan_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/02_Jeigan_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "cain": {
+      "idHex": "03",
+      "name": "Cain",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/03_Cain_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/03_Cain_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/03_Cain_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/03_Cain_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "abel": {
+      "idHex": "04",
+      "name": "Abel",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/04_Abel_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/04_Abel_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/04_Abel_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/04_Abel_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "doga": {
+      "idHex": "05",
+      "name": "Doga",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/05_Doga.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/05_Doga_Promoted.bin"
+        }
+      }
+    },
+    "gordon": {
+      "idHex": "06",
+      "name": "Gordon",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/06_Gordon.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/06_Gordon_Promoted.bin"
+        }
+      }
+    },
+    "ricardo": {
+      "idHex": "07",
+      "name": "Ricardo",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/07_Ricardo.bin"
+        }
+      }
+    },
+    "saji": {
+      "idHex": "09",
+      "name": "Saji",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/09_Saji.bin"
+        }
+      }
+    },
+    "maji": {
+      "idHex": "0A",
+      "name": "Maji",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/0A_Maji.bin"
+        }
+      }
+    },
+    "barts": {
+      "idHex": "0B",
+      "name": "Barts",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/0B_Barts.bin"
+        }
+      }
+    },
+    "kashim": {
+      "idHex": "0C",
+      "name": "Kashim",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/0C_Kashim_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/0C_Kashim_Promoted.bin"
+        }
+      }
+    },
+    "oguma": {
+      "idHex": "0D",
+      "name": "Oguma",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/0D_Oguma.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/0D_Oguma_Promoted.bin"
+        }
+      }
+    },
+    "julian": {
+      "idHex": "0F",
+      "name": "Julian",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/0F_Julian.bin"
+        }
+      }
+    },
+    "lena": {
+      "idHex": "10",
+      "name": "Lena",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/10_Lena.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/10_Lena_Promoted.bin"
+        }
+      }
+    },
+    "merric": {
+      "idHex": "11",
+      "name": "Merric",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/11_Merric.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/11_Merric_Promoted.bin"
+        }
+      }
+    },
+    "navarre": {
+      "idHex": "12",
+      "name": "Navarre",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/12_Navarre.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/12_Navarre_Promoted.bin"
+        }
+      }
+    },
+    "hardin": {
+      "idHex": "13",
+      "name": "Hardin",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/13_Hardin_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/13_Hardin_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/13_Hardin_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/13_Hardin_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "wolf": {
+      "idHex": "14",
+      "name": "Wolf",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/14_Wolf_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/14_Wolf_Promoted.bin"
+        }
+      }
+    },
+    "zagaro": {
+      "idHex": "15",
+      "name": "Zagaro",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/15_Zagaro_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/15_Zagaro_Promoted.bin"
+        }
+      }
+    },
+    "roshe": {
+      "idHex": "16",
+      "name": "Roshe",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/16_Roshe_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/16_Roshe_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/16_Roshe_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/16_Roshe_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "biraku": {
+      "idHex": "17",
+      "name": "Biraku",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/17_Biraku_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/17_Biraku_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/17_Biraku_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/17_Biraku_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "banutu": {
+      "idHex": "18",
+      "name": "Banutu",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/18_Banutu.bin"
+        }
+      }
+    },
+    "caesar": {
+      "idHex": "19",
+      "name": "Caesar",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/19_Caesar.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/19_Caesar_Promoted.bin"
+        }
+      }
+    },
+    "raddy": {
+      "idHex": "1A",
+      "name": "Raddy",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/1A_Raddy.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1A_Raddy_Promoted.bin"
+        }
+      }
+    },
+    "midia": {
+      "idHex": "1B",
+      "name": "Midia",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/1B_Midia_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1B_Midia_Promoted.bin"
+        }
+      }
+    },
+    "katua": {
+      "idHex": "1C",
+      "name": "Katua",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/1C_Katua_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/1C_Katua_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1C_Katua_Promoted.bin"
+        }
+      }
+    },
+    "maria": {
+      "idHex": "1D",
+      "name": "Maria",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/1D_Maria.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1D_Maria_Promoted.bin"
+        }
+      }
+    },
+    "minerva": {
+      "idHex": "1E",
+      "name": "Minerva",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/1E_Minerva_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1E_Minerva_Promoted.bin"
+        }
+      }
+    },
+    "linda": {
+      "idHex": "1F",
+      "name": "Linda",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/1F_Linda.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/1F_Linda_Promoted.bin"
+        }
+      }
+    },
+    "george": {
+      "idHex": "20",
+      "name": "George",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/20_George_Promoted.bin"
+        }
+      }
+    },
+    "tomth": {
+      "idHex": "21",
+      "name": "Tomth",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/21_Tomth.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/21_Tomth_Promoted.bin"
+        }
+      }
+    },
+    "micelan": {
+      "idHex": "22",
+      "name": "Micelan",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/22_Micelan.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/22_Micelan_Promoted.bin"
+        }
+      }
+    },
+    "tomas": {
+      "idHex": "23",
+      "name": "Tomas",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/23_Tomas.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/23_Tomas_Promoted.bin"
+        }
+      }
+    },
+    "boah": {
+      "idHex": "24",
+      "name": "Boah",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/24_Boah_Promoted.bin"
+        }
+      }
+    },
+    "arran": {
+      "idHex": "25",
+      "name": "Arran",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/25_Arran_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/25_Arran_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "samson": {
+      "idHex": "26",
+      "name": "Samson",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/26_Samson_Promoted.bin"
+        }
+      }
+    },
+    "chainy": {
+      "idHex": "28",
+      "name": "Chainy",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/28_Chainy.bin"
+        }
+      }
+    },
+    "wendell": {
+      "idHex": "29",
+      "name": "Wendell",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/29_Wendell_Promoted.bin"
+        }
+      }
+    },
+    "est": {
+      "idHex": "2A",
+      "name": "Est",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/2A_Est_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/2A_Est_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/2A_Est_Promoted.bin"
+        }
+      }
+    },
+    "astria": {
+      "idHex": "2B",
+      "name": "Astria",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/2B_Astria_Promoted.bin"
+        }
+      }
+    },
+    "matthis": {
+      "idHex": "2C",
+      "name": "Matthis",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/2C_Matthis_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/2C_Matthis_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/2C_Matthis_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/2C_Matthis_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "paola": {
+      "idHex": "2F",
+      "name": "Paola",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/2F_Paola_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/2F_Paola_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/2F_Paola_Promoted.bin"
+        }
+      }
+    },
+    "tiki": {
+      "idHex": "30",
+      "name": "Tiki",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/30_Tiki.bin"
+        }
+      }
+    },
+    "lorenz": {
+      "idHex": "31",
+      "name": "Lorenz",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/31_Lorenz_Promoted.bin"
+        }
+      }
+    },
+    "elice": {
+      "idHex": "32",
+      "name": "Elice",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/32_Elice.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/32_Elice_Promoted.bin"
+        }
+      }
+    },
+    "cecille": {
+      "idHex": "61",
+      "name": "Cecille",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/61_Cecille_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/61_Cecille_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/61_Cecille_Promoted.bin"
+        }
+      }
+    },
+    "rody": {
+      "idHex": "63",
+      "name": "Rody",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/63_Rody_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/63_Rody_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/63_Rody_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/63_Rody_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "luke": {
+      "idHex": "62",
+      "name": "Luke",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/62_Luke_Dismounted.bin"
+        },
+        "mounted": {
+          "org": "",
+          "binFile": "bin/palettes/62_Luke_Mounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/62_Luke_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/62_Luke_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "ryan": {
+      "idHex": "64",
+      "name": "Ryan",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/64_Ryan.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/64_Ryan_Promoted.bin"
+        }
+      }
+    },
+    "warren": {
+      "idHex": "65",
+      "name": "Warren",
+      "variants": {
+        "dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/65_Warren_Dismounted.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/65_Warren_Promoted.bin"
+        }
+      }
+    },
+    "yumina": {
+      "idHex": "69",
+      "name": "Yumina",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/69_Yumina.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/69_Yumina_Promoted.bin"
+        }
+      }
+    },
+    "yubello": {
+      "idHex": "6A",
+      "name": "Yubello",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/6A_Yubello.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/6A_Yubello_Promoted.bin"
+        }
+      }
+    },
+    "sirius": {
+      "idHex": "6B",
+      "name": "Sirius",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/6B_Sirius_Promoted.bin"
+        },
+        "promoted_dismounted": {
+          "org": "",
+          "binFile": "bin/palettes/6B_Sirius_Promoted_Dismounted.bin"
+        }
+      }
+    },
+    "maricia": {
+      "idHex": "6E",
+      "name": "Maricia",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/6E_Maricia.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/6E_Maricia_Promoted.bin"
+        }
+      }
+    },
+    "samto": {
+      "idHex": "70",
+      "name": "Samto",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/70_Samto.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/70_Samto_Promoted.bin"
+        }
+      }
+    },
+    "feena": {
+      "idHex": "72",
+      "name": "Feena",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/72_Feena.bin"
+        }
+      }
+    },
+    "elrean": {
+      "idHex": "76",
+      "name": "Elrean",
+      "variants": {
+        "base": {
+          "org": "",
+          "binFile": "bin/palettes/76_Elrean.bin"
+        },
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/76_Elrean_Promoted.bin"
+        }
+      }
+    },
+    "sheema": {
+      "idHex": "80",
+      "name": "Sheema",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/80_Sheema_Promoted.bin"
+        }
+      }
+    },
+    "nyna": {
+      "idHex": "86",
+      "name": "Nyna",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/86_Nyna_Promoted.bin"
+        }
+      }
+    },
+    "camus": {
+      "idHex": "4B",
+      "name": "Camus",
+      "variants": {
+        "promoted": {
+          "org": "",
+          "binFile": "bin/palettes/4B_Camus_Promoted.bin"
+        }
+      }
+    }
+  }
+}
