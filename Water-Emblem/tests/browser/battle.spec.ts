@@ -83,7 +83,12 @@ test('a carried Vulnerary heals once and promotion needs no item', async ({ page
         const marth = record.extendedUnits.find(({ unit }) => unit.id === 'marth')!;
         const gordin = record.extendedUnits.find(({ unit }) => unit.id === 'gordin')!;
         marth.stats.hp = 8;
-        marth.inventory.push({ itemId: 'vulnerary', uses: 2 });
+        const vuln = marth.inventory.find((i) => i.itemId === 'vulnerary');
+        if (vuln) {
+          vuln.uses = 2;
+        } else {
+          marth.inventory.push({ itemId: 'vulnerary', uses: 2 });
+        }
         gordin.level = 10;
         (record as any).timestamp = Date.now() + 1000;
         transaction.objectStore('saves').put(record);

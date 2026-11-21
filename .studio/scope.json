@@ -34,6 +34,11 @@
     "Water-Emblem/src/ui/ActionMenuWindow.tsx",
     "Water-Emblem/src/ui/CombatForecastWindow.tsx",
     "Water-Emblem/src/ui/BattleSettingsMenu.tsx",
-    "Water-Emblem/tests/core/uiRender.test.ts"
+    "Water-Emblem/tests/core/uiRender.test.ts",
+    "Water-Emblem/tests/browser/battle.spec.ts",
+    "Water-Emblem/tests/browser/uiRedesign.spec.ts",
+    "Water-Emblem/tests/browser/fixtures/chapter1.replay.json",
+    "Water-Emblem/tests/browser/fixtures/chapter2.replay.json",
+    "Water-Emblem/tests/browser/fixtures/chapter3.replay.json"
   ]
 }

@@ -497,7 +497,8 @@ test('unit-inspector/A5 longest unit name fits', async ({ page }) => {
 
 test('unit-inspector/A6 empty items state keeps its place', async ({ page }) => {
   await gotoBattle(page);
-  await openInspector(page, 24, 5);
+  // Caeda at (25, 5) carries no carried items, verifying the 4 empty item slots.
+  await openInspector(page, 25, 5);
   const inspector = page.getByTestId('inspector');
   // J2 empty state: four dashed slots, each "—".
   const slots = inspector.getByTestId('inspector-items').locator(':scope > div');
