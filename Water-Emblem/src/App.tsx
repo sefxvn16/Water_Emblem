@@ -1596,23 +1596,16 @@ export const App: React.FC = () => {
     syncState();
   };
 
-  // Right-click hoặc Esc khi menu hành động đang mở sẽ huỷ di chuyển (Cancel Move) chuẩn FE
+  // Right-click khi menu hành động đang mở sẽ huỷ di chuyển (Cancel Move) chuẩn FE
   useEffect(() => {
     if (!pendingMovePos || !moveCommitted || combatForecast || attackTargeting || weaponPickerOpen || staffTargeting || tradeTargeting || activeMovingUnit) return;
     const onContextMenu = (event: MouseEvent) => {
       event.preventDefault();
       handleCancelMove();
     };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        handleCancelMove();
-      }
-    };
     window.addEventListener('contextmenu', onContextMenu);
-    window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('contextmenu', onContextMenu);
-      window.removeEventListener('keydown', onKeyDown);
     };
   }, [pendingMovePos, moveCommitted, combatForecast, attackTargeting, weaponPickerOpen, staffTargeting, tradeTargeting, activeMovingUnit]);
 

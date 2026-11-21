@@ -155,7 +155,7 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
           className={variant === 'primary' ? 'we-action-primary' : undefined}
           data-testid={`action-${key}`}
           aria-label={label}
-          title={isCancel ? `${label} (Esc / Right Click)` : label}
+          title={isCancel ? `${label} (Right Click)` : label}
           onClick={onClick}
           onMouseEnter={() => setHoveredKey(key)}
           onMouseLeave={() => setHoveredKey(null)}

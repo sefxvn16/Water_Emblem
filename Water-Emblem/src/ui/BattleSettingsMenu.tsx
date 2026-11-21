@@ -163,13 +163,15 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
               aria-label="Close Settings"
               title="Close"
               style={{
-                width: '28px',
-                height: '28px',
+                width: '44px',
+                height: '44px',
+                minWidth: '44px',
+                minHeight: '44px',
                 borderRadius: '50%',
                 border: '1px solid rgba(148, 163, 184, 0.4)',
                 backgroundColor: 'rgba(30, 41, 59, 0.8)',
                 color: '#cbd5e1',
-                fontSize: '13px',
+                fontSize: '16px',
                 fontWeight: 'bold',
                 display: 'flex',
                 alignItems: 'center',
