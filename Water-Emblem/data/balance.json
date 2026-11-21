@@ -129,8 +129,12 @@
     "lowHpTargetBonus": 15,
     "lowHpThreshold": 0.4,
     "retreatHpFraction": 0.5,
-    "triangleAdvantageBonus": 10
+    "triangleAdvantageBonus": 10,
+    "counterFreeBonus": 25,
+    "healStaffBaseScore": 40,
+    "healPerHpWeight": 2
   },
+  "popupDurationMs": 1400,
   "statCaps": {
     "hp": 60,
     "stat": 30

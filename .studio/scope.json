@@ -1,11 +1,13 @@
 {
-  "task_id": "176-fe3-source-audit",
+  "task_id": "177-ai-gamefeel-upgrade",
   "plan_items": [
-    176
+    176,
+    177
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
   "allow": [
+    "PLAN.md",
     "Water-Emblem/tests/core/fe3SourceAudit.test.ts",
     "Water-Emblem/data/chapters/chapter_01_talys.json",
     "Water-Emblem/data/chapters/chapter_03_devil_mountain.json",
@@ -23,6 +25,11 @@
     "Water-Emblem/tests/core/shop.test.ts",
     "Water-Emblem/tests/core/trade.test.ts",
     "Water-Emblem/tests/core/transition.test.ts",
-    "Water-Emblem/tests/browser/inspectorJ2.spec.ts"
+    "Water-Emblem/tests/browser/inspectorJ2.spec.ts",
+    "Water-Emblem/data/balance.json",
+    "Water-Emblem/src/ui/CombatResultPopup.tsx",
+    "Water-Emblem/src/renderer/Grid2D.tsx",
+    "Water-Emblem/tests/core/aiUpgrade.test.ts",
+    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts"
   ]
 }

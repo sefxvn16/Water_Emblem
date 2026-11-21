@@ -15,6 +15,7 @@ import { getAttackRange, skillIdsOf } from '../class/classRules';
 import { dueReinforcements, spawnReinforcements, announcedReinforcements } from '../chapter/reinforcements';
 import { evaluateChapterOutcome } from '../chapter/types';
 import { tickSpecialStates } from '../combat/transform';
+import { applyStaffUse } from '../combat/staff';
 import type { ItemDefinition } from '../combat/types';
 
 export interface EnemyPhaseContext {
@@ -169,6 +170,8 @@ export function executeSingleEnemyAction(
       patrolTargets: enemy.patrolPoints,
       turnNumber: context.turnNumber,
       openedDoors: context.openedDoors,
+      unitInventoriesMap: new Map(workingUnits.map((u) => [u.unit.id, u.inventory])),
+      itemsCatalog: context.itemById,
     });
   }
 
@@ -179,6 +182,13 @@ export function executeSingleEnemyAction(
   const movePos = 'movePosition' in decision ? decision.movePosition : enemy.unit.position;
 
   if (decision.type === 'attack') {
+    if (decision.weapon.id !== enemy.weapon?.id) {
+      stepLogs.push(`  ⚔️ ${enemy.unit.name} switches to ${decision.weapon.name}!`);
+      const meInWorking = workingUnits.find((u) => u.unit.id === enemy.unit.id);
+      if (meInWorking) {
+        meInWorking.weapon = decision.weapon;
+      }
+    }
     stepLogs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
     const targetEntry = workingUnits.find((u) => u.unit.id === decision.targetUnit.id);
     hpBefore = { attacker: enemy.stats.hp, defender: targetEntry?.stats.hp ?? 0 };
@@ -200,6 +210,31 @@ export function executeSingleEnemyAction(
     workingGold = combatResolutionResult.gold;
     workingVillageStates = combatResolutionResult.villageStates;
     stepLogs.push(...combatResolutionResult.logs);
+  } else if (decision.type === 'staff') {
+    stepLogs.push(`🟢 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and uses ${decision.staff.name} on ${decision.targetUnit.name}!`);
+    // Cập nhật vị trí di chuyển trước khi dùng gậy
+    const meBeforeStaff = workingUnits.find((u) => u.unit.id === enemy.unit.id);
+    if (meBeforeStaff) {
+      meBeforeStaff.unit.position = { ...decision.movePosition };
+    }
+    const staffResult = applyStaffUse(
+      workingUnits,
+      enemy.unit.id,
+      decision.targetUnit.id,
+      decision.staff.id,
+      context.itemById,
+      rng,
+    );
+    if (staffResult) {
+      workingUnits = staffResult.units;
+      stepLogs.push(...staffResult.messages);
+    } else {
+      const targetEntry = workingUnits.find((u) => u.unit.id === decision.targetUnit.id);
+      if (targetEntry) {
+        targetEntry.stats.hp = Math.min(targetEntry.stats.maxHp, targetEntry.stats.hp + decision.healAmount);
+        stepLogs.push(`  ✨ ${targetEntry.unit.name} recovered ${decision.healAmount} HP!`);
+      }
+    }
   } else if (decision.type === 'move_only') {
     stepLogs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
   } else {

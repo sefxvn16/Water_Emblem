@@ -1680,10 +1680,19 @@ export const App: React.FC = () => {
         patrolTargets: enemy.patrolPoints,
         turnNumber: turnState.turnNumber,
         openedDoors: openedDoorKeys,
+        unitInventoriesMap: new Map(phaseUnits.map((u) => [u.unit.id, u.inventory])),
+        itemsCatalog: ITEM_BY_ID,
         });
       }
 
       if (decision.type === 'attack') {
+        if (decision.weapon.id !== enemy.weapon?.id) {
+          logs.push(`  ⚔️ ${enemy.unit.name} switches to ${decision.weapon.name}!`);
+          enemy.weapon = decision.weapon;
+          const me = phaseUnits.find((u) => u.unit.id === enemy.unit.id);
+          if (me) me.weapon = decision.weapon;
+          weaponsMap.set(enemy.unit.id, decision.weapon);
+        }
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, decision.movePosition);
         await sleep(200);
@@ -1735,6 +1744,33 @@ export const App: React.FC = () => {
         phaseUnits = resolution.units;
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
+      } else if (decision.type === 'staff') {
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, decision.movePosition);
+        await sleep(200);
+        logs.push(`🟢 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and casts ${decision.staff.name} on ${decision.targetUnit.name}!`);
+        soundManager.playSfx('heal');
+
+        const staffResult = applyStaffUse(
+          phaseUnits,
+          enemy.unit.id,
+          decision.targetUnit.id,
+          decision.staff.id,
+          ITEM_BY_ID,
+          defaultRNG,
+        );
+        if (staffResult) {
+          phaseUnits = staffResult.units;
+          logs.push(...staffResult.messages);
+          for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
+        } else {
+          const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
+          if (targetEntry) {
+            targetEntry.stats.hp = Math.min(targetEntry.stats.maxHp, targetEntry.stats.hp + decision.healAmount);
+            logs.push(`  ✨ ${targetEntry.unit.name} recovered ${decision.healAmount} HP!`);
+          }
+        }
+        await sleep(200);
       } else if (decision.type === 'move_only') {
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, decision.movePosition);
@@ -1744,7 +1780,7 @@ export const App: React.FC = () => {
         logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
       }
 
-      if (decision.type === 'move_only' || decision.type === 'attack') {
+      if (decision.type === 'move_only' || decision.type === 'attack' || decision.type === 'staff') {
         const raid = pillageVillage({ units: phaseUnits, gold, villageStates: nextVillageStates }, enemy.unit.id, currentChapter);
         nextVillageStates = { ...raid.state.villageStates };
         logs.push(...eventLogLines(raid.events));

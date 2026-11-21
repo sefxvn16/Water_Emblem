@@ -8,7 +8,8 @@ import {
 } from '../combat/calculator';
 import { CombatForecast, ItemDefinition, UnitCombatStats } from '../combat/types';
 import { hitProbability } from '../combat/rng';
-import { getAttackRange } from '../class/classRules';
+import { getAttackRange, isWeaponUsable } from '../class/classRules';
+import { isHealStaff } from '../combat/staff';
 import { getSkillModifiers } from '../combat/skills';
 
 export type AIRole = 'stationary' | 'pursue' | 'pillage' | 'patrol' | 'retreat' | 'thief' | 'flee';
@@ -22,6 +23,15 @@ export interface AIActionAttack {
   readonly score: number;
 }
 
+export interface AIActionStaff {
+  readonly type: 'staff';
+  readonly movePosition: Position;
+  readonly targetUnit: GridUnit;
+  readonly staff: ItemDefinition;
+  readonly healAmount: number;
+  readonly score: number;
+}
+
 export interface AIActionMove {
   readonly type: 'move_only';
   readonly movePosition: Position;
@@ -31,7 +41,7 @@ export interface AIActionWait {
   readonly type: 'wait';
 }
 
-export type AIDecision = AIActionAttack | AIActionMove | AIActionWait;
+export type AIDecision = AIActionAttack | AIActionStaff | AIActionMove | AIActionWait;
 
 export interface AIContext {
   readonly map: MapData;
@@ -54,6 +64,10 @@ export interface AIContext {
   readonly turnNumber?: number;
   /** Opened door tiles as "x,y" keys (PLAN item 92). */
   readonly openedDoors?: ReadonlySet<string>;
+  /** Full inventory per unit (PLAN item 177). */
+  readonly unitInventoriesMap?: ReadonlyMap<string, readonly { itemId: string; uses: number }[]>;
+  /** Item definitions catalog (PLAN item 177). */
+  readonly itemsCatalog?: ReadonlyMap<string, ItemDefinition>;
 }
 
 export function evaluateAITurn(
@@ -66,8 +80,33 @@ export function evaluateAITurn(
   const enemyStats = unitStatsMap.get(enemyUnit.id);
   const enemyWeapon = unitWeaponsMap.get(enemyUnit.id);
 
-  if (!enemyStats || !enemyWeapon) {
+  if (!enemyStats) {
     return { type: 'wait' };
+  }
+
+  // Thu thập danh sách vũ khí và gậy khả dụng của đơn vị
+  const availableWeapons: ItemDefinition[] = [];
+  const availableStaves: ItemDefinition[] = [];
+
+  const invEntries = context.unitInventoriesMap?.get(enemyUnit.id);
+  if (invEntries && context.itemsCatalog) {
+    for (const entry of invEntries) {
+      if (entry.uses <= 0) continue;
+      const def = context.itemsCatalog.get(entry.itemId);
+      if (!def) continue;
+      if (isHealStaff(def) && isWeaponUsable(enemyUnit, def)) {
+        availableStaves.push(def);
+      } else if (def.type !== 'staff' && def.type !== 'consumable' && isWeaponUsable(enemyUnit, def)) {
+        availableWeapons.push(def);
+      }
+    }
+  }
+
+  if (availableWeapons.length === 0 && enemyWeapon && enemyWeapon.type !== 'staff') {
+    availableWeapons.push(enemyWeapon);
+  }
+  if (availableStaves.length === 0 && enemyWeapon && isHealStaff(enemyWeapon)) {
+    availableStaves.push(enemyWeapon);
   }
 
   // Quét tầm di chuyển của AI
@@ -129,109 +168,169 @@ export function evaluateAITurn(
     return destination ? { type: 'move_only', movePosition: destination } : { type: 'wait' };
   }
 
-  // Tìm danh sách mục tiêu người chơi còn sống
-  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
-  if (playerUnits.length === 0) {
-    return { type: 'wait' };
-  }
-
-  const potentialAttacks: AIActionAttack[] = [];
-
-  // Duyệt qua từng ô AI có thể đi tới (hoặc ô hiện tại nếu là stationary)
+  // Ô ứng viên di chuyển: stationary chỉ xét ô hiện tại
   const candidateTiles =
     role === 'stationary'
       ? [enemyUnit.position]
       : Array.from(reachableTiles.values()).map((r) => r.position);
 
-  for (const tile of candidateTiles) {
-    const attackerTerrainId = map.grid[tile.y]?.[tile.x] ?? 'plains';
-    const projectedAttacker = { ...enemyUnit, position: tile };
-    const projectedUnits = units.map((unit) => unit.id === enemyUnit.id ? projectedAttacker : unit);
+  // 1. Đánh giá hành động dùng gậy chữa trị (Staff Healing)
+  const potentialStaffActions: AIActionStaff[] = [];
+  if (availableStaves.length > 0) {
+    const allyUnits = units.filter((u) => u.faction === enemyUnit.faction && !u.isDead);
+    for (const tile of candidateTiles) {
+      for (const ally of allyUnits) {
+        const allyStats = unitStatsMap.get(ally.id);
+        if (!allyStats || allyStats.hp >= allyStats.maxHp) continue;
+        const dist = getManhattanDistance(tile, ally.position);
+        for (const staff of availableStaves) {
+          const minR = staff.minRange ?? 1;
+          const maxR = staff.maxRange ?? 1;
+          if (dist >= minR && dist <= maxR) {
+            const baseHeal = staff.healBase ?? 10;
+            const magDiv = staff.healMagDivisor ?? 1;
+            const rawHeal = baseHeal + Math.floor((enemyStats.mag ?? 0) / magDiv);
+            const healAmount = Math.min(rawHeal, allyStats.maxHp - allyStats.hp);
+            if (healAmount <= 0) continue;
 
-    for (const target of playerUnits) {
-      const distance = getManhattanDistance(tile, target.position);
-      // Kiểm tra xem khoảng cách có nằm trong tầm bắn của vũ khí không
-      const attackRange = getAttackRange(enemyUnit, enemyWeapon);
-      if (distance >= attackRange.min && distance <= attackRange.max) {
+            const weights = balanceConfig.aiWeights as any;
+            let staffScore = (weights.healStaffBaseScore ?? 40) + healAmount * (weights.healPerHpWeight ?? 2);
+            if (allyStats.hp <= allyStats.maxHp * (weights.lowHpThreshold ?? 0.4)) {
+              staffScore += (weights.lowHpTargetBonus ?? 15) * 2;
+            }
+            if (ally.id.includes('boss') || ally.id === 'gazzak') {
+              staffScore += 30;
+            }
+
+            potentialStaffActions.push({
+              type: 'staff',
+              movePosition: tile,
+              targetUnit: ally,
+              staff,
+              healAmount,
+              score: staffScore,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // 2. Đánh giá hành động tấn công (Attack Actions) kèm TỰ ĐỔI VŨ KHÍ
+  const playerUnits = units.filter((u) => u.faction === 'player' && !u.isDead && !u.hasEscaped);
+  const potentialAttacks: AIActionAttack[] = [];
+
+  if (playerUnits.length > 0 && availableWeapons.length > 0) {
+    for (const tile of candidateTiles) {
+      const attackerTerrainId = map.grid[tile.y]?.[tile.x] ?? 'plains';
+      const projectedAttacker = { ...enemyUnit, position: tile };
+      const projectedUnits = units.map((unit) => unit.id === enemyUnit.id ? projectedAttacker : unit);
+
+      for (const target of playerUnits) {
+        const distance = getManhattanDistance(tile, target.position);
         const targetStats = unitStatsMap.get(target.id);
         const targetWeapon = unitWeaponsMap.get(target.id);
         if (!targetStats) continue;
 
         const defenderTerrainId = map.grid[target.position.y]?.[target.position.x] ?? 'plains';
 
-        const forecast = calculateCombatForecast(
-          projectedAttacker,
-          enemyStats,
-          enemyWeapon,
-          target,
-          targetStats,
-          targetWeapon,
-          distance,
-          terrains,
-          attackerTerrainId,
-          defenderTerrainId,
-          projectedUnits,
-          { attacker: getElevation(map, tile), defender: getElevation(map, target.position) },
-          context.unitSkillsMap ? {
-            attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, enemyWeapon, targetWeapon, true, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(enemyUnit.id) ?? 0),
-            defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, enemyWeapon, false, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(target.id) ?? 0),
-          } : undefined,
-          context.sphereHolders ? {
-            attackerHasLight: context.sphereHolders.light.has(enemyUnit.id),
-            attackerHasDark: context.sphereHolders.dark.has(enemyUnit.id),
-            defenderHasLight: context.sphereHolders.light.has(target.id),
-            defenderHasDark: context.sphereHolders.dark.has(target.id),
-          } : undefined
-        );
+        for (const weapon of availableWeapons) {
+          const attackRange = getAttackRange(enemyUnit, weapon, attackerTerrainId);
+          if (distance < attackRange.min || distance > attackRange.max) continue;
 
-        // Chấm điểm theo trọng số cấu hình trong data/balance.json
-        const weights = balanceConfig.aiWeights;
-        let score = 0;
+          const forecast = calculateCombatForecast(
+            projectedAttacker,
+            enemyStats,
+            weapon,
+            target,
+            targetStats,
+            targetWeapon,
+            distance,
+            terrains,
+            attackerTerrainId,
+            defenderTerrainId,
+            projectedUnits,
+            { attacker: getElevation(map, tile), defender: getElevation(map, target.position) },
+            context.unitSkillsMap ? {
+              attacker: getSkillModifiers(context.unitSkillsMap.get(enemyUnit.id) ?? [], projectedAttacker, enemyStats, weapon, targetWeapon, true, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(enemyUnit.id) ?? 0),
+              defender: getSkillModifiers(context.unitSkillsMap.get(target.id) ?? [], target, targetStats, targetWeapon, weapon, false, projectedUnits, context.unitSkillsMap, context.unitLevelsMap?.get(target.id) ?? 0),
+            } : undefined,
+            context.sphereHolders ? {
+              attackerHasLight: context.sphereHolders.light.has(enemyUnit.id),
+              attackerHasDark: context.sphereHolders.dark.has(enemyUnit.id),
+              defenderHasLight: context.sphereHolders.light.has(target.id),
+              defenderHasDark: context.sphereHolders.dark.has(target.id),
+            } : undefined
+          );
 
-        // Dự tính sát thương gây ra
-        const rngMode = balanceConfig.rngMode as '1RN' | '2RN';
-        const hitChance = hitProbability(forecast.attacker.hitRate, rngMode);
-        const possibleDamage = forecast.attacker.damage * forecast.attacker.attackCount;
-        const expectedDamage = possibleDamage * hitChance;
-        score += expectedDamage * weights.damageMultiplier;
+          const weights = balanceConfig.aiWeights as any;
+          let score = 0;
 
-        // Điểm thưởng kết liễu
-        if (possibleDamage >= targetStats.hp) {
-          score += weights.killBonus * hitChance;
+          const rngMode = balanceConfig.rngMode as '1RN' | '2RN';
+          const hitChance = hitProbability(forecast.attacker.hitRate, rngMode);
+          const possibleDamage = forecast.attacker.damage * forecast.attacker.attackCount;
+          const expectedDamage = possibleDamage * hitChance;
+          score += expectedDamage * weights.damageMultiplier;
+
+          // Điểm thưởng kết liễu
+          if (possibleDamage >= targetStats.hp) {
+            score += weights.killBonus * hitChance;
+          }
+
+          // Né phản đòn (Counter-free bonus)
+          if (!forecast.defender.canCounter) {
+            score += (weights.counterFreeBonus ?? 25);
+          } else {
+            const counterDamage = forecast.defender.damage * forecast.defender.attackCount
+              * hitProbability(forecast.defender.hitRate, rngMode);
+            score -= counterDamage * weights.counterDamagePenalty;
+            if (counterDamage >= enemyStats.hp && possibleDamage < targetStats.hp) {
+              score -= 100;
+            }
+          }
+
+          // Ưu tiên mục tiêu thấp máu
+          if (targetStats.hp <= targetStats.maxHp * weights.lowHpThreshold) {
+            score += weights.lowHpTargetBonus;
+          }
+
+          // Ưu tiên mục tiêu giá trị cao / mỏng manh
+          if (target.classId === 'curate' || target.classId === 'cleric' || target.classId === 'priest') {
+            score += 20;
+          } else if ((target.classId === 'archer' || target.classId === 'sniper') && distance === 1) {
+            score += 15;
+          } else if (target.id === 'marth') {
+            score += 10;
+          }
+
+          // Thưởng vị trí địa hình phòng thủ tốt
+          score += terrains.getAvoidBonus(attackerTerrainId, enemyUnit.moveType) * 0.5;
+
+          potentialAttacks.push({
+            type: 'attack',
+            movePosition: tile,
+            targetUnit: target,
+            weapon,
+            forecast,
+            score,
+          });
         }
-
-        // Điểm trừ sát thương phản lại
-        if (forecast.defender.canCounter) {
-          const counterDamage = forecast.defender.damage * forecast.defender.attackCount
-            * hitProbability(forecast.defender.hitRate, rngMode);
-          score -= counterDamage * weights.counterDamagePenalty;
-        }
-
-        // Ưu tiên mục tiêu đang thấp máu
-        if (targetStats.hp <= targetStats.maxHp * weights.lowHpThreshold) {
-          score += weights.lowHpTargetBonus;
-        }
-
-        potentialAttacks.push({
-          type: 'attack',
-          movePosition: tile,
-          targetUnit: target,
-          weapon: enemyWeapon,
-          forecast,
-          score,
-        });
       }
     }
   }
 
-  // Nếu tìm thấy đòn tấn công: chọn đòn có điểm cao nhất
-  if (potentialAttacks.length > 0) {
-    potentialAttacks.sort((a, b) => b.score - a.score);
-    const bestAttack = potentialAttacks[0];
-    if (bestAttack) {
-      return bestAttack;
-    }
+  // 3. Lựa chọn hành động tốt nhất giữa Đánh và Hồi máu
+  potentialAttacks.sort((a, b) => b.score - a.score);
+  potentialStaffActions.sort((a, b) => b.score - a.score);
+
+  const bestAttack = potentialAttacks[0];
+  const bestStaff = potentialStaffActions[0];
+
+  if (bestAttack && bestStaff) {
+    return bestStaff.score > bestAttack.score ? bestStaff : bestAttack;
   }
+  if (bestStaff) return bestStaff;
+  if (bestAttack) return bestAttack;
 
   // Nếu là vai trò Stationary (đứng giữ vị trí) và không có ai trong tầm -> đứng yên
   if (role === 'stationary') {
@@ -250,17 +349,27 @@ export function evaluateAITurn(
     return { type: 'wait' };
   }
 
-  // Nếu là vai trò Pursue: di chuyển tới ô gần người chơi gần nhất nhất
+  // Nếu là vai trò Pursue: di chuyển thông minh về phía người chơi kề cận có địa hình tốt
+  if (playerUnits.length === 0) {
+    return { type: 'wait' };
+  }
+
   let bestMoveTile: Position = enemyUnit.position;
-  let minDistanceToClosestPlayer = Infinity;
+  let bestMoveScore = -Infinity;
 
   for (const tile of candidateTiles) {
+    let minDistance = Infinity;
     for (const player of playerUnits) {
       const dist = getManhattanDistance(tile, player.position);
-      if (dist < minDistanceToClosestPlayer) {
-        minDistanceToClosestPlayer = dist;
-        bestMoveTile = tile;
-      }
+      if (dist < minDistance) minDistance = dist;
+    }
+    const terrainId = map.grid[tile.y]?.[tile.x] ?? 'plains';
+    const avoidBonus = terrains.getAvoidBonus(terrainId, enemyUnit.moveType);
+    const defBonus = terrains.getDefenseBonus(terrainId, enemyUnit.moveType);
+    const moveScore = -minDistance * 10 + defBonus * 4 + avoidBonus * 0.5;
+    if (moveScore > bestMoveScore) {
+      bestMoveScore = moveScore;
+      bestMoveTile = tile;
     }
   }
 
