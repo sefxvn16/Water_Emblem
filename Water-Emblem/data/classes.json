@@ -45,7 +45,6 @@
         "def": 5,
         "res": -5
       },
-      "classSkill": "swordfaire",
       "description": "Marth, Prince of Altea. Wields swords with exceptional speed and leadership as the army commander.",
       "descriptionVi": "Marth, Hoàng tử xứ Altea. Sử dụng kiếm với tốc độ và khả năng chỉ huy xuất chúng."
     },
@@ -144,7 +143,6 @@
         "def": 15,
         "res": -5
       },
-      "classSkill": "lancefaire",
       "dismountedClassId": "paladin",
       "description": "Armored knights on horseback. Possess balanced strength, defense, and speed with high battlefield mobility.",
       "descriptionVi": "Kỵ sĩ giáp trên lưng ngựa. Sức mạnh, phòng thủ và tốc độ cân bằng với độ cơ động cao."
@@ -436,7 +434,6 @@
         "def": 10,
         "res": 0
       },
-      "classSkill": "lancefaire",
       "dismountedClassId": "dismounted_pegasus",
       "description": "Knights riding winged pegasi with exceptional mobility and speed across skies, but vulnerable to bows.",
       "descriptionVi": "Hiệp sĩ cưỡi ngựa có cánh với tốc độ và độ cơ động bầu trời vượt trội, nhưng yếu trước cung tên."
@@ -687,7 +684,6 @@
         "def": 5,
         "res": -15
       },
-      "classSkill": "bowfaire",
       "canUseBallista": true,
       "description": "Lightly armored bowmen skilled in forest and mountain terrain. Strong and agile, but lacking in physical defense.",
       "descriptionVi": "Thợ săn dùng cung giáp nhẹ, thiện chiến nơi rừng núi. Nhanh nhẹn và chuẩn xác nhưng giáp yếu."
@@ -792,7 +788,6 @@
         "def": 5,
         "res": -10
       },
-      "classSkill": "swordfaire",
       "description": "Professional sellswords. Exceptional skill and speed, specializing in landing fatal critical strikes with swords.",
       "descriptionVi": "Lính đánh thuê chuyên nghiệp. Kỹ năng và tốc độ xuất sắc, chuyên ra đòn chí mạng bằng kiếm."
     },
@@ -1033,7 +1028,6 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire",
       "description": "Rugged warriors from the frontier lands. Boast massive health and raw axe power, but have weak physical defense.",
       "descriptionVi": "Chiến binh rìu dũng mãnh từ biên thùy. Máu dồi dào và sức chém khủng khiếp nhưng giáp mỏng."
     },
@@ -1176,7 +1170,6 @@
         "def": 0,
         "res": -15
       },
-      "classSkill": "axefaire",
       "description": "Seafaring axe fighters capable of traversing open water and coastal shallows with ease.",
       "descriptionVi": "Hải tặc thiện chiến sông nước, có khả năng di chuyển linh hoạt trên biển và vùng nước nông."
     },
@@ -1911,7 +1904,6 @@
         "def": 10,
         "res": 10
       },
-      "classSkill": "lancefaire",
       "description": "Pegasus Knights who have descended to the ground. Fight with swords with excellent agility and speed indoors.",
       "descriptionVi": "Kỵ sĩ Thiên Mã xuống đất tác chiến. Sử dụng kiếm với sự linh hoạt và tốc độ cao trong nhà."
     }

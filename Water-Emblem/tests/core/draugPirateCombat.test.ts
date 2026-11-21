@@ -81,4 +81,122 @@ describe('Draug vs Galder Pirate (South 1) Combat Investigation (PLAN item 166)'
     expect(pirateEvents[0]!.damageDealt).toBe(0);
     expect(result.forecast.attacker.stats.hp).toBe(draug.stats.hp); // Draug lost 0 HP!
   });
+
+  it('verifies Draug Def 11 takes 2 damage from Pirate Atk 13 and Gordin Def 6 takes 7 damage (PLAN item 184)', () => {
+    const draug = chapter01.units.find((u) => u.unit.id === 'draug')!;
+    const gordin = chapter01.units.find((u) => u.unit.id === 'gordin')!;
+    const pirateHandAxe = chapter01.units.find((u) => u.unit.id === 'enemy_pirate_5')!; // Hand Axe
+    const pirateIronAxe = chapter01.units.find((u) => u.unit.id === 'enemy_pirate_1')!; // Iron Axe
+
+    expect(draug).toBeDefined();
+    expect(gordin).toBeDefined();
+    expect(pirateHandAxe).toBeDefined();
+    expect(pirateIronAxe).toBeDefined();
+
+    // Verify Pirate has NO Axefaire (base tier class)
+    expect(skillIdsOf(pirateHandAxe)).toEqual([]);
+
+    const units = [draug.unit, gordin.unit, pirateHandAxe.unit, pirateIronAxe.unit];
+    const skillMap = new Map(units.map((u) => [u.id, skillIdsOf(chapter01.units.find((cu) => cu.unit.id === u.id)!)]));
+
+    // 1. Pirate with Hand Axe (Atk 13) attacks Draug (Def 11)
+    const pirateSkills = getSkillModifiers(
+      skillMap.get(pirateHandAxe.unit.id) ?? [],
+      pirateHandAxe.unit,
+      pirateHandAxe.stats,
+      pirateHandAxe.weapon,
+      draug.weapon,
+      true,
+      units,
+      skillMap,
+      pirateHandAxe.level
+    );
+    const draugSkills = getSkillModifiers(
+      skillMap.get(draug.unit.id) ?? [],
+      draug.unit,
+      draug.stats,
+      draug.weapon,
+      pirateHandAxe.weapon,
+      false,
+      units,
+      skillMap,
+      draug.level
+    );
+
+    // Draug's Armored Blow does not activate when defending
+    expect(draugSkills.damageTaken).toBe(0);
+    expect(pirateSkills.damage).toBe(0); // No phantom Axefaire
+
+    const forecastDraug = calculateCombatForecast(
+      pirateHandAxe.unit,
+      pirateHandAxe.stats,
+      pirateHandAxe.weapon,
+      draug.unit,
+      draug.stats,
+      draug.weapon,
+      1,
+      defaultTerrainRegistry,
+      'plains',
+      'plains',
+      units,
+      undefined,
+      { attacker: pirateSkills, defender: draugSkills }
+    );
+
+    // Hand Axe Mt 8 + Str 5 = Atk 13. Draug Def = 11.
+    // Damage = 13 - 11 = 2 (NOT 7!)
+    expect(forecastDraug.attacker.damage).toBe(2);
+
+    // 2. Pirate with Hand Axe (Atk 13) attacks Gordin (Def 6, HP 18)
+    const gordinSkills = getSkillModifiers(
+      skillMap.get(gordin.unit.id) ?? [],
+      gordin.unit,
+      gordin.stats,
+      gordin.weapon,
+      pirateHandAxe.weapon,
+      false,
+      units,
+      skillMap,
+      gordin.level
+    );
+
+    const forecastGordinHandAxe = calculateCombatForecast(
+      pirateHandAxe.unit,
+      pirateHandAxe.stats,
+      pirateHandAxe.weapon,
+      gordin.unit,
+      gordin.stats,
+      gordin.weapon,
+      1,
+      defaultTerrainRegistry,
+      'plains',
+      'plains',
+      units,
+      undefined,
+      { attacker: pirateSkills, defender: gordinSkills }
+    );
+
+    // Damage = 13 - 6 = 7. Gordin HP goes 18 -> 11 (survives, no 1-hit kill!)
+    expect(forecastGordinHandAxe.attacker.damage).toBe(7);
+    expect(forecastGordinHandAxe.attacker.critRate).toBe(0); // Crit is 0%
+
+    // 3. Pirate with Iron Axe (Atk 12) attacks Gordin (Def 6)
+    const forecastGordinIronAxe = calculateCombatForecast(
+      pirateIronAxe.unit,
+      pirateIronAxe.stats,
+      pirateIronAxe.weapon,
+      gordin.unit,
+      gordin.stats,
+      gordin.weapon,
+      1,
+      defaultTerrainRegistry,
+      'plains',
+      'plains',
+      units,
+      undefined,
+      { attacker: pirateSkills, defender: gordinSkills }
+    );
+    // Damage = 12 - 6 = 6
+    expect(forecastGordinIronAxe.attacker.damage).toBe(6);
+  });
 });

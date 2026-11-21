@@ -1,15 +1,16 @@
 {
-  "task_id": "183-enemy-range-and-dismount",
+  "task_id": "184-fix-faire-skills",
   "plan_items": [
     178,
     179,
     180,
     181,
     182,
-    183
+    183,
+    184
   ],
   "declared_by": "antigravity",
-  "declared_at": "2026-11-21",
+  "declared_at": "2026-11-22",
   "allow": [
     "PLAN.md",
     "AGENTS.md",
@@ -46,6 +47,19 @@
     "Water-Emblem/src/ui/CombatForecastWindow.tsx",
     "Water-Emblem/tests/core/uiRender.test.ts",
     "Water-Emblem/tests/core/actionMenuOrderAndDirectAttack.test.ts",
-    "Water-Emblem/src/renderer/Grid2D.tsx"
+    "Water-Emblem/src/renderer/Grid2D.tsx",
+    "Water-Emblem/src/core/combat/calculator.ts",
+    "Water-Emblem/src/ui/UnitInspectorWindow.tsx",
+    "Water-Emblem/tests/core/batchE.test.ts",
+    "Water-Emblem/tests/core/draugPirateCombat.test.ts",
+    "Water-Emblem/tests/core/combat.test.ts",
+    "Water-Emblem/tests/browser/fixtures/chapter1.replay.json",
+    "Water-Emblem/tests/browser/fixtures/chapter2.replay.json",
+    "Water-Emblem/tests/browser/fixtures/chapter3.replay.json",
+    "Water-Emblem/tools/e2e_record/recordChapter1.spec.ts",
+    "Water-Emblem/tools/e2e_record/recordChapter2.spec.ts",
+    "Water-Emblem/tools/e2e_record/recordChapter3.spec.ts",
+    "Water-Emblem/tools/e2e_record/recorder.ts",
+    "Water-Emblem/tests/browser/chapterReplay.spec.ts"
   ]
 }

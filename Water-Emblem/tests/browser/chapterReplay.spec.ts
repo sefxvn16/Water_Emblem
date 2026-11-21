@@ -49,8 +49,8 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
     await dismissRewardPopup(page);
     if (step.kind === 'tile') {
       // Enemy phase must be over before the player selects tiles again.
-      await openSettings(page);
       await expectPlayerPhase(page);
+      await closeSettings(page);
       await page.getByTestId(step.testId).dispatchEvent('click');
     } else if (step.kind === 'select') {
       await openSettings(page);

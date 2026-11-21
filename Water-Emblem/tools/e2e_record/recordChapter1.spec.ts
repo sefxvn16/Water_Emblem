@@ -111,7 +111,7 @@ test('Chapter 1 can be played from opening to seize and Chapter 2 preparation', 
   await page.goto('/?seed=' + SEED);
   const resumeBtn = page.getByRole('button', { name: /RESUME BATTLE/i });
   if (await resumeBtn.isVisible()) await resumeBtn.click();
-  await expect(page.getByText(/save Talys Castle|cứu lấy thành Talys/i).first()).toBeVisible();
+  await expect(page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i })).toBeVisible();
   await page.getByRole('button', { name: /(?:Start Battle|Vào trận đánh)/i }).click();
   await openSettings(page);
   await page.getByRole('button', { name: /2D Grid/ }).click();

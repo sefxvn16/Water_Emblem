@@ -24,20 +24,23 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
   it('loads personal skills from character data and class skills from class data', () => {
     const units = freshUnits();
     expect(skillIdsOf(find(units, 'marth'))).toContain('charisma');
-    expect(skillIdsOf(find(units, 'marth'))).toContain('swordfaire');
     expect(skillIdsOf(find(units, 'caeda'))).toContain('winged_grace');
     expect(skillIdsOf(find(units, 'gordin'))).toContain('deadeye');
     expect(skillIdsOf(find(units, 'gordin'))).toContain('sureshot');
     expect(skillIdsOf(find(units, 'draug'))).toContain('pavise');
+    // Promoted class has class skill (e.g. warlord has swordfaire)
+    const warlord = { ...find(units, 'marth'), unit: { ...find(units, 'marth').unit, classId: 'warlord' } };
+    expect(skillIdsOf(warlord)).toContain('swordfaire');
   });
 
   it('swordfaire adds +5 damage; armored blow only when initiating; pavise is a proc (PLAN item 152)', () => {
     const units = freshUnits();
     const marth = find(units, 'marth');
+    const warlord = { ...marth, unit: { ...marth.unit, classId: 'warlord' } };
     const draug = find(units, 'draug');
     const allySkillIds = new Map(units.map((u) => [u.unit.id, skillIdsOf(u)]));
     const all = units.map((u) => u.unit);
-    const marthMods = getSkillModifiers(skillIdsOf(marth), marth.unit, marth.stats, marth.weapon, draug.weapon, true, all, allySkillIds);
+    const marthMods = getSkillModifiers(skillIdsOf(warlord), warlord.unit, warlord.stats, warlord.weapon, draug.weapon, true, all, allySkillIds);
     const draugMods = getSkillModifiers(skillIdsOf(draug), draug.unit, draug.stats, draug.weapon, marth.weapon, false, all, allySkillIds);
     expect(marthMods.damage).toBe(5); // Swordfaire FE13 +5
     expect(draugMods.damageTaken).toBe(0); // Armored Blow needs initiation
@@ -46,11 +49,11 @@ describe('skills (PLAN items 112/113, N01/N02)', () => {
     expect(draugAttacking.damageTaken).toBe(-10); // Armored Blow FE14
 
     const plain = calculateCombatForecast(
-      marth.unit, marth.stats, marth.weapon, draug.unit, draug.stats, draug.weapon,
+      warlord.unit, warlord.stats, warlord.weapon, draug.unit, draug.stats, draug.weapon,
       1, defaultTerrainRegistry, 'plains', 'plains', all,
     );
     const skilled = calculateCombatForecast(
-      marth.unit, marth.stats, marth.weapon, draug.unit, draug.stats, draug.weapon,
+      warlord.unit, warlord.stats, warlord.weapon, draug.unit, draug.stats, draug.weapon,
       1, defaultTerrainRegistry, 'plains', 'plains', all, undefined,
       { attacker: marthMods, defender: draugMods },
     );
@@ -108,10 +111,13 @@ describe('reclass (PLAN item 114, N04)', () => {
     const units = freshUnits();
     const gordin = find(units, 'gordin'); // archer: sureshot
     expect(skillIdsOf(gordin)).toContain('sureshot');
-    const reclassed = reclassUnit(gordin, 'hunter'); // hunter: bowfaire
+    const reclassed = reclassUnit(gordin, 'hunter'); // hunter: base tier, no faire
     expect(reclassed).not.toBeNull();
-    expect(skillIdsOf(reclassed!)).toContain('bowfaire');
     expect(skillIdsOf(reclassed!)).not.toContain('sureshot');
     expect(skillIdsOf(reclassed!)).toContain('deadeye'); // personal stays
+    expect(skillIdsOf(reclassed!)).not.toContain('bowfaire');
+    // Promoted class carries Faire skill per Fire Emblem canon
+    const sniper = { ...gordin, unit: { ...gordin.unit, classId: 'sniper' } };
+    expect(skillIdsOf(sniper)).toContain('bowfaire');
   });
 });

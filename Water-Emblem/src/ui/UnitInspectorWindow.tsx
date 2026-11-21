@@ -3,7 +3,7 @@ import itemsJson from '../../data/items.json' with { type: 'json' };
 import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
 import { getClassDefinition, skillIdsOf } from '../core/class/classRules';
-import { SKILLS } from '../core/combat/skills';
+import { getSkillModifiers, SKILLS } from '../core/combat/skills';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import { getFactionTone } from '../core/grid/factionTones';
 import type { Position } from '../core/grid/types';
@@ -51,7 +51,9 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   }, [onClose]);
 
   const units = allUnits.map((item) => item.unit);
-  const combat = calculateDisplayedCombatStats(u.unit, u.stats, u.weapon, terrainId, defaultTerrainRegistry, units);
+  const allySkillMap = new Map(allUnits.map((entry) => [entry.unit.id, skillIdsOf(entry)]));
+  const skillMods = getSkillModifiers(skillIdsOf(u), u.unit, u.stats, u.weapon, undefined, true, units, allySkillMap, u.level);
+  const combat = calculateDisplayedCombatStats(u.unit, u.stats, u.weapon, terrainId, defaultTerrainRegistry, units, skillMods);
   const hoveredTerrain = defaultTerrainRegistry.get(terrainId);
   const sup = u.unit.faction === 'player' ? calculateSupportBonus(u.unit, units) : null;
   const className = getClassDefinition(u.unit.classId)?.name ?? u.unit.classId ?? '—';

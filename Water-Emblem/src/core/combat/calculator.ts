@@ -73,21 +73,20 @@ export function calculateDisplayedCombatStats(
   terrainId: string,
   terrainRegistry: TerrainRegistry,
   allUnits: readonly GridUnit[],
+  skillMods?: SkillModifiers
 ): { atk: number; hit: number; avoid: number; crit: number; as: number } {
   const support = calculateSupportBonus(unit, allUnits);
   const classDefinition = getClassDefinition(unit.classId);
   const as = calculateAttackSpeed(stats, weapon);
-  const avoid = as + Math.floor(stats.lck / 2) + terrainRegistry.getAvoidBonus(terrainId, unit.moveType) + support.avoid;
-  if (!weapon) {
-    return { atk: 0, hit: 0, avoid, crit: 0, as };
-  }
+  const avoid = as + Math.floor(stats.lck / 2) + terrainRegistry.getAvoidBonus(terrainId, unit.moveType) + support.avoid + (skillMods?.avoid ?? 0);
+  if (!weapon) return { atk: 0, hit: 0, avoid, crit: 0, as };
   const rank = unit.weaponRanks?.[weapon.type] ?? 'E';
   const rankBonus = getWeaponRankBonus(weapon.type, rank);
   return {
-    atk: (weapon.isMagic ? stats.mag : stats.str) + weapon.might + rankBonus.might,
-    hit: weapon.hit + stats.skill + Math.floor(stats.lck / 2) + rankBonus.hit + support.hit + (classDefinition?.hitBonus ?? 0),
+    atk: (weapon.isMagic ? stats.mag : stats.str) + weapon.might + rankBonus.might + (skillMods?.damage ?? 0),
+    hit: weapon.hit + stats.skill + Math.floor(stats.lck / 2) + rankBonus.hit + support.hit + (classDefinition?.hitBonus ?? 0) + (skillMods?.hit ?? 0),
     avoid,
-    crit: weapon.crit + Math.floor(stats.skill / 2) + support.crit + (classDefinition?.critBonus ?? 0),
+    crit: weapon.crit + Math.floor(stats.skill / 2) + support.crit + (classDefinition?.critBonus ?? 0) + (skillMods?.crit ?? 0),
     as,
   };
 }

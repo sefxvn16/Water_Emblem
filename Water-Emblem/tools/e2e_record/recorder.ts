@@ -27,7 +27,13 @@ export async function recordOn(page: Page): Promise<void> {
         // Circular action buttons carry their label in aria-label; their
         // textContent is only the glyph (or empty). Record the accessible
         // name so the replay can find the button by role.
-        const name = (button.getAttribute('aria-label') ?? button.textContent ?? '').trim();
+        let name = button.getAttribute('aria-label');
+        if (!name) {
+          const clone = button.cloneNode(true) as HTMLElement;
+          clone.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
+          name = clone.textContent ?? '';
+        }
+        name = name.trim();
         // The bot opens/closes the Settings menu for its own navigation;
         // the replay drives Settings itself, and a real click on the gear
         // is intercepted by the story intro overlay. Don't record it.
