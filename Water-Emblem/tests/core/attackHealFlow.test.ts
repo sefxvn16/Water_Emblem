@@ -108,11 +108,11 @@ describe('attackHealFlow.test.ts: Luồng chọn mục tiêu rồi chọn vũ kh
       inventory: [{ itemId: 'iron_sword', uses: 40 }],
     });
 
-    // Lena MAG=6 + Heal base=10 = 16 HP potential
+    // Lena MAG=6, heal_staff (healBase=8, divisor=2) -> 8 + floor(6/2) = 11 HP
     const forecast = calculateStaffForecast(lena, injuredMarth, healStaff);
 
-    expect(forecast.healAmount).toBe(16);
-    expect(forecast.targetHpAfter).toBe(26);
+    expect(forecast.healAmount).toBe(11);
+    expect(forecast.targetHpAfter).toBe(21);
     expect(forecast.staffRemainingUses).toBe(11);
     expect(forecast.healer.unit.name).toBe('Lena');
     expect(forecast.target.unit.name).toBe('Marth');
@@ -338,9 +338,9 @@ describe('attackHealFlow.test.ts: Luồng chọn mục tiêu rồi chọn vũ kh
     const nextLena = result.units.find((u) => u.unit.id === 'lena')!;
     const nextMarth = result.units.find((u) => u.unit.id === 'marth')!;
 
-    // Heal base=10 + MAG=4 = 14 HP
-    expect(result.healed).toBe(14);
-    expect(nextMarth.stats.hp).toBe(26);
+    // Heal base=8 + floor(MAG=4 / 2) = 10 HP
+    expect(result.healed).toBe(10);
+    expect(nextMarth.stats.hp).toBe(22);
     expect(nextLena.inventory[0]!.uses).toBe(4);
     expect(nextLena.exp).toBeGreaterThan(0);
   });
