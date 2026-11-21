@@ -63,8 +63,10 @@ import { BattleSettingsMenu, HUD_EDGE, HUD_SIZE } from './ui/BattleSettingsMenu'
 // Scroll padding so the last tiles can scroll out from under the bottom-right HUD cluster.
 const HUD_CLEAR = HUD_EDGE + HUD_SIZE + 8;
 import { CombatForecastWindow } from './ui/CombatForecastWindow';
+import { StaffForecastWindow } from './ui/StaffForecastWindow';
 import { ActionMenuWindow } from './ui/ActionMenuWindow';
 import { WeaponPickerWindow } from './ui/WeaponPickerWindow';
+import type { UsableWeapon } from './core/combat/equip';
 import { OverflowWindow } from './ui/OverflowWindow';
 import { RewardPopup, type RewardPopupData } from './ui/RewardPopup';
 import { getItemIcon } from './ui/itemIcon';
@@ -81,7 +83,19 @@ import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { getSkillModifiers } from './core/combat/skills';
 import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
-import { applyStaffUse, applyWarpUse, getStaffTargets, getUsableStaves, getWarpDestinations, isHealStaff, isWarpStaff } from './core/combat/staff';
+import {
+  applyStaffUse,
+  applyWarpUse,
+  calculateStaffForecast,
+  getAllStaffTargets,
+  getStaffTargets,
+  getStavesForTarget,
+  getUsableStaves,
+  getWarpDestinations,
+  isHealStaff,
+  isWarpStaff,
+  type StaffForecast,
+} from './core/combat/staff';
 import type { InventoryEntry } from './core/data/chapterData';
 import { UnitInspectorWindow } from './ui/UnitInspectorWindow';
 import { DialogueBox } from './ui/DialogueBox';
@@ -191,7 +205,10 @@ export const App: React.FC = () => {
   }, [turnState.selectedUnitId]);
   const [prepConvoyUnitId, setPrepConvoyUnitId] = useState<string | null>(null);
   const [prepTrade, setPrepTrade] = useState<{ unitId: string; partnerId: string | null } | null>(null);
-  const [staffTargeting, setStaffTargeting] = useState<{ staffId: string } | null>(null);
+  const [staffTargeting, setStaffTargeting] = useState<{ staffId?: string } | null>(null);
+  const [selectedStaffTarget, setSelectedStaffTarget] = useState<ExtendedUnitState | null>(null);
+  const [staffPickerOpen, setStaffPickerOpen] = useState(false);
+  const [staffForecast, setStaffForecast] = useState<StaffForecast | null>(null);
   // PLAN item 156: Warp picks the ally first, then the destination tile.
   const [warpTargeting, setWarpTargeting] = useState<{ staffId: string; targetId: string } | null>(null);
 
@@ -214,15 +231,24 @@ export const App: React.FC = () => {
   // Esc leaves the Attack target-lock / weapon picker / staff lock and
   // returns to the action menu.
   useEffect(() => {
-    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !warpTargeting && !tradeTargeting) return;
+    if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !warpTargeting && !tradeTargeting && !combatForecast && !staffForecast && !staffPickerOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setWarpTargeting(null); setTradeTargeting(false); setSelectedTarget(null);
+        setAttackTargeting(false);
+        setWeaponPickerOpen(false);
+        setStaffTargeting(null);
+        setWarpTargeting(null);
+        setTradeTargeting(false);
+        setSelectedTarget(null);
+        setSelectedStaffTarget(null);
+        setStaffPickerOpen(false);
+        setCombatForecast(null);
+        setStaffForecast(null);
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [attackTargeting, weaponPickerOpen, staffTargeting, warpTargeting, tradeTargeting]);
+  }, [attackTargeting, weaponPickerOpen, staffTargeting, warpTargeting, tradeTargeting, combatForecast, staffForecast, staffPickerOpen]);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupQueueRef = useRef<CombatPopupData[]>([]);
@@ -454,14 +480,32 @@ export const App: React.FC = () => {
 
   const staffTargets = useMemo(() => {
     if (!staffTargeting || !selectedExtUnit || !pendingMovePos) return [];
-    const staff = ITEM_BY_ID.get(staffTargeting.staffId);
-    if (!staff) return [];
-    return getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos);
+    if (staffTargeting.staffId) {
+      const staff = ITEM_BY_ID.get(staffTargeting.staffId);
+      if (!staff) return [];
+      return getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos);
+    }
+    return getAllStaffTargets(extendedUnits, selectedExtUnit, ITEM_BY_ID, pendingMovePos);
   }, [staffTargeting, selectedExtUnit, pendingMovePos, extendedUnits]);
 
   const staffTargetKeys = useMemo(() => {
     return new Set(staffTargets.map((t) => `${t.unit.position.x},${t.unit.position.y}`));
   }, [staffTargets]);
+
+  const usableStavesForSelectedTarget = useMemo<UsableWeapon[]>(() => {
+    if (!selectedExtUnit || !selectedStaffTarget) return [];
+    const pos = pendingMovePos ?? selectedExtUnit.unit.position;
+    const staves = getStavesForTarget(extendedUnits, selectedExtUnit, selectedStaffTarget, ITEM_BY_ID, pos);
+    return staves.map((staff) => {
+      const invItem = selectedExtUnit.inventory.find((i) => i.itemId === staff.id);
+      return {
+        itemId: staff.id,
+        definition: staff,
+        uses: invItem?.uses ?? 1,
+        equipped: selectedExtUnit.weapon?.id === staff.id,
+      };
+    });
+  }, [selectedExtUnit, selectedStaffTarget, pendingMovePos, extendedUnits]);
 
   // PLAN item 156: valid Warp destinations for the chosen ally.
   const warpDestinationKeys = useMemo(() => {
@@ -606,8 +650,8 @@ export const App: React.FC = () => {
     ));
   };
 
-  // PLAN item 158: target chosen — with several usable weapons the picker
-  // opens next; with one, the forecast opens right away.
+  // PLAN items 158/179 (owner playtest): Attack flow is target first,
+  // then weapon picker (if multiple usable weapons), then forecast appears.
   const selectAttackTarget = (target: ExtendedUnitState, fromPos?: Position) => {
     const pos = fromPos ?? pendingMovePos ?? selectedExtUnit?.unit.position;
     const weapons = usableWeaponsForTarget(target, pos);
@@ -689,30 +733,40 @@ export const App: React.FC = () => {
       return;
     }
 
-    // PLAN item 89: staff target lock — click a highlighted ally to heal,
-    // click the unit's destination tile to go back to the menu.
+    // PLAN items 89/179: staff target chosen -> if multiple staves, open picker;
+    // then open staff forecast window so the player confirms before casting.
     if (staffTargeting) {
       if (clickedExt && staffTargets.some((t) => t.unit.id === clickedExt.unit.id)) {
-        const staffId = staffTargeting.staffId;
-        const targetId = clickedExt.unit.id;
+        soundManager.playSfx('cursor');
+        const chosenStaffId = staffTargeting.staffId;
         setStaffTargeting(null);
-        // PLAN item 156: Warp needs a second pick — the destination tile.
-        const staff = ITEM_BY_ID.get(staffId);
-        if (staff && isWarpStaff(staff)) {
-          setWarpTargeting({ staffId, targetId });
+        setSelectedStaffTarget(clickedExt);
+
+        const specifiedStaff = chosenStaffId ? ITEM_BY_ID.get(chosenStaffId) : undefined;
+        if (specifiedStaff && isWarpStaff(specifiedStaff)) {
+          setWarpTargeting({ staffId: chosenStaffId!, targetId: clickedExt.unit.id });
           return;
         }
-        executeWithMove(() => {
-          if (!selectedExtUnit) return;
-          const result = applyStaffUse(extendedUnits, selectedExtUnit.unit.id, targetId, staffId, ITEM_BY_ID, defaultRNG);
-          if (!result) return;
-          soundManager.playSfx('heal');
-          turnManager.replaceUnits(result.units.map(({ unit }) => unit));
-          endUnitTurn();
-          setExtendedUnits(result.units);
-          setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
-          syncState();
-        });
+
+        const pos = pendingMovePos ?? selectedExtUnit?.unit.position ?? clickedExt.unit.position;
+        const usableStaves = selectedExtUnit
+          ? getStavesForTarget(extendedUnits, selectedExtUnit, clickedExt, ITEM_BY_ID, pos)
+          : [];
+
+        if (usableStaves.length > 1 && !chosenStaffId) {
+          setStaffPickerOpen(true);
+          return;
+        }
+
+        const staffToUse = specifiedStaff ?? usableStaves[0];
+        if (staffToUse && selectedExtUnit) {
+          if (isWarpStaff(staffToUse)) {
+            setWarpTargeting({ staffId: staffToUse.id, targetId: clickedExt.unit.id });
+            return;
+          }
+          const forecast = calculateStaffForecast(selectedExtUnit, clickedExt, staffToUse);
+          setStaffForecast(forecast);
+        }
       } else if (pendingMovePos && x === pendingMovePos.x && y === pendingMovePos.y) {
         setStaffTargeting(null);
       }
@@ -766,10 +820,13 @@ export const App: React.FC = () => {
       setPendingMovePos(dest);
       setPlannedPath(path);
       setWeaponPickerOpen(false);
-      // Đổi ô đích thì hủy lựa chọn tấn công đang chờ: dự báo cũ tính theo
-      // vị trí cũ, giữ lại sẽ đánh địch cũ trong khi quân đi ô khác (PLAN 80).
+      setStaffPickerOpen(false);
+      // Đổi ô đích thì hủy lựa chọn tấn công / dùng gậy đang chờ: dự báo cũ tính theo
+      // vị trí cũ, giữ lại sẽ đánh địch cũ trong khi quân đi ô khác (PLAN 80/179).
       setCombatForecast(null);
+      setStaffForecast(null);
       setSelectedTarget(null);
+      setSelectedStaffTarget(null);
       setAttackTargeting(false);
       setStaffTargeting(null);
       soundManager.playSfx('cursor');
@@ -1253,11 +1310,11 @@ export const App: React.FC = () => {
   // trước — đúng 1 mục tiêu thì chọn luôn, từ 2 mục tiêu thì khóa chọn
   // mục tiêu trong tầm đánh. Vũ khí chọn sau khi đã có mục tiêu
   // (selectAttackTarget), rồi mới hiện dự báo.
+  // Nút Attack trong menu hành động (PLAN items 80/158/179): Chọn mục tiêu
+  // trên bản đồ trước -> chọn địch xong mới mở chọn vũ khí -> chọn vũ khí xong mới hiện dự báo.
   const handleAttack = () => {
-    if (attackableTargets.length === 1) {
-      const target = attackableTargets[0];
-      if (target) selectAttackTarget(target);
-    } else if (attackableTargets.length > 0) {
+    if (attackableTargets.length > 0) {
+      soundManager.playSfx('cursor');
       setAttackTargeting(true);
     }
   };
@@ -1266,7 +1323,7 @@ export const App: React.FC = () => {
     if (!selectedExtUnit) return;
     setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, itemId, ITEM_BY_ID));
     setWeaponPickerOpen(false);
-    // PLAN item 158: the target is already chosen; open the forecast with
+    // PLAN items 158/179: the target is already chosen; open the forecast with
     // the picked weapon so weapons can be compared through the forecast.
     if (selectedTarget) {
       openAttackForecast(selectedTarget, ITEM_BY_ID.get(itemId));
@@ -1278,8 +1335,56 @@ export const App: React.FC = () => {
     setExtendedUnits((prev) => equipWeapon(prev, selectedExtUnit.unit.id, itemId, ITEM_BY_ID));
   };
 
-  const handleStaff = (staffId: string) => {
+  const handleStaff = (staffId?: string) => {
+    soundManager.playSfx('cursor');
     setStaffTargeting({ staffId });
+  };
+
+  const handlePickStaff = (staffId: string) => {
+    if (!selectedExtUnit || !selectedStaffTarget) return;
+    const staff = ITEM_BY_ID.get(staffId);
+    if (!staff) return;
+    setStaffPickerOpen(false);
+
+    if (isWarpStaff(staff)) {
+      setWarpTargeting({ staffId, targetId: selectedStaffTarget.unit.id });
+      return;
+    }
+
+    const forecast = calculateStaffForecast(selectedExtUnit, selectedStaffTarget, staff);
+    soundManager.playSfx('cursor');
+    setStaffForecast(forecast);
+  };
+
+  const handleConfirmStaff = () => {
+    if (!staffForecast || !selectedExtUnit) return;
+    const { target, staff } = staffForecast;
+    const staffId = staff.id;
+    const targetId = target.unit.id;
+    setStaffForecast(null);
+    setSelectedStaffTarget(null);
+
+    executeWithMove(() => {
+      if (!selectedExtUnit) return;
+      const result = applyStaffUse(extendedUnits, selectedExtUnit.unit.id, targetId, staffId, ITEM_BY_ID, defaultRNG);
+      if (!result) return;
+      soundManager.playSfx('heal');
+      turnManager.replaceUnits(result.units.map(({ unit }) => unit));
+      endUnitTurn();
+      setExtendedUnits(result.units);
+      setCombatLog((prev) => [...result.messages, ...prev].slice(0, 20));
+      syncState();
+    });
+  };
+
+  const handleCancelStaff = () => {
+    setStaffForecast(null);
+    setStaffPickerOpen(true);
+  };
+
+  const handleCancelStaffPicker = () => {
+    setStaffPickerOpen(false);
+    setSelectedStaffTarget(null);
   };
 
 
@@ -1557,9 +1662,12 @@ export const App: React.FC = () => {
   const handleCancelMove = () => {
     soundManager.playSfx('cancel');
     setWeaponPickerOpen(false);
+    setStaffPickerOpen(false);
     setStaffTargeting(null);
     setSelectedTarget(null);
+    setSelectedStaffTarget(null);
     setCombatForecast(null);
+    setStaffForecast(null);
     setAttackTargeting(false);
     // PLAN item 98: the unit already moved — walk it back to its origin
     // and keep it selected so another destination can be chosen.
@@ -1598,7 +1706,7 @@ export const App: React.FC = () => {
 
   // Right-click khi menu hành động đang mở sẽ huỷ di chuyển (Cancel Move) chuẩn FE
   useEffect(() => {
-    if (!pendingMovePos || !moveCommitted || combatForecast || attackTargeting || weaponPickerOpen || staffTargeting || tradeTargeting || activeMovingUnit) return;
+    if (!pendingMovePos || !moveCommitted || combatForecast || staffForecast || attackTargeting || weaponPickerOpen || staffPickerOpen || staffTargeting || tradeTargeting || activeMovingUnit) return;
     const onContextMenu = (event: MouseEvent) => {
       event.preventDefault();
       handleCancelMove();
@@ -1607,7 +1715,7 @@ export const App: React.FC = () => {
     return () => {
       window.removeEventListener('contextmenu', onContextMenu);
     };
-  }, [pendingMovePos, moveCommitted, combatForecast, attackTargeting, weaponPickerOpen, staffTargeting, tradeTargeting, activeMovingUnit]);
+  }, [pendingMovePos, moveCommitted, combatForecast, staffForecast, attackTargeting, weaponPickerOpen, staffPickerOpen, staffTargeting, tradeTargeting, activeMovingUnit]);
 
   // Chạy AI Turn
   // PLAN item 140 (owner 2026-11-19): the enemy phase plays back one
@@ -2067,29 +2175,31 @@ export const App: React.FC = () => {
           defender={selectedTarget}
           onConfirm={handleConfirmAttack}
           onCancel={() => {
-            // PLAN items 158/163: cancelling the forecast returns to the
-            // weapon picker when several weapons can reach the target (to
-            // compare another weapon), otherwise back to the action menu
-            // where Cancel Move is available again.
+            // PLAN items 158/163/179: Cancelling the forecast returns to the
+            // weapon picker so the player can re-select or cancel out.
             setCombatForecast(null);
-            if (selectedTarget && usableWeaponsForTarget(selectedTarget).length > 1) {
-              setWeaponPickerOpen(true);
-            } else {
-              setSelectedTarget(null);
-            }
+            setWeaponPickerOpen(true);
           }}
+        />
+      )}
+
+      {staffForecast && !activeMovingUnit && (
+        <StaffForecastWindow
+          forecast={staffForecast}
+          onConfirm={handleConfirmStaff}
+          onCancel={handleCancelStaff}
         />
       )}
 
       <ActionMenuWindow
         anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
-          selectedExtUnit && !pendingMovePos && !combatForecast && !activeMovingUnit
+          selectedExtUnit && !pendingMovePos && !combatForecast && !staffForecast && !activeMovingUnit
             && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind)
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null
         }
-        actions={pendingMovePos && moveCommitted && !combatForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting && !warpTargeting ? {
+        actions={pendingMovePos && moveCommitted && !combatForecast && !staffForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !staffPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting && !warpTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
             && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
@@ -2160,8 +2270,20 @@ export const App: React.FC = () => {
           anchorTile={pendingMovePos}
           unit={selectedExtUnit.unit}
           weapons={selectedTarget ? usableWeaponsForTarget(selectedTarget) : getAttackWeapons(selectedExtUnit, ITEM_BY_ID)}
+          title="Choose weapon"
           onPick={handlePickWeapon}
           onCancel={() => { setWeaponPickerOpen(false); setSelectedTarget(null); }}
+        />
+      )}
+
+      {staffPickerOpen && selectedExtUnit && pendingMovePos && selectedStaffTarget && (
+        <WeaponPickerWindow
+          anchorTile={pendingMovePos}
+          unit={selectedExtUnit.unit}
+          weapons={usableStavesForSelectedTarget}
+          title="Choose staff"
+          onPick={handlePickStaff}
+          onCancel={handleCancelStaffPicker}
         />
       )}
 

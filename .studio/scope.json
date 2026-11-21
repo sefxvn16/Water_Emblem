@@ -1,7 +1,8 @@
 {
-  "task_id": "178-fe3-asset-integration",
+  "task_id": "179-attack-heal-flow",
   "plan_items": [
-    178
+    178,
+    179
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
@@ -19,6 +20,11 @@
     "Water-Emblem/data/character_palettes.json",
     "Water-Emblem/data/chapter_objectives.json",
     "Water-Emblem/src/core/class/classRules.ts",
-    "Water-Emblem/src/ui/ActionMenuWindow.tsx"
+    "Water-Emblem/src/ui/ActionMenuWindow.tsx",
+    "Water-Emblem/src/App.tsx",
+    "Water-Emblem/src/ui/StaffForecastWindow.tsx",
+    "Water-Emblem/src/ui/WeaponPickerWindow.tsx",
+    "Water-Emblem/src/core/combat/staff.ts",
+    "Water-Emblem/tests/core/attackHealFlow.test.ts"
   ]
 }

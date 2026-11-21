@@ -72,6 +72,82 @@ export function getStaffTargets(
 }
 
 /**
+ * Return all allies that can be targeted by at least one usable staff (PLAN item 179).
+ */
+export function getAllStaffTargets(
+  units: readonly ExtendedUnitState[],
+  user: ExtendedUnitState,
+  itemById: ReadonlyMap<string, ItemDefinition>,
+  fromPos: Position,
+): ExtendedUnitState[] {
+  const usableStaves = getUsableStaves(user, itemById);
+  const targetIds = new Set<string>();
+  const result: ExtendedUnitState[] = [];
+  for (const staff of usableStaves) {
+    const list = getStaffTargets(units, user, staff, fromPos);
+    for (const t of list) {
+      if (!targetIds.has(t.unit.id)) {
+        targetIds.add(t.unit.id);
+        result.push(t);
+      }
+    }
+  }
+  return result;
+}
+
+/**
+ * Return all usable staves that can target a specific chosen ally (PLAN item 179).
+ */
+export function getStavesForTarget(
+  units: readonly ExtendedUnitState[],
+  user: ExtendedUnitState,
+  target: ExtendedUnitState,
+  itemById: ReadonlyMap<string, ItemDefinition>,
+  fromPos: Position,
+): ItemDefinition[] {
+  const usableStaves = getUsableStaves(user, itemById);
+  return usableStaves.filter((staff) => {
+    const validTargets = getStaffTargets(units, user, staff, fromPos);
+    return validTargets.some((t) => t.unit.id === target.unit.id);
+  });
+}
+
+export interface StaffForecast {
+  healer: ExtendedUnitState;
+  target: ExtendedUnitState;
+  staff: ItemDefinition;
+  healAmount: number;
+  targetHpAfter: number;
+  staffRemainingUses: number;
+}
+
+/**
+ * Pure calculation of staff healing projection (PLAN item 179).
+ */
+export function calculateStaffForecast(
+  healer: ExtendedUnitState,
+  target: ExtendedUnitState,
+  staff: ItemDefinition,
+): StaffForecast {
+  const healPotential = (staff.healBase ?? 0)
+    + Math.floor(healer.stats.mag / (staff.healMagDivisor ?? 1))
+    + getHealBonus(skillIdsOf(healer));
+  const healAmount = Math.max(0, Math.min(healPotential, target.stats.maxHp - target.stats.hp));
+  const targetHpAfter = Math.min(target.stats.maxHp, target.stats.hp + healAmount);
+  const staffItem = healer.inventory.find((i) => i.itemId === staff.id);
+  const staffRemainingUses = Math.max(0, (staffItem?.uses ?? 1) - 1);
+
+  return {
+    healer,
+    target,
+    staff,
+    healAmount,
+    targetHpAfter,
+    staffRemainingUses,
+  };
+}
+
+/**
  * Warp destinations (PLAN item 156): every tile the target can stand on —
  * passable for its movement type and not occupied by a living unit.
  */

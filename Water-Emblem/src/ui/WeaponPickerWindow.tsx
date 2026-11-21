@@ -15,6 +15,7 @@ interface WeaponPickerWindowProps {
   anchorTile: Position | null;
   unit: GridUnit | null;
   weapons: readonly UsableWeapon[];
+  title?: string;
   onPick: (itemId: string) => void;
   onCancel: () => void;
 }
@@ -93,7 +94,7 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
           letterSpacing: '0.02em',
         }}
       >
-        Choose weapon
+        {props.title ?? 'Choose weapon'}
       </div>
       {props.weapons.map((weapon) => {
         const isHovered = hoveredId === weapon.itemId;
