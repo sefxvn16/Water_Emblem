@@ -847,7 +847,7 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
 
 - [ ] 177. Nâng cấp toàn diện AI và Game-feel: AI tự đổi vũ khí, AI dùng gậy hồi máu cho đồng đội, cơ chế né đòn phản kích, hiệu ứng rung chấn Screen Shake khi Crit, thanh máu tụt mượt 2 lớp và rút ngắn thời gian popup chiến đấu.
   - Tiêu chí xong: (1) AI tự động duyệt inventory để chọn vũ khí tối ưu (tầm đánh, khắc chế, né phản đòn). (2) AI hỗ trợ hành động dùng gậy (Heal staff) hồi máu cho đồng đội thấp máu. (3) Popup kết quả chiến đấu rút ngắn xuống 1400ms, thanh máu có animation 2 lớp (vệt máu đỏ trượt chậm sau lớp xanh). (4) Hiệu ứng rung giật màn hình khi Crit hit. (5) test: Water-Emblem/tests/core/aiUpgrade.test.ts > AI tự động đổi vũ khí phù hợp tầm đánh và dùng gậy hồi máu cho đồng đội bị thương
-  - Kết quả: ĐANG LÀM: nâng cấp logic AI trong decision.ts/enemyTurnSimulation.ts và cải tiến game-feel trong CombatResultPopup/Grid2D
+  - Kết quả: ĐANG LÀM: đã hoàn thành toàn bộ code và unit test cho AI và Game-feel trên nhánh `cs/177-ai-gamefeel-upgrade` (commit `4335b65`); 61/61 files unit test (373 tests) PASS 100%, build PASS; chờ chỉ đạo của chủ dự án về 4 test browser cũ để chạy full gate lấy token DONE-OK.
 
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
