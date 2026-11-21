@@ -158,7 +158,7 @@ export const WeaponPickerWindow: React.FC<WeaponPickerWindowProps> = (props) => 
                   {weapon.definition.name}
                 </span>
                 {weapon.equipped && (
-                  <span style={{ fontSize: '10px', fontWeight: 800, padding: '1px 4px', borderRadius: '3px', backgroundColor: '#eab308', color: '#0f172a' }}>
+                  <span aria-hidden="true" style={{ fontSize: '10px', fontWeight: 800, padding: '1px 4px', borderRadius: '3px', backgroundColor: '#eab308', color: '#0f172a' }}>
                     E
                   </span>
                 )}
