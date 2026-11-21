@@ -18,6 +18,7 @@ export interface UnitDisplay {
 
 interface Grid2DProps {
   board: BoardView;
+  isInspectingEnemy?: boolean;
   movementPath?: readonly Position[] | null;
   pendingDestination?: Position | null;
   activeMovingUnit?: { unitId: string; pos: Position } | null;
@@ -148,6 +149,7 @@ const UnitToken: React.FC<{ unit: UnitDisplay; selected: boolean; traveling: boo
 
 export const Grid2D: React.FC<Grid2DProps> = ({
   board,
+  isInspectingEnemy,
   movementPath,
   pendingDestination,
   activeMovingUnit,
@@ -253,15 +255,23 @@ export const Grid2D: React.FC<Grid2DProps> = ({
               }}
             >
               {danger && !reachable && (
-                <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(239, 83, 80, 0.25)', pointerEvents: 'none' }} />
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    backgroundColor: isInspectingEnemy ? 'rgba(185, 28, 28, 0.45)' : 'rgba(147, 51, 234, 0.22)',
+                    border: isInspectingEnemy ? '1px solid #ef4444' : '1px dashed rgba(192, 132, 252, 0.35)',
+                    pointerEvents: 'none',
+                  }}
+                />
               )}
               {reachable && (
                 <div
                   style={{
                     position: 'absolute',
                     inset: 0,
-                    backgroundColor: 'rgba(33, 150, 243, 0.45)',
-                    border: '1px dashed #90CAF9',
+                    backgroundColor: isInspectingEnemy ? 'rgba(244, 63, 94, 0.38)' : 'rgba(33, 150, 243, 0.45)',
+                    border: isInspectingEnemy ? '1px dashed #f43f5e' : '1px dashed #90CAF9',
                     pointerEvents: 'none',
                   }}
                 />

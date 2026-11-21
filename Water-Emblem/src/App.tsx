@@ -2114,7 +2114,7 @@ export const App: React.FC = () => {
         ) : (
           <div style={{ display: 'flex', width: 'max-content', minWidth: '100%', minHeight: '100%', boxSizing: 'border-box', padding: `${HUD_CLEAR}px ${HUD_CLEAR}px ${HUD_CLEAR}px 8px` }}>
             <Grid2D
-              board={boardView}
+              board={boardView} isInspectingEnemy={Boolean(inspectedEnemy && !selectedExtUnit)}
               movementPath={moveCommitted ? null : plannedPath}
               pendingDestination={pendingMovePos}
               activeMovingUnit={activeMovingUnit}
@@ -2194,7 +2194,7 @@ export const App: React.FC = () => {
       <ActionMenuWindow
         anchorTile={pendingMovePos ?? selectedExtUnit?.unit.position ?? null}
         mountLabel={
-          selectedExtUnit && !pendingMovePos && !combatForecast && !staffForecast && !activeMovingUnit
+          selectedExtUnit && !combatForecast && !staffForecast && !activeMovingUnit
             && (selectedExtUnit.unit.mountedClassId || getClassDefinition(selectedExtUnit.unit.classId)?.mountKind)
             ? (selectedExtUnit.unit.mountedClassId ? 'Mount' : 'Dismount')
             : null

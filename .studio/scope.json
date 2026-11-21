@@ -1,11 +1,12 @@
 {
-  "task_id": "182-modern-ui-overhaul",
+  "task_id": "183-enemy-range-and-dismount",
   "plan_items": [
     178,
     179,
     180,
     181,
-    182
+    182,
+    183
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-21",
@@ -44,6 +45,7 @@
     "Water-Emblem/tests/core/aiUpgrade.test.ts",
     "Water-Emblem/src/ui/CombatForecastWindow.tsx",
     "Water-Emblem/tests/core/uiRender.test.ts",
-    "Water-Emblem/tests/core/actionMenuOrderAndDirectAttack.test.ts"
+    "Water-Emblem/tests/core/actionMenuOrderAndDirectAttack.test.ts",
+    "Water-Emblem/src/renderer/Grid2D.tsx"
   ]
 }

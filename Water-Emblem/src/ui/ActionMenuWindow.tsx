@@ -90,8 +90,13 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const isSoloMountAction = actions === null && mountLabel !== null;
 
   useLayoutEffect(() => {
+    if (isSoloMountAction) {
+      setPos(null);
+      return;
+    }
     const box = rootRef.current;
     const anchor = getTileRect(props.anchorTile);
     let next: { left: number; top: number } | null = null;
@@ -240,12 +245,13 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
       className="we-action-bar"
       style={{
         position: 'fixed',
-        ...(pos ? { top: `${pos.top}px`, left: `${pos.left}px` } : { right: '16px', bottom: '16px' }),
+        ...(isSoloMountAction
+          ? { left: '16px', bottom: '72px', width: 'auto' }
+          : (pos ? { top: `${pos.top}px`, left: `${pos.left}px`, width: 'clamp(180px, 15vw, 220px)' } : { right: '16px', bottom: '16px', width: 'clamp(180px, 15vw, 220px)' })),
         zIndex: 900,
         display: 'flex',
         flexDirection: 'column',
         gap: '4px',
-        width: 'clamp(180px, 15vw, 220px)',
         backgroundColor: 'rgba(11, 26, 66, 0.96)',
         border: '1.5px solid #c9a227',
         borderRadius: '8px',
