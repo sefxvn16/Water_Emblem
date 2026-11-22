@@ -152,6 +152,7 @@ Kho asset gốc FE3 (trước đây là `public/models/Original/`) nằm ngoài 
 - Quyết định lớn về kiến trúc, gameplay, phạm vi, dependency, dùng tài sản bên ngoài và phát hành thuộc chủ dự án.
 - Khi chưa rõ, kiểm tài liệu và code hiện có trước; nêu giả định hoặc điểm chưa kiểm chứng. Hỏi chủ dự án nếu câu trả lời làm thay đổi thiết kế. Không báo đã chạy, đã kiểm hoặc đã hoàn thành khi chưa có bằng chứng.
 - **Theo Fire Emblem, không tự bịa (chủ dự án 2026-11-19):** mọi cơ chế, luật và hiển thị phải theo dòng Fire Emblem hoặc quyết định đã ghi của chủ dự án. **CẤM BỊA, CẤM SÁNG TẠO LUNG TUNG KHI CHƯA HỎI NGƯỜI DÙNG** — không tự tạo luật, cơ chế hay hiển thị chưa được chủ xác nhận; điểm chưa chốt thì hỏi chủ, không tự suy diễn (bài học mục 101/C12, mục 143).
+- AI chỉ được ghi vào `Game_Design/decisions.md` khi có câu của chủ dự án trích dẫn được kèm ngày; không được tự viết nhãn phê duyệt.
 
 <!-- coding-studio-gate:begin -->
 ## Quality gate (every AI and person)
