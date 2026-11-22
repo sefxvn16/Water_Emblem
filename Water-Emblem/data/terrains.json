@@ -430,6 +430,7 @@
       "avoidBonus": 20,
       "defenseBonus": 2,
       "healPercent": 20,
+      "noMount": true,
       "movementCosts": {
         "foot": 2,
         "armor": 2,
@@ -447,6 +448,7 @@
       "avoidBonus": 20,
       "defenseBonus": 1,
       "healPercent": 0,
+      "noMount": true,
       "movementCosts": {
         "foot": 2,
         "armor": 2,
@@ -464,6 +466,7 @@
       "avoidBonus": 0,
       "defenseBonus": 0,
       "healPercent": 0,
+      "noMount": true,
       "movementCosts": {
         "foot": 1,
         "armor": 1,

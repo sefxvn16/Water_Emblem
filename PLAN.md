@@ -898,6 +898,11 @@ Mỗi cơ chế phải được chốt luật trong `Game_Design/battle.md` ho�
   - Tiêu chí xong: (1) Tạo data/endings.json chứa đầy đủ danh hiệu, lời kết mặc định và các lời kết thay thế (altEndings có triggerIfDead). (2) Xây dựng src/core/chapter/endings.ts phân giải chính xác ending của nhân vật khi đồng đội sống/chết và tổng hợp epilogue summary. (3) Tạo script tools/extract_fe3_dialogues.py bóc tách dữ liệu hội thoại từ text FE3 sang schema JSON. (4) test: Water-Emblem/tests/core/endingsFE3.test.ts > character endings and epilogue resolution match FE3 canon
   - Kết quả: PASS: Tạo data/endings.json với 113 character endings chuẩn FE3 và 5 alternate endings có triggerIfDead; xây dựng src/core/chapter/endings.ts phân giải ending và thống kê epilogue; phát triển tools/extract_fe3_dialogues.py; 68 test files (413 tests) PASS; build PASS; 49 e2e browser tests PASS; gate PASS tại c61e52e94c0f · DONE-OK 187 c61e52e94c0f 2026-11-22
 
+- [ ] 188. Nâng cấp giao diện, banner viện binh FE3 Akaneia Refined và hoàn thiện Game-feel: Hiển thị banner chuyển phase đặc biệt Reinforcements! khi viện binh xuất hiện theo fe3_version_E/project/text/phases/02.txt; hiển thị tag NoMount (khu vực cấm kị binh chiến đấu trên lưng ngựa) trong cửa sổ Terrain Info; chuẩn hóa battle text templates theo FE3 canon; tích hợp PhaseBanner vào App.tsx.
+  - Nguồn: Kế hoạch triển khai FE3 Akaneia Refined đã được người dùng phê duyệt ngày 2026-11-22 (Giai đoạn 4).
+  - Tiêu chí xong: (1) Tạo PhaseBanner.tsx hỗ trợ các phase player, enemy và reinforcements lướt qua màn hình; tích hợp vào App.tsx khi chuyển lượt hoặc khi viện binh đổ bộ. (2) Trong TerrainInfoWindow.tsx: hiển thị Avoid bonus, Def bonus, và tag NoMount khi ô địa hình là indoor/castle floor. (3) test: Water-Emblem/tests/core/gameFeelUpgrade.test.ts > phase banners, reinforcements, and FE3 battle templates match canon specifications
+  - Kết quả: ĐANG LÀM: chuẩn hóa PhaseBanner, TerrainInfoWindow, App.tsx và viết test.
+
 ## Lịch sử: mục 1–45 (do các phiên trước ghi)
 
 Bản đầy đủ trước khi lập lại kế hoạch lưu ở `work/plan-rebuild/PLAN.before-2026-11-17.md` (thư mục `work/` không được git theo dõi); phần đã commit nằm trong git của `PLAN.md`. Bảng dưới đây ghi tóm tắt, không phải bằng chứng hiện tại. Trạng thái thật của code và dữ liệu ghi ở phần "Hiện trạng đã kiểm".

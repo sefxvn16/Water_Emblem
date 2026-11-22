@@ -1,5 +1,5 @@
 {
-  "task_id": "187-fe3-endings-dialogues",
+  "task_id": "188-fe3-ui-game-feel",
   "plan_items": [
     178,
     179,
@@ -10,7 +10,8 @@
     184,
     185,
     186,
-    187
+    187,
+    188
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-22",
@@ -72,6 +73,10 @@
     "Water-Emblem/data/endings.json",
     "Water-Emblem/src/core/chapter/endings.ts",
     "tools/extract_fe3_dialogues.py",
-    "Water-Emblem/tests/core/endingsFE3.test.ts"
+    "Water-Emblem/tests/core/endingsFE3.test.ts",
+    "Water-Emblem/src/core/grid/types.ts",
+    "Water-Emblem/src/ui/PhaseBanner.tsx",
+    "Water-Emblem/src/ui/TerrainInfoWindow.tsx",
+    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts"
   ]
 }

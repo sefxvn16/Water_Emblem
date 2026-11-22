@@ -54,7 +54,7 @@ export const TerrainInfoWindow: React.FC<TerrainInfoWindowProps> = ({ terrainId,
         {terrain.name}
       </div>
       <div style={{ color: DS_COLORS.goldText, fontSize: '13px' }}>
-        {`Avoid : ${terrain.avoidBonus}%`}{terrain.defenseBonus > 0 ? ` · Def : +${terrain.defenseBonus}` : ''}
+        {`Avoid : ${terrain.avoidBonus}%`}{terrain.defenseBonus > 0 ? ` · Def : +${terrain.defenseBonus}` : ''}{terrain.noMount ? ' · 🚫 NoMount' : ''}
       </div>
     </div>
   );

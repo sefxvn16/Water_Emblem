@@ -27,6 +27,7 @@ import { canDanceFor, executeDance } from './core/turn/dance';
 import { evaluateAITurn, type AIDecision } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
+import { PhaseBanner } from './ui/PhaseBanner';
 import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
 import { resolveCombatConsequences } from './core/combat/combatResolution';
@@ -258,6 +259,7 @@ export const App: React.FC = () => {
   const [isProcessingAI, setIsProcessingAI] = useState(false);
   const [activeActingEnemyId, setActiveActingEnemyId] = useState<string | null>(null);
   const [gold, setGold] = useState<number>(0);
+  const [activePhaseBanner, setActivePhaseBanner] = useState<'player' | 'enemy' | 'reinforcements' | null>(null);
   const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
   const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
   const [doorStates, setDoorStates] = useState<Record<string, DoorState>>({});
@@ -1937,16 +1939,24 @@ export const App: React.FC = () => {
     // PLAN item 94: reinforcements arrive at the end of the enemy phase
     // and do not act on the turn they appear.
     let nextSpawnedReinforcements = spawnedReinforcements;
+    let anyReinforcementsSpawned = false;
     for (const group of dueReinforcements(currentChapter, turnState.turnNumber, spawnedReinforcements)) {
       const spawned = spawnReinforcements(phaseUnits, group, mapData, defaultTerrainRegistry);
       phaseUnits = spawned.units;
       nextSpawnedReinforcements = [...nextSpawnedReinforcements, group.id];
       if (spawned.spawned.length > 0) {
+        anyReinforcementsSpawned = true;
         logs.push(`⚔️ Enemy reinforcements have arrived! (${spawned.spawned.length} units)`);
       }
     }
     if (nextSpawnedReinforcements !== spawnedReinforcements) {
       setSpawnedReinforcements(nextSpawnedReinforcements);
+    }
+    // PLAN item 188: Reinforcements banner
+    if (anyReinforcementsSpawned) {
+      setActivePhaseBanner('reinforcements');
+      await sleep(1200);
+      setActivePhaseBanner(null);
     }
 
     setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
@@ -1958,6 +1968,10 @@ export const App: React.FC = () => {
     // Chuyển lại về Player Phase
     if (outcome === 'ongoing') {
       soundManager.playSfx('player_phase');
+      // PLAN item 188: Player phase banner
+      setActivePhaseBanner('player');
+      await sleep(1000);
+      setActivePhaseBanner(null);
       turnManager.switchPhase('player_phase');
       phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
       // PLAN items 121/124: tick transformation/imitation timers.
@@ -2059,6 +2073,8 @@ export const App: React.FC = () => {
 
   const handleEndTurn = () => {
     soundManager.playSfx('enemy_phase');
+    setActivePhaseBanner('enemy');
+    window.setTimeout(() => setActivePhaseBanner(null), 1000);
     turnManager.switchPhase('enemy_phase');
     syncState();
   };
@@ -2491,6 +2507,9 @@ export const App: React.FC = () => {
           {statusNotice}
         </div>
       )}
+
+      {/* FE3 Phase Transition Banner (PLAN item 188) */}
+      <PhaseBanner phase={activePhaseBanner} turnNumber={turnState.turnNumber} />
 
       {showPreparation && (
         <BattlePreparationModal
