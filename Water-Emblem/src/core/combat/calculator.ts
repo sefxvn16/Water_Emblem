@@ -1,4 +1,5 @@
 import balanceConfig from '../../../data/balance.json' with { type: 'json' };
+import classesJson from '../../../data/classes.json' with { type: 'json' };
 import {
   CombatForecast,
   CombatResult,
@@ -91,23 +92,32 @@ export function calculateDisplayedCombatStats(
   };
 }
 
+/** Effectiveness groups declared per class in data/classes.json (`effectiveTags`). */
+const effectiveTagsByClass = new Map<string, readonly string[]>(
+  classesJson.classes.map((entry) => [entry.id, entry.effectiveTags ?? []]),
+);
+
+/** Iote's Shield cancels only the anti-flier effectiveness of a weapon. */
+const IOTE_SHIELD_CANCELS_TAG = 'flier';
+
 export function isWeaponEffective(
   weapon: ItemDefinition,
   defenderUnit: GridUnit,
   defenderHasIoteShield = false
 ): boolean {
-  if (defenderHasIoteShield) return false;
   if (!weapon.effectiveAgainst || weapon.effectiveAgainst.length === 0) return false;
 
   const classDef = defenderUnit.classId ? getClassDefinition(defenderUnit.classId) : undefined;
-  const isCavalry = defenderUnit.moveType === 'cavalry' || classDef?.mountKind === 'ground';
-  const isFlier = defenderUnit.moveType === 'flier' || classDef?.mountKind === 'flying';
-  const isArmor = defenderUnit.moveType === 'armor' || defenderUnit.classId === 'knight' || defenderUnit.classId === 'general' || defenderUnit.classId === 'cataphract';
-  const isDragon = defenderUnit.classId === 'manakete' || (defenderUnit.transformTurns !== undefined && defenderUnit.transformTurns > 0) || defenderUnit.classId === 'dragon_knight';
+  const classTags = (defenderUnit.classId ? effectiveTagsByClass.get(defenderUnit.classId) : undefined) ?? [];
+  const isCavalry = defenderUnit.moveType === 'cavalry' || classDef?.mountKind === 'ground' || classTags.includes('cavalry');
+  const isFlier = defenderUnit.moveType === 'flier' || classDef?.mountKind === 'flying' || classTags.includes('flier');
+  const isArmor = defenderUnit.moveType === 'armor' || classTags.includes('armor');
+  const isDragon = classTags.includes('dragon');
 
   const moveType = defenderUnit.moveType as string;
   for (const rawTag of weapon.effectiveAgainst) {
     const tag = rawTag as string;
+    if (defenderHasIoteShield && tag === IOTE_SHIELD_CANCELS_TAG) continue;
     if (tag === moveType) return true;
     if (tag === 'cavalry' && isCavalry) return true;
     if (tag === 'flier' && isFlier) return true;

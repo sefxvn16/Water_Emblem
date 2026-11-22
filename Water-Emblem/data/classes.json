@@ -194,7 +194,10 @@
       "classSkill": "lancefaire",
       "dismountedClassId": "paladin",
       "description": "Heavily armored shock cavalry. Sacrifices some speed for formidable physical defense and crushing charge attacks.",
-      "descriptionVi": "Thiết kỵ xung kích bọc giáp nặng. Đổi lấy phòng thủ vật lý kiên cố và đòn húc uy lực."
+      "descriptionVi": "Thiết kỵ xung kích bọc giáp nặng. Đổi lấy phòng thủ vật lý kiên cố và đòn húc uy lực.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "outrider",
@@ -339,7 +342,10 @@
       },
       "classSkill": "pavise",
       "description": "Clad in heavy steel armor giving excellent defense. Sluggish movements with reduced mobility.",
-      "descriptionVi": "Mặc giáp sắt hạng nặng mang lại phòng thủ vượt trội. Di chuyển chậm và tầm đi hạn chế."
+      "descriptionVi": "Mặc giáp sắt hạng nặng mang lại phòng thủ vượt trội. Di chuyển chậm và tầm đi hạn chế.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "general",
@@ -386,7 +392,10 @@
       },
       "classSkill": "pavise",
       "description": "Experienced Armor Knights who have promoted. Impassable living fortresses possessing colossal strength and defense.",
-      "descriptionVi": "Chiến tướng trọng giáp đã thăng cấp. Pháo đài thép sống với sức mạnh và phòng thủ áp đảo."
+      "descriptionVi": "Chiến tướng trọng giáp đã thăng cấp. Pháo đài thép sống với sức mạnh và phòng thủ áp đảo.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "pegasus_knight",
@@ -534,7 +543,11 @@
       "classSkill": "lancefaire",
       "dismountedClassId": "dismounted_pegasus",
       "description": "Promoted Pegasus Knights who ride wyverns. Boast overwhelming strength and tough scales, though still weak to bows.",
-      "descriptionVi": "Kỵ sĩ Rồng đã thăng cấp cưỡi Wyvern. Sức mạnh áp đảo và lớp vảy cứng cáp, nhưng vẫn e sợ cung tên."
+      "descriptionVi": "Kỵ sĩ Rồng đã thăng cấp cưỡi Wyvern. Sức mạnh áp đảo và lớp vảy cứng cáp, nhưng vẫn e sợ cung tên.",
+      "effectiveTags": [
+        "flier",
+        "cavalry"
+      ]
     },
     {
       "id": "archer",
@@ -1813,7 +1826,10 @@
       "canTransform": true,
       "transformWeaponId": "dragon_breath",
       "description": "Ancient race possessing dragon blood. Use sacred dragonstones to transform into fearsome elemental dragons.",
-      "descriptionVi": "Tộc Rồng cổ xưa mang huyết thống thần thánh, dùng Long Thạch để hóa thân thành rồng nguyên tố uy nghi."
+      "descriptionVi": "Tộc Rồng cổ xưa mang huyết thống thần thánh, dùng Long Thạch để hóa thân thành rồng nguyên tố uy nghi.",
+      "effectiveTags": [
+        "dragon"
+      ]
     },
     {
       "id": "chameleon",
