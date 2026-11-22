@@ -14,7 +14,7 @@
   "legend": {
     "W": "wall",
     "_": "floor",
-    "s": "plains",
+    "s": "stairs",
     "p": "pillar",
     "G": "gate"
   },

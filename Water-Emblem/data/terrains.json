@@ -540,6 +540,40 @@
         "mage": null,
         "bandit": null
       }
+    },
+    {
+      "id": "stairs",
+      "name": "Stairs",
+      "nameVi": "Bậc thang",
+      "obstacleType": "none",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": 1,
+        "armor": 1,
+        "cavalry": 2,
+        "flier": 1,
+        "mage": 1,
+        "bandit": 1
+      }
+    },
+    {
+      "id": "lava",
+      "name": "Lava",
+      "nameVi": "Dung nham",
+      "obstacleType": "impassable",
+      "avoidBonus": 0,
+      "defenseBonus": 0,
+      "healPercent": 0,
+      "movementCosts": {
+        "foot": null,
+        "armor": null,
+        "cavalry": null,
+        "flier": 1,
+        "mage": null,
+        "bandit": null
+      }
     }
   ]
 }
