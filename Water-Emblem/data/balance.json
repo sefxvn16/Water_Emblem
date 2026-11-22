@@ -132,7 +132,11 @@
     "triangleAdvantageBonus": 10,
     "counterFreeBonus": 25,
     "healStaffBaseScore": 40,
-    "healPerHpWeight": 2
+    "healPerHpWeight": 2,
+    "antiSuicideThreshold": 2,
+    "selfHealHpThreshold": 0.4,
+    "selfHealScore": 85,
+    "maxRangeKitingBonus": 15
   },
   "popupDurationMs": 1400,
   "statCaps": {

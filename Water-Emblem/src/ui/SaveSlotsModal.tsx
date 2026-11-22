@@ -11,7 +11,7 @@ import { chapters } from '../core/data/chapterData';
 
 interface SaveSlotsModalProps {
   mode: 'load' | 'save';
-  currentSnapshotToSave?: () => any;
+  currentSnapshotToSave?: () => SaveGameData;
   onSelectLoad: (data: SaveGameData, slotId: string) => void;
   onConfirmSave?: (slotId: string) => void;
   onNewGameAtSlot?: (slotId: string) => void;

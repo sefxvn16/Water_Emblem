@@ -2,6 +2,7 @@ import React from 'react';
 import { FACTION_TONES, type FactionTone } from '../core/grid/factionTones';
 import { DS_COLORS, DS_RADII, DS_SPACING, statRowStyle, statValueStyle } from './designSystem';
 import type { ExtendedUnitState } from '../core/data/chapterData';
+import type { SupportRelationship } from '../core/combat/support';
 import { skillIdsOf } from '../core/class/classRules';
 import { SKILLS } from '../core/combat/skills';
 import { getItemIcon } from './itemIcon';
@@ -317,8 +318,8 @@ export const SupportsTab: React.FC<{
   allUnits: readonly ExtendedUnitState[];
   tone: FactionTone;
 }> = ({ unit: u, allUnits, tone }) => {
-  const rels = supportsData.relationships.filter(
-    (r: any) => r.supportedId === u.unit.id || r.supporterId === u.unit.id
+  const rels = (supportsData.relationships as readonly SupportRelationship[]).filter(
+    (r: SupportRelationship) => r.supportedId === u.unit.id || r.supporterId === u.unit.id
   );
 
   return (
@@ -327,7 +328,7 @@ export const SupportsTab: React.FC<{
         <SectionTitle>Support Bonds & Affinities</SectionTitle>
         {rels.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {rels.map((rel: any, idx: number) => {
+            {rels.map((rel: SupportRelationship, idx: number) => {
               const partnerId = rel.supportedId === u.unit.id ? rel.supporterId : rel.supportedId;
               const partnerName = CHAR_NAME_BY_ID.get(partnerId) ?? partnerId;
               const partnerUnit = allUnits.find((ent) => ent.unit.id === partnerId);

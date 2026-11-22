@@ -24,7 +24,7 @@ import {
 } from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
 import { canDanceFor, executeDance } from './core/turn/dance';
-import { evaluateAITurn, type AIDecision } from './core/ai/decision';
+import { evaluateAITurn, sortEnemyTurnOrder, type AIDecision } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { PhaseBanner } from './ui/PhaseBanner';
@@ -34,7 +34,7 @@ import { resolveCombatConsequences, type LevelUpEvent } from './core/combat/comb
 import { computeDangerZone, computeInspectedEnemyThreatKeys } from './core/simulation/enemyTurnSimulation';
 import {
   bossStartEvent, canOpenChest, canOpenDoor, openChest, openDoor, pillageVillage, recruit, seize, visitVillage,
-  type ChapterState, type ChestState, type DialogueLine, type DoorState, type GameEvent, type VillageState,
+  type ChapterState, type ChestState, type DialogueLine, type DialogueTable, type DoorState, type GameEvent, type VillageState,
 } from './core/chapter/events';
 import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
@@ -114,6 +114,12 @@ const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_02: ch02Dialogues as ChapterDialogueData,
   chapter_03: ch03Dialogues as ChapterDialogueData,
 };
+
+declare global {
+  interface Window {
+    __WATER_EMBLEM_STATE__?: unknown;
+  }
+}
 
 export const App: React.FC = () => {
   const [currentChapterId, setCurrentChapterId] = useState<string>('chapter_01');
@@ -319,7 +325,7 @@ export const App: React.FC = () => {
   }, [activeScreen, showStoryIntro, showPreparation, chapterOutcome, turnState.activePhase]);
 
   useEffect(() => {
-    (window as any).__WATER_EMBLEM_STATE__ = {
+    window.__WATER_EMBLEM_STATE__ = {
       extendedUnits,
       turnState,
       currentChapterId,
@@ -969,9 +975,9 @@ export const App: React.FC = () => {
         result,
         rng: defaultRNG,
         itemById: ITEM_BY_ID,
-        itemsList: itemsJson.items as any,
+        itemsList: itemsJson.items as ItemDefinition[],
         chapter: currentChapter,
-        dialogues: currentDialogues as any,
+        dialogues: currentDialogues as DialogueTable,
         gold,
         villageStates,
       });
@@ -1753,9 +1759,31 @@ export const App: React.FC = () => {
     const weaponsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.weapon]));
     let nextVillageStates: Record<string, VillageState> = { ...villageStates };
 
+    const buildAIContext = (actingEnemy: ExtendedUnitState) => ({
+      map: mapData,
+      terrains: defaultTerrainRegistry,
+      units: phaseUnits.map((u) => u.unit),
+      unitStatsMap: statsMap,
+      unitWeaponsMap: weaponsMap,
+      unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
+      unitLevelsMap: new Map(phaseUnits.map((u) => [u.unit.id, u.level])),
+      sphereHolders: {
+        light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
+        dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
+      },
+      villageTargets: currentChapter.villages?.filter((v) => (nextVillageStates[v.id] ?? 'intact') === 'intact').map((v) => v.position),
+      chestTargets: (currentChapter.chests ?? []).filter((c) => chestStates[c.id] !== 'opened').map((c) => c.position),
+      patrolTargets: actingEnemy.patrolPoints,
+      turnNumber: turnState.turnNumber,
+      openedDoors: openedDoorKeys,
+      unitInventoriesMap: new Map(phaseUnits.map((u) => [u.unit.id, u.inventory])),
+      itemsCatalog: ITEM_BY_ID,
+    });
+
+    const sortedEnemies = activeEnemies.length > 0 ? sortEnemyTurnOrder(activeEnemies, buildAIContext(activeEnemies[0]!)) : [];
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
 
-    for (const enemy of activeEnemies) {
+    for (const enemy of sortedEnemies) {
       setActiveActingEnemyId(enemy.unit.id);
       scrollToTile(enemy.unit.position);
       if (!fastPlayback) await sleep(200);
@@ -1766,39 +1794,12 @@ export const App: React.FC = () => {
 
       if (isOpeningMoveActive) {
         const target = openingMove.targetPosition;
-        if (enemy.unit.position.x !== target.x || enemy.unit.position.y !== target.y) {
-          decision = { type: 'move_only', movePosition: target };
-        } else {
-          decision = { type: 'wait' };
-        }
-        if (openingMove.nextAiRole) {
-          enemy.aiRole = openingMove.nextAiRole;
-        }
+        decision = (enemy.unit.position.x !== target.x || enemy.unit.position.y !== target.y)
+          ? { type: 'move_only', movePosition: target }
+          : { type: 'wait' };
+        if (openingMove.nextAiRole) enemy.aiRole = openingMove.nextAiRole;
       } else {
-        decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', {
-        map: mapData,
-        terrains: defaultTerrainRegistry,
-        units: phaseUnits.map((u) => u.unit),
-        unitStatsMap: statsMap,
-        unitWeaponsMap: weaponsMap,
-        unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
-        unitLevelsMap: new Map(phaseUnits.map((u) => [u.unit.id, u.level])),
-        sphereHolders: {
-          light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
-          dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
-        },
-        villageTargets: currentChapter.villages?.filter(
-          (v) => (nextVillageStates[v.id] ?? 'intact') === 'intact',
-        ).map((v) => v.position),
-        chestTargets: (currentChapter.chests ?? [])
-          .filter((c) => chestStates[c.id] !== 'opened')
-          .map((c) => c.position),
-        patrolTargets: enemy.patrolPoints,
-        turnNumber: turnState.turnNumber,
-        openedDoors: openedDoorKeys,
-        unitInventoriesMap: new Map(phaseUnits.map((u) => [u.unit.id, u.inventory])),
-        itemsCatalog: ITEM_BY_ID,
-        });
+        decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', buildAIContext(enemy));
       }
 
       if (decision.type === 'attack') {
@@ -1839,9 +1840,9 @@ export const App: React.FC = () => {
           result,
           rng: defaultRNG,
           itemById: ITEM_BY_ID,
-          itemsList: itemsJson.items as any,
+          itemsList: itemsJson.items as ItemDefinition[],
           chapter: currentChapter,
-          dialogues: currentDialogues as any,
+          dialogues: currentDialogues as DialogueTable,
           gold,
           villageStates: nextVillageStates,
         });
@@ -1891,6 +1892,18 @@ export const App: React.FC = () => {
           }
         }
         await sleep(200);
+      } else if (decision.type === 'item_use') {
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, decision.movePosition);
+        const changed = useVulnerary(enemy, decision.item);
+        if (changed) {
+          enemy.stats = changed.stats;
+          enemy.inventory = changed.inventory;
+          statsMap.set(enemy.unit.id, changed.stats);
+          soundManager.playSfx('heal');
+          logs.push(`  🧪 ${enemy.unit.name} used ${decision.item.name} and recovered ${decision.item.healAmount ?? 10} HP!`);
+        }
+        await sleep(200);
       } else if (decision.type === 'move_only') {
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, decision.movePosition);
@@ -1900,7 +1913,7 @@ export const App: React.FC = () => {
         logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
       }
 
-      if (decision.type === 'move_only' || decision.type === 'attack' || decision.type === 'staff') {
+      if (decision.type === 'move_only' || decision.type === 'attack' || decision.type === 'staff' || decision.type === 'item_use') {
         const raid = pillageVillage({ units: phaseUnits, gold, villageStates: nextVillageStates }, enemy.unit.id, currentChapter);
         nextVillageStates = { ...raid.state.villageStates };
         logs.push(...eventLogLines(raid.events));
@@ -1988,9 +2001,7 @@ export const App: React.FC = () => {
 
   const applyLoadedSnapshot = (data: SaveGameData) => {
     setPopupQueue([]);
-    if (data.chapterId !== currentChapterId) {
-      setCurrentChapterId(data.chapterId);
-    }
+    if (data.chapterId !== currentChapterId) setCurrentChapterId(data.chapterId);
     setExtendedUnits(data.extendedUnits);
     setReserveUnits(data.reserveUnits ?? []);
     setConvoy(data.convoy ?? []);
@@ -2025,25 +2036,11 @@ export const App: React.FC = () => {
     const ok = await saveGameState({
       chapterId: currentChapterId,
       turnState: { turnNumber: turnState.turnNumber, activePhase: turnState.activePhase },
-      extendedUnits,
-      reserveUnits,
-      convoy,
-      rngSeed: defaultRNG.getSeed(),
-      chapterOutcome,
-      showStoryIntro,
-      combatLog,
-      gold,
-      villageStates,
-      chestStates,
-      doorStates,
-      spawnedReinforcements,
-      difficulty,
+      extendedUnits, reserveUnits, convoy, rngSeed: defaultRNG.getSeed(),
+      chapterOutcome, showStoryIntro, combatLog, gold, villageStates,
+      chestStates, doorStates, spawnedReinforcements, difficulty,
     }, slotId);
-    if (ok) {
-      showNotice(`✓ Game progress saved to ${slotId.toUpperCase()} successfully!`);
-    } else {
-      showNotice('Failed to save progress.');
-    }
+    showNotice(ok ? `✓ Game progress saved to ${slotId.toUpperCase()} successfully!` : 'Failed to save progress.');
   };
 
   const handleLoad = async (slotId: string = 'slot1') => {
@@ -2145,29 +2142,13 @@ export const App: React.FC = () => {
 
       <BattleSettingsMenu
         forceCloseKey={[currentChapterId, showPreparation, showStoryIntro, activeVillageDialogue !== null, chapterOutcome, activeScreen].join('|')}
-        chapterId={currentChapterId}
-        chapterName={currentChapter.name}
-        objectiveText={chapterObjective.description ?? ''}
-        gold={gold}
-        turnNumber={turnState.turnNumber}
-        activePhase={turnState.activePhase}
-        viewMode={viewMode}
-        isMuted={isMuted}
-        volume={volume}
-        onVolume={handleVolume}
-        onChapterChange={loadChapter}
-        onTitle={() => setActiveScreen('title')}
-        onWorldMap={() => setActiveScreen('world_map')}
-        onSaveFiles={() => {
-          setSaveSlotsMode('load');
-          setActiveScreen('save_slots');
-        }}
-        onSave={() => handleSave()}
-        onLoad={() => handleLoad()}
-        onViewMode={setViewMode}
-        autoEndTurn={autoEndTurn}
-        onAutoEndTurn={setAutoEndTurnState}
-        onToggleMute={handleToggleMute}
+        chapterId={currentChapterId} chapterName={currentChapter.name} objectiveText={chapterObjective.description ?? ''}
+        gold={gold} turnNumber={turnState.turnNumber} activePhase={turnState.activePhase} viewMode={viewMode}
+        isMuted={isMuted} volume={volume} onVolume={handleVolume} onChapterChange={loadChapter}
+        onTitle={() => setActiveScreen('title')} onWorldMap={() => setActiveScreen('world_map')}
+        onSaveFiles={() => { setSaveSlotsMode('load'); setActiveScreen('save_slots'); }}
+        onSave={() => handleSave()} onLoad={() => handleLoad()} onViewMode={setViewMode}
+        autoEndTurn={autoEndTurn} onAutoEndTurn={setAutoEndTurnState} onToggleMute={handleToggleMute}
         leading={turnState.activePhase === 'player_phase' && (
           <button
             onClick={handleEndTurn}
@@ -2186,25 +2167,14 @@ export const App: React.FC = () => {
 
       {combatForecast && selectedExtUnit && selectedTarget && !activeMovingUnit && (
         <CombatForecastWindow
-          forecast={combatForecast}
-          attacker={selectedExtUnit}
-          defender={selectedTarget}
+          forecast={combatForecast} attacker={selectedExtUnit} defender={selectedTarget}
           onConfirm={handleConfirmAttack}
-          onCancel={() => {
-            // PLAN items 158/163/179: Cancelling the forecast returns to the
-            // weapon picker so the player can re-select or cancel out.
-            setCombatForecast(null);
-            setWeaponPickerOpen(true);
-          }}
+          onCancel={() => { setCombatForecast(null); setWeaponPickerOpen(true); }}
         />
       )}
 
       {staffForecast && !activeMovingUnit && (
-        <StaffForecastWindow
-          forecast={staffForecast}
-          onConfirm={handleConfirmStaff}
-          onCancel={handleCancelStaff}
-        />
+        <StaffForecastWindow forecast={staffForecast} onConfirm={handleConfirmStaff} onCancel={handleCancelStaff} />
       )}
 
       <ActionMenuWindow
@@ -2218,67 +2188,34 @@ export const App: React.FC = () => {
         actions={pendingMovePos && moveCommitted && !combatForecast && !staffForecast && !attackTargeting && !tradeTargeting && !activeMovingUnit && !weaponPickerOpen && !staffPickerOpen && !tradeState && !storageOpen && !shopOpen && !arenaOpen && !staffTargeting && !warpTargeting ? {
           unitName: selectedExtUnit?.unit.name,
           canSeize: chapterObjective.type === 'seize' && selectedExtUnit?.unit.id === currentChapter.lordUnitId
-            && pendingMovePos.x === chapterObjective.seizeTargetTile?.x
-            && pendingMovePos.y === chapterObjective.seizeTargetTile?.y,
+            && pendingMovePos.x === chapterObjective.seizeTargetTile?.x && pendingMovePos.y === chapterObjective.seizeTargetTile?.y,
           talkTargetName: talkTarget?.unit.name ?? null,
-          canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp
-            && selectedExtUnit.inventory.some((i) => i.itemId === 'vulnerary' && i.uses > 0)),
+          canUseVulnerary: Boolean(selectedExtUnit && selectedExtUnit.stats.hp < selectedExtUnit.stats.maxHp && selectedExtUnit.inventory.some((i) => i.itemId === 'vulnerary' && i.uses > 0)),
           promotions: selectedExtUnit && selectedExtUnit.level >= 10
             ? (getClassDefinition(selectedExtUnit.unit.classId)?.promotions ?? []).map((id) => ({ id, name: getClassDefinition(id)?.name ?? id })) : [],
           villageName: currentVillageAtPendingPos?.name ?? null,
           hasAttackTargets: attackableTargets.length > 0,
           targetPositions: attackableTargets.map((t) => t.unit.position),
-          equipOptions: selectedExtUnit
-            ? getUsableWeapons(selectedExtUnit, ITEM_BY_ID)
-              .filter((weapon) => !weapon.equipped)
-              .map((weapon) => ({ itemId: weapon.itemId, name: weapon.definition.name }))
-            : [],
+          equipOptions: selectedExtUnit ? getUsableWeapons(selectedExtUnit, ITEM_BY_ID).filter((w) => !w.equipped).map((w) => ({ itemId: w.itemId, name: w.definition.name })) : [],
           canTrade: tradePartners.length > 0,
           canCancelMove: !selectedExtUnit?.unit.hasTraded && !selectedExtUnit?.unit.hasStored,
-          canStorage,
-          canShop,
+          canStorage, canShop,
           canOpenChest: Boolean(selectedExtUnit && currentChestAtPendingPos && canOpenChest(selectedExtUnit, currentChapter)),
           canOpenDoor: Boolean(selectedExtUnit && doorAtPendingPos && canOpenDoor(selectedExtUnit)),
           canArena,
-          canEscape: chapterObjective.type === 'escape' && Boolean(pendingMovePos
-            && (chapterObjective.escapeTiles ?? []).some((t) => t.x === pendingMovePos.x && t.y === pendingMovePos.y)),
+          canEscape: chapterObjective.type === 'escape' && Boolean(pendingMovePos && (chapterObjective.escapeTiles ?? []).some((t) => t.x === pendingMovePos.x && t.y === pendingMovePos.y)),
           canTransform: Boolean(selectedExtUnit && canTransform(selectedExtUnit)),
           danceTargetName: danceTarget?.unit.name ?? null,
           imitateTargetName: imitateTarget?.unit.name ?? null,
-          staffOptions: selectedExtUnit
-            ? getUsableStaves(selectedExtUnit, ITEM_BY_ID)
-              .filter((staff) => (isHealStaff(staff) || isWarpStaff(staff))
-                && getStaffTargets(extendedUnits, selectedExtUnit, staff, pendingMovePos).length > 0)
-              .map((staff) => ({ itemId: staff.id, name: staff.name }))
-            : [],
+          staffOptions: selectedExtUnit ? getUsableStaves(selectedExtUnit, ITEM_BY_ID).filter((s) => (isHealStaff(s) || isWarpStaff(s)) && getStaffTargets(extendedUnits, selectedExtUnit, s, pendingMovePos).length > 0).map((s) => ({ itemId: s.id, name: s.name })) : [],
         } : null}
-        onToggleMount={handleToggleMounted}
-        onAttack={handleAttack}
-        onEquip={handleEquip}
-        onTrade={handleTrade}
-        onStorage={() => {
-          storageChangedRef.current = false;
-          setStorageOpen(true);
-        }}
-        onShop={() => {
-          shopChangedRef.current = false;
-          setShopOpen(true);
-        }}
-        onOpenChest={handleOpenChest}
-        onOpenDoor={handleOpenDoor}
-        onArena={() => setArenaOpen(true)}
-        onStaff={handleStaff}
-        onSeize={handleSeize}
-        onEscape={handleEscape}
-        onTransform={handleTransform}
-        onDance={handleDance}
-        onImitate={handleImitate}
-        onTalk={handleTalk}
-        onUseVulnerary={handleUseVulnerary}
-        onPromote={handlePromote}
-        onVisitVillage={handleVisitVillage}
-        onWait={handleConfirmWait}
-        onCancelMove={handleCancelMove}
+        onToggleMount={handleToggleMounted} onAttack={handleAttack} onEquip={handleEquip} onTrade={handleTrade}
+        onStorage={() => { storageChangedRef.current = false; setStorageOpen(true); }}
+        onShop={() => { shopChangedRef.current = false; setShopOpen(true); }}
+        onOpenChest={handleOpenChest} onOpenDoor={handleOpenDoor} onArena={() => setArenaOpen(true)}
+        onStaff={handleStaff} onSeize={handleSeize} onEscape={handleEscape} onTransform={handleTransform}
+        onDance={handleDance} onImitate={handleImitate} onTalk={handleTalk} onUseVulnerary={handleUseVulnerary}
+        onPromote={handlePromote} onVisitVillage={handleVisitVillage} onWait={handleConfirmWait} onCancelMove={handleCancelMove}
       />
 
       {weaponPickerOpen && selectedExtUnit && pendingMovePos && (
@@ -2356,58 +2293,34 @@ export const App: React.FC = () => {
         <ConvoyWindow
           unitName={selectedExtUnit.unit.name}
           unitAvatarUrl={selectedExtUnit.avatarUrl}
-          unitItems={tradeSide(selectedExtUnit).items}
-          convoyItems={convoyRows}
-          convoyCount={convoy.length}
-          convoyCapacity={CONVOY_SLOTS}
-          onDeposit={handleDeposit}
-          onWithdraw={handleWithdraw}
-          onClose={handleStorageClose}
+          unitItems={tradeSide(selectedExtUnit).items} convoyItems={convoyRows}
+          convoyCount={convoy.length} convoyCapacity={CONVOY_SLOTS}
+          onDeposit={handleDeposit} onWithdraw={handleWithdraw} onClose={handleStorageClose}
         />
       )}
 
       {shopOpen && selectedExtUnit && (
         <ShopWindow
-          unitName={selectedExtUnit.unit.name}
-          gold={gold}
+          unitName={selectedExtUnit.unit.name} gold={gold}
           stock={getShopStock(ITEM_BY_ID).map((def) => ({
-            itemId: def.id,
-            name: def.name,
-            type: def.type,
-            price: def.price ?? 0,
-            maxUses: def.maxUses,
-            canBuy: gold >= (def.price ?? 0)
-              && (hasRoomFor(selectedExtUnit, def.id, ITEM_BY_ID) || convoy.length < CONVOY_SLOTS),
+            itemId: def.id, name: def.name, type: def.type, price: def.price ?? 0, maxUses: def.maxUses,
+            canBuy: gold >= (def.price ?? 0) && (hasRoomFor(selectedExtUnit, def.id, ITEM_BY_ID) || convoy.length < CONVOY_SLOTS),
           }))}
           sellItems={selectedExtUnit.inventory.flatMap((item) => {
             const def = ITEM_BY_ID.get(item.itemId);
             return def ? [{
-              itemId: item.itemId,
-              name: def.name,
-              type: def.type,
-              uses: item.uses,
-              maxUses: def.maxUses,
-              equipped: selectedExtUnit.weapon?.id === item.itemId,
-              sellValue: sellValue(def, item.uses),
+              itemId: item.itemId, name: def.name, type: def.type, uses: item.uses, maxUses: def.maxUses,
+              equipped: selectedExtUnit.weapon?.id === item.itemId, sellValue: sellValue(def, item.uses),
             }] : [];
           })}
-          onBuy={handleBuy}
-          onSell={handleSell}
-          onClose={handleShopClose}
+          onBuy={handleBuy} onSell={handleSell} onClose={handleShopClose}
         />
       )}
 
       {arenaOpen && selectedExtUnit && (
         <ArenaWindow
-          unitName={selectedExtUnit.unit.name}
-          gold={gold}
-          tier={arenaTier}
-          opponent={arenaOpponent}
-          outcome={arenaOutcome}
-          onSelectTier={handleArenaTier}
-          onFight={handleArenaFight}
-          onFightAgain={handleArenaAgain}
-          onLeave={handleArenaLeave}
+          unitName={selectedExtUnit.unit.name} gold={gold} tier={arenaTier} opponent={arenaOpponent} outcome={arenaOutcome}
+          onSelectTier={handleArenaTier} onFight={handleArenaFight} onFightAgain={handleArenaAgain} onLeave={handleArenaLeave}
         />
       )}
 
@@ -2416,15 +2329,9 @@ export const App: React.FC = () => {
         if (!entry) return null;
         return (
           <ConvoyWindow
-            unitName={entry.unit.name}
-            unitAvatarUrl={entry.avatarUrl}
-            unitItems={tradeSide(entry).items}
-            convoyItems={convoyRows}
-            convoyCount={convoy.length}
-            convoyCapacity={CONVOY_SLOTS}
-            onDeposit={handlePrepDeposit}
-            onWithdraw={handlePrepWithdraw}
-            onClose={() => setPrepConvoyUnitId(null)}
+            unitName={entry.unit.name} unitAvatarUrl={entry.avatarUrl} unitItems={tradeSide(entry).items}
+            convoyItems={convoyRows} convoyCount={convoy.length} convoyCapacity={CONVOY_SLOTS}
+            onDeposit={handlePrepDeposit} onWithdraw={handlePrepWithdraw} onClose={() => setPrepConvoyUnitId(null)}
           />
         );
       })()}
@@ -2437,8 +2344,7 @@ export const App: React.FC = () => {
         const partners = all.filter((u) => u.unit.faction === 'player' && !u.unit.isDead && u.unit.id !== left.unit.id);
         return (
           <TradeWindow
-            left={tradeSide(left)}
-            right={partner ? tradeSide(partner) : null}
+            left={tradeSide(left)} right={partner ? tradeSide(partner) : null}
             partnerChoices={partners.map((p) => ({ unitId: p.unit.id, unitName: p.unit.name, avatarUrl: p.avatarUrl }))}
             onPickPartner={(unitId) => setPrepTrade({ unitId: left.unit.id, partnerId: unitId })}
             onSwap={(leftIndex, rightIndex) => {
@@ -2503,84 +2409,50 @@ export const App: React.FC = () => {
 
       {showPreparation && (
         <BattlePreparationModal
-          chapterName={currentChapter.name}
-          lordName={lordName}
-          lordUnitId={currentChapter.lordUnitId}
+          chapterName={currentChapter.name} lordName={lordName} lordUnitId={currentChapter.lordUnitId}
           units={[...extendedUnits, ...reserveUnits].filter(({ unit }) => unit.faction === 'player')}
           deployedIds={new Set(extendedUnits.map(({ unit }) => unit.id))}
           deployedCount={extendedUnits.filter(({ unit }) => unit.faction === 'player' && !unit.isDead).length}
           deploymentLimit={currentChapter.units.filter(({ unit }) => unit.faction === 'player').length}
-          onToggle={toggleDeployment}
-          onStart={() => setShowPreparation(false)}
-          onOpenConvoy={(unitId) => setPrepConvoyUnitId(unitId)}
-          onTrade={(unitId) => setPrepTrade({ unitId, partnerId: null })}
-          reclassAvailable={reclassAvailable}
-          onReclass={handlePrepReclass}
+          onToggle={toggleDeployment} onStart={() => setShowPreparation(false)}
+          onOpenConvoy={(unitId) => setPrepConvoyUnitId(unitId)} onTrade={(unitId) => setPrepTrade({ unitId, partnerId: null })}
+          reclassAvailable={reclassAvailable} onReclass={handlePrepReclass}
         />
       )}
 
-      {/* Opening Story Dialogue Cutscene Modal (Fire Emblem Visual Novel Style) */}
       {showStoryIntro && !showPreparation && activeScreen === 'none' && (
         <DialogueBox
-          dialogues={currentDialogues.opening}
-          title={`📜 ${currentChapter.name}`}
-          themeColor="blue"
-          actionButtonText="⚔️ Start Battle"
+          dialogues={currentDialogues.opening} title={`📜 ${currentChapter.name}`} themeColor="blue" actionButtonText="⚔️ Start Battle"
           summaryBox={
             <div style={{ backgroundColor: '#1e293b', padding: '10px 14px', borderRadius: '8px', borderLeft: '4px solid #f59e0b', fontSize: '13px' }}>
-              <strong style={{ color: '#fbbf24' }}>Victory Objective:</strong> {chapterObjective.description}.
-              <br />
+              <strong style={{ color: '#fbbf24' }}>Victory Objective:</strong> {chapterObjective.description}.<br />
               <span style={{ color: '#ef4444' }}>Defeat if {lordName} falls in battle.</span>
             </div>
           }
-          onConfirm={() => setShowStoryIntro(false)}
-          onSkip={() => setShowStoryIntro(false)}
+          onConfirm={() => setShowStoryIntro(false)} onSkip={() => setShowStoryIntro(false)}
         />
       )}
 
-      {/* Village Dialogue Modal (Fire Emblem Visual Novel Style) */}
       {activeVillageDialogue && (
         <DialogueBox
-          dialogues={activeVillageDialogue.lines}
-          title={`🏡 ${activeVillageDialogue.villageName.toUpperCase()}`}
-          themeColor="amber"
-          actionButtonText="Continue ➔"
-          summaryBox={
-            <div style={{ padding: '10px 14px', backgroundColor: '#451a03', border: '1px solid #d97706', borderRadius: '8px', color: '#fef08a', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>
-              🎁 {activeVillageDialogue.rewardText}
-            </div>
-          }
-          onConfirm={() => setActiveVillageDialogue(null)}
-          onSkip={() => setActiveVillageDialogue(null)}
+          dialogues={activeVillageDialogue.lines} title={`🏡 ${activeVillageDialogue.villageName.toUpperCase()}`} themeColor="amber" actionButtonText="Continue ➔"
+          summaryBox={<div style={{ padding: '10px 14px', backgroundColor: '#451a03', border: '1px solid #d97706', borderRadius: '8px', color: '#fef08a', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>🎁 {activeVillageDialogue.rewardText}</div>}
+          onConfirm={() => setActiveVillageDialogue(null)} onSkip={() => setActiveVillageDialogue(null)}
         />
       )}
 
-      {/* Victory Modal with Ending Story Cutscene (Fire Emblem Visual Novel Style) */}
       {chapterOutcome === 'victory' && (
         <DialogueBox
-          dialogues={currentDialogues.ending}
-          title="🏆 STAGE CLEAR!"
-          themeColor="green"
-          actionButtonText={
-            currentChapterId === 'chapter_01'
-              ? '⚔️ Advance to Chapter 2: The Pirates of Galder ➔'
-              : currentChapterId === 'chapter_02'
-              ? '⚔️ Advance to Chapter 3: The Devil Mountain ➔'
-              : '🔄 Continue / Restart Chapter ➔'
-          }
+          dialogues={currentDialogues.ending} title="🏆 STAGE CLEAR!" themeColor="green"
+          actionButtonText={currentChapterId === 'chapter_01' ? '⚔️ Advance to Chapter 2: The Pirates of Galder ➔' : currentChapterId === 'chapter_02' ? '⚔️ Advance to Chapter 3: The Devil Mountain ➔' : '🔄 Continue / Restart Chapter ➔'}
           onConfirm={() => {
-            if (currentChapterId === 'chapter_01') {
-              loadChapter('chapter_02', [...extendedUnits, ...reserveUnits]);
-            } else if (currentChapterId === 'chapter_02') {
-              loadChapter('chapter_03', [...extendedUnits, ...reserveUnits]);
-            } else {
-              handleRestartChapter();
-            }
+            if (currentChapterId === 'chapter_01') loadChapter('chapter_02', [...extendedUnits, ...reserveUnits]);
+            else if (currentChapterId === 'chapter_02') loadChapter('chapter_03', [...extendedUnits, ...reserveUnits]);
+            else handleRestartChapter();
           }}
         />
       )}
 
-      {/* Defeat Modal */}
       {chapterOutcome === 'defeat' && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
           <div style={{ backgroundColor: '#7f1d1d', border: '2px solid #ef4444', borderRadius: '12px', padding: '28px', maxWidth: '460px', textAlign: 'center', boxShadow: '0 8px 30px rgba(0,0,0,0.8)' }}>
@@ -2589,73 +2461,44 @@ export const App: React.FC = () => {
               Prince Marth has fallen in battle...<br />The kingdom of Altea has lost all hope.
             </p>
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-              <button onClick={() => handleLoad()} style={{ padding: '10px 20px', backgroundColor: '#3b82f6', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
-                📂 Load Last Save
-              </button>
-              <button onClick={handleRestartChapter} style={{ padding: '10px 20px', backgroundColor: '#475569', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
-                🔄 Restart Chapter
-              </button>
+              <button onClick={() => handleLoad()} style={{ padding: '10px 20px', backgroundColor: '#3b82f6', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>📂 Load Last Save</button>
+              <button onClick={handleRestartChapter} style={{ padding: '10px 20px', backgroundColor: '#475569', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>🔄 Restart Chapter</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Title Screen Overlay */}
       {activeScreen === 'title' && (
         <TitleScreen
           onStartNewGame={() => setActiveScreen('book_select')}
-          onOpenSaveSlots={() => {
-            setSaveSlotsMode('load');
-            setActiveScreen('save_slots');
-          }}
-          onOpenWorldMap={() => setActiveScreen('world_map')}
-          onContinueGame={() => setActiveScreen('none')}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-          difficulty={difficulty}
-          onDifficultyChange={setDifficulty}
+          onOpenSaveSlots={() => { setSaveSlotsMode('load'); setActiveScreen('save_slots'); }}
+          onOpenWorldMap={() => setActiveScreen('world_map')} onContinueGame={() => setActiveScreen('none')}
+          isMuted={isMuted} onToggleMute={handleToggleMute} difficulty={difficulty} onDifficultyChange={setDifficulty}
         />
       )}
 
-      {/* Book Select Modal */}
       {activeScreen === 'book_select' && (
         <BookSelectModal
           onSelectBook={(bookId) => {
-            if (bookId === 'book1') {
-              loadChapter('chapter_01');
-              setActiveScreen('world_map');
-            } else {
-              alert('Book 2: The Mystery of the Emblem (Hardin Chronicles) is currently in development!');
-            }
+            if (bookId === 'book1') { loadChapter('chapter_01'); setActiveScreen('world_map'); }
+            else alert('Book 2: The Mystery of the Emblem (Hardin Chronicles) is currently in development!');
           }}
           onClose={() => setActiveScreen('none')}
         />
       )}
 
-      {/* Save Slots Modal */}
       {activeScreen === 'save_slots' && (
         <SaveSlotsModal
           mode={saveSlotsMode}
-          onSelectLoad={(data) => {
-            applyLoadedSnapshot(data);
-            setActiveScreen('none');
-          }}
-          onConfirmSave={async (slotId) => {
-            await handleSave(slotId);
-            setActiveScreen('none');
-          }}
+          onSelectLoad={(data) => { applyLoadedSnapshot(data); setActiveScreen('none'); }}
+          onConfirmSave={async (slotId) => { await handleSave(slotId); setActiveScreen('none'); }}
           onNewGameAtSlot={async (slotId) => {
             loadChapter('chapter_01');
             const snapshot = buildNewGameSnapshot('chapter_01', defaultRNG.getSeed());
-            if (!snapshot) {
-              showNotice('Failed to start a new game.');
-            } else {
+            if (!snapshot) showNotice('Failed to start a new game.');
+            else {
               const ok = await saveGameState(snapshot, slotId);
-              if (ok) {
-                showNotice(`✓ New game started and saved to ${slotId.toUpperCase()}!`);
-              } else {
-                showNotice('Failed to save the new game.');
-              }
+              showNotice(ok ? `✓ New game started and saved to ${slotId.toUpperCase()}!` : 'Failed to save the new game.');
             }
             setActiveScreen('world_map');
           }}

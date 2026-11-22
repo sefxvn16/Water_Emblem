@@ -367,15 +367,16 @@ export async function saveGameState(snapshot: GameSnapshot, slot: SaveSlotId = S
 export async function loadGameState(slot: SaveSlotId = SAVE_SLOT): Promise<SaveGameData | null> {
   try {
     let record: unknown = await database.saves.get(slot);
+    const getTimestamp = (r: unknown): number => (isRecord(r) && typeof r.timestamp === 'number' ? r.timestamp : 0);
     // Giữ đồng bộ hai chiều giữa slot1 và main cho khả năng tương thích ngược
     if (slot === 'slot1') {
       const mainRecord = await database.saves.get(SAVE_SLOT);
-      if (mainRecord && (!record || (mainRecord.timestamp ?? 0) >= ((record as any)?.timestamp ?? 0))) {
+      if (mainRecord && (!record || (mainRecord.timestamp ?? 0) >= getTimestamp(record))) {
         record = mainRecord;
       }
     } else if (slot === SAVE_SLOT) {
       const slot1Record = await database.saves.get('slot1');
-      if (slot1Record && (!record || (slot1Record.timestamp ?? 0) >= ((record as any)?.timestamp ?? 0))) {
+      if (slot1Record && (!record || (slot1Record.timestamp ?? 0) >= getTimestamp(record))) {
         record = slot1Record;
       }
     }

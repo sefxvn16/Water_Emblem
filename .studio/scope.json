@@ -1,5 +1,5 @@
 {
-  "task_id": "189-modern-fe-ui",
+  "task_id": "190-smart-ai",
   "plan_items": [
     178,
     179,
@@ -12,13 +12,17 @@
     186,
     187,
     188,
-    189
+    189,
+    190
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-22",
   "allow": [
     "PLAN.md",
     "AGENTS.md",
+    "Game_Design/decisions.md",
+    "Game_Design/battle.md",
+    "Water-Emblem/data/balance.json",
     "Water-Emblem/tests/core/fe3Integration.test.ts",
     "Water-Emblem/data/dialogues/chapter_01_dialogues.json",
     "Water-Emblem/data/dialogues/chapter_02_dialogues.json",
@@ -50,6 +54,8 @@
     "Water-Emblem/src/ui/UnitInspectorParts.tsx",
     "Water-Emblem/src/ui/UnitHoverWindow.tsx",
     "Water-Emblem/src/ui/LevelUpModal.tsx",
+    "Water-Emblem/src/ui/SaveSlotsModal.tsx",
+    "Water-Emblem/src/storage/saveLoad.ts",
     "Water-Emblem/src/renderer/Grid2D.tsx",
     "Water-Emblem/vite.config.ts",
     "Water-Emblem/tests/core/attackHealFlow.test.ts",
@@ -82,6 +88,7 @@
     "Water-Emblem/src/ui/PhaseBanner.tsx",
     "Water-Emblem/src/ui/TerrainInfoWindow.tsx",
     "Water-Emblem/tests/core/gameFeelUpgrade.test.ts",
-    "Water-Emblem/tests/core/modernUIUpgrade.test.ts"
+    "Water-Emblem/tests/core/modernUIUpgrade.test.ts",
+    "Water-Emblem/tests/core/smartAI.test.ts"
   ]
 }
