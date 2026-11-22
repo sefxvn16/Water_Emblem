@@ -1,5 +1,5 @@
 {
-  "task_id": "186-fe3-mechanics-camera",
+  "task_id": "187-fe3-endings-dialogues",
   "plan_items": [
     178,
     179,
@@ -9,7 +9,8 @@
     183,
     184,
     185,
-    186
+    186,
+    187
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-22",
@@ -67,6 +68,10 @@
     "Water-Emblem/tests/core/danceCore.test.ts",
     "Water-Emblem/tests/core/effectiveDamage.test.ts",
     "Water-Emblem/tests/core/starShards.test.ts",
-    "Water-Emblem/tests/browser/enemyPhaseTracking.spec.ts"
+    "Water-Emblem/tests/browser/enemyPhaseTracking.spec.ts",
+    "Water-Emblem/data/endings.json",
+    "Water-Emblem/src/core/chapter/endings.ts",
+    "tools/extract_fe3_dialogues.py",
+    "Water-Emblem/tests/core/endingsFE3.test.ts"
   ]
 }
