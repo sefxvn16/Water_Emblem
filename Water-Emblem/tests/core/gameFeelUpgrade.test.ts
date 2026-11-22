@@ -39,10 +39,10 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
   });
 
   it('TerrainInfoWindow displays Avoid and Def, and cavalry enters indoor terrain without forced dismount', () => {
-    // Indoor terrain: floor is passable for cavalry without forced dismount
+    // Indoor terrain: floor is passable for cavalry with increased move cost (slower than foot)
     const floorTerrain = defaultTerrainRegistry.get('floor');
     expect(floorTerrain).toBeDefined();
-    expect(floorTerrain?.movementCosts.cavalry).toBe(1);
+    expect(floorTerrain?.movementCosts.cavalry).toBe(2);
     expect(floorTerrain?.movementCosts.foot).toBe(1);
 
     const floorHtml = renderToString(
@@ -55,10 +55,10 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     expect(floorHtml).toContain('Avoid : 0%');
     expect(floorHtml).not.toContain('NoMount');
 
-    // Throne has Def +2, Avoid 20%, passable for cavalry
+    // Throne has Def +2, Avoid 20%, cavalry cost 3 (slower than foot 2)
     const throneTerrain = defaultTerrainRegistry.get('throne');
     expect(throneTerrain).toBeDefined();
-    expect(throneTerrain?.movementCosts.cavalry).toBe(2);
+    expect(throneTerrain?.movementCosts.cavalry).toBe(3);
 
     const throneHtml = renderToString(
       React.createElement(TerrainInfoWindow, {
@@ -71,7 +71,7 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     expect(throneHtml).toContain('Def : +2');
     expect(throneHtml).not.toContain('NoMount');
 
-    // Pillar has Def +1, Avoid 20%, passable for cavalry
+    // Pillar has Def +1, Avoid 20%, cavalry cost 3
     const pillarTerrain = defaultTerrainRegistry.get('pillar');
     expect(pillarTerrain).toBeDefined();
     expect(pillarTerrain?.movementCosts.cavalry).toBe(3);
