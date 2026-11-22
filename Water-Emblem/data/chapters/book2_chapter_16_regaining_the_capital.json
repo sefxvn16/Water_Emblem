@@ -1,0 +1,515 @@
+{
+  "id": "book2_chapter_16",
+  "name": "Book 2 Chapter 16: Regaining the Capital",
+  "mapId": "book2_chapter_16_regaining_the_capital",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 24,
+      "y": 8
+    },
+    "description": "Seize throne 24,8"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 17,
+        "y": 19
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "astram",
+      "characterId": "astram",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 14
+      },
+      "name": "Astram",
+      "weaponId": "mercurius",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 8
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 8
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 12
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 13
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_5",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 26
+      },
+      "name": "Cavalier 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 9
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_2",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 10
+      },
+      "name": "Hero 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_3",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 11
+      },
+      "name": "Hero 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_4",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 11
+      },
+      "name": "Hero 4",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_5",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 13
+      },
+      "name": "Hero 5",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_6",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 13
+      },
+      "name": "Hero 6",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_7",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 15
+      },
+      "name": "Hero 7",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_8",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 16
+      },
+      "name": "Hero 8",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_9",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 17
+      },
+      "name": "Hero 9",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 13
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 10
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_4",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 11
+      },
+      "name": "Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_5",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 12
+      },
+      "name": "Knight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_6",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 14
+      },
+      "name": "Knight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_7",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 14
+      },
+      "name": "Knight 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_8",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 11
+      },
+      "name": "Knight 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_9",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 13
+      },
+      "name": "Knight 9",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_10",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 15
+      },
+      "name": "Knight 10",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_11",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 15
+      },
+      "name": "Knight 11",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 8
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 8
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_3",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 9
+      },
+      "name": "Sniper 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_4",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 9
+      },
+      "name": "Sniper 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "willow",
+      "characterId": "willow",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 8
+      },
+      "name": "Willow",
+      "weaponId": "fire",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 17,
+      "y": 19
+    },
+    {
+      "x": 17,
+      "y": 18
+    },
+    {
+      "x": 19,
+      "y": 18
+    },
+    {
+      "x": 16,
+      "y": 19
+    },
+    {
+      "x": 20,
+      "y": 19
+    },
+    {
+      "x": 22,
+      "y": 19
+    },
+    {
+      "x": 18,
+      "y": 20
+    },
+    {
+      "x": 17,
+      "y": 21
+    },
+    {
+      "x": 17,
+      "y": 22
+    },
+    {
+      "x": 18,
+      "y": 22
+    },
+    {
+      "x": 17,
+      "y": 23
+    },
+    {
+      "x": 18,
+      "y": 26
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_7_19",
+      "position": {
+        "x": 7,
+        "y": 19
+      }
+    },
+    {
+      "id": "door_6_20",
+      "position": {
+        "x": 6,
+        "y": 20
+      }
+    },
+    {
+      "id": "door_8_20",
+      "position": {
+        "x": 8,
+        "y": 20
+      }
+    },
+    {
+      "id": "door_7_21",
+      "position": {
+        "x": 7,
+        "y": 21
+      }
+    },
+    {
+      "id": "door_9_21",
+      "position": {
+        "x": 9,
+        "y": 21
+      }
+    },
+    {
+      "id": "door_11_21",
+      "position": {
+        "x": 11,
+        "y": 21
+      }
+    },
+    {
+      "id": "door_6_22",
+      "position": {
+        "x": 6,
+        "y": 22
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Chiêu mộ astram: người nói (Jeorge) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "Unit Astram (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Boss Willow weapon 'Meteor' not in items.json; substituted with 'fire'."
+  ]
+}

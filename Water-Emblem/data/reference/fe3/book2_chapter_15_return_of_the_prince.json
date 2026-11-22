@@ -57,5 +57,848 @@
     "rrrrF.......bbb.........F..rrr",
     "rrrr..FFF.F..r............rrrr",
     "rrr..FFFFHF.rrr..........rrrrr"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 15,
+    "title": "Book 2 Chapter 15: Return of the Prince",
+    "atlasFile": "b2c15.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 19,12",
+    "goalTile": {
+      "x": 19,
+      "y": 12
+    },
+    "lose": "Marth dies",
+    "boss": "Eibel (General L10, Silver Lance)",
+    "unitCounts": {
+      "P": 16,
+      "N": 2,
+      "E": 35
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Est",
+        "positions": [
+          {
+            "x": 27,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 20,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 22,
+            "y": 0
+          },
+          {
+            "x": 21,
+            "y": 1
+          },
+          {
+            "x": 22,
+            "y": 1
+          },
+          {
+            "x": 23,
+            "y": 1
+          },
+          {
+            "x": 17,
+            "y": 2
+          },
+          {
+            "x": 21,
+            "y": 2
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 3
+          },
+          {
+            "x": 22,
+            "y": 3
+          },
+          {
+            "x": 23,
+            "y": 3
+          },
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 4
+          },
+          {
+            "x": 22,
+            "y": 4
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Abel",
+        "positions": [
+          {
+            "x": 20,
+            "y": 12
+          },
+          {
+            "x": 26,
+            "y": 19
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Ballistician",
+        "positions": [
+          {
+            "x": 16,
+            "y": 9
+          },
+          {
+            "x": 22,
+            "y": 10
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
+            "x": 20,
+            "y": 14
+          },
+          {
+            "x": 27,
+            "y": 14
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 26,
+            "y": 13
+          },
+          {
+            "x": 22,
+            "y": 14
+          },
+          {
+            "x": 9,
+            "y": 19
+          },
+          {
+            "x": 3,
+            "y": 20
+          },
+          {
+            "x": 20,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 26
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 18,
+            "y": 12
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 27,
+            "y": 10
+          },
+          {
+            "x": 28,
+            "y": 12
+          },
+          {
+            "x": 29,
+            "y": 13
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 18,
+            "y": 9
+          },
+          {
+            "x": 20,
+            "y": 9
+          },
+          {
+            "x": 25,
+            "y": 26
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Paladin",
+        "positions": [
+          {
+            "x": 12,
+            "y": 5
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 12,
+            "y": 7
+          },
+          {
+            "x": 25,
+            "y": 12
+          },
+          {
+            "x": 27,
+            "y": 15
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 28,
+            "y": 9
+          },
+          {
+            "x": 29,
+            "y": 10
+          },
+          {
+            "x": 27,
+            "y": 11
+          },
+          {
+            "x": 28,
+            "y": 11
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 19,
+            "y": 17
+          },
+          {
+            "x": 20,
+            "y": 17
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Eibel",
+        "positions": [
+          {
+            "x": 19,
+            "y": 12
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "arena",
+        "positions": [
+          {
+            "x": 10,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 19
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 10,
+            "y": 19
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "village 1",
+        "positions": [
+          {
+            "x": 8,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village 2",
+        "positions": [
+          {
+            "x": 11,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 18,
+            "y": 12
+          },
+          {
+            "x": 20,
+            "y": 12
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 19,
+            "y": 12
+          },
+          {
+            "x": 27,
+            "y": 16
+          },
+          {
+            "x": 26,
+            "y": 17
+          },
+          {
+            "x": 27,
+            "y": 17
+          },
+          {
+            "x": 28,
+            "y": 17
+          },
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 27,
+            "y": 18
+          },
+          {
+            "x": 28,
+            "y": 18
+          },
+          {
+            "x": 25,
+            "y": 19
+          },
+          {
+            "x": 26,
+            "y": 19
+          },
+          {
+            "x": 27,
+            "y": 19
+          },
+          {
+            "x": 25,
+            "y": 20
+          },
+          {
+            "x": 26,
+            "y": 20
+          },
+          {
+            "x": 27,
+            "y": 20
+          },
+          {
+            "x": 25,
+            "y": 21
+          },
+          {
+            "x": 26,
+            "y": 21
+          },
+          {
+            "x": 27,
+            "y": 21
+          },
+          {
+            "x": 25,
+            "y": 22
+          },
+          {
+            "x": 26,
+            "y": 22
+          },
+          {
+            "x": 27,
+            "y": 22
+          },
+          {
+            "x": 26,
+            "y": 23
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 12,
+            "y": 17
+          },
+          {
+            "x": 9,
+            "y": 29
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 10,
+            "y": 16
+          },
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 19
+          },
+          {
+            "x": 10,
+            "y": 19
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 27,
+            "y": 14
+          },
+          {
+            "x": 19,
+            "y": 17
+          },
+          {
+            "x": 20,
+            "y": 17
+          },
+          {
+            "x": 22,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 8,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 18,
+            "y": 10
+          },
+          {
+            "x": 19,
+            "y": 10
+          },
+          {
+            "x": 20,
+            "y": 10
+          },
+          {
+            "x": 18,
+            "y": 11
+          },
+          {
+            "x": 19,
+            "y": 11
+          },
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 25,
+            "y": 16
+          },
+          {
+            "x": 26,
+            "y": 16
+          },
+          {
+            "x": 28,
+            "y": 16
+          },
+          {
+            "x": 29,
+            "y": 16
+          },
+          {
+            "x": 25,
+            "y": 17
+          },
+          {
+            "x": 29,
+            "y": 17
+          },
+          {
+            "x": 24,
+            "y": 18
+          },
+          {
+            "x": 25,
+            "y": 18
+          },
+          {
+            "x": 29,
+            "y": 18
+          },
+          {
+            "x": 24,
+            "y": 19
+          },
+          {
+            "x": 28,
+            "y": 19
+          },
+          {
+            "x": 29,
+            "y": 19
+          },
+          {
+            "x": 24,
+            "y": 20
+          },
+          {
+            "x": 28,
+            "y": 20
+          },
+          {
+            "x": 29,
+            "y": 20
+          },
+          {
+            "x": 24,
+            "y": 21
+          },
+          {
+            "x": 28,
+            "y": 21
+          },
+          {
+            "x": 24,
+            "y": 22
+          },
+          {
+            "x": 28,
+            "y": 22
+          },
+          {
+            "x": 24,
+            "y": 23
+          },
+          {
+            "x": 25,
+            "y": 23
+          },
+          {
+            "x": 27,
+            "y": 23
+          },
+          {
+            "x": 28,
+            "y": 23
+          },
+          {
+            "x": 24,
+            "y": 24
+          },
+          {
+            "x": 25,
+            "y": 24
+          },
+          {
+            "x": 27,
+            "y": 24
+          },
+          {
+            "x": 28,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 18,
+            "y": 2
+          },
+          {
+            "x": 19,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 4
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 27,
+            "y": 15
+          },
+          {
+            "x": 19,
+            "y": 20
+          },
+          {
+            "x": 19,
+            "y": 21
+          },
+          {
+            "x": 19,
+            "y": 22
+          },
+          {
+            "x": 9,
+            "y": 23
+          },
+          {
+            "x": 9,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          },
+          {
+            "x": 9,
+            "y": 25
+          },
+          {
+            "x": 26,
+            "y": 25
+          },
+          {
+            "x": 26,
+            "y": 26
+          },
+          {
+            "x": 12,
+            "y": 27
+          },
+          {
+            "x": 13,
+            "y": 27
+          },
+          {
+            "x": 14,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Est Pegasus Knight L5 (from start, in cell)",
+      "Abel Paladin L1 Ridersbane (talk with Marth or Est)"
+    ],
+    "chests": [],
+    "villages": [
+      "8,8 Dracoshield or Energy Drop",
+      "11,8 Energy Drop or Dracoshield"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

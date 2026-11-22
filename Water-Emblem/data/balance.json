@@ -191,7 +191,11 @@
     "maxHitBonus": 20
   },
   "triangleAttack": {
-    "trioUnitIds": ["palla", "catria", "est"]
+    "trioUnitIds": [
+      "palla",
+      "catria",
+      "est"
+    ]
   },
   "ballista": {
     "maxRange": 10,
@@ -243,6 +247,14 @@
         "bonus": 2,
         "wager": 1000
       }
+    ],
+    "opponentClasses": [
+      "cavalier",
+      "knight",
+      "archer",
+      "mercenary",
+      "fighter",
+      "pirate"
     ]
   },
   "inventory": {

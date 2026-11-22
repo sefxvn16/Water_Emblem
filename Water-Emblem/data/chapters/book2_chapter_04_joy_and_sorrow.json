@@ -1,0 +1,548 @@
+{
+  "id": "book2_chapter_04",
+  "name": "Book 2 Chapter 4: Joy and Sorrow",
+  "mapId": "book2_chapter_04_joy_and_sorrow",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 29,
+      "y": 17
+    },
+    "description": "Seize gate 29,17"
+  },
+  "units": [
+    {
+      "id": "jubelo",
+      "characterId": "jubelo",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 5
+      },
+      "name": "Jubelo",
+      "weaponId": "fire",
+      "level": 1
+    },
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 3,
+        "y": 21
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "ogma",
+      "characterId": "ogma",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 4
+      },
+      "name": "Ogma",
+      "weaponId": "steel_sword",
+      "level": 7
+    },
+    {
+      "id": "yuliya",
+      "characterId": "yuliya",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 5
+      },
+      "name": "Yuliya",
+      "weaponId": "rescue_staff",
+      "level": 2
+    },
+    {
+      "id": "sirius",
+      "characterId": "sirius",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 7
+      },
+      "name": "Sirius",
+      "weaponId": "iron_lance",
+      "level": 4,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 0
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 11
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 29
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 8
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 10
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_3",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 10
+      },
+      "name": "Hunter 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_4",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 10
+      },
+      "name": "Hunter 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_5",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 11
+      },
+      "name": "Hunter 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_6",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 11
+      },
+      "name": "Hunter 6",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_7",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 12
+      },
+      "name": "Hunter 7",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_8",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 15
+      },
+      "name": "Hunter 8",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_9",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 17
+      },
+      "name": "Hunter 9",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_10",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 18
+      },
+      "name": "Hunter 10",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_1",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 9
+      },
+      "name": "Pirate 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_2",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 9
+      },
+      "name": "Pirate 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_3",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 10
+      },
+      "name": "Pirate 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_4",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 11
+      },
+      "name": "Pirate 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_5",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 17
+      },
+      "name": "Pirate 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_6",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 17
+      },
+      "name": "Pirate 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_7",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 12
+      },
+      "name": "Pirate 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_8",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 14
+      },
+      "name": "Pirate 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_9",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 14
+      },
+      "name": "Pirate 9",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_10",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 15
+      },
+      "name": "Pirate 10",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_11",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 15
+      },
+      "name": "Pirate 11",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_12",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 16
+      },
+      "name": "Pirate 12",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 9
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 14
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 15
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 13
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "gail",
+      "characterId": "gail",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 17
+      },
+      "name": "Gail",
+      "weaponId": "silver_axe",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 25,
+      "y": 5
+    },
+    {
+      "x": 3,
+      "y": 21
+    },
+    {
+      "x": 25,
+      "y": 4
+    },
+    {
+      "x": 24,
+      "y": 5
+    },
+    {
+      "x": 3,
+      "y": 19
+    },
+    {
+      "x": 6,
+      "y": 19
+    },
+    {
+      "x": 2,
+      "y": 20
+    },
+    {
+      "x": 4,
+      "y": 20
+    },
+    {
+      "x": 6,
+      "y": 20
+    },
+    {
+      "x": 1,
+      "y": 21
+    },
+    {
+      "x": 2,
+      "y": 21
+    },
+    {
+      "x": 4,
+      "y": 21
+    },
+    {
+      "x": 2,
+      "y": 22
+    },
+    {
+      "x": 5,
+      "y": 22
+    },
+    {
+      "x": 1,
+      "y": 23
+    },
+    {
+      "x": 3,
+      "y": 23
+    },
+    {
+      "x": 4,
+      "y": 23
+    },
+    {
+      "x": 2,
+      "y": 24
+    }
+  ],
+  "carryoverUnitIds": [
+    "jubelo",
+    "marth",
+    "ogma",
+    "yuliya"
+  ],
+  "villages": [
+    {
+      "id": "village_0_28",
+      "name": "Village (Shaver)",
+      "position": {
+        "x": 0,
+        "y": 28
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "shaver"
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Làng (22,2): Atlas: nhận nhân vật Castor ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "Unit Sirius (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Village at (22,2) rewards recruit/choice 'Castor'; assigned reward itemId 'killer_bow'."
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "ogma",
+      "targetUnitId": "sirius",
+      "maxDistance": 1
+    }
+  ]
+}

@@ -48,5 +48,352 @@
     "MM..===...==..==F.F.....F..===",
     "MMM..==.=======..F.......F..==",
     "MMMM..====..==....mMMMM....==."
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 3,
+    "title": "Chapter 3: The Devil Mountain",
+    "atlasFile": "b1c03.md",
+    "size": {
+      "width": 30,
+      "height": 20
+    },
+    "goal": "Seize gate 2,8",
+    "goalTile": {
+      "x": 2,
+      "y": 8
+    },
+    "lose": "Marth dies",
+    "boss": "Hyman (Brigand L8, Hand Axe, Mend)",
+    "unitCounts": {
+      "P": 14,
+      "N": 1,
+      "E": 14
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Julian",
+        "positions": [
+          {
+            "x": 23,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Lena",
+        "positions": [
+          {
+            "x": 24,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 25,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 23,
+            "y": 14
+          },
+          {
+            "x": 25,
+            "y": 14
+          },
+          {
+            "x": 23,
+            "y": 15
+          },
+          {
+            "x": 24,
+            "y": 15
+          },
+          {
+            "x": 25,
+            "y": 15
+          },
+          {
+            "x": 26,
+            "y": 15
+          },
+          {
+            "x": 28,
+            "y": 15
+          },
+          {
+            "x": 23,
+            "y": 16
+          },
+          {
+            "x": 24,
+            "y": 16
+          },
+          {
+            "x": 22,
+            "y": 17
+          },
+          {
+            "x": 27,
+            "y": 17
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "N",
+        "label": "Navarre",
+        "positions": [
+          {
+            "x": 20,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Brigand",
+        "positions": [
+          {
+            "x": 19,
+            "y": 5
+          },
+          {
+            "x": 21,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 19,
+            "y": 6
+          },
+          {
+            "x": 0,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 3,
+            "y": 10
+          }
+        ],
+        "declaredCount": 8
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 23,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 12
+          },
+          {
+            "x": 3,
+            "y": 13
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 19,
+            "y": 4
+          },
+          {
+            "x": 20,
+            "y": 4
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Hyman",
+        "positions": [
+          {
+            "x": 2,
+            "y": 9
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 17,
+            "y": 11
+          },
+          {
+            "x": 18,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 13
+          },
+          {
+            "x": 9,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 19,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 6
+          },
+          {
+            "x": 27,
+            "y": 12
+          },
+          {
+            "x": 3,
+            "y": 15
+          },
+          {
+            "x": 16,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 15,
+            "y": 12
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 7
+          },
+          {
+            "x": 15,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Julian Thief L3 Iron Sword,Door Key",
+      "Lena Cleric L3 Warp (both from start)",
+      "Navarre Mercenary L3 Killing Edge (talk with Caeda)"
+    ],
+    "chests": [],
+    "villages": [
+      "15,12 Devil Axe"
+    ],
+    "shops": [
+      {
+        "at": {
+          "x": 2,
+          "y": 2
+        },
+        "goods": "Iron Sword 420 | Iron Lance 380 | Iron Bow 330 | Iron Axe 430 | Steel Axe 600 | Hand Axe 450"
+      }
+    ],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

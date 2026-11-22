@@ -1,0 +1,525 @@
+{
+  "id": "book2_chapter_19",
+  "name": "Book 2 Chapter 19: The Last Decisive Battle",
+  "mapId": "book2_chapter_19_the_last_decisive_battle",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 6,
+      "y": 8
+    },
+    "description": "Seize gate 6,8"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 6,
+        "y": 21
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "ballistician_1",
+      "characterId": "enemy_ballistician",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 7
+      },
+      "name": "Ballistician 1",
+      "weaponId": "thunderbolt",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ballistician_2",
+      "characterId": "enemy_ballistician",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 11
+      },
+      "name": "Ballistician 2",
+      "weaponId": "thunderbolt",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ballistician_3",
+      "characterId": "enemy_ballistician",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 13
+      },
+      "name": "Ballistician 3",
+      "weaponId": "thunderbolt",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 4
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 4
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 6
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 10
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 10
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_6",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 11
+      },
+      "name": "Dracoknight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_1",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 5
+      },
+      "name": "Horseman 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_2",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 7
+      },
+      "name": "Horseman 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_3",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 9
+      },
+      "name": "Horseman 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_4",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 9
+      },
+      "name": "Horseman 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_5",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 10
+      },
+      "name": "Horseman 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_6",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 12
+      },
+      "name": "Horseman 6",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 8
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 9
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 9
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_1",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 4
+      },
+      "name": "Paladin 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_2",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 4
+      },
+      "name": "Paladin 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_3",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 6
+      },
+      "name": "Paladin 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_4",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 6
+      },
+      "name": "Paladin 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_5",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 6
+      },
+      "name": "Paladin 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_6",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 7
+      },
+      "name": "Paladin 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_7",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 7
+      },
+      "name": "Paladin 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_8",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 8
+      },
+      "name": "Paladin 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_9",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 8
+      },
+      "name": "Paladin 9",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_10",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 8
+      },
+      "name": "Paladin 10",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_11",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 6
+      },
+      "name": "Paladin 11",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_12",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 11
+      },
+      "name": "Paladin 12",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 3
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 4
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 3
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 5
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "nehring",
+      "characterId": "nehring",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 8
+      },
+      "name": "Nehring",
+      "weaponId": "silver_lance",
+      "level": 14,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 6,
+      "y": 21
+    },
+    {
+      "x": 7,
+      "y": 18
+    },
+    {
+      "x": 9,
+      "y": 18
+    },
+    {
+      "x": 3,
+      "y": 19
+    },
+    {
+      "x": 5,
+      "y": 19
+    },
+    {
+      "x": 6,
+      "y": 19
+    },
+    {
+      "x": 8,
+      "y": 19
+    },
+    {
+      "x": 9,
+      "y": 19
+    },
+    {
+      "x": 2,
+      "y": 20
+    },
+    {
+      "x": 4,
+      "y": 20
+    },
+    {
+      "x": 7,
+      "y": 20
+    },
+    {
+      "x": 3,
+      "y": 21
+    },
+    {
+      "x": 5,
+      "y": 21
+    },
+    {
+      "x": 5,
+      "y": 22
+    },
+    {
+      "x": 7,
+      "y": 22
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Quân thường ballistician_1: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
+    "Quân thường ballistician_2: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
+    "Quân thường ballistician_3: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
+    "Làng (25,21): Atlas: nhận nhân vật Roshea ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "Village at (25,21) rewards recruit/choice 'Roshea'; assigned reward itemId 'silver_lance'."
+  ]
+}

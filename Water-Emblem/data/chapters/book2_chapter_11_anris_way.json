@@ -1,0 +1,338 @@
+{
+  "id": "book2_chapter_11",
+  "name": "Book 2 Chapter 11: Anri's Way",
+  "mapId": "book2_chapter_11_anris_way",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 2,
+      "y": 3
+    },
+    "description": "Seize gate 2,3"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 25
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "barbarian_1",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 3
+      },
+      "name": "Barbarian 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_2",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 7
+      },
+      "name": "Barbarian 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_3",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 8
+      },
+      "name": "Barbarian 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_4",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 9
+      },
+      "name": "Barbarian 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_5",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 11
+      },
+      "name": "Barbarian 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_6",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 12
+      },
+      "name": "Barbarian 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_7",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 12
+      },
+      "name": "Barbarian 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_8",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 13
+      },
+      "name": "Barbarian 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "berserker_1",
+      "characterId": "enemy_berserker",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 1
+      },
+      "name": "Berserker 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 4
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 7
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_3",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 13
+      },
+      "name": "Hunter 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_4",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 14
+      },
+      "name": "Hunter 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_5",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 16
+      },
+      "name": "Hunter 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_6",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 17
+      },
+      "name": "Hunter 6",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_7",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 21
+      },
+      "name": "Hunter 7",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_1",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 2
+      },
+      "name": "Wyvern 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_2",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 3
+      },
+      "name": "Wyvern 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_3",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 11
+      },
+      "name": "Wyvern 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_4",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 11
+      },
+      "name": "Wyvern 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_5",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "name": "Wyvern 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 23,
+      "y": 25
+    },
+    {
+      "x": 23,
+      "y": 23
+    },
+    {
+      "x": 21,
+      "y": 24
+    },
+    {
+      "x": 26,
+      "y": 24
+    },
+    {
+      "x": 25,
+      "y": 25
+    },
+    {
+      "x": 20,
+      "y": 26
+    },
+    {
+      "x": 22,
+      "y": 26
+    },
+    {
+      "x": 23,
+      "y": 26
+    },
+    {
+      "x": 26,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 27
+    },
+    {
+      "x": 21,
+      "y": 27
+    },
+    {
+      "x": 24,
+      "y": 27
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": []
+}

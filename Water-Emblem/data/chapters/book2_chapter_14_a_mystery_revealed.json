@@ -1,0 +1,335 @@
+{
+  "id": "book2_chapter_14",
+  "name": "Book 2 Chapter 14: A Mystery Revealed",
+  "mapId": "book2_chapter_14_a_mystery_revealed",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 4,
+      "y": 2
+    },
+    "description": "Seize throne 4,2"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 18,
+        "y": 25
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "xane",
+      "characterId": "xane",
+      "faction": "player",
+      "position": {
+        "x": 18,
+        "y": 26
+      },
+      "name": "Xane",
+      "weaponId": "iron_sword",
+      "level": 5
+    },
+    {
+      "id": "ice_dragon_1",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 16
+      },
+      "name": "Ice Dragon 1",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_2",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 16
+      },
+      "name": "Ice Dragon 2",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_3",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 16
+      },
+      "name": "Ice Dragon 3",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_4",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 19
+      },
+      "name": "Ice Dragon 4",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_5",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 20
+      },
+      "name": "Ice Dragon 5",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_6",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 20
+      },
+      "name": "Ice Dragon 6",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_7",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 21
+      },
+      "name": "Ice Dragon 7",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_8",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 22
+      },
+      "name": "Ice Dragon 8",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_9",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 23
+      },
+      "name": "Ice Dragon 9",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_10",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 23
+      },
+      "name": "Ice Dragon 10",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 13
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 13
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 14
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 14
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_5",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 14
+      },
+      "name": "Thief 5",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_6",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 14
+      },
+      "name": "Thief 6",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 18,
+      "y": 25
+    },
+    {
+      "x": 18,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 24
+    },
+    {
+      "x": 19,
+      "y": 24
+    },
+    {
+      "x": 17,
+      "y": 25
+    },
+    {
+      "x": 19,
+      "y": 25
+    },
+    {
+      "x": 17,
+      "y": 26
+    },
+    {
+      "x": 19,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 27
+    },
+    {
+      "x": 17,
+      "y": 28
+    },
+    {
+      "x": 16,
+      "y": 29
+    },
+    {
+      "x": 18,
+      "y": 29
+    },
+    {
+      "x": 19,
+      "y": 29
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "xane"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "3 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "Chest at (18,2) (reward: Divinestone) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (2,2) (reward: Again) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (6,2) (reward: Darksphere) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_18_2",
+      "position": {
+        "x": 18,
+        "y": 2
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "divinestone"
+      }
+    },
+    {
+      "id": "chest_2_2",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "again_staff"
+      }
+    },
+    {
+      "id": "chest_6_2",
+      "position": {
+        "x": 6,
+        "y": 2
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "darksphere"
+      }
+    }
+  ]
+}

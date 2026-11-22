@@ -52,5 +52,278 @@
     "..============WWW___WWW=====r=",
     "......===========___=======rr=",
     ".......====================r=="
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 14,
+    "title": "Book 2 Chapter 14: A Mystery Revealed",
+    "atlasFile": "b2c14.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 4,2",
+    "goalTile": {
+      "x": 4,
+      "y": 2
+    },
+    "lose": "Marth dies",
+    "boss": "—",
+    "unitCounts": {
+      "P": 13,
+      "N": 0,
+      "E": 16
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 18,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Xane",
+        "positions": [
+          {
+            "x": 18,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 18,
+            "y": 24
+          },
+          {
+            "x": 19,
+            "y": 24
+          },
+          {
+            "x": 17,
+            "y": 25
+          },
+          {
+            "x": 19,
+            "y": 25
+          },
+          {
+            "x": 17,
+            "y": 26
+          },
+          {
+            "x": 19,
+            "y": 26
+          },
+          {
+            "x": 18,
+            "y": 27
+          },
+          {
+            "x": 17,
+            "y": 28
+          },
+          {
+            "x": 16,
+            "y": 29
+          },
+          {
+            "x": 18,
+            "y": 29
+          },
+          {
+            "x": 19,
+            "y": 29
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Ice Dragon",
+        "positions": [
+          {
+            "x": 17,
+            "y": 16
+          },
+          {
+            "x": 18,
+            "y": 16
+          },
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 18,
+            "y": 20
+          },
+          {
+            "x": 22,
+            "y": 20
+          },
+          {
+            "x": 22,
+            "y": 21
+          },
+          {
+            "x": 14,
+            "y": 22
+          },
+          {
+            "x": 15,
+            "y": 23
+          },
+          {
+            "x": 21,
+            "y": 23
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 7,
+            "y": 13
+          },
+          {
+            "x": 25,
+            "y": 13
+          },
+          {
+            "x": 8,
+            "y": 14
+          },
+          {
+            "x": 10,
+            "y": 14
+          },
+          {
+            "x": 19,
+            "y": 14
+          },
+          {
+            "x": 24,
+            "y": 14
+          }
+        ],
+        "declaredCount": 6
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 2
+          }
+        ],
+        "declaredCount": 3
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 4,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 16,
+            "y": 12
+          },
+          {
+            "x": 20,
+            "y": 12
+          },
+          {
+            "x": 16,
+            "y": 16
+          },
+          {
+            "x": 20,
+            "y": 16
+          },
+          {
+            "x": 16,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 18
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Xane Chameleon L5 Iron Sword (from start)",
+      "Tiki Manakete L5 Divinestone (visit right room with Marth if all Starsphere shards gathered)"
+    ],
+    "chests": [
+      "1 18,2 Divinestone",
+      "2 2,2 Again",
+      "3 6,2 Darksphere"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "_ floor | p pillar | d door"
+  }
 }

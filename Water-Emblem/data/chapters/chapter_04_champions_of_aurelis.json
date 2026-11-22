@@ -1,0 +1,376 @@
+{
+  "id": "chapter_04",
+  "name": "Chapter 4: Champions of Aurelis",
+  "mapId": "chapter_04_champions_of_aurelis",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 7,
+      "y": 6
+    },
+    "description": "Seize gate 7,6 8,6"
+  },
+  "units": [
+    {
+      "id": "hardin",
+      "characterId": "hardin",
+      "faction": "player",
+      "position": {
+        "x": 9,
+        "y": 19
+      },
+      "name": "Hardin",
+      "weaponId": "iron_lance",
+      "level": 5
+    },
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 16
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "roshea",
+      "characterId": "roshea",
+      "faction": "player",
+      "position": {
+        "x": 11,
+        "y": 18
+      },
+      "name": "Roshea",
+      "weaponId": "iron_lance",
+      "level": 3
+    },
+    {
+      "id": "sedgar",
+      "characterId": "sedgar",
+      "faction": "player",
+      "position": {
+        "x": 8,
+        "y": 18
+      },
+      "name": "Sedgar",
+      "weaponId": "iron_bow",
+      "level": 1
+    },
+    {
+      "id": "vyland",
+      "characterId": "vyland",
+      "faction": "player",
+      "position": {
+        "x": 10,
+        "y": 18
+      },
+      "name": "Vyland",
+      "weaponId": "iron_lance",
+      "level": 1
+    },
+    {
+      "id": "wolf",
+      "characterId": "wolf",
+      "faction": "player",
+      "position": {
+        "x": 9,
+        "y": 17
+      },
+      "name": "Wolf",
+      "weaponId": "iron_bow",
+      "level": 3
+    },
+    {
+      "id": "matthis",
+      "characterId": "matthis",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 6
+      },
+      "name": "Matthis",
+      "weaponId": "iron_lance",
+      "level": 2,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 3
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 8
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_3",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "name": "Archer 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 3
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 3
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 3
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 6
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 3
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 3
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 6
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_1",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 2
+      },
+      "name": "Pegasus Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_2",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 5
+      },
+      "name": "Pegasus Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 12
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 12
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "merach",
+      "characterId": "merach",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 6
+      },
+      "name": "Merach",
+      "weaponId": "ridersbane",
+      "level": 5,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 9,
+      "y": 19
+    },
+    {
+      "x": 23,
+      "y": 16
+    },
+    {
+      "x": 11,
+      "y": 18
+    },
+    {
+      "x": 8,
+      "y": 18
+    },
+    {
+      "x": 10,
+      "y": 18
+    },
+    {
+      "x": 9,
+      "y": 17
+    },
+    {
+      "x": 19,
+      "y": 15
+    },
+    {
+      "x": 20,
+      "y": 15
+    },
+    {
+      "x": 21,
+      "y": 15
+    },
+    {
+      "x": 23,
+      "y": 15
+    },
+    {
+      "x": 19,
+      "y": 16
+    },
+    {
+      "x": 22,
+      "y": 16
+    },
+    {
+      "x": 20,
+      "y": 17
+    },
+    {
+      "x": 22,
+      "y": 17
+    },
+    {
+      "x": 23,
+      "y": 17
+    }
+  ],
+  "carryoverUnitIds": [
+    "hardin",
+    "marth",
+    "roshea",
+    "sedgar",
+    "vyland",
+    "wolf"
+  ],
+  "villages": [
+    {
+      "id": "village_18_12",
+      "name": "Village (Firestone)",
+      "position": {
+        "x": 18,
+        "y": 12
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "firestone"
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Chiêu mộ matthis: người nói (Lena) không xuất trận trong chương này nên chưa khai được.",
+    "Làng (21,2): Atlas: nhận nhân vật Merric ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "Unit Matthis (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Village at (21,2) rewards recruit/choice 'Merric'; assigned reward itemId 'excalibur'."
+  ]
+}

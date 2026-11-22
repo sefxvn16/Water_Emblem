@@ -1,0 +1,333 @@
+{
+  "id": "chapter_07",
+  "name": "Chapter 7: Port Warren",
+  "mapId": "chapter_07_port_warren",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 25,
+      "y": 11
+    },
+    "description": "Seize gate 25,11"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "name": "Marth",
+      "weaponId": "rapier"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 2
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 2
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_3",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 2
+      },
+      "name": "Archer 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_4",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 2
+      },
+      "name": "Archer 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 4
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 4
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_5",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 5
+      },
+      "name": "Cavalier 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_6",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 5
+      },
+      "name": "Cavalier 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_1",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "name": "Horseman 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_2",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "name": "Horseman 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_3",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "name": "Horseman 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_4",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 3
+      },
+      "name": "Horseman 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 3
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 3
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 3
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_4",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 3
+      },
+      "name": "Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pirate_1",
+      "characterId": "enemy_pirate",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 18
+      },
+      "name": "Pirate 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "kannival",
+      "characterId": "kannival",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 11
+      },
+      "name": "Kannival",
+      "weaponId": "silver_lance",
+      "level": 8,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 1,
+      "y": 1
+    },
+    {
+      "x": 2,
+      "y": 1
+    },
+    {
+      "x": 1,
+      "y": 2
+    },
+    {
+      "x": 3,
+      "y": 1
+    },
+    {
+      "x": 0,
+      "y": 2
+    },
+    {
+      "x": 2,
+      "y": 2
+    },
+    {
+      "x": 3,
+      "y": 2
+    },
+    {
+      "x": 0,
+      "y": 3
+    },
+    {
+      "x": 4,
+      "y": 2
+    },
+    {
+      "x": 0,
+      "y": 4
+    },
+    {
+      "x": 1,
+      "y": 5
+    },
+    {
+      "x": 5,
+      "y": 3
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "uncertain: player deployment positions are not marked on source map diagram map1_07.png",
+    "uncertain: Pirate at 12,18 stands on a sea tile; meaning not stated in the diagram legend",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Atlas không có dòng `P` cho chương này nên không có ô triển khai thật của FE3. Ô triển khai và vị trí Marth do dự án đặt bằng quy tắc tất định (ô đi được xa mục tiêu nhất rồi lan ra 12 ô quanh đó) chỉ để chơi thử — chưa xác nhận nguồn FE3."
+  ],
+  "uncertain": [
+    "uncertain: player deployment positions are not marked on source map diagram map1_07.png",
+    "uncertain: Pirate at 12,18 stands on a sea tile; meaning not stated in the diagram legend",
+    "Atlas has no P units or Marth listed for this chapter. Kept lordUnitId as 'marth'."
+  ]
+}

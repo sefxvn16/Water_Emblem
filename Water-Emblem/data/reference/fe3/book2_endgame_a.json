@@ -51,5 +51,310 @@
     "______________________________",
     "______________________________",
     "______________________________"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 22,
+    "title": "Book 2 Endgame: The Dragon Altar, Part 1",
+    "atlasFile": "b2c22a.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 15,0",
+    "goalTile": {
+      "x": 15,
+      "y": 0
+    },
+    "lose": "Marth dies",
+    "boss": "—",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 27
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 15,
+            "y": 27
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 15,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 26
+          },
+          {
+            "x": 16,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 27
+          },
+          {
+            "x": 17,
+            "y": 27
+          },
+          {
+            "x": 9,
+            "y": 28
+          },
+          {
+            "x": 11,
+            "y": 28
+          },
+          {
+            "x": 12,
+            "y": 28
+          },
+          {
+            "x": 13,
+            "y": 28
+          },
+          {
+            "x": 14,
+            "y": 28
+          },
+          {
+            "x": 16,
+            "y": 28
+          },
+          {
+            "x": 18,
+            "y": 28
+          },
+          {
+            "x": 19,
+            "y": 28
+          },
+          {
+            "x": 17,
+            "y": 29
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Barbarian",
+        "positions": [
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 23,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 1
+          },
+          {
+            "x": 18,
+            "y": 1
+          },
+          {
+            "x": 22,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 26,
+            "y": 14
+          },
+          {
+            "x": 15,
+            "y": 16
+          },
+          {
+            "x": 7,
+            "y": 18
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Dark Mage",
+        "positions": [
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 16,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 18,
+            "y": 4
+          },
+          {
+            "x": 26,
+            "y": 4
+          },
+          {
+            "x": 16,
+            "y": 6
+          },
+          {
+            "x": 15,
+            "y": 11
+          },
+          {
+            "x": 16,
+            "y": 19
+          },
+          {
+            "x": 4,
+            "y": 21
+          },
+          {
+            "x": 26,
+            "y": 21
+          }
+        ],
+        "declaredCount": 13
+      },
+      {
+        "side": "E",
+        "label": "Mage Dragon",
+        "positions": [
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 15,
+            "y": 13
+          }
+        ],
+        "declaredCount": 3
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 2,
+            "y": 22
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 24,
+            "y": 22
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 23,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 0
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 4,
+            "y": 22
+          },
+          {
+            "x": 26,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "1 2,22 Pure Water",
+      "2 24,22 Door Key"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "map2_22_1.png Barbarian x11, Dark Mage x13, Mage Dragon x3 in c0504d now detected; red entrance box skipped; doors at 4,22 and 26,22 corrected"
+    ],
+    "codesLine": "_ floor | d door"
+  }
 }

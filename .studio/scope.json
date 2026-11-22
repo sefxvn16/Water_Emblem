@@ -251,6 +251,7 @@
     "Water-Emblem/data/chapters/chapter_17_a_knight_filled_sky.json",
     "Water-Emblem/data/chapters/chapter_18_dark_pontifex.json",
     "Water-Emblem/data/chapters/chapter_19_the_dragonkin_realm.json",
-    "Water-Emblem/data/chapters/chapter_20_chosen_by_fate.json"
+    "Water-Emblem/data/chapters/chapter_20_chosen_by_fate.json",
+    "Water-Emblem/src/core/combat/arena.ts"
   ]
 }

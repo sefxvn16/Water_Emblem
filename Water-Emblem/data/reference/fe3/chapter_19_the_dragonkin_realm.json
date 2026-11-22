@@ -56,5 +56,474 @@
     "mmmmmmmmmmmm....m..mm.....m.m.",
     "m.mmmmmmmmmm.....m.m.....mmmmm",
     "mmmmmmmmmmmmmm.mmmmmmm.mmmmmmm"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 19,
+    "title": "Chapter 19: The Dragonkin Realm",
+    "atlasFile": "b1c19.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 2,13",
+    "goalTile": {
+      "x": 2,
+      "y": 13
+    },
+    "lose": "Marth dies",
+    "boss": "Xemcel (Manakete L1, Mage Dragonstone)",
+    "unitCounts": {
+      "P": 0,
+      "N": 0,
+      "E": 21
+    },
+    "units": [
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 23,
+            "y": 12
+          },
+          {
+            "x": 16,
+            "y": 15
+          },
+          {
+            "x": 6,
+            "y": 17
+          },
+          {
+            "x": 2,
+            "y": 18
+          },
+          {
+            "x": 24,
+            "y": 20
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Fire Dragon",
+        "positions": [
+          {
+            "x": 26,
+            "y": 6
+          },
+          {
+            "x": 1,
+            "y": 13
+          },
+          {
+            "x": 3,
+            "y": 13
+          },
+          {
+            "x": 10,
+            "y": 13
+          },
+          {
+            "x": 2,
+            "y": 14
+          },
+          {
+            "x": 22,
+            "y": 14
+          },
+          {
+            "x": 14,
+            "y": 23
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 14,
+            "y": 22
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Manakete",
+        "positions": [
+          {
+            "x": 25,
+            "y": 4
+          },
+          {
+            "x": 6,
+            "y": 12
+          },
+          {
+            "x": 14,
+            "y": 15
+          },
+          {
+            "x": 14,
+            "y": 24
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 12,
+            "y": 12
+          },
+          {
+            "x": 13,
+            "y": 12
+          },
+          {
+            "x": 26,
+            "y": 20
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E*",
+        "label": "Xemcel",
+        "positions": [
+          {
+            "x": 2,
+            "y": 13
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 3,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest",
+        "positions": [
+          {
+            "x": 14,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Curate",
+        "positions": [
+          {
+            "x": 26,
+            "y": 22
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Pegasus Knight",
+        "positions": [
+          {
+            "x": 23,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Sniper",
+        "positions": [
+          {
+            "x": 9,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 1,
+            "y": 13
+          },
+          {
+            "x": 3,
+            "y": 13
+          },
+          {
+            "x": 14,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 13
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 4,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 1,
+            "y": 11
+          },
+          {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 1,
+            "y": 14
+          },
+          {
+            "x": 3,
+            "y": 14
+          },
+          {
+            "x": 21,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 22
+          },
+          {
+            "x": 9,
+            "y": 25
+          },
+          {
+            "x": 23,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 1,
+            "y": 12
+          },
+          {
+            "x": 2,
+            "y": 12
+          },
+          {
+            "x": 3,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 19
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 15,
+            "y": 19
+          },
+          {
+            "x": 16,
+            "y": 19
+          },
+          {
+            "x": 11,
+            "y": 20
+          },
+          {
+            "x": 12,
+            "y": 20
+          },
+          {
+            "x": 16,
+            "y": 20
+          },
+          {
+            "x": 17,
+            "y": 20
+          },
+          {
+            "x": 10,
+            "y": 21
+          },
+          {
+            "x": 11,
+            "y": 21
+          },
+          {
+            "x": 14,
+            "y": 21
+          },
+          {
+            "x": 17,
+            "y": 21
+          },
+          {
+            "x": 18,
+            "y": 21
+          },
+          {
+            "x": 10,
+            "y": 22
+          },
+          {
+            "x": 11,
+            "y": 22
+          },
+          {
+            "x": 12,
+            "y": 22
+          },
+          {
+            "x": 16,
+            "y": 22
+          },
+          {
+            "x": 17,
+            "y": 22
+          },
+          {
+            "x": 18,
+            "y": 22
+          },
+          {
+            "x": 11,
+            "y": 23
+          },
+          {
+            "x": 12,
+            "y": 23
+          },
+          {
+            "x": 16,
+            "y": 23
+          },
+          {
+            "x": 17,
+            "y": 23
+          },
+          {
+            "x": 12,
+            "y": 24
+          },
+          {
+            "x": 13,
+            "y": 24
+          },
+          {
+            "x": 15,
+            "y": 24
+          },
+          {
+            "x": 16,
+            "y": 24
+          },
+          {
+            "x": 12,
+            "y": 25
+          },
+          {
+            "x": 13,
+            "y": 25
+          },
+          {
+            "x": 15,
+            "y": 25
+          },
+          {
+            "x": 16,
+            "y": 25
+          },
+          {
+            "x": 13,
+            "y": 26
+          },
+          {
+            "x": 15,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Elice Sister L4 Aum, Mend (joins automatically)"
+    ],
+    "chests": [
+      "14,20 Fire Dragonstone"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_19.png"
+    ],
+    "codesLine": null
+  }
 }

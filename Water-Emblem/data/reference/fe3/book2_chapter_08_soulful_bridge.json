@@ -56,5 +56,517 @@
     "r...F...F...===...........====",
     "r..====...F....F...=====F.====",
     "r.TTTT=F.F.......F.==========="
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 8,
+    "title": "Book 2 Chapter 8: Soulful Bridge",
+    "atlasFile": "b2c08.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 8,1",
+    "goalTile": {
+      "x": 8,
+      "y": 1
+    },
+    "lose": "Marth dies",
+    "boss": "Hardin (Emperor L1, Gradivus, Darksphere)",
+    "unitCounts": {
+      "P": 16,
+      "N": 2,
+      "E": 27
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 15,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 15,
+            "y": 15
+          },
+          {
+            "x": 18,
+            "y": 15
+          },
+          {
+            "x": 20,
+            "y": 15
+          },
+          {
+            "x": 14,
+            "y": 16
+          },
+          {
+            "x": 16,
+            "y": 16
+          },
+          {
+            "x": 17,
+            "y": 16
+          },
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 21,
+            "y": 16
+          },
+          {
+            "x": 23,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 17
+          },
+          {
+            "x": 16,
+            "y": 17
+          },
+          {
+            "x": 17,
+            "y": 17
+          },
+          {
+            "x": 18,
+            "y": 17
+          },
+          {
+            "x": 20,
+            "y": 17
+          },
+          {
+            "x": 21,
+            "y": 17
+          }
+        ],
+        "declaredCount": 15
+      },
+      {
+        "side": "N",
+        "label": "Jeorge",
+        "positions": [
+          {
+            "x": 13,
+            "y": 5
+          },
+          {
+            "x": 14,
+            "y": 6
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 21,
+            "y": 2
+          },
+          {
+            "x": 21,
+            "y": 3
+          },
+          {
+            "x": 18,
+            "y": 4
+          },
+          {
+            "x": 20,
+            "y": 4
+          },
+          {
+            "x": 23,
+            "y": 4
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 29,
+            "y": 1
+          },
+          {
+            "x": 29,
+            "y": 2
+          },
+          {
+            "x": 29,
+            "y": 3
+          },
+          {
+            "x": 29,
+            "y": 4
+          },
+          {
+            "x": 28,
+            "y": 2
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 10,
+            "y": 28
+          },
+          {
+            "x": 2,
+            "y": 29
+          },
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 4,
+            "y": 29
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Paladin",
+        "positions": [
+          {
+            "x": 11,
+            "y": 25
+          },
+          {
+            "x": 12,
+            "y": 26
+          },
+          {
+            "x": 10,
+            "y": 27
+          },
+          {
+            "x": 11,
+            "y": 27
+          },
+          {
+            "x": 5,
+            "y": 29
+          },
+          {
+            "x": 7,
+            "y": 29
+          },
+          {
+            "x": 8,
+            "y": 29
+          },
+          {
+            "x": 10,
+            "y": 29
+          }
+        ],
+        "declaredCount": 8
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 13,
+            "y": 12
+          },
+          {
+            "x": 13,
+            "y": 22
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Hardin",
+        "positions": [
+          {
+            "x": 13,
+            "y": 26
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 21,
+            "y": 14
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 8,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 9,
+            "y": 5
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 21,
+            "y": 14
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 26
+          },
+          {
+            "x": 2,
+            "y": 29
+          },
+          {
+            "x": 3,
+            "y": 29
+          },
+          {
+            "x": 4,
+            "y": 29
+          },
+          {
+            "x": 5,
+            "y": 29
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 29,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          },
+          {
+            "x": 29,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 13,
+            "y": 7
+          },
+          {
+            "x": 14,
+            "y": 7
+          },
+          {
+            "x": 13,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 13,
+            "y": 9
+          },
+          {
+            "x": 14,
+            "y": 9
+          },
+          {
+            "x": 13,
+            "y": 10
+          },
+          {
+            "x": 14,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 11
+          },
+          {
+            "x": 14,
+            "y": 11
+          },
+          {
+            "x": 13,
+            "y": 12
+          },
+          {
+            "x": 14,
+            "y": 12
+          },
+          {
+            "x": 13,
+            "y": 13
+          },
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 13,
+            "y": 14
+          },
+          {
+            "x": 14,
+            "y": 14
+          },
+          {
+            "x": 13,
+            "y": 18
+          },
+          {
+            "x": 14,
+            "y": 18
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 13,
+            "y": 20
+          },
+          {
+            "x": 14,
+            "y": 20
+          },
+          {
+            "x": 13,
+            "y": 21
+          },
+          {
+            "x": 14,
+            "y": 21
+          },
+          {
+            "x": 13,
+            "y": 22
+          },
+          {
+            "x": 14,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Cain Cavalier L9 Killer Lance (from start)",
+      "Bantu Manakete L3 (visit village)",
+      "Jeorge Sniper L5 Parthia (talk with Gordin)"
+    ],
+    "chests": [],
+    "villages": [
+      "29,17 Bantu"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

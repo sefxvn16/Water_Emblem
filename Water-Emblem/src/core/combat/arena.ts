@@ -46,9 +46,13 @@ interface ArenaTemplate {
 }
 
 /** Enemy templates from data/characters.json (PLAN item 151): the generic
- * enemy_* entries, excluding the curate (staves cannot fight). */
+ * enemy_* entries whose class is listed in balance.json `arena.opponentClasses`.
+ * The list is declared in data because mục 203 added enemy-only templates
+ * (dragons, ballistician, staff users, promoted classes) that never fight in the arena. */
+const ARENA_OPPONENT_CLASSES: readonly string[] = balanceConfig.arena.opponentClasses;
+
 const ARENA_TEMPLATES: readonly ArenaTemplate[] = (charactersJson.characters as ArenaTemplate[])
-  .filter((entry) => entry.id.startsWith('enemy_') && entry.classId !== 'curate');
+  .filter((entry) => entry.id.startsWith('enemy_') && ARENA_OPPONENT_CLASSES.includes(entry.classId));
 
 /** A unit can enter the arena only with a damage-dealing weapon equipped. */
 export function canEnterArena(entry: ExtendedUnitState): boolean {

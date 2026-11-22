@@ -51,5 +51,464 @@
     ".........MMMMMMMMMWF..S..V.WFF",
     "........MMMMMMMMMMWFFF.....WFF",
     "........MMMMMMMMMMWWWWWWWWWWFF"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 19,
+    "title": "Book 2 Chapter 19: The Last Decisive Battle",
+    "atlasFile": "b2c19.md",
+    "size": {
+      "width": 30,
+      "height": 24
+    },
+    "goal": "Seize gate 6,8",
+    "goalTile": {
+      "x": 6,
+      "y": 8
+    },
+    "lose": "Marth dies",
+    "boss": "Nehring (General L14, Silver Lance)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 35
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 6,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 7,
+            "y": 18
+          },
+          {
+            "x": 9,
+            "y": 18
+          },
+          {
+            "x": 3,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 6,
+            "y": 19
+          },
+          {
+            "x": 8,
+            "y": 19
+          },
+          {
+            "x": 9,
+            "y": 19
+          },
+          {
+            "x": 2,
+            "y": 20
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 7,
+            "y": 20
+          },
+          {
+            "x": 3,
+            "y": 21
+          },
+          {
+            "x": 5,
+            "y": 21
+          },
+          {
+            "x": 5,
+            "y": 22
+          },
+          {
+            "x": 7,
+            "y": 22
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Ballistician",
+        "positions": [
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 13
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 10
+          },
+          {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 4,
+            "y": 11
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 9
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 6,
+            "y": 10
+          },
+          {
+            "x": 2,
+            "y": 12
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 9
+          },
+          {
+            "x": 6,
+            "y": 9
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Paladin",
+        "positions": [
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 9,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 11
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 17,
+            "y": 5
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Nehring",
+        "positions": [
+          {
+            "x": 6,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "arena",
+        "positions": [
+          {
+            "x": 22,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 23,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 23,
+            "y": 19
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 6,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 21,
+            "y": 15
+          },
+          {
+            "x": 20,
+            "y": 16
+          },
+          {
+            "x": 23,
+            "y": 17
+          },
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 21,
+            "y": 18
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 23,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 22,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 10
+          },
+          {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 4,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 25,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [
+      "Roshea Paladin L8 Silver Lance (visit village 25,21 if not defeated in ch18)"
+    ],
+    "chests": [],
+    "villages": [
+      "25,21 Roshea"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

@@ -1,0 +1,495 @@
+{
+  "id": "chapter_15",
+  "name": "Chapter 15: Manakete Princess",
+  "mapId": "chapter_15_manakete_princess",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 7,
+      "y": 0
+    },
+    "description": "Seize throne 7,0"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 5,
+        "y": 24
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 0
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 0
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 0
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_2",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 0
+      },
+      "name": "Hero 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_3",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 3
+      },
+      "name": "Hero 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_4",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 4
+      },
+      "name": "Hero 4",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_5",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 5
+      },
+      "name": "Hero 5",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_6",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 6
+      },
+      "name": "Hero 6",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 12
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 16
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 1
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 1
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 4
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_1",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 10
+      },
+      "name": "Mercenary 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_2",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 14
+      },
+      "name": "Mercenary 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_3",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 18
+      },
+      "name": "Mercenary 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 8
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 0
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 0
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 0
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 0
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_5",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "name": "Thief 5",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_6",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 1
+      },
+      "name": "Thief 6",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_7",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 1
+      },
+      "name": "Thief 7",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "tiki",
+      "characterId": "tiki",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 0
+      },
+      "name": "Tiki",
+      "weaponId": "divinestone",
+      "level": 5,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 5,
+      "y": 24
+    },
+    {
+      "x": 7,
+      "y": 22
+    },
+    {
+      "x": 8,
+      "y": 22
+    },
+    {
+      "x": 4,
+      "y": 23
+    },
+    {
+      "x": 6,
+      "y": 23
+    },
+    {
+      "x": 9,
+      "y": 23
+    },
+    {
+      "x": 7,
+      "y": 24
+    },
+    {
+      "x": 8,
+      "y": 24
+    },
+    {
+      "x": 4,
+      "y": 25
+    },
+    {
+      "x": 6,
+      "y": 25
+    },
+    {
+      "x": 5,
+      "y": 26
+    },
+    {
+      "x": 7,
+      "y": 26
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "uncertain: grid detection for map1_15.png has rows shifted relative to the throne room",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Rương (12,20): Atlas: phần thưởng \"Guiding Ring\" chưa có trong data/items.json; ô này bị bỏ.",
+    "Rương (3,8): Atlas: phần thưởng \"Energy Drop\" chưa có trong data/items.json; ô này bị bỏ.",
+    "Rương (6,4): Atlas: phần thưởng \"Starsphere\" chưa có trong data/items.json; ô này bị bỏ.",
+    "Chiêu mộ tiki: người nói (Bantu) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "uncertain: grid detection for map1_15.png has rows shifted relative to the throne room",
+    "Chest at (10,20) (reward: Pure Water) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (12,20) (reward: Guiding Ring) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (1,16) (reward: 10000G) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (3,16) (reward: Bolganone) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (10,12) (reward: Earth Orb) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (12,12) (reward: Seraph Robe) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (1,8) (reward: Elysian Whip) omitted because map tile is 'wall', not 'chest'.",
+    "Chest at (3,8) (reward: Energy Drop) omitted because map tile is 'wall', not 'chest'.",
+    "Chest at (6,4) (reward: Starsphere) omitted because map tile is 'wall', not 'chest'.",
+    "Chest at (7,4) (reward: Lightsphere) omitted because map tile is 'wall', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_10_20",
+      "position": {
+        "x": 10,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "pure_water"
+      }
+    },
+    {
+      "id": "chest_1_16",
+      "position": {
+        "x": 1,
+        "y": 16
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 10000
+      }
+    },
+    {
+      "id": "chest_3_16",
+      "position": {
+        "x": 3,
+        "y": 16
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "bolganone"
+      }
+    },
+    {
+      "id": "chest_10_12",
+      "position": {
+        "x": 10,
+        "y": 12
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "earth_orb"
+      }
+    },
+    {
+      "id": "chest_12_12",
+      "position": {
+        "x": 12,
+        "y": 12
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "seraph_robe"
+      }
+    },
+    {
+      "id": "chest_1_8",
+      "position": {
+        "x": 1,
+        "y": 8
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "elysian_whip"
+      }
+    },
+    {
+      "id": "chest_7_4",
+      "position": {
+        "x": 7,
+        "y": 4
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "lightsphere"
+      }
+    }
+  ]
+}

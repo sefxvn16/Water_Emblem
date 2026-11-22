@@ -48,5 +48,313 @@
     "MMMMMMMm..........rr",
     "MMMMMMMM.........rrr",
     "MMMMMMMMM........rrr"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 1,
+    "title": "Book 2 Chapter 1: The Grustian Expedition",
+    "atlasFile": "b2c01.md",
+    "size": {
+      "width": 20,
+      "height": 20
+    },
+    "goal": "Seize gate 1,4",
+    "goalTile": {
+      "x": 1,
+      "y": 4
+    },
+    "lose": "Marth dies",
+    "boss": "Lorenz (General L1, Broken Lance)",
+    "unitCounts": {
+      "P": 8,
+      "N": 0,
+      "E": 16
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 12,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 12,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 17
+          },
+          {
+            "x": 14,
+            "y": 17
+          },
+          {
+            "x": 11,
+            "y": 18
+          },
+          {
+            "x": 12,
+            "y": 18
+          },
+          {
+            "x": 13,
+            "y": 18
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Bandit",
+        "positions": [
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 9
+          },
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
+            "x": 16,
+            "y": 9
+          },
+          {
+            "x": 16,
+            "y": 11
+          },
+          {
+            "x": 11,
+            "y": 12
+          },
+          {
+            "x": 10,
+            "y": 13
+          },
+          {
+            "x": 15,
+            "y": 13
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 8
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 6,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Lorenz",
+        "positions": [
+          {
+            "x": 1,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 19,
+            "y": 6
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 1,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 1,
+            "y": 9
+          },
+          {
+            "x": 14,
+            "y": 9
+          },
+          {
+            "x": 13,
+            "y": 10
+          },
+          {
+            "x": 18,
+            "y": 10
+          },
+          {
+            "x": 19,
+            "y": 10
+          },
+          {
+            "x": 8,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 19,
+            "y": 6
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 7,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 17,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 17,
+            "y": 7
+          }
+        ],
+        "summarized": false
+      },
+      "c": {
+        "name": "cliff",
+        "positions": [
+          {
+            "x": 6,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Marth Lord L3 Rapier, Vulnerary",
+      "Luke Cavalier L2 Javelin, Iron Sword",
+      "Roderick Cavalier L1 Iron Lance, Iron Sword",
+      "Cecil Cavalier L3 Slim Lance, Iron Sword",
+      "Arran Paladin L1 Silver Lance, Steel Sword",
+      "Draug Knight L6 Steel Lance",
+      "Gordin Archer L5 Steel Bow",
+      "Ryan Archer L1 Iron Bow (all from start)",
+      "Marisha Sister L3 Heal (visit village)"
+    ],
+    "chests": [],
+    "villages": [
+      "17,8 Marisha"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

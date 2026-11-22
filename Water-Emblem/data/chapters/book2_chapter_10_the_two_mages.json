@@ -1,0 +1,457 @@
+{
+  "id": "book2_chapter_10",
+  "name": "Book 2 Chapter 10: The Two Mages",
+  "mapId": "book2_chapter_10_the_two_mages",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 14,
+      "y": 9
+    },
+    "description": "Seize throne 14,9"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 14,
+        "y": 23
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "merric",
+      "characterId": "merric",
+      "faction": "player",
+      "position": {
+        "x": 14,
+        "y": 11
+      },
+      "name": "Merric",
+      "weaponId": "excalibur",
+      "level": 10
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 11
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 11
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_3",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 12
+      },
+      "name": "Curate 3",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_4",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 12
+      },
+      "name": "Curate 4",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_5",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 19
+      },
+      "name": "Curate 5",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 7
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 9
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 11
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 14
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_5",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 18
+      },
+      "name": "Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_6",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 20
+      },
+      "name": "Mage 6",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_1",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 7
+      },
+      "name": "Mercenary 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_2",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 9
+      },
+      "name": "Mercenary 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_3",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "name": "Mercenary 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_4",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 10
+      },
+      "name": "Mercenary 4",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_5",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 10
+      },
+      "name": "Mercenary 5",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_6",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 13
+      },
+      "name": "Mercenary 6",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_7",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 13
+      },
+      "name": "Mercenary 7",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_8",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 14
+      },
+      "name": "Mercenary 8",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_9",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 15
+      },
+      "name": "Mercenary 9",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_10",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 15
+      },
+      "name": "Mercenary 10",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 19
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 19
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 10
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "arlen",
+      "characterId": "arlen",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 9
+      },
+      "name": "Arlen",
+      "weaponId": "thoron",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 14,
+      "y": 23
+    },
+    {
+      "x": 14,
+      "y": 11
+    },
+    {
+      "x": 15,
+      "y": 22
+    },
+    {
+      "x": 11,
+      "y": 23
+    },
+    {
+      "x": 13,
+      "y": 23
+    },
+    {
+      "x": 17,
+      "y": 23
+    },
+    {
+      "x": 13,
+      "y": 24
+    },
+    {
+      "x": 14,
+      "y": 24
+    },
+    {
+      "x": 15,
+      "y": 24
+    },
+    {
+      "x": 14,
+      "y": 25
+    },
+    {
+      "x": 13,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 27
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "merric"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "4 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas.",
+    "Chiêu mộ arlen: người nói (Wendell) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "Chest at (12,6) (reward: 10000G) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (16,6) (reward: Watch) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (0,10) (reward: Silence) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (28,10) (reward: Unlock) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_12_6",
+      "position": {
+        "x": 12,
+        "y": 6
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 10000
+      }
+    },
+    {
+      "id": "chest_16_6",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "watch_staff"
+      }
+    },
+    {
+      "id": "chest_0_10",
+      "position": {
+        "x": 0,
+        "y": 10
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "silence_staff"
+      }
+    },
+    {
+      "id": "chest_28_10",
+      "position": {
+        "x": 28,
+        "y": 10
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "unlock_staff"
+      }
+    }
+  ]
+}

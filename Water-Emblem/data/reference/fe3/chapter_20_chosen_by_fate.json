@@ -49,5 +49,388 @@
     "______________W________W____",
     "WWWWWWWWWWWWWWWWWWWWWWWW____",
     "WWWWWWWWWWWWWWWWWWWWWWWW____"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 20,
+    "title": "Chapter 20: Chosen by Fate",
+    "atlasFile": "b1c20.md",
+    "size": {
+      "width": 28,
+      "height": 30
+    },
+    "goal": "Seize throne 15,14",
+    "goalTile": {
+      "x": 15,
+      "y": 14
+    },
+    "lose": "Marth dies",
+    "boss": "Medeus (Shadow Dragon L10, Earth Dragonstone)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 23
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 13,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 25,
+            "y": 4
+          },
+          {
+            "x": 24,
+            "y": 4
+          },
+          {
+            "x": 24,
+            "y": 5
+          },
+          {
+            "x": 25,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 23
+          },
+          {
+            "x": 6,
+            "y": 23
+          },
+          {
+            "x": 7,
+            "y": 23
+          },
+          {
+            "x": 12,
+            "y": 24
+          },
+          {
+            "x": 14,
+            "y": 24
+          },
+          {
+            "x": 12,
+            "y": 25
+          },
+          {
+            "x": 13,
+            "y": 25
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 26,
+            "y": 12
+          },
+          {
+            "x": 14,
+            "y": 14
+          },
+          {
+            "x": 16,
+            "y": 14
+          },
+          {
+            "x": 5,
+            "y": 18
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Fire Dragon",
+        "positions": [
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 24,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 12
+          },
+          {
+            "x": 18,
+            "y": 19
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 20,
+            "y": 6
+          },
+          {
+            "x": 24,
+            "y": 13
+          },
+          {
+            "x": 26,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 18
+          },
+          {
+            "x": 19,
+            "y": 19
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 18
+          },
+          {
+            "x": 19,
+            "y": 20
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Mage Dragon",
+        "positions": [
+          {
+            "x": 15,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 13,
+            "y": 9
+          },
+          {
+            "x": 17,
+            "y": 9
+          },
+          {
+            "x": 4,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 19
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Medeus",
+        "positions": [
+          {
+            "x": 15,
+            "y": 14
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "door",
+        "positions": [
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 25,
+            "y": 9
+          },
+          {
+            "x": 3,
+            "y": 16
+          },
+          {
+            "x": 25,
+            "y": 16
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Curate",
+        "positions": [
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 25,
+            "y": 1
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Mage Dragon",
+        "positions": [
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 18,
+            "y": 8
+          },
+          {
+            "x": 0,
+            "y": 14
+          },
+          {
+            "x": 25,
+            "y": 23
+          },
+          {
+            "x": 24,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          },
+          {
+            "x": 25,
+            "y": 25
+          }
+        ],
+        "declaredCount": 7
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 14
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 14,
+            "y": 10
+          },
+          {
+            "x": 16,
+            "y": 10
+          },
+          {
+            "x": 14,
+            "y": 11
+          },
+          {
+            "x": 16,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "s": {
+        "name": "stairs",
+        "positions": [
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 18,
+            "y": 8
+          },
+          {
+            "x": 25,
+            "y": 23
+          },
+          {
+            "x": 24,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "s stairs"
+  }
 }

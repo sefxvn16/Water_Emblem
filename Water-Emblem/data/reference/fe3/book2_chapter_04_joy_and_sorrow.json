@@ -58,5 +58,446 @@
     "W...mmMMMMMMMMMMMMMMMMMMMMMMMM",
     "V..mmMMMMMMMMMMMMMMMMMMMMMMMMM",
     "..mmMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 4,
+    "title": "Book 2 Chapter 4: Joy and Sorrow",
+    "atlasFile": "b2c04.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 29,17",
+    "goalTile": {
+      "x": 29,
+      "y": 17
+    },
+    "lose": "Marth dies",
+    "boss": "Gail (Pirate L10, Silver Axe)",
+    "unitCounts": {
+      "P": 18,
+      "N": 1,
+      "E": 30
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Jubelo",
+        "positions": [
+          {
+            "x": 25,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 3,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Ogma",
+        "positions": [
+          {
+            "x": 25,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Yuliya",
+        "positions": [
+          {
+            "x": 24,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 3,
+            "y": 19
+          },
+          {
+            "x": 6,
+            "y": 19
+          },
+          {
+            "x": 2,
+            "y": 20
+          },
+          {
+            "x": 4,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          },
+          {
+            "x": 1,
+            "y": 21
+          },
+          {
+            "x": 2,
+            "y": 21
+          },
+          {
+            "x": 4,
+            "y": 21
+          },
+          {
+            "x": 2,
+            "y": 22
+          },
+          {
+            "x": 5,
+            "y": 22
+          },
+          {
+            "x": 1,
+            "y": 23
+          },
+          {
+            "x": 3,
+            "y": 23
+          },
+          {
+            "x": 4,
+            "y": 23
+          },
+          {
+            "x": 2,
+            "y": 24
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Sirius",
+        "positions": [
+          {
+            "x": 25,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 16,
+            "y": 0
+          },
+          {
+            "x": 12,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 29
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 23,
+            "y": 8
+          },
+          {
+            "x": 22,
+            "y": 10
+          },
+          {
+            "x": 23,
+            "y": 10
+          },
+          {
+            "x": 24,
+            "y": 10
+          },
+          {
+            "x": 22,
+            "y": 11
+          },
+          {
+            "x": 25,
+            "y": 11
+          },
+          {
+            "x": 26,
+            "y": 12
+          },
+          {
+            "x": 27,
+            "y": 15
+          },
+          {
+            "x": 28,
+            "y": 17
+          },
+          {
+            "x": 28,
+            "y": 18
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "Pirate",
+        "positions": [
+          {
+            "x": 26,
+            "y": 9
+          },
+          {
+            "x": 27,
+            "y": 9
+          },
+          {
+            "x": 28,
+            "y": 10
+          },
+          {
+            "x": 27,
+            "y": 11
+          },
+          {
+            "x": 26,
+            "y": 17
+          },
+          {
+            "x": 27,
+            "y": 17
+          },
+          {
+            "x": 9,
+            "y": 12
+          },
+          {
+            "x": 6,
+            "y": 14
+          },
+          {
+            "x": 10,
+            "y": 14
+          },
+          {
+            "x": 5,
+            "y": 15
+          },
+          {
+            "x": 6,
+            "y": 15
+          },
+          {
+            "x": 7,
+            "y": 16
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 22,
+            "y": 9
+          },
+          {
+            "x": 8,
+            "y": 14
+          },
+          {
+            "x": 3,
+            "y": 15
+          },
+          {
+            "x": 5,
+            "y": 13
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Gail",
+        "positions": [
+          {
+            "x": 29,
+            "y": 17
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "village Castor",
+        "positions": [
+          {
+            "x": 22,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village Shaver",
+        "positions": [
+          {
+            "x": 0,
+            "y": 28
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 28,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 29,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 14
+          },
+          {
+            "x": 9,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 22,
+            "y": 9
+          },
+          {
+            "x": 5,
+            "y": 13
+          },
+          {
+            "x": 8,
+            "y": 14
+          },
+          {
+            "x": 3,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 22,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 22,
+            "y": 1
+          },
+          {
+            "x": 28,
+            "y": 16
+          },
+          {
+            "x": 29,
+            "y": 16
+          },
+          {
+            "x": 0,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 26,
+            "y": 6
+          },
+          {
+            "x": 29,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Ogma Mercenary L7 Steel Sword",
+      "Yuliya Cleric L2 Rescue",
+      "Jubelo Mage L1 Fire (all from start)",
+      "Sirius Paladin L4 Iron Lance, Iron Sword (talk with Ogma)",
+      "Castor Hunter L7 Killer Bow (visit village 22,2 with Marth)"
+    ],
+    "chests": [],
+    "villages": [
+      "22,2 Castor",
+      "0,28 Shaver"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

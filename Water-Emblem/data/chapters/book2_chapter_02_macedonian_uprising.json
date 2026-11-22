@@ -1,0 +1,266 @@
+{
+  "id": "book2_chapter_02",
+  "name": "Book 2 Chapter 2: Macedonian Uprising",
+  "mapId": "book2_chapter_02_macedonian_uprising",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 14
+    },
+    "description": "Seize gate 15,14"
+  },
+  "units": [
+    {
+      "id": "catria",
+      "characterId": "catria",
+      "faction": "player",
+      "position": {
+        "x": 17,
+        "y": 27
+      },
+      "name": "Catria",
+      "weaponId": "slim_lance",
+      "level": 6
+    },
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 17,
+        "y": 26
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "warren",
+      "characterId": "warren",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 18
+      },
+      "name": "Warren",
+      "weaponId": "iron_bow",
+      "level": 2,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_1",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 1
+      },
+      "name": "Bandit 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_2",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 1
+      },
+      "name": "Bandit 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_3",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 3
+      },
+      "name": "Bandit 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_4",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 3
+      },
+      "name": "Bandit 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_5",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "name": "Bandit 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 10
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 10
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 10
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 8
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 8
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 8
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 15
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 16
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "lumel",
+      "characterId": "lumel",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "name": "Lumel",
+      "weaponId": "ridersbane",
+      "level": 3,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 17,
+      "y": 27
+    },
+    {
+      "x": 17,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 27
+    },
+    {
+      "x": 18,
+      "y": 28
+    },
+    {
+      "x": 19,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "catria",
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "Unit Warren (N) assigned faction 'enemy' (recruit in atlas: true)."
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "catria",
+      "targetUnitId": "warren",
+      "maxDistance": 1
+    }
+  ]
+}

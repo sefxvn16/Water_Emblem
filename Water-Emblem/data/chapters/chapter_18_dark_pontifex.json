@@ -1,0 +1,378 @@
+{
+  "id": "chapter_18",
+  "name": "Chapter 18: Dark Pontifex",
+  "mapId": "chapter_18_dark_pontifex",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 14,
+      "y": 9
+    },
+    "description": "Seize throne 14,9"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 13,
+        "y": 28
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "decoy_gharnef_1",
+      "characterId": "enemy_decoy_gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 9
+      },
+      "name": "Decoy Gharnef 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "decoy_gharnef_2",
+      "characterId": "enemy_decoy_gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 12
+      },
+      "name": "Decoy Gharnef 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "decoy_gharnef_3",
+      "characterId": "enemy_decoy_gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 12
+      },
+      "name": "Decoy Gharnef 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "decoy_gharnef_4",
+      "characterId": "enemy_decoy_gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 19
+      },
+      "name": "Decoy Gharnef 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "decoy_gharnef_5",
+      "characterId": "enemy_decoy_gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 19
+      },
+      "name": "Decoy Gharnef 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_1",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 10
+      },
+      "name": "General 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_2",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 10
+      },
+      "name": "General 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_3",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 20
+      },
+      "name": "General 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 16
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_2",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 16
+      },
+      "name": "Hero 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_3",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 16
+      },
+      "name": "Hero 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 20
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 20
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 20
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 20
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_5",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 22
+      },
+      "name": "Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_6",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 22
+      },
+      "name": "Mage 6",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 9
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 9
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_3",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 21
+      },
+      "name": "Sniper 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_4",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 21
+      },
+      "name": "Sniper 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "gharnef",
+      "characterId": "gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 12
+      },
+      "name": "Gharnef",
+      "weaponId": "imhullu",
+      "level": 10,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 13,
+      "y": 28
+    },
+    {
+      "x": 13,
+      "y": 25
+    },
+    {
+      "x": 10,
+      "y": 26
+    },
+    {
+      "x": 12,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 26
+    },
+    {
+      "x": 16,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 26
+    },
+    {
+      "x": 11,
+      "y": 27
+    },
+    {
+      "x": 13,
+      "y": 27
+    },
+    {
+      "x": 15,
+      "y": 27
+    },
+    {
+      "x": 17,
+      "y": 27
+    },
+    {
+      "x": 15,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "Chest at (2,21) (reward: 10000G) omitted because map tile is 'castle', not 'chest'.",
+    "Chest at (26,21) (reward: Dracoshield) omitted because map tile is 'castle', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_2_21",
+      "position": {
+        "x": 2,
+        "y": 21
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 10000
+      }
+    },
+    {
+      "id": "chest_26_21",
+      "position": {
+        "x": 26,
+        "y": 21
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "dracoshield"
+      }
+    }
+  ]
+}

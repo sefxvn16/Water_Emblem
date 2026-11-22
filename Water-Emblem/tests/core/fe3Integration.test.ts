@@ -83,11 +83,20 @@ describe('Tích hợp dữ liệu FE3 chuẩn xác và toàn vẹn', () => {
     });
   });
 
-  describe('3. Mô tả chuẩn cho tất cả 40 class trong classes.json', () => {
-    it('tất cả 40 class đều có description và descriptionVi phong phú', () => {
+  describe('3. Mô tả chuẩn cho mọi class trong classes.json', () => {
+    it('mọi class đều có description và descriptionVi phong phú, và catalog đủ cho dữ liệu nhân vật', () => {
       const classes = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'classes.json'), 'utf8'));
       const list = Array.isArray(classes) ? classes : classes.classes;
-      expect(list.length).toBe(40);
+      // Chủ dự án 2026-11-22: "số class không giới hạn, miễn đủ là được" — mục 203 thêm 6 class chỉ
+      // có ở hàng địch. Thay con số chụp hiện trạng bằng phép kiểm "đủ": mọi classId mà
+      // characters.json tham chiếu đều phải có trong catalog.
+      expect(list.length).toBeGreaterThanOrEqual(40);
+      const classIds = new Set(list.map((cls: { id: string }) => cls.id));
+      const characters = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'characters.json'), 'utf8'));
+      for (const character of characters.characters as { id: string; classId: string }[]) {
+        expect(classIds.has(character.classId),
+          `Nhân vật ${character.id} dùng class ${character.classId} chưa có trong classes.json`).toBe(true);
+      }
 
       for (const cls of list) {
         expect(cls.description, `Class ${cls.id} missing description`).toBeDefined();

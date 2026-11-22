@@ -1,0 +1,264 @@
+{
+  "id": "book2_endgame_b",
+  "name": "Book 2 Endgame: The Dragon Altar, Part 2",
+  "mapId": "book2_endgame_b",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 14,
+      "y": 1
+    },
+    "description": "Seize gate 14,1"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 16,
+        "y": 28
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "dark_mage_1",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 18
+      },
+      "name": "Dark Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_2",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 18
+      },
+      "name": "Dark Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_3",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 20
+      },
+      "name": "Dark Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_1",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 6
+      },
+      "name": "Mage Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_2",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 8
+      },
+      "name": "Mage Dragon 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_3",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 20
+      },
+      "name": "Mage Dragon 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_4",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 20
+      },
+      "name": "Mage Dragon 4",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_5",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 20
+      },
+      "name": "Mage Dragon 5",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_6",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 20
+      },
+      "name": "Mage Dragon 6",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "gharnef",
+      "characterId": "gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 1
+      },
+      "name": "Gharnef",
+      "weaponId": "imhullu",
+      "level": 20,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 16,
+      "y": 28
+    },
+    {
+      "x": 11,
+      "y": 28
+    },
+    {
+      "x": 12,
+      "y": 28
+    },
+    {
+      "x": 13,
+      "y": 28
+    },
+    {
+      "x": 14,
+      "y": 28
+    },
+    {
+      "x": 15,
+      "y": 28
+    },
+    {
+      "x": 17,
+      "y": 28
+    },
+    {
+      "x": 11,
+      "y": 29
+    },
+    {
+      "x": 12,
+      "y": 29
+    },
+    {
+      "x": 13,
+      "y": 29
+    },
+    {
+      "x": 14,
+      "y": 29
+    },
+    {
+      "x": 15,
+      "y": 29
+    },
+    {
+      "x": 16,
+      "y": 29
+    },
+    {
+      "x": 17,
+      "y": 29
+    },
+    {
+      "x": 18,
+      "y": 29
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_2_7",
+      "position": {
+        "x": 2,
+        "y": 7
+      }
+    },
+    {
+      "id": "door_26_7",
+      "position": {
+        "x": 26,
+        "y": 7
+      }
+    }
+  ],
+  "notes": [
+    "uncertain: map2_22_2.png Mage Dragon x6 and Dark Mage x3 in c0504d now detected; chest arrows/doors corrected",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "uncertain: map2_22_2.png Mage Dragon x6 and Dark Mage x3 in c0504d now detected; chest arrows/doors corrected",
+    "Chest at (1,8) (reward: Aum) omitted because map tile is 'floor', not 'chest'.",
+    "Chest at (27,8) (reward: Hammerne) omitted because map tile is 'floor', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_1_8",
+      "position": {
+        "x": 1,
+        "y": 8
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "aum_staff"
+      }
+    },
+    {
+      "id": "chest_27_8",
+      "position": {
+        "x": 27,
+        "y": 8
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "hammerne_staff"
+      }
+    }
+  ]
+}

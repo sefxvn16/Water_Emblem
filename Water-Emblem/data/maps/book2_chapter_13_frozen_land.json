@@ -281,7 +281,7 @@
       "plains",
       "sea",
       "road",
-      "door",
+      "chest",
       "road",
       "plains",
       "sea",
@@ -610,7 +610,7 @@
       "plains",
       "plains",
       "road",
-      "door"
+      "chest"
     ],
     [
       "plains",
@@ -662,7 +662,7 @@
       "plains",
       "plains",
       "road",
-      "door",
+      "chest",
       "road",
       "forest",
       "sea",

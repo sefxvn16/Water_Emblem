@@ -1,0 +1,267 @@
+{
+  "id": "book2_chapter_01",
+  "name": "Book 2 Chapter 1: The Grustian Expedition",
+  "mapId": "book2_chapter_01_the_grustian_expedition",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 1,
+      "y": 4
+    },
+    "description": "Seize gate 1,4"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 12,
+        "y": 17
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 3
+    },
+    {
+      "id": "bandit_1",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 4
+      },
+      "name": "Bandit 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_2",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 5
+      },
+      "name": "Bandit 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_3",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 5
+      },
+      "name": "Bandit 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_4",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 8
+      },
+      "name": "Bandit 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_5",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 9
+      },
+      "name": "Bandit 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_6",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 9
+      },
+      "name": "Bandit 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_7",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 9
+      },
+      "name": "Bandit 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_8",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 11
+      },
+      "name": "Bandit 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_9",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 12
+      },
+      "name": "Bandit 9",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_10",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 13
+      },
+      "name": "Bandit 10",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bandit_11",
+      "characterId": "enemy_bandit",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 13
+      },
+      "name": "Bandit 11",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 7
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 8
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_3",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 8
+      },
+      "name": "Hunter 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 15
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "lorenz",
+      "characterId": "lorenz",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "name": "Lorenz",
+      "weaponId": "iron_lance",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 12,
+      "y": 17
+    },
+    {
+      "x": 12,
+      "y": 16
+    },
+    {
+      "x": 13,
+      "y": 16
+    },
+    {
+      "x": 13,
+      "y": 17
+    },
+    {
+      "x": 14,
+      "y": 17
+    },
+    {
+      "x": 11,
+      "y": 18
+    },
+    {
+      "x": 12,
+      "y": 18
+    },
+    {
+      "x": 13,
+      "y": 18
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Làng (17,8): Atlas: nhận nhân vật Marisha ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "Boss Lorenz weapon 'Broken Lance' not in items.json; substituted with 'iron_lance'.",
+    "Village at (17,8) rewards recruit/choice 'Marisha'; assigned reward itemId 'mend_staff'."
+  ]
+}

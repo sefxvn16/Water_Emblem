@@ -50,5 +50,499 @@
     "W____pp__W___________W_____WW_",
     "W________WWW_WWWWWWWWW____dWW_",
     "WWW_______W______WWWWW________"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 10,
+    "title": "Chapter 10: The Ageless Palace",
+    "atlasFile": "b1c10.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 15,22",
+    "goalTile": {
+      "x": 15,
+      "y": 22
+    },
+    "lose": "Marth dies",
+    "boss": "Volzhin (Bishop L5, Bolganone)",
+    "unitCounts": {
+      "P": 16,
+      "N": 0,
+      "E": 21
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Boah",
+        "positions": [
+          {
+            "x": 6,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Dolph",
+        "positions": [
+          {
+            "x": 4,
+            "y": 2
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Macellan",
+        "positions": [
+          {
+            "x": 5,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 21,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Midia",
+        "positions": [
+          {
+            "x": 3,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Tomas",
+        "positions": [
+          {
+            "x": 5,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 20,
+            "y": 15
+          },
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 21,
+            "y": 16
+          },
+          {
+            "x": 23,
+            "y": 16
+          },
+          {
+            "x": 22,
+            "y": 18
+          },
+          {
+            "x": 24,
+            "y": 18
+          },
+          {
+            "x": 25,
+            "y": 18
+          },
+          {
+            "x": 19,
+            "y": 19
+          },
+          {
+            "x": 21,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 19
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 1
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 14,
+            "y": 22
+          },
+          {
+            "x": 16,
+            "y": 22
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Fire Dragon",
+        "positions": [
+          {
+            "x": 5,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 12,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 8
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 12,
+            "y": 29
+          },
+          {
+            "x": 13,
+            "y": 29
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 11,
+            "y": 22
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Soldier",
+        "positions": [
+          {
+            "x": 26,
+            "y": 27
+          },
+          {
+            "x": 25,
+            "y": 28
+          },
+          {
+            "x": 26,
+            "y": 29
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 15,
+            "y": 2
+          },
+          {
+            "x": 16,
+            "y": 2
+          },
+          {
+            "x": 25,
+            "y": 8
+          },
+          {
+            "x": 25,
+            "y": 9
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Volzhin",
+        "positions": [
+          {
+            "x": 15,
+            "y": 22
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 8,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 9,
+            "y": 18
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 3",
+        "positions": [
+          {
+            "x": 10,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 4",
+        "positions": [
+          {
+            "x": 11,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 5",
+        "positions": [
+          {
+            "x": 13,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 6",
+        "positions": [
+          {
+            "x": 26,
+            "y": 28
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 14
+          },
+          {
+            "x": 11,
+            "y": 21
+          },
+          {
+            "x": 23,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 9,
+            "y": 18
+          },
+          {
+            "x": 10,
+            "y": 19
+          },
+          {
+            "x": 11,
+            "y": 20
+          },
+          {
+            "x": 13,
+            "y": 20
+          },
+          {
+            "x": 26,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 19,
+            "y": 6
+          },
+          {
+            "x": 16,
+            "y": 7
+          },
+          {
+            "x": 23,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 23,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 10
+          },
+          {
+            "x": 5,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 4,
+            "y": 26
+          },
+          {
+            "x": 7,
+            "y": 26
+          },
+          {
+            "x": 5,
+            "y": 27
+          },
+          {
+            "x": 6,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Midia Paladin L1",
+      "Boah Curate L1",
+      "Dolph Knight L4",
+      "Macellan Knight L3",
+      "Tomas Archer L8 (all from start)"
+    ],
+    "chests": [
+      "1 8,17 Orion's Bolt",
+      "2 9,18 10000G",
+      "3 10,19 Secret Book",
+      "4 11,20 Silver Sword",
+      "5 13,20 Goddess Icon",
+      "6 26,28 Boots"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

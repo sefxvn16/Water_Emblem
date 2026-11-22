@@ -1,0 +1,383 @@
+{
+  "id": "book2_chapter_21",
+  "name": "Book 2 Chapter 21: The Wyvern's Dale",
+  "mapId": "book2_chapter_21_the_wyverns_dale",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 28,
+      "y": 22
+    },
+    "description": "Seize gate 28,22"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 5,
+        "y": 26
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "barbarian_1",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 3
+      },
+      "name": "Barbarian 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_2",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 5
+      },
+      "name": "Barbarian 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_3",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 5
+      },
+      "name": "Barbarian 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_4",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 6
+      },
+      "name": "Barbarian 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_5",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 6
+      },
+      "name": "Barbarian 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_6",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 8
+      },
+      "name": "Barbarian 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_7",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 12
+      },
+      "name": "Barbarian 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_8",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 13
+      },
+      "name": "Barbarian 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_9",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 14
+      },
+      "name": "Barbarian 9",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_10",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 16
+      },
+      "name": "Barbarian 10",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_1",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 12
+      },
+      "name": "Dark Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_2",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 13
+      },
+      "name": "Dark Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_3",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 19
+      },
+      "name": "Dark Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_1",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 3
+      },
+      "name": "Wyvern 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_2",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 18
+      },
+      "name": "Wyvern 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_3",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 20
+      },
+      "name": "Wyvern 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_4",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 6
+      },
+      "name": "Wyvern 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_5",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 8
+      },
+      "name": "Wyvern 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_6",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 8
+      },
+      "name": "Wyvern 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_7",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 16
+      },
+      "name": "Wyvern 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_8",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 17
+      },
+      "name": "Wyvern 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_9",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 18
+      },
+      "name": "Wyvern 9",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 5,
+      "y": 26
+    },
+    {
+      "x": 5,
+      "y": 23
+    },
+    {
+      "x": 6,
+      "y": 23
+    },
+    {
+      "x": 7,
+      "y": 23
+    },
+    {
+      "x": 5,
+      "y": 24
+    },
+    {
+      "x": 6,
+      "y": 24
+    },
+    {
+      "x": 7,
+      "y": 24
+    },
+    {
+      "x": 4,
+      "y": 25
+    },
+    {
+      "x": 5,
+      "y": 25
+    },
+    {
+      "x": 6,
+      "y": 25
+    },
+    {
+      "x": 7,
+      "y": 25
+    },
+    {
+      "x": 3,
+      "y": 26
+    },
+    {
+      "x": 4,
+      "y": 26
+    },
+    {
+      "x": 6,
+      "y": 26
+    },
+    {
+      "x": 5,
+      "y": 27
+    },
+    {
+      "x": 4,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "villages": [
+    {
+      "id": "village_26_1",
+      "name": "Village (Starlight)",
+      "position": {
+        "x": 26,
+        "y": 1
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "starlight"
+      }
+    }
+  ],
+  "notes": [
+    "uncertain: map2_21.png Barbarian x10, Wyvern x3, Dark Mage x1 in c0504d now detected; red down arrow at 20,0 pointing to shops skipped",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "uncertain: map2_21.png Barbarian x10, Wyvern x3, Dark Mage x1 in c0504d now detected; red down arrow at 20,0 pointing to shops skipped"
+  ]
+}

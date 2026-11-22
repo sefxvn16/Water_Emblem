@@ -57,5 +57,492 @@
     "rrrrDDDDr..T......r......rrbrr",
     "...rrrrrrrbrrrrrrrrrrrrrrW__dW",
     "..................rrrrrrrWd__W"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 9,
+    "title": "Book 2 Chapter 9: Sanctuary of Sorcery",
+    "atlasFile": "b2c09.md",
+    "size": {
+      "width": 30,
+      "height": 26
+    },
+    "goal": "Seize gate 3,3",
+    "goalTile": {
+      "x": 3,
+      "y": 3
+    },
+    "lose": "Marth dies",
+    "boss": "Yodel (Bishop L3, Bolganone, Guiding Ring)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 32
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 11,
+            "y": 23
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 11,
+            "y": 20
+          },
+          {
+            "x": 12,
+            "y": 20
+          },
+          {
+            "x": 9,
+            "y": 21
+          },
+          {
+            "x": 11,
+            "y": 21
+          },
+          {
+            "x": 15,
+            "y": 21
+          },
+          {
+            "x": 16,
+            "y": 21
+          },
+          {
+            "x": 9,
+            "y": 22
+          },
+          {
+            "x": 12,
+            "y": 22
+          },
+          {
+            "x": 13,
+            "y": 22
+          },
+          {
+            "x": 14,
+            "y": 22
+          },
+          {
+            "x": 15,
+            "y": 22
+          },
+          {
+            "x": 17,
+            "y": 22
+          },
+          {
+            "x": 13,
+            "y": 23
+          },
+          {
+            "x": 15,
+            "y": 23
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 8
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 10,
+            "y": 7
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 9
+          },
+          {
+            "x": 4,
+            "y": 10
+          },
+          {
+            "x": 1,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "E",
+        "label": "Mercenary",
+        "positions": [
+          {
+            "x": 3,
+            "y": 25
+          },
+          {
+            "x": 4,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 8,
+            "y": 25
+          },
+          {
+            "x": 10,
+            "y": 25
+          },
+          {
+            "x": 5,
+            "y": 25
+          },
+          {
+            "x": 7,
+            "y": 25
+          },
+          {
+            "x": 9,
+            "y": 25
+          }
+        ],
+        "declaredCount": 8
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 6,
+            "y": 11
+          },
+          {
+            "x": 7,
+            "y": 12
+          },
+          {
+            "x": 16,
+            "y": 13
+          },
+          {
+            "x": 13,
+            "y": 14
+          },
+          {
+            "x": 15,
+            "y": 14
+          },
+          {
+            "x": 21,
+            "y": 16
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E*",
+        "label": "Yodel",
+        "positions": [
+          {
+            "x": 3,
+            "y": 3
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 9,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "buried item",
+        "positions": [
+          {
+            "x": 5,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 28,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 25
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 3,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 16,
+            "y": 19
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 1,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 23
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 24,
+            "y": 5
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 24,
+            "y": 4
+          },
+          {
+            "x": 25,
+            "y": 24
+          },
+          {
+            "x": 29,
+            "y": 24
+          },
+          {
+            "x": 25,
+            "y": 25
+          },
+          {
+            "x": 29,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 18,
+            "y": 21
+          },
+          {
+            "x": 27,
+            "y": 22
+          },
+          {
+            "x": 27,
+            "y": 23
+          },
+          {
+            "x": 10,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 28,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Minerva Dracoknight L9 (visit village 24,5 with Marth; buried Silver Axe at 5,16)"
+    ],
+    "chests": [
+      "1 26,25 Capricorn",
+      "2 28,24 Secret Book"
+    ],
+    "villages": [
+      "24,5 Minerva"
+    ],
+    "shops": [],
+    "uncertain": [
+      "marker at 5,16 is buried Silver Axe in desert D (Cm_fe03_b2_9.png), not a village; village is at 24,5 V"
+    ],
+    "codesLine": "D desert | _ floor | d door"
+  }
 }

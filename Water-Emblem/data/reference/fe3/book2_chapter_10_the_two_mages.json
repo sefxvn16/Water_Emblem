@@ -52,5 +52,339 @@
     "....WWWWWWWWW___WWWWWWWWW.....",
     ".......W.....___.....W........",
     "...W...W.....___.....W...W...."
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 10,
+    "title": "Book 2 Chapter 10: The Two Mages",
+    "atlasFile": "b2c10.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 14,9",
+    "goalTile": {
+      "x": 14,
+      "y": 9
+    },
+    "lose": "Marth dies",
+    "boss": "Arlen (Mage L10, Thoron, Aries)",
+    "unitCounts": {
+      "P": 13,
+      "N": 0,
+      "E": 25
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 14,
+            "y": 23
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Merric",
+        "positions": [
+          {
+            "x": 14,
+            "y": 11
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 15,
+            "y": 22
+          },
+          {
+            "x": 11,
+            "y": 23
+          },
+          {
+            "x": 13,
+            "y": 23
+          },
+          {
+            "x": 17,
+            "y": 23
+          },
+          {
+            "x": 13,
+            "y": 24
+          },
+          {
+            "x": 14,
+            "y": 24
+          },
+          {
+            "x": 15,
+            "y": 24
+          },
+          {
+            "x": 14,
+            "y": 25
+          },
+          {
+            "x": 13,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 27
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 5,
+            "y": 11
+          },
+          {
+            "x": 23,
+            "y": 11
+          },
+          {
+            "x": 4,
+            "y": 12
+          },
+          {
+            "x": 19,
+            "y": 12
+          },
+          {
+            "x": 14,
+            "y": 19
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 24,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
+            "x": 4,
+            "y": 11
+          },
+          {
+            "x": 18,
+            "y": 14
+          },
+          {
+            "x": 6,
+            "y": 18
+          },
+          {
+            "x": 24,
+            "y": 20
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Mercenary",
+        "positions": [
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 24,
+            "y": 9
+          },
+          {
+            "x": 6,
+            "y": 10
+          },
+          {
+            "x": 24,
+            "y": 10
+          },
+          {
+            "x": 5,
+            "y": 13
+          },
+          {
+            "x": 23,
+            "y": 13
+          },
+          {
+            "x": 25,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 15
+          },
+          {
+            "x": 24,
+            "y": 15
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 15,
+            "y": 19
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 27,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Arlen",
+        "positions": [
+          {
+            "x": 14,
+            "y": 9
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 12,
+            "y": 6
+          },
+          {
+            "x": 16,
+            "y": 6
+          },
+          {
+            "x": 28,
+            "y": 10
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "X",
+        "label": "chest 3",
+        "positions": [
+          {
+            "x": 0,
+            "y": 10
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 14,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 12,
+            "y": 6
+          },
+          {
+            "x": 16,
+            "y": 6
+          },
+          {
+            "x": 0,
+            "y": 10
+          },
+          {
+            "x": 28,
+            "y": 10
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 13,
+            "y": 11
+          },
+          {
+            "x": 15,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Merric Mage L10 Excalibur (starts on map)",
+      "Arlen Mage L10 Thoron, Aries (talk with Wendell)"
+    ],
+    "chests": [
+      "1 12,6 10000G",
+      "2 16,6 Watch",
+      "3 0,10 Silence",
+      "4 28,10 Unlock"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "_ floor | p pillar | d door"
+  }
 }

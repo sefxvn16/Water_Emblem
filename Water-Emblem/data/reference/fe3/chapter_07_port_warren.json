@@ -60,5 +60,374 @@
     "MMMMMMMMMMMMMMMM~~FF~~~~~~~~~~",
     "MMMMMMMMMMMMMMM~~~~~~~~~~~~~~~",
     "MMMMMMMMMMMMMM~~~~~~~~~~~~~~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 7,
+    "title": "Chapter 7: Port Warren",
+    "atlasFile": "b1c07.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 25,11",
+    "goalTile": {
+      "x": 25,
+      "y": 11
+    },
+    "lose": "Marth dies",
+    "boss": "Kannival (Knight L8, Silver Lance, Goddess Icon)",
+    "unitCounts": {
+      "P": 0,
+      "N": 0,
+      "E": 20
+    },
+    "units": [
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
+            "x": 12,
+            "y": 2
+          },
+          {
+            "x": 13,
+            "y": 2
+          },
+          {
+            "x": 14,
+            "y": 2
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 5
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 3
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Pirate",
+        "positions": [
+          {
+            "x": 12,
+            "y": 18
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Kannival",
+        "positions": [
+          {
+            "x": 25,
+            "y": 11
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "arena",
+        "positions": [
+          {
+            "x": 15,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 16,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Archer",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Cavalier",
+        "positions": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 1
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Knight",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 13,
+            "y": 0
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 14,
+            "y": 24
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 24,
+            "y": 11
+          },
+          {
+            "x": 26,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 25,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 15,
+            "y": 23
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 14,
+            "y": 24
+          },
+          {
+            "x": 16,
+            "y": 24
+          },
+          {
+            "x": 15,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 24,
+            "y": 10
+          },
+          {
+            "x": 25,
+            "y": 10
+          },
+          {
+            "x": 26,
+            "y": 10
+          },
+          {
+            "x": 12,
+            "y": 23
+          },
+          {
+            "x": 12,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 17,
+            "y": 11
+          },
+          {
+            "x": 18,
+            "y": 11
+          },
+          {
+            "x": 19,
+            "y": 11
+          },
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 21,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Caesar Mercenary L3 Steel Sword",
+      "Radd Mercenary L1 Iron Sword (both from start)"
+    ],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_07.png",
+      "Pirate at 12,18 stands on a sea tile; meaning not stated in the diagram legend"
+    ],
+    "codesLine": null
+  }
 }

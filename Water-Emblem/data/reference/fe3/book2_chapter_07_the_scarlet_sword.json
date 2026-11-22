@@ -57,5 +57,382 @@
     "MMMMMMMMM...............FF....",
     "MMMMMMMMM.............FF......",
     "MMMMMMMMM.............FF...FF."
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 7,
+    "title": "Book 2 Chapter 7: The Scarlet Sword",
+    "atlasFile": "b2c07.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 25,5",
+    "goalTile": {
+      "x": 25,
+      "y": 5
+    },
+    "lose": "Marth dies",
+    "boss": "Dall (Thief L10, Levin Sword)",
+    "unitCounts": {
+      "P": 17,
+      "N": 0,
+      "E": 19
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 13,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Navarre",
+        "positions": [
+          {
+            "x": 22,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Phina",
+        "positions": [
+          {
+            "x": 23,
+            "y": 11
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 13,
+            "y": 22
+          },
+          {
+            "x": 14,
+            "y": 23
+          },
+          {
+            "x": 15,
+            "y": 23
+          },
+          {
+            "x": 13,
+            "y": 24
+          },
+          {
+            "x": 12,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 25
+          },
+          {
+            "x": 15,
+            "y": 26
+          },
+          {
+            "x": 11,
+            "y": 27
+          },
+          {
+            "x": 16,
+            "y": 27
+          },
+          {
+            "x": 12,
+            "y": 28
+          },
+          {
+            "x": 12,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 27
+          },
+          {
+            "x": 13,
+            "y": 27
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 20,
+            "y": 16
+          },
+          {
+            "x": 24,
+            "y": 16
+          },
+          {
+            "x": 22,
+            "y": 17
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 23,
+            "y": 7
+          },
+          {
+            "x": 24,
+            "y": 7
+          },
+          {
+            "x": 25,
+            "y": 9
+          },
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 25,
+            "y": 13
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 6
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "E*",
+        "label": "Dall",
+        "positions": [
+          {
+            "x": 25,
+            "y": 5
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 23,
+            "y": 25
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 24,
+            "y": 5
+          },
+          {
+            "x": 26,
+            "y": 5
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 25,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 2,
+            "y": 8
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 16,
+            "y": 17
+          },
+          {
+            "x": 15,
+            "y": 18
+          },
+          {
+            "x": 18,
+            "y": 21
+          },
+          {
+            "x": 24,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 23,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 25,
+            "y": 3
+          },
+          {
+            "x": 26,
+            "y": 3
+          },
+          {
+            "x": 24,
+            "y": 4
+          },
+          {
+            "x": 25,
+            "y": 4
+          },
+          {
+            "x": 26,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 13,
+            "y": 0
+          }
+        ],
+        "summarized": false
+      },
+      "c": {
+        "name": "cliff",
+        "positions": [
+          {
+            "x": 2,
+            "y": 18
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Wendell Bishop L7 (choose in prep screen)",
+      "Navarre Mercenary L8 Killing Edge",
+      "Phina Dancer L1 Rapier (both from start)"
+    ],
+    "chests": [
+      "12,4 Physic (buried in cave)"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

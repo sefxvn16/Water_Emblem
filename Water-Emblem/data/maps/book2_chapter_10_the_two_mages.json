@@ -209,11 +209,11 @@
       "wall",
       "wall",
       "wall",
-      "door",
+      "chest",
       "floor",
       "floor",
       "floor",
-      "door",
+      "chest",
       "wall",
       "wall",
       "wall",
@@ -325,7 +325,7 @@
       "plains"
     ],
     [
-      "door",
+      "chest",
       "plains",
       "wall",
       "floor",
@@ -353,7 +353,7 @@
       "floor",
       "wall",
       "plains",
-      "door",
+      "chest",
       "plains"
     ],
     [

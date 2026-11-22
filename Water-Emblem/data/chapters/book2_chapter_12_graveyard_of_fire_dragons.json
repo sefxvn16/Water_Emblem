@@ -1,0 +1,290 @@
+{
+  "id": "book2_chapter_12",
+  "name": "Book 2 Chapter 12: Graveyard of Fire Dragons",
+  "mapId": "book2_chapter_12_graveyard_of_fire_dragons",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 1,
+      "y": 2
+    },
+    "description": "Seize gate 1,2"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 16,
+        "y": 27
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "barbarian_1",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 3
+      },
+      "name": "Barbarian 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_2",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 3
+      },
+      "name": "Barbarian 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_3",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 8
+      },
+      "name": "Barbarian 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_4",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 14
+      },
+      "name": "Barbarian 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_1",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "name": "Fire Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_2",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "name": "Fire Dragon 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_3",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 3
+      },
+      "name": "Fire Dragon 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_4",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 3
+      },
+      "name": "Fire Dragon 4",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_5",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 3
+      },
+      "name": "Fire Dragon 5",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_6",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 3
+      },
+      "name": "Fire Dragon 6",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_7",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 10
+      },
+      "name": "Fire Dragon 7",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_8",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 19
+      },
+      "name": "Fire Dragon 8",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_9",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 3
+      },
+      "name": "Fire Dragon 9",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 27
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 27
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 27
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 16,
+      "y": 27
+    },
+    {
+      "x": 18,
+      "y": 25
+    },
+    {
+      "x": 19,
+      "y": 25
+    },
+    {
+      "x": 18,
+      "y": 26
+    },
+    {
+      "x": 19,
+      "y": 26
+    },
+    {
+      "x": 20,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 27
+    },
+    {
+      "x": 15,
+      "y": 28
+    },
+    {
+      "x": 18,
+      "y": 28
+    },
+    {
+      "x": 20,
+      "y": 28
+    },
+    {
+      "x": 15,
+      "y": 29
+    },
+    {
+      "x": 16,
+      "y": 29
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_25_3",
+      "position": {
+        "x": 25,
+        "y": 3
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Rương (25,27): Atlas: phần thưởng \"Pisces (held by Thief)\" chưa có trong data/items.json; ô này bị bỏ."
+  ],
+  "uncertain": [
+    "Chest at (25,27) (reward: Pisces (held by Thief)) omitted because map tile is 'fort', not 'chest'."
+  ]
+}

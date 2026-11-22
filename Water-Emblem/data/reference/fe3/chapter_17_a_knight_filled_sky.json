@@ -55,5 +55,371 @@
     "MMMmmmMMMMmm.====.MMMM.===..H.",
     "MMMmFMMMMF.FF.===.....====....",
     "MMMMMMMM.MMMF...========......"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 17,
+    "title": "Chapter 17: A Knight-Filled Sky",
+    "atlasFile": "b1c17.md",
+    "size": {
+      "width": 30,
+      "height": 27
+    },
+    "goal": "Seize gate 20,16",
+    "goalTile": {
+      "x": 20,
+      "y": 16
+    },
+    "lose": "Marth dies",
+    "boss": "Michalis (Dracoknight L20, Silver Lance, Iote's Shield)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 19
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 17,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 23,
+            "y": 23
+          },
+          {
+            "x": 22,
+            "y": 24
+          },
+          {
+            "x": 23,
+            "y": 24
+          },
+          {
+            "x": 16,
+            "y": 25
+          },
+          {
+            "x": 18,
+            "y": 25
+          },
+          {
+            "x": 20,
+            "y": 25
+          },
+          {
+            "x": 21,
+            "y": 25
+          },
+          {
+            "x": 23,
+            "y": 25
+          },
+          {
+            "x": 16,
+            "y": 26
+          },
+          {
+            "x": 17,
+            "y": 26
+          },
+          {
+            "x": 19,
+            "y": 26
+          },
+          {
+            "x": 20,
+            "y": 26
+          },
+          {
+            "x": 22,
+            "y": 26
+          },
+          {
+            "x": 23,
+            "y": 26
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 19,
+            "y": 11
+          },
+          {
+            "x": 14,
+            "y": 12
+          },
+          {
+            "x": 16,
+            "y": 12
+          },
+          {
+            "x": 21,
+            "y": 13
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 21,
+            "y": 18
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 16,
+            "y": 11
+          },
+          {
+            "x": 22,
+            "y": 14
+          },
+          {
+            "x": 17,
+            "y": 15
+          },
+          {
+            "x": 18,
+            "y": 16
+          },
+          {
+            "x": 22,
+            "y": 16
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 15,
+            "y": 11
+          },
+          {
+            "x": 21,
+            "y": 12
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Pegasus Knight",
+        "positions": [
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 20,
+            "y": 12
+          },
+          {
+            "x": 15,
+            "y": 14
+          },
+          {
+            "x": 16,
+            "y": 15
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 4,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Michalis",
+        "positions": [
+          {
+            "x": 20,
+            "y": 16
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 4
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 4
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 21,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 20,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 28,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 9,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 13,
+            "y": 13
+          },
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 15,
+            "y": 13
+          },
+          {
+            "x": 18,
+            "y": 13
+          },
+          {
+            "x": 19,
+            "y": 13
+          },
+          {
+            "x": 20,
+            "y": 13
+          },
+          {
+            "x": 4,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 25,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

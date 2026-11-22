@@ -1,0 +1,364 @@
+{
+  "id": "book2_chapter_07",
+  "name": "Book 2 Chapter 7: The Scarlet Sword",
+  "mapId": "book2_chapter_07_the_scarlet_sword",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 25,
+      "y": 5
+    },
+    "description": "Seize gate 25,5"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 13,
+        "y": 26
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "navarre",
+      "characterId": "navarre",
+      "faction": "player",
+      "position": {
+        "x": 22,
+        "y": 10
+      },
+      "name": "Navarre",
+      "weaponId": "killing_edge",
+      "level": 8
+    },
+    {
+      "id": "phina",
+      "characterId": "phina",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 11
+      },
+      "name": "Phina",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 16
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 16
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 16
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 17
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 7
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 7
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_3",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 9
+      },
+      "name": "Hunter 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_4",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 11
+      },
+      "name": "Hunter 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_5",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 13
+      },
+      "name": "Hunter 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 4
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 5
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 6
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 7
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_5",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 7
+      },
+      "name": "Thief 5",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_6",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 7
+      },
+      "name": "Thief 6",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_7",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 8
+      },
+      "name": "Thief 7",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_8",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 4
+      },
+      "name": "Thief 8",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_9",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 6
+      },
+      "name": "Thief 9",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "dall",
+      "characterId": "dall",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 5
+      },
+      "name": "Dall",
+      "weaponId": "levin_sword",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 13,
+      "y": 26
+    },
+    {
+      "x": 22,
+      "y": 10
+    },
+    {
+      "x": 23,
+      "y": 11
+    },
+    {
+      "x": 13,
+      "y": 22
+    },
+    {
+      "x": 14,
+      "y": 23
+    },
+    {
+      "x": 15,
+      "y": 23
+    },
+    {
+      "x": 13,
+      "y": 24
+    },
+    {
+      "x": 12,
+      "y": 25
+    },
+    {
+      "x": 14,
+      "y": 25
+    },
+    {
+      "x": 15,
+      "y": 26
+    },
+    {
+      "x": 11,
+      "y": 27
+    },
+    {
+      "x": 16,
+      "y": 27
+    },
+    {
+      "x": 12,
+      "y": 28
+    },
+    {
+      "x": 12,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 27
+    },
+    {
+      "x": 13,
+      "y": 27
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "navarre",
+    "phina"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Rương (12,4) nằm trên ô 'gate', không đổi được sang 'chest'."
+  ],
+  "uncertain": [
+    "Chest at (12,4) (reward: Physic (buried in cave)) omitted because map tile is 'gate', not 'chest'."
+  ]
+}

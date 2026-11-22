@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import chapterJson from '../../data/chapters/test_chapter_01.json';
 import mapJson from '../../data/maps/test_map_01.json';
@@ -313,5 +315,162 @@ describe('chapter data', () => {
     const chapter2 = copyChapter();
     chapter2.seizeReward = { type: 'item', itemId: 'phantom_item' };
     expect(() => load(chapter2)).toThrow(/seize reward references unknown item phantom_item/);
+  });
+});
+
+// PLAN mục 203: 44 chương chiến dịch. Kỳ vọng lấy từ `atlasUnits` trong
+// data/reference/fe3/<map-id>.json — bản trích độc lập từ atlas FE3, không chép từ data/chapters.
+const WE_ROOT = path.resolve(__dirname, '../..');
+const REFERENCE_DIR = path.join(WE_ROOT, 'data/reference/fe3');
+
+interface AtlasUnitRow { side: string; label: string; positions: { x: number; y: number }[] }
+interface AtlasReference {
+  book: number;
+  chapter: number;
+  atlasFile: string;
+  size: { width: number; height: number };
+  goalTile: { x: number; y: number } | null;
+  unitCounts: Record<string, number>;
+  units: AtlasUnitRow[];
+  villages: string[];
+  chests: string[];
+}
+
+const readJson = (file: string): unknown => JSON.parse(fs.readFileSync(file, 'utf8'));
+const tileKey = (p: { x: number; y: number }) => `${p.x},${p.y}`;
+
+function campaignChapters(): { id: string; reference: AtlasReference }[] {
+  return fs.readdirSync(REFERENCE_DIR)
+    .filter((name) => name.endsWith('.json'))
+    .map((name) => {
+      const id = name.slice(0, -'.json'.length);
+      const raw = readJson(path.join(REFERENCE_DIR, name)) as { atlasUnits?: AtlasReference };
+      if (!raw.atlasUnits) throw new Error(`Reference ${id} thiếu khối atlasUnits`);
+      return { id, reference: raw.atlasUnits };
+    })
+    .sort((a, b) => a.reference.book - b.reference.book
+      || a.reference.chapter - b.reference.chapter
+      || a.reference.atlasFile.localeCompare(b.reference.atlasFile));
+}
+
+/** Ba chương đầu được dựng bằng tay và đã có bộ test riêng (mục 92, 178); atlas chỉ dùng để
+    kiểm chương sinh từ atlas, nên hai nhóm có mức khẳng định khác nhau. */
+const HANDMADE_CHAPTERS = new Set(['chapter_01_talys', 'chapter_02_galder', 'chapter_03_devil_mountain']);
+
+const atlasTiles = (reference: AtlasReference, sides: string[]) => new Set(
+  reference.units.filter((row) => sides.includes(row.side)).flatMap((row) => row.positions.map(tileKey)),
+);
+const atlasCoordList = (lines: string[]) => new Set(lines.flatMap((line) => {
+  const match = /(\d+),(\d+)/.exec(line);
+  return match ? [`${match[1]},${match[2]}`] : [];
+}));
+
+describe('FE3 campaign chapters', () => {
+  it('every chapter loads with valid ids and unit positions from the FE3 atlas', () => {
+    const chapters = campaignChapters();
+    expect(chapters).toHaveLength(44);
+
+    for (const { id, reference } of chapters) {
+      const chapterFile = path.join(WE_ROOT, 'data/chapters', `${id}.json`);
+      expect(fs.existsSync(chapterFile), `thiếu file chương ${id}`).toBe(true);
+      const rawChapter = readJson(chapterFile) as Record<string, unknown>;
+      const map = readJson(path.join(WE_ROOT, 'data/maps', `${id}.json`)) as MapData;
+
+      // loadChapterData kiểm mọi characterId/classId/weaponId/mapId và vị trí nằm trong bản đồ.
+      const data = loadChapterData(rawChapter, map, itemsJson.items as ItemDefinition[]);
+      expect(data.mapId, `${id}: mapId sai`).toBe(id);
+      expect(map.width, `${id}: chiều rộng bản đồ lệch atlas`).toBe(reference.size.width);
+      expect(map.height, `${id}: chiều cao bản đồ lệch atlas`).toBe(reference.size.height);
+
+      const atlasEnemy = atlasTiles(reference, ['E', 'E*']);
+      const atlasRecruit = atlasTiles(reference, ['N']);
+      const atlasPlayer = atlasTiles(reference, ['P']);
+      const enemyTiles = new Set(data.units.filter(({ unit }) => unit.faction === 'enemy')
+        .map(({ unit }) => tileKey(unit.position)));
+      const allyTiles = new Set(data.units.filter(({ unit }) => unit.faction === 'ally')
+        .map(({ unit }) => tileKey(unit.position)));
+
+      if (!HANDMADE_CHAPTERS.has(id)) {
+        for (const tile of atlasEnemy) {
+          expect(enemyTiles.has(tile), `${id}: atlas có quân địch ở ${tile} nhưng chương không có`).toBe(true);
+        }
+        for (const tile of enemyTiles) {
+          expect(atlasEnemy.has(tile) || atlasRecruit.has(tile),
+            `${id}: chương có quân địch ở ${tile} mà atlas không có`).toBe(true);
+        }
+        for (const tile of atlasRecruit) {
+          expect(enemyTiles.has(tile) || allyTiles.has(tile),
+            `${id}: atlas có đơn vị chiêu mộ ở ${tile} nhưng chương không có`).toBe(true);
+        }
+      }
+
+      for (const { unit } of data.units.filter((entry) => entry.unit.faction === 'player')) {
+        if (atlasPlayer.size === 0) break;
+        expect(atlasPlayer.has(tileKey(unit.position)),
+          `${id}: quân ta ở ${tileKey(unit.position)} không phải ô P của atlas`).toBe(true);
+      }
+
+      if (atlasPlayer.size > 0 && !HANDMADE_CHAPTERS.has(id)) {
+        expect(new Set(data.deploymentSlots.map(tileKey)),
+          `${id}: ô triển khai phải đúng tập ô P của atlas`).toEqual(atlasPlayer);
+      }
+      if (atlasPlayer.size === 0) {
+        // Bốn bản đồ atlas không có dòng P: ô triển khai là quy ước dự án, phải nói rõ trong notes.
+        const notes = (rawChapter.notes ?? []) as string[];
+        expect(notes.some((note) => note.includes('không có dòng `P`')),
+          `${id}: atlas không có ô P mà chương không ghi chú quy ước đặt ô triển khai`).toBe(true);
+        expect(data.deploymentSlots.length, `${id}: thiếu ô triển khai`).toBeGreaterThan(0);
+      }
+
+      expect(data.units.some(({ unit }) => unit.id === data.lordUnitId && unit.faction === 'player'),
+        `${id}: lordUnitId không trỏ unit người chơi`).toBe(true);
+
+      if (data.objective.type === 'seize' && reference.goalTile) {
+        expect(data.objective.seizeTargetTile, `${id}: ô chiếm lệch dòng goal của atlas`)
+          .toEqual(reference.goalTile);
+      }
+
+      // Chương dựng tay có rương/cửa thêm từ mục 92 (không có trong atlas), nên chỉ kiểm
+      // tập hợp làng và rương với các chương sinh từ atlas.
+      if (HANDMADE_CHAPTERS.has(id)) continue;
+      const atlasVillages = atlasCoordList(reference.villages);
+      for (const village of data.villages ?? []) {
+        expect(atlasVillages.has(tileKey(village.position)),
+          `${id}: làng ở ${tileKey(village.position)} không có trong atlas`).toBe(true);
+      }
+      const atlasChests = atlasCoordList(reference.chests);
+      for (const chest of data.chests ?? []) {
+        expect(atlasChests.has(tileKey(chest.position)),
+          `${id}: rương ở ${tileKey(chest.position)} không có trong atlas`).toBe(true);
+      }
+    }
+  });
+
+  it('every chapter objective matches the FE3 objective table', () => {
+    const objectives = readJson(path.join(WE_ROOT, 'data/chapter_objectives.json')) as {
+      index: number; objectiveType: string; objectiveText: string;
+    }[];
+    const chapters = campaignChapters();
+    expect(objectives).toHaveLength(chapters.length);
+
+    chapters.forEach(({ id }, position) => {
+      const row = objectives[position]!;
+      const chapter = readJson(path.join(WE_ROOT, 'data/chapters', `${id}.json`)) as {
+        objective: { type: string };
+      };
+      const expectedType = row.objectiveType.startsWith('seize')
+        || row.objectiveType === 'defeat_boss_and_seize' ? 'seize' : row.objectiveType;
+      expect(chapter.objective.type, `${id}: điều kiện thắng phải khớp bảng tra (${row.objectiveText})`)
+        .toBe(expectedType);
+    });
+  });
+
+  it('declares generic enemy levels and weapons as a project convention, not FE3 data', () => {
+    for (const { id } of campaignChapters()) {
+      if (HANDMADE_CHAPTERS.has(id)) continue;
+      const chapter = readJson(path.join(WE_ROOT, 'data/chapters', `${id}.json`)) as { notes?: string[] };
+      expect(chapter.notes?.some((note) => /project convention/i.test(note)),
+        `${id}: thiếu ghi chú rằng level và vũ khí quân thường là quy ước dự án`).toBe(true);
+    }
   });
 });

@@ -1,0 +1,331 @@
+{
+  "id": "chapter_12",
+  "name": "Chapter 12: An Oasis of Magic",
+  "mapId": "chapter_12_an_oasis_of_magic",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 3,
+      "y": 3
+    },
+    "description": "Seize gate 3,3"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 9,
+        "y": 26
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 0
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_3",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 11
+      },
+      "name": "Curate 3",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_4",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 12
+      },
+      "name": "Curate 4",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 3
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 5
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 9
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 9
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 11
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 11
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_5",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 20
+      },
+      "name": "Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_6",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 22
+      },
+      "name": "Mage 6",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_7",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 22
+      },
+      "name": "Mage 7",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_1",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 5
+      },
+      "name": "Pegasus Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_2",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 6
+      },
+      "name": "Pegasus Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 10
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "gharnef",
+      "characterId": "gharnef",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 23
+      },
+      "name": "Gharnef",
+      "weaponId": "imhullu",
+      "level": 10,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 9,
+      "y": 26
+    },
+    {
+      "x": 8,
+      "y": 25
+    },
+    {
+      "x": 3,
+      "y": 26
+    },
+    {
+      "x": 5,
+      "y": 26
+    },
+    {
+      "x": 7,
+      "y": 26
+    },
+    {
+      "x": 10,
+      "y": 26
+    },
+    {
+      "x": 4,
+      "y": 27
+    },
+    {
+      "x": 6,
+      "y": 27
+    },
+    {
+      "x": 7,
+      "y": 27
+    },
+    {
+      "x": 8,
+      "y": 27
+    },
+    {
+      "x": 11,
+      "y": 27
+    },
+    {
+      "x": 3,
+      "y": 28
+    },
+    {
+      "x": 5,
+      "y": 28
+    },
+    {
+      "x": 9,
+      "y": 28
+    },
+    {
+      "x": 11,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "2 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "Chest at (26,25) (reward: Talisman) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (28,24) (reward: Secret Book) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_26_25",
+      "position": {
+        "x": 26,
+        "y": 25
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "talisman"
+      }
+    },
+    {
+      "id": "chest_28_24",
+      "position": {
+        "x": 28,
+        "y": 24
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "secret_book"
+      }
+    }
+  ]
+}

@@ -1,0 +1,401 @@
+{
+  "id": "book2_chapter_17",
+  "name": "Book 2 Chapter 17: Gra's Sun Sets",
+  "mapId": "book2_chapter_17_gras_sun_sets",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 2,
+      "y": 17
+    },
+    "description": "Seize gate 2,17"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 19,
+        "y": 1
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "samson",
+      "characterId": "samson",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 17
+      },
+      "name": "Samson",
+      "weaponId": "silver_axe",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 14
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 18
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_3",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 20
+      },
+      "name": "Archer 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_4",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 21
+      },
+      "name": "Archer 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_5",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 23
+      },
+      "name": "Archer 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 8
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 13
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 14
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 14
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 18
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_6",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 22
+      },
+      "name": "Dracoknight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 18
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 27
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 27
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 2
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 3
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 29
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_5",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 29
+      },
+      "name": "Thief 5",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_6",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 29
+      },
+      "name": "Thief 6",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "sheena",
+      "characterId": "sheena",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 17
+      },
+      "name": "Sheena",
+      "weaponId": "silver_lance",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 19,
+      "y": 1
+    },
+    {
+      "x": 18,
+      "y": 0
+    },
+    {
+      "x": 19,
+      "y": 0
+    },
+    {
+      "x": 17,
+      "y": 1
+    },
+    {
+      "x": 20,
+      "y": 1
+    },
+    {
+      "x": 13,
+      "y": 2
+    },
+    {
+      "x": 15,
+      "y": 2
+    },
+    {
+      "x": 16,
+      "y": 2
+    },
+    {
+      "x": 17,
+      "y": 2
+    },
+    {
+      "x": 18,
+      "y": 2
+    },
+    {
+      "x": 19,
+      "y": 2
+    },
+    {
+      "x": 20,
+      "y": 2
+    },
+    {
+      "x": 17,
+      "y": 3
+    },
+    {
+      "x": 18,
+      "y": 3
+    },
+    {
+      "x": 21,
+      "y": 3
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "villages": [
+    {
+      "id": "village_4_1",
+      "name": "Village (Seraph Robe)",
+      "position": {
+        "x": 4,
+        "y": 1
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "seraph_robe"
+      }
+    }
+  ],
+  "notes": [
+    "uncertain: marker at 16,5 is an X on bridge b (drawbridge), not a village (village is at 4,1 V); Dracoknight x6 and Archer x5 in e26b0a now detected; red boundary line in map2_17.png skipped",
+    "uncertain: Thief x6 at 0,1 0,2 0,3 26,29 27,29 28,29 stand on sea tiles at the map edge; probably reinforcement entry points, not confirmed by the legend",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "1 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas.",
+    "Chiêu mộ sheena: người nói (Marth if no Gra soldiers harmed) không xuất trận trong chương này nên chưa khai được.",
+    "Chiêu mộ samson: người nói (Sheena) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "uncertain: marker at 16,5 is an X on bridge b (drawbridge), not a village (village is at 4,1 V); Dracoknight x6 and Archer x5 in e26b0a now detected; red boundary line in map2_17.png skipped",
+    "uncertain: Thief x6 at 0,1 0,2 0,3 26,29 27,29 28,29 stand on sea tiles at the map edge; probably reinforcement entry points, not confirmed by the legend",
+    "Unit Samson (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Chest at (15,24) (reward: Elysian Whip) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_15_24",
+      "position": {
+        "x": 15,
+        "y": 24
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "elysian_whip"
+      }
+    }
+  ]
+}

@@ -43,5 +43,390 @@
     "~~~....===...~~~~~~~~.F.H.~~~~",
     "~~~~HH~~~~..~~~~~~~~~~~FF~~~~~",
     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 1,
+    "title": "Chapter 1: Marth Embarks",
+    "atlasFile": "b1c01.md",
+    "size": {
+      "width": 30,
+      "height": 13
+    },
+    "goal": "Seize gate 4,4",
+    "goalTile": {
+      "x": 4,
+      "y": 4
+    },
+    "lose": "Marth dies",
+    "boss": "Gazzak (Pirate L5, Iron Axe)",
+    "unitCounts": {
+      "P": 7,
+      "N": 0,
+      "E": 14
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Abel",
+        "positions": [
+          {
+            "x": 23,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Caeda",
+        "positions": [
+          {
+            "x": 25,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Cain",
+        "positions": [
+          {
+            "x": 22,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Draug",
+        "positions": [
+          {
+            "x": 22,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Gordin",
+        "positions": [
+          {
+            "x": 23,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Jagen",
+        "positions": [
+          {
+            "x": 23,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 24,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 6,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Pirate",
+        "positions": [
+          {
+            "x": 4,
+            "y": 0
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
+            "x": 6,
+            "y": 0
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 13,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 9
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 21,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Gazzak",
+        "positions": [
+          {
+            "x": 6,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "shop",
+        "positions": [
+          {
+            "x": 24,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village A",
+        "positions": [
+          {
+            "x": 25,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village B",
+        "positions": [
+          {
+            "x": 3,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 4,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 19,
+            "y": 1
+          },
+          {
+            "x": 20,
+            "y": 1
+          },
+          {
+            "x": 21,
+            "y": 1
+          },
+          {
+            "x": 24,
+            "y": 10
+          },
+          {
+            "x": 4,
+            "y": 11
+          },
+          {
+            "x": 5,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 24,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 14,
+            "y": 2
+          },
+          {
+            "x": 24,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 25,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 25,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 7
+          }
+        ],
+        "summarized": false
+      },
+      "u": {
+        "name": "rubble",
+        "positions": [
+          {
+            "x": 21,
+            "y": 8
+          },
+          {
+            "x": 21,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Marth Lord L1 Rapier,Vulnerary",
+      "Caeda Pegasus Knight L1 Slim Lance,Iron Sword",
+      "Abel Cavalier L1 Javelin,Iron Sword",
+      "Draug Knight L1 Iron Lance",
+      "Cain Cavalier L1 Iron Lance,Iron Sword",
+      "Gordin Archer L1 Iron Bow,Steel Bow",
+      "Jagen Paladin L1 Silver Lance,Iron Sword (all from start)"
+    ],
+    "chests": [],
+    "villages": [
+      "A 25,3 5000G",
+      "B 3,8 Vulnerary"
+    ],
+    "shops": [
+      {
+        "at": {
+          "x": 24,
+          "y": 1
+        },
+        "goods": "Iron Sword 420 | Iron Lance 380 | Javelin 600 | Iron Bow 330 | Iron Axe 430"
+      }
+    ],
+    "uncertain": [
+      "Pirate x3 at 4,0 5,0 6,0 stand on sea tiles (darker marker colour on the diagram, meaning not stated in its legend); likely an arriving group, not confirmed"
+    ],
+    "codesLine": null
+  }
 }

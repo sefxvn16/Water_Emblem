@@ -1,0 +1,514 @@
+{
+  "id": "book2_chapter_09",
+  "name": "Book 2 Chapter 9: Sanctuary of Sorcery",
+  "mapId": "book2_chapter_09_sanctuary_of_sorcery",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 3,
+      "y": 3
+    },
+    "description": "Seize gate 3,3"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 11,
+        "y": 23
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 3
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 3
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 5
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 7
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 8
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 2
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 4
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 6
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 6
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_5",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 6
+      },
+      "name": "Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_6",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 7
+      },
+      "name": "Mage 6",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_7",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 8
+      },
+      "name": "Mage 7",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_8",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 9
+      },
+      "name": "Mage 8",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_9",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 10
+      },
+      "name": "Mage 9",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_10",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 11
+      },
+      "name": "Mage 10",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_11",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "name": "Mage 11",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_12",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 3
+      },
+      "name": "Mage 12",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_1",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 25
+      },
+      "name": "Mercenary 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_2",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 25
+      },
+      "name": "Mercenary 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_3",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 25
+      },
+      "name": "Mercenary 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_4",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 25
+      },
+      "name": "Mercenary 4",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_5",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 25
+      },
+      "name": "Mercenary 5",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_6",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 25
+      },
+      "name": "Mercenary 6",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_7",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 25
+      },
+      "name": "Mercenary 7",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mercenary_8",
+      "characterId": "enemy_mercenary",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 25
+      },
+      "name": "Mercenary 8",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 11
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 12
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 13
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 14
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_5",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "name": "Thief 5",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_6",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 16
+      },
+      "name": "Thief 6",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "yodel",
+      "characterId": "yodel",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 3
+      },
+      "name": "Yodel",
+      "weaponId": "bolganone",
+      "level": 3,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 11,
+      "y": 23
+    },
+    {
+      "x": 11,
+      "y": 20
+    },
+    {
+      "x": 12,
+      "y": 20
+    },
+    {
+      "x": 9,
+      "y": 21
+    },
+    {
+      "x": 11,
+      "y": 21
+    },
+    {
+      "x": 15,
+      "y": 21
+    },
+    {
+      "x": 16,
+      "y": 21
+    },
+    {
+      "x": 9,
+      "y": 22
+    },
+    {
+      "x": 12,
+      "y": 22
+    },
+    {
+      "x": 13,
+      "y": 22
+    },
+    {
+      "x": 14,
+      "y": 22
+    },
+    {
+      "x": 15,
+      "y": 22
+    },
+    {
+      "x": 17,
+      "y": 22
+    },
+    {
+      "x": 13,
+      "y": 23
+    },
+    {
+      "x": 15,
+      "y": 23
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_26_25",
+      "position": {
+        "x": 26,
+        "y": 25
+      }
+    }
+  ],
+  "notes": [
+    "uncertain: marker at 5,16 is buried Silver Axe in desert D (Cm_fe03_b2_9.png), not a village; village is at 24,5 V",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Rương (26,25): Atlas: phần thưởng \"Capricorn\" chưa có trong data/items.json; ô này bị bỏ.",
+    "1 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas.",
+    "Làng (24,5): Atlas: nhận nhân vật Minerva ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "uncertain: marker at 5,16 is buried Silver Axe in desert D (Cm_fe03_b2_9.png), not a village; village is at 24,5 V",
+    "Village at (24,5) rewards recruit/choice 'Minerva'; assigned reward itemId 'elysian_whip'.",
+    "Chest at (26,25) (reward: Capricorn) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (28,24) (reward: Secret Book) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_28_24",
+      "position": {
+        "x": 28,
+        "y": 24
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "secret_book"
+      }
+    }
+  ]
+}

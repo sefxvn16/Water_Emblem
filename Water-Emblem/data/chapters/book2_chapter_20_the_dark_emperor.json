@@ -1,0 +1,590 @@
+{
+  "id": "book2_chapter_20",
+  "name": "Book 2 Chapter 20: The Dark Emperor",
+  "mapId": "book2_chapter_20_the_dark_emperor",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 22
+    },
+    "description": "Seize throne 15,22"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 19,
+        "y": 16
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "midia",
+      "characterId": "midia",
+      "faction": "player",
+      "position": {
+        "x": 18,
+        "y": 22
+      },
+      "name": "Midia",
+      "weaponId": "iron_sword",
+      "level": 16
+    },
+    {
+      "id": "bishop_1",
+      "characterId": "enemy_bishop",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 22
+      },
+      "name": "Bishop 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bishop_2",
+      "characterId": "enemy_bishop",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 26
+      },
+      "name": "Bishop 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bishop_3",
+      "characterId": "enemy_bishop",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 29
+      },
+      "name": "Bishop 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "bishop_4",
+      "characterId": "enemy_bishop",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 29
+      },
+      "name": "Bishop 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_1",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 7
+      },
+      "name": "Dark Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "earth_dragon_1",
+      "characterId": "enemy_earth_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 15
+      },
+      "name": "Earth Dragon 1",
+      "weaponId": "dark_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_1",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 5
+      },
+      "name": "General 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_2",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 18
+      },
+      "name": "General 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_3",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 22
+      },
+      "name": "General 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_4",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 29
+      },
+      "name": "General 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 2
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_2",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 2
+      },
+      "name": "Hero 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_3",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 2
+      },
+      "name": "Hero 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_4",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 15
+      },
+      "name": "Hero 4",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_5",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 17
+      },
+      "name": "Hero 5",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_6",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 17
+      },
+      "name": "Hero 6",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_7",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 29
+      },
+      "name": "Hero 7",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 4
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 22
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 22
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 4
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 5
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 15
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 22
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_5",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 29
+      },
+      "name": "Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 2
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 7
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_3",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 15
+      },
+      "name": "Sniper 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_4",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 24
+      },
+      "name": "Sniper 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_5",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 28
+      },
+      "name": "Sniper 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_6",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 26
+      },
+      "name": "Sniper 6",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 26
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "hardin",
+      "characterId": "hardin",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 22
+      },
+      "name": "Hardin",
+      "weaponId": "gradivus",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 19,
+      "y": 16
+    },
+    {
+      "x": 18,
+      "y": 22
+    },
+    {
+      "x": 18,
+      "y": 15
+    },
+    {
+      "x": 20,
+      "y": 15
+    },
+    {
+      "x": 21,
+      "y": 15
+    },
+    {
+      "x": 23,
+      "y": 15
+    },
+    {
+      "x": 21,
+      "y": 16
+    },
+    {
+      "x": 20,
+      "y": 17
+    },
+    {
+      "x": 19,
+      "y": 18
+    },
+    {
+      "x": 21,
+      "y": 18
+    },
+    {
+      "x": 22,
+      "y": 18
+    },
+    {
+      "x": 20,
+      "y": 19
+    },
+    {
+      "x": 22,
+      "y": 19
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "midia"
+  ],
+  "notes": [
+    "uncertain: map2_20.png enemy markers in c0504d (Hero x7, Sniper x6, Knight x3, Mage x5, General x4, Bishop x4, Dark Mage x1, Earth Dragon x1, Thief x1) now detected; fort tiles ccc0da and castle wall shading 60497a skipped",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "7 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "uncertain: map2_20.png enemy markers in c0504d (Hero x7, Sniper x6, Knight x3, Mage x5, General x4, Bishop x4, Dark Mage x1, Earth Dragon x1, Thief x1) now detected; fort tiles ccc0da and castle wall shading 60497a skipped",
+    "Chest at (5,0) (reward: Lady Sword) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (8,17) (reward: 10000G) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (9,18) (reward: Orion's Bolt) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (10,19) (reward: Knight Crest) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (11,20) (reward: Bishop Ring) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (13,20) (reward: Elysian Whip) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (26,28) (reward: Devil Sword) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_5_0",
+      "position": {
+        "x": 5,
+        "y": 0
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "lady_blade"
+      }
+    },
+    {
+      "id": "chest_8_17",
+      "position": {
+        "x": 8,
+        "y": 17
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 10000
+      }
+    },
+    {
+      "id": "chest_9_18",
+      "position": {
+        "x": 9,
+        "y": 18
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "orions_bolt"
+      }
+    },
+    {
+      "id": "chest_10_19",
+      "position": {
+        "x": 10,
+        "y": 19
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "knight_crest"
+      }
+    },
+    {
+      "id": "chest_11_20",
+      "position": {
+        "x": 11,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "bishop_ring"
+      }
+    },
+    {
+      "id": "chest_13_20",
+      "position": {
+        "x": 13,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "elysian_whip"
+      }
+    },
+    {
+      "id": "chest_26_28",
+      "position": {
+        "x": 26,
+        "y": 28
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "devil_sword"
+      }
+    }
+  ]
+}

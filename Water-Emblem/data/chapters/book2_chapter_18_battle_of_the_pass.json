@@ -1,0 +1,511 @@
+{
+  "id": "book2_chapter_18",
+  "name": "Book 2 Chapter 18: Battle of the Pass",
+  "mapId": "book2_chapter_18_battle_of_the_pass",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 28,
+      "y": 15
+    },
+    "description": "Seize gate 28,15"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 18,
+        "y": 16
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "roshea",
+      "characterId": "roshea",
+      "faction": "ally",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "name": "Roshea",
+      "weaponId": "iron_sword",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_1",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 13
+      },
+      "name": "General 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_2",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 14
+      },
+      "name": "General 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_3",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 16
+      },
+      "name": "General 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_1",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 0
+      },
+      "name": "Horseman 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_2",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 1
+      },
+      "name": "Horseman 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_3",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 2
+      },
+      "name": "Horseman 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_4",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 3
+      },
+      "name": "Horseman 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_5",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 6
+      },
+      "name": "Horseman 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_6",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 7
+      },
+      "name": "Horseman 6",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_7",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 8
+      },
+      "name": "Horseman 7",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_8",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 9
+      },
+      "name": "Horseman 8",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_9",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 10
+      },
+      "name": "Horseman 9",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_10",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 10
+      },
+      "name": "Horseman 10",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_11",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 7
+      },
+      "name": "Horseman 11",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_12",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 8
+      },
+      "name": "Horseman 12",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_1",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 3
+      },
+      "name": "Paladin 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_2",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 4
+      },
+      "name": "Paladin 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_3",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 4
+      },
+      "name": "Paladin 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_4",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 5
+      },
+      "name": "Paladin 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_5",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 6
+      },
+      "name": "Paladin 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_6",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 8
+      },
+      "name": "Paladin 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_7",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 8
+      },
+      "name": "Paladin 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_8",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 9
+      },
+      "name": "Paladin 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_9",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 14
+      },
+      "name": "Paladin 9",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_10",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 14
+      },
+      "name": "Paladin 10",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_11",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 15
+      },
+      "name": "Paladin 11",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_12",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 15
+      },
+      "name": "Paladin 12",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_13",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 15
+      },
+      "name": "Paladin 13",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_14",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 15
+      },
+      "name": "Paladin 14",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_15",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 15
+      },
+      "name": "Paladin 15",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_16",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 16
+      },
+      "name": "Paladin 16",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 15
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 16
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 18,
+      "y": 16
+    },
+    {
+      "x": 14,
+      "y": 13
+    },
+    {
+      "x": 7,
+      "y": 14
+    },
+    {
+      "x": 9,
+      "y": 14
+    },
+    {
+      "x": 11,
+      "y": 14
+    },
+    {
+      "x": 13,
+      "y": 14
+    },
+    {
+      "x": 15,
+      "y": 14
+    },
+    {
+      "x": 16,
+      "y": 14
+    },
+    {
+      "x": 8,
+      "y": 15
+    },
+    {
+      "x": 10,
+      "y": 15
+    },
+    {
+      "x": 17,
+      "y": 15
+    },
+    {
+      "x": 19,
+      "y": 15
+    },
+    {
+      "x": 4,
+      "y": 16
+    },
+    {
+      "x": 6,
+      "y": 16
+    },
+    {
+      "x": 19,
+      "y": 16
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Làng (1,15): Atlas: phần thưởng \"Life Orb (from Aurelis King; Wolf Guard retreats)\" chưa có trong data/items.json; ô này bị bỏ."
+  ],
+  "uncertain": [
+    "Unit Roshea (N) assigned faction 'ally' (recruit in atlas: false).",
+    "Village at (1,15) rewards recruit/choice 'Life Orb (from Aurelis King; Wolf Guard retreats)'; assigned reward itemId 'life_orb'."
+  ]
+}

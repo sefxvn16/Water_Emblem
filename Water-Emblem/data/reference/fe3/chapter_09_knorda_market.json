@@ -51,5 +51,430 @@
     ".........MMMMMMMMMWF..SH.V.WFF",
     "........MMMMMMMMMMWFFF.....WFF",
     "........MMMMMMMMMMWWWWWWWWWWFF"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 9,
+    "title": "Chapter 9: Knorda Market",
+    "atlasFile": "b1c09.md",
+    "size": {
+      "width": 30,
+      "height": 24
+    },
+    "goal": "Seize gate 6,8",
+    "goalTile": {
+      "x": 6,
+      "y": 8
+    },
+    "lose": "Marth dies",
+    "boss": "Khozen (Manakete L1, Firestone)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 18
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 10,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 10,
+            "y": 16
+          },
+          {
+            "x": 11,
+            "y": 16
+          },
+          {
+            "x": 7,
+            "y": 17
+          },
+          {
+            "x": 4,
+            "y": 18
+          },
+          {
+            "x": 5,
+            "y": 18
+          },
+          {
+            "x": 6,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 3,
+            "y": 19
+          },
+          {
+            "x": 4,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 7,
+            "y": 19
+          },
+          {
+            "x": 8,
+            "y": 19
+          },
+          {
+            "x": 9,
+            "y": 19
+          },
+          {
+            "x": 4,
+            "y": 20
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Ballistician",
+        "positions": [
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 10
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 3,
+            "y": 10
+          },
+          {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 4,
+            "y": 11
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 10,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Mercenary",
+        "positions": [
+          {
+            "x": 23,
+            "y": 15
+          },
+          {
+            "x": 23,
+            "y": 16
+          },
+          {
+            "x": 20,
+            "y": 19
+          },
+          {
+            "x": 21,
+            "y": 19
+          },
+          {
+            "x": 20,
+            "y": 21
+          },
+          {
+            "x": 21,
+            "y": 21
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Pegasus Knight",
+        "positions": [
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 6
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 5,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 11,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Khozen",
+        "positions": [
+          {
+            "x": 7,
+            "y": 5
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "arena",
+        "positions": [
+          {
+            "x": 23,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 22,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 23,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village A",
+        "positions": [
+          {
+            "x": 25,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village B",
+        "positions": [
+          {
+            "x": 25,
+            "y": 21
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 6,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 21,
+            "y": 15
+          },
+          {
+            "x": 20,
+            "y": 16
+          },
+          {
+            "x": 23,
+            "y": 17
+          },
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 21,
+            "y": 18
+          },
+          {
+            "x": 23,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 23,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 22,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 10
+          },
+          {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 4,
+            "y": 11
+          },
+          {
+            "x": 8,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 25,
+            "y": 16
+          },
+          {
+            "x": 25,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [
+      "Jeorge Sniper L1 Silver Bow (visit village A 25,16)",
+      "Linde Mage L1 Aura (visit village B 25,21)"
+    ],
+    "chests": [],
+    "villages": [
+      "A 25,16 Jeorge",
+      "B 25,21 Linde"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

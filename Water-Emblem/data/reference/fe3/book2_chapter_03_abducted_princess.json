@@ -59,5 +59,504 @@
     ".rbrr....FFF..==F....F.===.FF.",
     "rr.....FFFFFF==....F.F.=T=.FF.",
     ".....F.FF.FFF==...F.FF.===.FFF"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 3,
+    "title": "Book 2 Chapter 3: Abducted Princess",
+    "atlasFile": "b2c03.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 19,17",
+    "goalTile": {
+      "x": 19,
+      "y": 17
+    },
+    "lose": "Marth dies",
+    "boss": "Lykke (General L1, Steel Lance, Taurus)",
+    "unitCounts": {
+      "P": 11,
+      "N": 1,
+      "E": 15
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 23,
+            "y": 27
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Palla",
+        "positions": [
+          {
+            "x": 21,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 23,
+            "y": 26
+          },
+          {
+            "x": 25,
+            "y": 26
+          },
+          {
+            "x": 22,
+            "y": 27
+          },
+          {
+            "x": 24,
+            "y": 27
+          },
+          {
+            "x": 25,
+            "y": 27
+          },
+          {
+            "x": 20,
+            "y": 28
+          },
+          {
+            "x": 22,
+            "y": 28
+          },
+          {
+            "x": 23,
+            "y": 28
+          },
+          {
+            "x": 25,
+            "y": 28
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "N",
+        "label": "Matthis",
+        "positions": [
+          {
+            "x": 10,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 18,
+            "y": 17
+          },
+          {
+            "x": 20,
+            "y": 17
+          },
+          {
+            "x": 19,
+            "y": 18
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 17,
+            "y": 18
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 23,
+            "y": 14
+          },
+          {
+            "x": 26,
+            "y": 14
+          },
+          {
+            "x": 24,
+            "y": 15
+          },
+          {
+            "x": 27,
+            "y": 15
+          },
+          {
+            "x": 23,
+            "y": 16
+          },
+          {
+            "x": 26,
+            "y": 16
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 18,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 17,
+            "y": 0
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 6
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E*",
+        "label": "Lykke",
+        "positions": [
+          {
+            "x": 19,
+            "y": 17
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 20,
+            "y": 13
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "bridge",
+        "positions": [
+          {
+            "x": 13,
+            "y": 23
+          },
+          {
+            "x": 14,
+            "y": 23
+          },
+          {
+            "x": 15,
+            "y": 23
+          },
+          {
+            "x": 13,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 25
+          },
+          {
+            "x": 15,
+            "y": 25
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 21,
+            "y": 13
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "village",
+        "positions": [
+          {
+            "x": 28,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 24
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 18,
+            "y": 17
+          },
+          {
+            "x": 20,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 19,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 3,
+            "y": 25
+          },
+          {
+            "x": 8,
+            "y": 26
+          },
+          {
+            "x": 9,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 20,
+            "y": 13
+          },
+          {
+            "x": 21,
+            "y": 13
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 17,
+            "y": 0
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 6
+          },
+          {
+            "x": 24,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 28,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 28,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 15
+          },
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 20,
+            "y": 15
+          },
+          {
+            "x": 18,
+            "y": 16
+          },
+          {
+            "x": 19,
+            "y": 16
+          },
+          {
+            "x": 20,
+            "y": 16
+          },
+          {
+            "x": 1,
+            "y": 23
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 22,
+            "y": 9
+          },
+          {
+            "x": 22,
+            "y": 10
+          },
+          {
+            "x": 22,
+            "y": 11
+          },
+          {
+            "x": 1,
+            "y": 12
+          },
+          {
+            "x": 22,
+            "y": 12
+          },
+          {
+            "x": 0,
+            "y": 16
+          },
+          {
+            "x": 13,
+            "y": 23
+          },
+          {
+            "x": 14,
+            "y": 23
+          },
+          {
+            "x": 15,
+            "y": 23
+          },
+          {
+            "x": 13,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 25
+          },
+          {
+            "x": 15,
+            "y": 25
+          },
+          {
+            "x": 2,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Linde Mage L4 Aura, Thunder, Nosferatu (joins before chapter)",
+      "Palla Pegasus Knight L10 Silver Lance, Iron Sword, Vulnerary (from start)",
+      "Julian Thief L6 Iron Sword, Vulnerary (joins automatically)",
+      "Matthis Cavalier L4 Javelin (talk with Julian)"
+    ],
+    "chests": [],
+    "villages": [
+      "28,3 Bridge Key",
+      "1,24 Iote's Shield"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

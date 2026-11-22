@@ -1,0 +1,419 @@
+{
+  "id": "chapter_05",
+  "name": "Chapter 5: Fire Emblem",
+  "mapId": "chapter_05_fire_emblem",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 11,
+      "y": 11
+    },
+    "description": "Seize throne 11,11"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 21,
+        "y": 15
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "rickard",
+      "characterId": "rickard",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "name": "Rickard",
+      "weaponId": "iron_sword",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wendell",
+      "characterId": "wendell",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 9
+      },
+      "name": "Wendell",
+      "weaponId": "thunder",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 5
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 5
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_3",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 14
+      },
+      "name": "Archer 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_4",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 14
+      },
+      "name": "Archer 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 4
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 12
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 1
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 6
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 17
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_4",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 18
+      },
+      "name": "Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 3
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 13
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "soldier_1",
+      "characterId": "enemy_soldier",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 1
+      },
+      "name": "Soldier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "soldier_2",
+      "characterId": "enemy_soldier",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 2
+      },
+      "name": "Soldier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 1
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 17
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 17
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 17
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "emereus",
+      "characterId": "emereus",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 11
+      },
+      "name": "Emereus",
+      "weaponId": "steel_lance",
+      "level": 3,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 21,
+      "y": 15
+    },
+    {
+      "x": 20,
+      "y": 11
+    },
+    {
+      "x": 19,
+      "y": 12
+    },
+    {
+      "x": 20,
+      "y": 12
+    },
+    {
+      "x": 20,
+      "y": 13
+    },
+    {
+      "x": 21,
+      "y": 13
+    },
+    {
+      "x": 22,
+      "y": 13
+    },
+    {
+      "x": 24,
+      "y": 13
+    },
+    {
+      "x": 25,
+      "y": 13
+    },
+    {
+      "x": 26,
+      "y": 13
+    },
+    {
+      "x": 23,
+      "y": 14
+    },
+    {
+      "x": 22,
+      "y": 15
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "5 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "Unit Rickard (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Unit Wendell (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Chest at (20,7) (reward: 5000G) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (9,7) (reward: Physic) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (7,3) (reward: Armorslayer) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (16,0) (reward: Killing Edge) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (3,11) (reward: Seraph Robe) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_20_7",
+      "position": {
+        "x": 20,
+        "y": 7
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 5000
+      }
+    },
+    {
+      "id": "chest_9_7",
+      "position": {
+        "x": 9,
+        "y": 7
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "physic_staff"
+      }
+    },
+    {
+      "id": "chest_7_3",
+      "position": {
+        "x": 7,
+        "y": 3
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "armorslayer"
+      }
+    },
+    {
+      "id": "chest_16_0",
+      "position": {
+        "x": 16,
+        "y": 0
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "killing_edge"
+      }
+    },
+    {
+      "id": "chest_3_11",
+      "position": {
+        "x": 3,
+        "y": 11
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "seraph_robe"
+      }
+    }
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "wendell",
+      "maxDistance": 1
+    },
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "rickard",
+      "maxDistance": 1
+    }
+  ]
+}

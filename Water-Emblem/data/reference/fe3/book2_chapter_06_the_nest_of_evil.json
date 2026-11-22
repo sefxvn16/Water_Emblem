@@ -51,5 +51,364 @@
     "W______W_WWWWW__WWWWW_W______W",
     "WWWWWWWW______________WWWWWWWW",
     "WWWWWWWW______________WWWWWWWW"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 6,
+    "title": "Book 2 Chapter 6: The Nest of Evil",
+    "atlasFile": "b2c06.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 15,2",
+    "goalTile": {
+      "x": 15,
+      "y": 2
+    },
+    "lose": "Marth dies",
+    "boss": "Lang (General L10, Javelin, Cancer)",
+    "unitCounts": {
+      "P": 12,
+      "N": 1,
+      "E": 22
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 15,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 13,
+            "y": 18
+          },
+          {
+            "x": 15,
+            "y": 18
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 16,
+            "y": 19
+          },
+          {
+            "x": 13,
+            "y": 20
+          },
+          {
+            "x": 15,
+            "y": 20
+          },
+          {
+            "x": 16,
+            "y": 20
+          },
+          {
+            "x": 17,
+            "y": 20
+          },
+          {
+            "x": 14,
+            "y": 21
+          },
+          {
+            "x": 16,
+            "y": 21
+          },
+          {
+            "x": 18,
+            "y": 21
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "N",
+        "label": "Samuel",
+        "positions": [
+          {
+            "x": 4,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 14,
+            "y": 2
+          },
+          {
+            "x": 16,
+            "y": 2
+          },
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 16,
+            "y": 3
+          },
+          {
+            "x": 26,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 12
+          },
+          {
+            "x": 5,
+            "y": 13
+          },
+          {
+            "x": 3,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 14
+          },
+          {
+            "x": 4,
+            "y": 16
+          },
+          {
+            "x": 5,
+            "y": 17
+          },
+          {
+            "x": 25,
+            "y": 19
+          }
+        ],
+        "declaredCount": 13
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 12,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 2
+          },
+          {
+            "x": 27,
+            "y": 12
+          },
+          {
+            "x": 27,
+            "y": 14
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 12,
+            "y": 29
+          },
+          {
+            "x": 13,
+            "y": 29
+          },
+          {
+            "x": 15,
+            "y": 29
+          },
+          {
+            "x": 17,
+            "y": 29
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Lang",
+        "positions": [
+          {
+            "x": 15,
+            "y": 2
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 27,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 28,
+            "y": 20
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 3,
+            "y": 10
+          },
+          {
+            "x": 25,
+            "y": 10
+          },
+          {
+            "x": 26,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 27,
+            "y": 20
+          },
+          {
+            "x": 28,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 13,
+            "y": 2
+          },
+          {
+            "x": 17,
+            "y": 2
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 17,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 4
+          },
+          {
+            "x": 17,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 5
+          },
+          {
+            "x": 17,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 13
+          },
+          {
+            "x": 3,
+            "y": 15
+          },
+          {
+            "x": 3,
+            "y": 17
+          },
+          {
+            "x": 3,
+            "y": 19
+          },
+          {
+            "x": 3,
+            "y": 21
+          },
+          {
+            "x": 3,
+            "y": 23
+          },
+          {
+            "x": 3,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Samuel Mercenary L5 Killing Edge, Aquarius (talk with Ogma or Caeda)"
+    ],
+    "chests": [
+      "1 27,20 Libra",
+      "2 28,20 Barrier"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "_ floor | p pillar | d door"
+  }
 }

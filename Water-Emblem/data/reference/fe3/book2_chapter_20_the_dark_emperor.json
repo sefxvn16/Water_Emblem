@@ -52,5 +52,524 @@
     "W____TT__W___________W_____WWW",
     "W________WWW_WWWWWWWWW____dWWW",
     "WWW_______W______WWWWW________"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 20,
+    "title": "Book 2 Chapter 20: The Dark Emperor",
+    "atlasFile": "b2c20.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 15,22",
+    "goalTile": {
+      "x": 15,
+      "y": 22
+    },
+    "lose": "Marth dies",
+    "boss": "Hardin (Emperor L1, Gradivus, Darksphere)",
+    "unitCounts": {
+      "P": 13,
+      "N": 0,
+      "E": 33
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 19,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Midia",
+        "positions": [
+          {
+            "x": 18,
+            "y": 22
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 18,
+            "y": 15
+          },
+          {
+            "x": 20,
+            "y": 15
+          },
+          {
+            "x": 21,
+            "y": 15
+          },
+          {
+            "x": 23,
+            "y": 15
+          },
+          {
+            "x": 21,
+            "y": 16
+          },
+          {
+            "x": 20,
+            "y": 17
+          },
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 21,
+            "y": 18
+          },
+          {
+            "x": 22,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 19
+          },
+          {
+            "x": 22,
+            "y": 19
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Bishop",
+        "positions": [
+          {
+            "x": 11,
+            "y": 22
+          },
+          {
+            "x": 29,
+            "y": 26
+          },
+          {
+            "x": 29,
+            "y": 29
+          },
+          {
+            "x": 28,
+            "y": 29
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Dark Mage",
+        "positions": [
+          {
+            "x": 15,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Earth Dragon",
+        "positions": [
+          {
+            "x": 6,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 13,
+            "y": 22
+          },
+          {
+            "x": 13,
+            "y": 29
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 15
+          },
+          {
+            "x": 6,
+            "y": 17
+          },
+          {
+            "x": 7,
+            "y": 17
+          },
+          {
+            "x": 16,
+            "y": 29
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 17,
+            "y": 22
+          },
+          {
+            "x": 19,
+            "y": 22
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 15
+          },
+          {
+            "x": 16,
+            "y": 22
+          },
+          {
+            "x": 14,
+            "y": 29
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 15
+          },
+          {
+            "x": 6,
+            "y": 24
+          },
+          {
+            "x": 12,
+            "y": 28
+          },
+          {
+            "x": 28,
+            "y": 26
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 5,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Hardin",
+        "positions": [
+          {
+            "x": 15,
+            "y": 22
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 5,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 8,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 3",
+        "positions": [
+          {
+            "x": 9,
+            "y": 18
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 4",
+        "positions": [
+          {
+            "x": 10,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 5",
+        "positions": [
+          {
+            "x": 11,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 6",
+        "positions": [
+          {
+            "x": 13,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 7",
+        "positions": [
+          {
+            "x": 26,
+            "y": 28
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 14
+          },
+          {
+            "x": 12,
+            "y": 21
+          },
+          {
+            "x": 23,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 19,
+            "y": 6
+          },
+          {
+            "x": 16,
+            "y": 7
+          },
+          {
+            "x": 23,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 23,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 10
+          },
+          {
+            "x": 5,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 4,
+            "y": 26
+          },
+          {
+            "x": 7,
+            "y": 26
+          },
+          {
+            "x": 5,
+            "y": 27
+          },
+          {
+            "x": 6,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 9,
+            "y": 18
+          },
+          {
+            "x": 10,
+            "y": 19
+          },
+          {
+            "x": 11,
+            "y": 20
+          },
+          {
+            "x": 13,
+            "y": 20
+          },
+          {
+            "x": 26,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Midia Paladin L16 (joins from start, separated from main army)"
+    ],
+    "chests": [
+      "1 5,0 Lady Sword",
+      "2 8,17 10000G",
+      "3 9,18 Orion's Bolt",
+      "4 10,19 Knight Crest",
+      "5 11,20 Bishop Ring",
+      "6 13,20 Elysian Whip",
+      "7 26,28 Devil Sword"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "map2_20.png enemy markers in c0504d (Hero x7, Sniper x6, Knight x3, Mage x5, General x4, Bishop x4, Dark Mage x1, Earth Dragon x1, Thief x1) now detected; fort tiles ccc0da and castle wall shading 60497a skipped"
+    ],
+    "codesLine": "_ floor | d door"
+  }
 }

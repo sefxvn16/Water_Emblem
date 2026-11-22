@@ -50,5 +50,315 @@
     "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
     "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD",
     "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 11,
+    "title": "Book 2 Chapter 11: Anri's Way",
+    "atlasFile": "b2c11.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 2,3",
+    "goalTile": {
+      "x": 2,
+      "y": 3
+    },
+    "lose": "Marth dies",
+    "boss": "—",
+    "unitCounts": {
+      "P": 12,
+      "N": 0,
+      "E": 21
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 23,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 23,
+            "y": 23
+          },
+          {
+            "x": 21,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 24
+          },
+          {
+            "x": 25,
+            "y": 25
+          },
+          {
+            "x": 20,
+            "y": 26
+          },
+          {
+            "x": 22,
+            "y": 26
+          },
+          {
+            "x": 23,
+            "y": 26
+          },
+          {
+            "x": 26,
+            "y": 26
+          },
+          {
+            "x": 18,
+            "y": 27
+          },
+          {
+            "x": 21,
+            "y": 27
+          },
+          {
+            "x": 24,
+            "y": 27
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Barbarian",
+        "positions": [
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 25,
+            "y": 8
+          },
+          {
+            "x": 13,
+            "y": 9
+          },
+          {
+            "x": 18,
+            "y": 11
+          },
+          {
+            "x": 16,
+            "y": 12
+          },
+          {
+            "x": 25,
+            "y": 12
+          },
+          {
+            "x": 28,
+            "y": 13
+          }
+        ],
+        "declaredCount": 8
+      },
+      {
+        "side": "E",
+        "label": "Berserker",
+        "positions": [
+          {
+            "x": 10,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 17,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 23,
+            "y": 13
+          },
+          {
+            "x": 14,
+            "y": 14
+          },
+          {
+            "x": 2,
+            "y": 16
+          },
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 12,
+            "y": 21
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Wyvern",
+        "positions": [
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 23,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 11
+          },
+          {
+            "x": 27,
+            "y": 11
+          },
+          {
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "declaredCount": 5
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "buried item",
+        "positions": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 3
+          },
+          {
+            "x": 20,
+            "y": 4
+          },
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 0,
+            "y": 12
+          },
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 20,
+            "y": 18
+          },
+          {
+            "x": 0,
+            "y": 19
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "X",
+        "label": "secret shop",
+        "positions": [
+          {
+            "x": 0,
+            "y": 29
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "D desert"
+  }
 }

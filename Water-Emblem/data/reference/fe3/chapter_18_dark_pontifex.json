@@ -48,5 +48,317 @@
     "______W_______________W______W",
     "WWWWW_WWWWWWW___WWWWWWW_WWWWWW",
     "WWWWW_WWWWWWW___WWWWWWW_WWWWWW"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 18,
+    "title": "Chapter 18: Dark Pontifex",
+    "atlasFile": "b1c18.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 14,9",
+    "goalTile": {
+      "x": 14,
+      "y": 9
+    },
+    "lose": "Marth dies",
+    "boss": "Gharnef (Bishop L10, Imhullu, Falchion)",
+    "unitCounts": {
+      "P": 12,
+      "N": 0,
+      "E": 22
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 13,
+            "y": 28
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 13,
+            "y": 25
+          },
+          {
+            "x": 10,
+            "y": 26
+          },
+          {
+            "x": 12,
+            "y": 26
+          },
+          {
+            "x": 14,
+            "y": 26
+          },
+          {
+            "x": 16,
+            "y": 26
+          },
+          {
+            "x": 18,
+            "y": 26
+          },
+          {
+            "x": 11,
+            "y": 27
+          },
+          {
+            "x": 13,
+            "y": 27
+          },
+          {
+            "x": 15,
+            "y": 27
+          },
+          {
+            "x": 17,
+            "y": 27
+          },
+          {
+            "x": 15,
+            "y": 28
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Decoy Gharnef",
+        "positions": [
+          {
+            "x": 14,
+            "y": 9
+          },
+          {
+            "x": 13,
+            "y": 12
+          },
+          {
+            "x": 15,
+            "y": 12
+          },
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 19
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 18,
+            "y": 10
+          },
+          {
+            "x": 14,
+            "y": 20
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 13,
+            "y": 16
+          },
+          {
+            "x": 14,
+            "y": 16
+          },
+          {
+            "x": 15,
+            "y": 16
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          },
+          {
+            "x": 22,
+            "y": 20
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 11,
+            "y": 22
+          },
+          {
+            "x": 17,
+            "y": 22
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 9,
+            "y": 9
+          },
+          {
+            "x": 19,
+            "y": 9
+          },
+          {
+            "x": 10,
+            "y": 21
+          },
+          {
+            "x": 18,
+            "y": 21
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Gharnef",
+        "positions": [
+          {
+            "x": 14,
+            "y": 12
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 2,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 26,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Curate (Blizzard)",
+        "positions": [
+          {
+            "x": 3,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Mage (Blizzard)",
+        "positions": [
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 26,
+            "y": 7
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Mage (Thunder)",
+        "positions": [
+          {
+            "x": 25,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 2,
+            "y": 21
+          },
+          {
+            "x": 26,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 14,
+            "y": 9
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "2,21 10000G",
+      "26,21 Dracoshield"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

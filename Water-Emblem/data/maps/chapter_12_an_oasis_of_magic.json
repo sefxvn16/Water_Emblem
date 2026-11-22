@@ -801,7 +801,7 @@
       "wall",
       "floor",
       "floor",
-      "door",
+      "chest",
       "wall"
     ],
     [
@@ -831,7 +831,7 @@
       "river",
       "river",
       "wall",
-      "door",
+      "chest",
       "floor",
       "floor",
       "wall"

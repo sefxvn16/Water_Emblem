@@ -59,5 +59,481 @@
     "~~~~.....~~~~~~~~~~~~~~~~~~~~~",
     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
     "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 16,
+    "title": "Chapter 16: Camus the Sable",
+    "atlasFile": "b1c16.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 9,3",
+    "goalTile": {
+      "x": 9,
+      "y": 3
+    },
+    "lose": "Marth dies",
+    "boss": "Camus (Paladin L14, Gradivus)",
+    "unitCounts": {
+      "P": 0,
+      "N": 0,
+      "E": 23
+    },
+    "units": [
+      {
+        "side": "E",
+        "label": "Ballistician",
+        "positions": [
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 22,
+            "y": 4
+          },
+          {
+            "x": 14,
+            "y": 12
+          },
+          {
+            "x": 15,
+            "y": 12
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 10,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 5
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 23,
+            "y": 5
+          },
+          {
+            "x": 23,
+            "y": 6
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "General (Lorenz)",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Paladin",
+        "positions": [
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 4
+          },
+          {
+            "x": 14,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 11
+          },
+          {
+            "x": 14,
+            "y": 11
+          },
+          {
+            "x": 15,
+            "y": 11
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 3,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Camus",
+        "positions": [
+          {
+            "x": 9,
+            "y": 3
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 25,
+            "y": 3
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "drawbridge",
+        "positions": [
+          {
+            "x": 22,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Archer (Steel Bow)",
+        "positions": [
+          {
+            "x": 4,
+            "y": 25
+          },
+          {
+            "x": 10,
+            "y": 25
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Cavalier (Steel Lance)",
+        "positions": [
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 15,
+            "y": 8
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Horseman (Steel Bow)",
+        "positions": [
+          {
+            "x": 13,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Knight (Ridersbane)",
+        "positions": [
+          {
+            "x": 8,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Knight (Steel Lance)",
+        "positions": [
+          {
+            "x": 6,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 25,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 2
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 9,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 25,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 2
+          },
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 25,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 18,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 13,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 15,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 9
+          },
+          {
+            "x": 0,
+            "y": 12
+          },
+          {
+            "x": 5,
+            "y": 17
+          },
+          {
+            "x": 21,
+            "y": 21
+          },
+          {
+            "x": 4,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 8,
+            "y": 25
+          },
+          {
+            "x": 10,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 12,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 12,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 3,
+            "y": 9
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 22,
+            "y": 9
+          },
+          {
+            "x": 22,
+            "y": 10
+          },
+          {
+            "x": 22,
+            "y": 11
+          },
+          {
+            "x": 0,
+            "y": 14
+          },
+          {
+            "x": 1,
+            "y": 14
+          },
+          {
+            "x": 2,
+            "y": 14
+          },
+          {
+            "x": 3,
+            "y": 14
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Est Pegasus Knight L5 Iron Lance, Mercurius (visit village 12,17)",
+      "Lorenz General L5 Silver Lance (talk with Caeda)"
+    ],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_16.png"
+    ],
+    "codesLine": null
+  }
 }

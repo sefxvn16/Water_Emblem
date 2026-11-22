@@ -48,5 +48,376 @@
     "MMMFmMMMMMMMMMMMMMMMMrmMMMMMMM",
     "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
     "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 18,
+    "title": "Book 2 Chapter 18: Battle of the Pass",
+    "atlasFile": "b2c18.md",
+    "size": {
+      "width": 30,
+      "height": 22
+    },
+    "goal": "Seize gate 28,15",
+    "goalTile": {
+      "x": 28,
+      "y": 15
+    },
+    "lose": "Marth dies",
+    "boss": "—",
+    "unitCounts": {
+      "P": 15,
+      "N": 1,
+      "E": 33
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 18,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 7,
+            "y": 14
+          },
+          {
+            "x": 9,
+            "y": 14
+          },
+          {
+            "x": 11,
+            "y": 14
+          },
+          {
+            "x": 13,
+            "y": 14
+          },
+          {
+            "x": 15,
+            "y": 14
+          },
+          {
+            "x": 16,
+            "y": 14
+          },
+          {
+            "x": 8,
+            "y": 15
+          },
+          {
+            "x": 10,
+            "y": 15
+          },
+          {
+            "x": 17,
+            "y": 15
+          },
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 4,
+            "y": 16
+          },
+          {
+            "x": 6,
+            "y": 16
+          },
+          {
+            "x": 19,
+            "y": 16
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Roshea",
+        "positions": [
+          {
+            "x": 8,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 26,
+            "y": 13
+          },
+          {
+            "x": 25,
+            "y": 14
+          },
+          {
+            "x": 27,
+            "y": 16
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Horseman",
+        "positions": [
+          {
+            "x": 28,
+            "y": 0
+          },
+          {
+            "x": 29,
+            "y": 1
+          },
+          {
+            "x": 29,
+            "y": 2
+          },
+          {
+            "x": 29,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 10
+          },
+          {
+            "x": 12,
+            "y": 7
+          },
+          {
+            "x": 13,
+            "y": 8
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "E",
+        "label": "Paladin",
+        "positions": [
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 12,
+            "y": 5
+          },
+          {
+            "x": 12,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 12,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 14
+          },
+          {
+            "x": 24,
+            "y": 14
+          },
+          {
+            "x": 23,
+            "y": 15
+          },
+          {
+            "x": 24,
+            "y": 15
+          },
+          {
+            "x": 26,
+            "y": 15
+          },
+          {
+            "x": 27,
+            "y": 15
+          },
+          {
+            "x": 28,
+            "y": 15
+          },
+          {
+            "x": 28,
+            "y": 16
+          }
+        ],
+        "declaredCount": 16
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 25,
+            "y": 15
+          },
+          {
+            "x": 25,
+            "y": 16
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "markers": [],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 27,
+            "y": 15
+          },
+          {
+            "x": 29,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 28,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 11,
+            "y": 1
+          },
+          {
+            "x": 13,
+            "y": 12
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 1,
+            "y": 15
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 27,
+            "y": 13
+          },
+          {
+            "x": 28,
+            "y": 13
+          },
+          {
+            "x": 29,
+            "y": 13
+          },
+          {
+            "x": 1,
+            "y": 14
+          },
+          {
+            "x": 27,
+            "y": 14
+          },
+          {
+            "x": 28,
+            "y": 14
+          },
+          {
+            "x": 29,
+            "y": 14
+          }
+        ],
+        "summarized": false
+      },
+      "c": {
+        "name": "cliff",
+        "positions": [
+          {
+            "x": 8,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [],
+    "villages": [
+      "1,15 Life Orb (from Aurelis King; Wolf Guard retreats)"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

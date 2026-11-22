@@ -56,5 +56,628 @@
     "~~~~........F.................",
     "~~~~~....................H..FF",
     "~~~~~~.....................FFF"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 8,
+    "title": "Chapter 8: Princess Minerva",
+    "atlasFile": "b1c08.md",
+    "size": {
+      "width": 30,
+      "height": 28
+    },
+    "goal": "Seize gate 2,1",
+    "goalTile": {
+      "x": 2,
+      "y": 1
+    },
+    "lose": "Marth dies",
+    "boss": "Zharov (General L1, Steel Lance, Speedwings)",
+    "unitCounts": {
+      "P": 11,
+      "N": 1,
+      "E": 18
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 27,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 25,
+            "y": 3
+          },
+          {
+            "x": 26,
+            "y": 4
+          },
+          {
+            "x": 27,
+            "y": 4
+          },
+          {
+            "x": 28,
+            "y": 4
+          },
+          {
+            "x": 25,
+            "y": 5
+          },
+          {
+            "x": 26,
+            "y": 7
+          },
+          {
+            "x": 27,
+            "y": 7
+          },
+          {
+            "x": 28,
+            "y": 9
+          },
+          {
+            "x": 27,
+            "y": 10
+          },
+          {
+            "x": 28,
+            "y": 10
+          }
+        ],
+        "declaredCount": 10
+      },
+      {
+        "side": "N",
+        "label": "Maria",
+        "positions": [
+          {
+            "x": 15,
+            "y": 12
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 12,
+            "y": 14
+          },
+          {
+            "x": 13,
+            "y": 14
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 14,
+            "y": 1
+          },
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 5,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 17,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 20,
+            "y": 15
+          },
+          {
+            "x": 15,
+            "y": 18
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Minerva",
+        "positions": [
+          {
+            "x": 4,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Pegasus Knight",
+        "positions": [
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 11,
+            "y": 14
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 19,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Zharov",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 1,
+            "y": 14
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest A",
+        "positions": [
+          {
+            "x": 19,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest B",
+        "positions": [
+          {
+            "x": 20,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest C",
+        "positions": [
+          {
+            "x": 11,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 2,
+            "y": 13
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 1,
+            "y": 12
+          },
+          {
+            "x": 3,
+            "y": 12
+          },
+          {
+            "x": 28,
+            "y": 23
+          },
+          {
+            "x": 25,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 13
+          },
+          {
+            "x": 1,
+            "y": 14
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 2,
+            "y": 15
+          },
+          {
+            "x": 25,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "c": {
+        "name": "cliff",
+        "positions": [
+          {
+            "x": 18,
+            "y": 0
+          },
+          {
+            "x": 19,
+            "y": 0
+          },
+          {
+            "x": 20,
+            "y": 0
+          },
+          {
+            "x": 21,
+            "y": 0
+          },
+          {
+            "x": 22,
+            "y": 0
+          },
+          {
+            "x": 18,
+            "y": 1
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
+            "x": 12,
+            "y": 2
+          },
+          {
+            "x": 13,
+            "y": 2
+          },
+          {
+            "x": 14,
+            "y": 2
+          },
+          {
+            "x": 15,
+            "y": 2
+          },
+          {
+            "x": 17,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 17,
+            "y": 3
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 7,
+            "y": 5
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 19,
+            "y": 10
+          },
+          {
+            "x": 20,
+            "y": 10
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 6,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          },
+          {
+            "x": 10,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 0
+          },
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 14,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 13,
+            "y": 1
+          },
+          {
+            "x": 16,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 11
+          },
+          {
+            "x": 11,
+            "y": 11
+          },
+          {
+            "x": 11,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 12
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 14,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Maria Cleric L3 Heal (talk with Marth)",
+      "Minerva Dracoknight L1 Javelin (joins after Maria recruited)"
+    ],
+    "chests": [
+      "A 19,10 Levin Sword",
+      "B 20,10 Physic",
+      "C 11,6 Wyrmslayer"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "c cliff"
+  }
 }

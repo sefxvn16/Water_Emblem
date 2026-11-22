@@ -1,0 +1,174 @@
+{
+  "id": "book2_endgame_c",
+  "name": "Book 2 Endgame: The Dragon Altar, Part 3",
+  "mapId": "book2_endgame_c",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 2
+    },
+    "description": "Kill Medeus and seize throne 15,2"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 15,
+        "y": 24
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "elice",
+      "characterId": "elice",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 7
+      },
+      "name": "Elice",
+      "weaponId": "fortify_staff",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "lena",
+      "characterId": "lena",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 5
+      },
+      "name": "Lena",
+      "weaponId": "bolganone",
+      "level": 3,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "maria",
+      "characterId": "maria",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 6
+      },
+      "name": "Maria",
+      "weaponId": "recover_staff",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "nyna",
+      "characterId": "nyna",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "name": "Nyna",
+      "weaponId": "thoron",
+      "level": 7,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "medeus",
+      "characterId": "medeus",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "name": "Medeus",
+      "weaponId": "dark_breath",
+      "level": 1,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 15,
+      "y": 24
+    },
+    {
+      "x": 13,
+      "y": 25
+    },
+    {
+      "x": 14,
+      "y": 25
+    },
+    {
+      "x": 15,
+      "y": 25
+    },
+    {
+      "x": 16,
+      "y": 25
+    },
+    {
+      "x": 14,
+      "y": 26
+    },
+    {
+      "x": 16,
+      "y": 26
+    },
+    {
+      "x": 17,
+      "y": 26
+    },
+    {
+      "x": 13,
+      "y": 27
+    },
+    {
+      "x": 14,
+      "y": 27
+    },
+    {
+      "x": 15,
+      "y": 27
+    },
+    {
+      "x": 14,
+      "y": 28
+    },
+    {
+      "x": 16,
+      "y": 28
+    },
+    {
+      "x": 13,
+      "y": 29
+    },
+    {
+      "x": 15,
+      "y": 29
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "uncertain: 4 clerics (Lena, Maria, Nyna, Elice) surrounding Medeus at 15,5 14,6 16,6 15,7 and 5 shrines (altars) at 15,3 12,4 18,4 12,8 18,8 now detected",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Chiêu mộ lena: người nói (Julian) không xuất trận trong chương này nên chưa khai được.",
+    "Chiêu mộ maria: người nói (Minerva) không xuất trận trong chương này nên chưa khai được.",
+    "Chiêu mộ nyna: người nói (Sirius) không xuất trận trong chương này nên chưa khai được.",
+    "Chiêu mộ elice: người nói (Merric) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "uncertain: 4 clerics (Lena, Maria, Nyna, Elice) surrounding Medeus at 15,5 14,6 16,6 15,7 and 5 shrines (altars) at 15,3 12,4 18,4 12,8 18,8 now detected",
+    "Unit Elice (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Unit Lena (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Unit Maria (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Unit Nyna (N) assigned faction 'enemy' (recruit in atlas: true)."
+  ]
+}

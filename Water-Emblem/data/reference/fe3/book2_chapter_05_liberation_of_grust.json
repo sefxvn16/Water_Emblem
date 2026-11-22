@@ -51,5 +51,527 @@
     ".rrrrS.=====..rrrrrr..rrrrr...",
     "Frrrrrrrr==..rrrrrrrrrrrrr....",
     "Frrrrrrrrrrrrrrrrrrrrrrrr....."
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 5,
+    "title": "Book 2 Chapter 5: Liberation of Grust",
+    "atlasFile": "b2c05.md",
+    "size": {
+      "width": 30,
+      "height": 24
+    },
+    "goal": "Seize gate 9,19",
+    "goalTile": {
+      "x": 9,
+      "y": 19
+    },
+    "lose": "Marth dies",
+    "boss": "Torus (Ballistician L3, Quickrain, Gemini)",
+    "unitCounts": {
+      "P": 15,
+      "N": 2,
+      "E": 31
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 29,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 26,
+            "y": 17
+          },
+          {
+            "x": 27,
+            "y": 17
+          },
+          {
+            "x": 28,
+            "y": 17
+          },
+          {
+            "x": 26,
+            "y": 18
+          },
+          {
+            "x": 27,
+            "y": 18
+          },
+          {
+            "x": 26,
+            "y": 19
+          },
+          {
+            "x": 27,
+            "y": 19
+          },
+          {
+            "x": 27,
+            "y": 20
+          },
+          {
+            "x": 28,
+            "y": 20
+          },
+          {
+            "x": 28,
+            "y": 21
+          },
+          {
+            "x": 27,
+            "y": 22
+          },
+          {
+            "x": 28,
+            "y": 22
+          },
+          {
+            "x": 26,
+            "y": 23
+          },
+          {
+            "x": 29,
+            "y": 23
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Rickard",
+        "positions": [
+          {
+            "x": 23,
+            "y": 8
+          },
+          {
+            "x": 24,
+            "y": 13
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 25,
+            "y": 2
+          },
+          {
+            "x": 26,
+            "y": 3
+          },
+          {
+            "x": 27,
+            "y": 4
+          },
+          {
+            "x": 27,
+            "y": 5
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Ballistician",
+        "positions": [
+          {
+            "x": 10,
+            "y": 17
+          },
+          {
+            "x": 11,
+            "y": 19
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 13,
+            "y": 0
+          },
+          {
+            "x": 14,
+            "y": 0
+          },
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 16,
+            "y": 2
+          },
+          {
+            "x": 17,
+            "y": 3
+          },
+          {
+            "x": 0,
+            "y": 13
+          },
+          {
+            "x": 0,
+            "y": 14
+          },
+          {
+            "x": 1,
+            "y": 15
+          },
+          {
+            "x": 2,
+            "y": 15
+          },
+          {
+            "x": 3,
+            "y": 16
+          },
+          {
+            "x": 12,
+            "y": 18
+          },
+          {
+            "x": 12,
+            "y": 19
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 24,
+            "y": 11
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 8
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "General",
+        "positions": [
+          {
+            "x": 9,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 19,
+            "y": 2
+          },
+          {
+            "x": 19,
+            "y": 4
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 26,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 14,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 27,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Torus",
+        "positions": [
+          {
+            "x": 2,
+            "y": 18
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 5,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "secret shop",
+        "positions": [
+          {
+            "x": 5,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 5,
+            "y": 20
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 9,
+            "y": 19
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 22,
+            "y": 13
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 5,
+            "y": 19
+          },
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 5,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 20,
+            "y": 18
+          },
+          {
+            "x": 21,
+            "y": 19
+          },
+          {
+            "x": 20,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 8,
+            "y": 18
+          },
+          {
+            "x": 9,
+            "y": 18
+          },
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 19
+          },
+          {
+            "x": 10,
+            "y": 19
+          },
+          {
+            "x": 8,
+            "y": 20
+          },
+          {
+            "x": 10,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 21,
+            "y": 15
+          },
+          {
+            "x": 21,
+            "y": 16
+          },
+          {
+            "x": 21,
+            "y": 17
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 15,
+            "y": 19
+          },
+          {
+            "x": 16,
+            "y": 19
+          },
+          {
+            "x": 17,
+            "y": 19
+          },
+          {
+            "x": 18,
+            "y": 19
+          },
+          {
+            "x": 19,
+            "y": 19
+          },
+          {
+            "x": 9,
+            "y": 20
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Rickard Thief L3 Iron Sword, Member Card (talk with Julian)"
+    ],
+    "chests": [],
+    "villages": [
+      "2,2 Hammerne"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

@@ -1,0 +1,376 @@
+{
+  "id": "chapter_11",
+  "name": "Chapter 11: Land of Sorrow",
+  "mapId": "chapter_11_land_of_sorrow",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 2,
+      "y": 17
+    },
+    "description": "Seize throne 2,17"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 18,
+        "y": 4
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "astram",
+      "characterId": "astram",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 7
+      },
+      "name": "Astram",
+      "weaponId": "silver_sword",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 6
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 6
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_3",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 6
+      },
+      "name": "Archer 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_4",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 7
+      },
+      "name": "Archer 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_5",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 8
+      },
+      "name": "Archer 5",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 7
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 17
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 25
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 9
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 9
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 10
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_4",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 10
+      },
+      "name": "Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_5",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 19
+      },
+      "name": "Knight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_6",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 19
+      },
+      "name": "Knight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 21
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 27
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 27
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "jiol",
+      "characterId": "jiol",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 17
+      },
+      "name": "Jiol",
+      "weaponId": "silver_lance",
+      "level": 5,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 18,
+      "y": 4
+    },
+    {
+      "x": 23,
+      "y": 1
+    },
+    {
+      "x": 17,
+      "y": 2
+    },
+    {
+      "x": 18,
+      "y": 2
+    },
+    {
+      "x": 19,
+      "y": 2
+    },
+    {
+      "x": 20,
+      "y": 2
+    },
+    {
+      "x": 22,
+      "y": 2
+    },
+    {
+      "x": 23,
+      "y": 2
+    },
+    {
+      "x": 20,
+      "y": 3
+    },
+    {
+      "x": 21,
+      "y": 3
+    },
+    {
+      "x": 22,
+      "y": 3
+    },
+    {
+      "x": 23,
+      "y": 3
+    },
+    {
+      "x": 22,
+      "y": 4
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "villages": [
+    {
+      "id": "village_4_1",
+      "name": "Village (Thoron)",
+      "position": {
+        "x": 4,
+        "y": 1
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "thoron"
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "2 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas.",
+    "Chiêu mộ astram: người nói (Midia) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "Unit Astram (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Chest at (26,21) (reward: 5000G) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (15,24) (reward: Silver Card) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_26_21",
+      "position": {
+        "x": 26,
+        "y": 21
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 5000
+      }
+    },
+    {
+      "id": "chest_15_24",
+      "position": {
+        "x": 15,
+        "y": 24
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "silver_card"
+      }
+    }
+  ]
+}

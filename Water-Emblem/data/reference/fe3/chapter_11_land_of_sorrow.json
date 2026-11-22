@@ -60,5 +60,443 @@
     "~~~~~..._...........~~~~~~~~~~",
     "~~~~~~~~~rrrbrrrrr~~~~~~~~~~~~",
     "~~~~~~~~~......F..~~~~~~~~~~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 11,
+    "title": "Chapter 11: Land of Sorrow",
+    "atlasFile": "b1c11.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 2,17",
+    "goalTile": {
+      "x": 2,
+      "y": 17
+    },
+    "lose": "Marth dies",
+    "boss": "Jiol (General L5, Silver Lance)",
+    "unitCounts": {
+      "P": 13,
+      "N": 1,
+      "E": 19
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 18,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 23,
+            "y": 1
+          },
+          {
+            "x": 17,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 2
+          },
+          {
+            "x": 19,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 2
+          },
+          {
+            "x": 22,
+            "y": 2
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 3
+          },
+          {
+            "x": 22,
+            "y": 3
+          },
+          {
+            "x": 23,
+            "y": 3
+          },
+          {
+            "x": 22,
+            "y": 4
+          }
+        ],
+        "declaredCount": 12
+      },
+      {
+        "side": "N",
+        "label": "Astram",
+        "positions": [
+          {
+            "x": 16,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 8
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 17
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 8,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 15,
+            "y": 9
+          },
+          {
+            "x": 16,
+            "y": 9
+          },
+          {
+            "x": 20,
+            "y": 10
+          },
+          {
+            "x": 21,
+            "y": 10
+          },
+          {
+            "x": 1,
+            "y": 19
+          },
+          {
+            "x": 3,
+            "y": 19
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 16,
+            "y": 6
+          },
+          {
+            "x": 23,
+            "y": 21
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 8,
+            "y": 27
+          },
+          {
+            "x": 10,
+            "y": 27
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Jiol",
+        "positions": [
+          {
+            "x": 2,
+            "y": 17
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 6,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 26,
+            "y": 21
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 15,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "drawbridge",
+        "positions": [
+          {
+            "x": 16,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Pegasus Knight",
+        "positions": [
+          {
+            "x": 0,
+            "y": 13
+          },
+          {
+            "x": 0,
+            "y": 14
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 8,
+            "y": 20
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 19,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 19,
+            "y": 4
+          },
+          {
+            "x": 20,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 15,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 4,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 4
+          },
+          {
+            "x": 16,
+            "y": 5
+          },
+          {
+            "x": 12,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 26,
+            "y": 21
+          },
+          {
+            "x": 15,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 1,
+            "y": 17
+          },
+          {
+            "x": 3,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Catria Pegasus Knight L3 Iron Lance,Killing Edge",
+      "Palla Pegasus Knight L8 Silver Lance (both approach Marth)",
+      "Astram Hero L1 Silver Sword (talk with Midia)"
+    ],
+    "chests": [
+      "1 26,21 5000G",
+      "2 15,24 Silver Card"
+    ],
+    "villages": [
+      "4,1 Thoron"
+    ],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

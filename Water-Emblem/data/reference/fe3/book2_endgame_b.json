@@ -50,5 +50,227 @@
     "WWWWWWWWWWW__WWW__WWWWWWWWWWWW",
     "WWWW_____________________WWWWW",
     "WWW_______________________WWWW"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 22,
+    "title": "Book 2 Endgame: The Dragon Altar, Part 2",
+    "atlasFile": "b2c22b.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 14,1",
+    "goalTile": {
+      "x": 14,
+      "y": 1
+    },
+    "lose": "Marth dies",
+    "boss": "Gharnef (Dark Mage L20, Imhullu, Falchion)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 10
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 16,
+            "y": 28
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 11,
+            "y": 28
+          },
+          {
+            "x": 12,
+            "y": 28
+          },
+          {
+            "x": 13,
+            "y": 28
+          },
+          {
+            "x": 14,
+            "y": 28
+          },
+          {
+            "x": 15,
+            "y": 28
+          },
+          {
+            "x": 17,
+            "y": 28
+          },
+          {
+            "x": 11,
+            "y": 29
+          },
+          {
+            "x": 12,
+            "y": 29
+          },
+          {
+            "x": 13,
+            "y": 29
+          },
+          {
+            "x": 14,
+            "y": 29
+          },
+          {
+            "x": 15,
+            "y": 29
+          },
+          {
+            "x": 16,
+            "y": 29
+          },
+          {
+            "x": 17,
+            "y": 29
+          },
+          {
+            "x": 18,
+            "y": 29
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Dark Mage",
+        "positions": [
+          {
+            "x": 6,
+            "y": 18
+          },
+          {
+            "x": 22,
+            "y": 18
+          },
+          {
+            "x": 14,
+            "y": 20
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Mage Dragon",
+        "positions": [
+          {
+            "x": 25,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 5,
+            "y": 20
+          },
+          {
+            "x": 6,
+            "y": 20
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 24,
+            "y": 20
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E*",
+        "label": "Gharnef",
+        "positions": [
+          {
+            "x": 14,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 1,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 27,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 14,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 26,
+            "y": 7
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "1 1,8 Aum",
+      "2 27,8 Hammerne"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "map2_22_2.png Mage Dragon x6 and Dark Mage x3 in c0504d now detected; chest arrows/doors corrected"
+    ],
+    "codesLine": "_ floor | d door"
+  }
 }

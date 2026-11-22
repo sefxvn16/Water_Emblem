@@ -200,7 +200,7 @@
       "level": 1,
       "weaponRanks": {
         "sword": "E",
-        "lance": "D"
+        "lance": "C"
       },
       "baseStats": {
         "hp": 20,
@@ -1300,7 +1300,8 @@
       "classId": "sister",
       "level": 3,
       "weaponRanks": {
-        "staff": "C"
+        "staff": "C",
+        "tome": "B"
       },
       "baseStats": {
         "hp": 16,
@@ -1531,6 +1532,3210 @@
         "res": 17
       },
       "personalSkill": "nimble"
+    },
+    {
+      "id": "enemy_hunter",
+      "name": "Enemy Hunter",
+      "nameVi": "Thợ săn địch",
+      "title": "Enemy Hunter",
+      "classId": "hunter",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 6,
+        "mag": 0,
+        "skill": 4,
+        "spd": 6,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 10,
+        "mag": 0,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 10,
+        "res": 5
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/generic_hunter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Hunter, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_pirate",
+      "name": "Enemy Pirate",
+      "nameVi": "Hải tặc địch",
+      "title": "Enemy Pirate",
+      "classId": "pirate",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 6,
+        "lck": 0,
+        "def": 4,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 25,
+        "spd": 15,
+        "lck": 0,
+        "def": 50,
+        "res": 5
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/generic_pirate.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Pirate, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_thief",
+      "name": "Enemy Thief",
+      "nameVi": "Đạo tặc địch",
+      "title": "Enemy Thief",
+      "classId": "thief",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 2,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 1,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 20,
+        "mag": 0,
+        "skill": 40,
+        "spd": 50,
+        "lck": 0,
+        "def": 30,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/generic_thief.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Thief, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_brigand",
+      "name": "Enemy Fighter",
+      "nameVi": "Chiến binh rìu địch",
+      "title": "Enemy Fighter",
+      "classId": "fighter",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 30,
+        "spd": 20,
+        "lck": 0,
+        "def": 50,
+        "res": 5
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Fighter, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "hardin",
+      "name": "Hardin",
+      "nameVi": "Hardin",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 6,
+      "baseStats": {
+        "hp": 24,
+        "str": 9,
+        "mag": 0,
+        "skill": 7,
+        "spd": 8,
+        "lck": 3,
+        "def": 8,
+        "res": 1
+      },
+      "growths": {
+        "hp": 50,
+        "str": 30,
+        "mag": 0,
+        "skill": 55,
+        "spd": 55,
+        "lck": 30,
+        "def": 20,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "lance": "A"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/hardin.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "wolf",
+      "name": "Wolf",
+      "nameVi": "Wolf",
+      "title": "Mangudai",
+      "classId": "mangudai",
+      "level": 3,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 0,
+        "skill": 6,
+        "spd": 8,
+        "lck": 5,
+        "def": 6,
+        "res": 1
+      },
+      "growths": {
+        "hp": 160,
+        "str": 100,
+        "mag": 0,
+        "skill": 85,
+        "spd": 85,
+        "lck": 50,
+        "def": 65,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "bow": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/wolf.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "sedgar",
+      "name": "Sedgar",
+      "nameVi": "Sedgar",
+      "title": "Mangudai",
+      "classId": "mangudai",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 1,
+        "skill": 6,
+        "spd": 7,
+        "lck": 2,
+        "def": 6,
+        "res": 2
+      },
+      "growths": {
+        "hp": 160,
+        "str": 80,
+        "mag": 0,
+        "skill": 95,
+        "spd": 85,
+        "lck": 30,
+        "def": 85,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "bow": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/sedgar.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "roshea",
+      "name": "Roshea",
+      "nameVi": "Roshea",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 3,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 0,
+        "skill": 5,
+        "spd": 7,
+        "lck": 4,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 40,
+        "mag": 0,
+        "skill": 55,
+        "spd": 10,
+        "lck": 10,
+        "def": 20,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "lance": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/roshea.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "vyland",
+      "name": "Vyland",
+      "nameVi": "Vyland",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 3,
+        "spd": 6,
+        "lck": 2,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 30,
+        "mag": 0,
+        "skill": 25,
+        "spd": 40,
+        "lck": 30,
+        "def": 15,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "lance": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/vyland.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "matthis",
+      "name": "Matthis",
+      "nameVi": "Matthis",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 2,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 2,
+        "spd": 6,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 40,
+        "mag": 0,
+        "skill": 30,
+        "spd": 20,
+        "lck": 30,
+        "def": 30,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "lance": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/matthis.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "merric",
+      "name": "Merric",
+      "nameVi": "Merric",
+      "title": "Mage (M)",
+      "classId": "mage_m",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 0,
+        "mag": 3,
+        "skill": 3,
+        "spd": 6,
+        "lck": 3,
+        "def": 4,
+        "res": 3
+      },
+      "growths": {
+        "hp": 60,
+        "str": 0,
+        "mag": 40,
+        "skill": 50,
+        "spd": 40,
+        "lck": 45,
+        "def": 5,
+        "res": 20
+      },
+      "weaponRanks": {
+        "tome": "B"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/merric.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_pegasus_knight",
+      "name": "Enemy Pegasus Knight",
+      "nameVi": "Thiên mã kỵ sĩ địch",
+      "title": "Enemy Pegasus Knight",
+      "classId": "pegasus_knight",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 4,
+        "mag": 2,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 5,
+        "res": 6
+      },
+      "growths": {
+        "hp": 90,
+        "str": 25,
+        "mag": 0,
+        "skill": 10,
+        "spd": 40,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/generic_pegasus_knight.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Pegasus Knight, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "wendell",
+      "name": "Wendell",
+      "nameVi": "Wendell",
+      "title": "Sage",
+      "classId": "sage",
+      "level": 1,
+      "baseStats": {
+        "hp": 22,
+        "str": 3,
+        "mag": 4,
+        "skill": 2,
+        "spd": 12,
+        "lck": 1,
+        "def": 5,
+        "res": 5
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 40,
+        "def": 0,
+        "res": 35
+      },
+      "weaponRanks": {
+        "tome": "B",
+        "staff": "D"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/wendell.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "rickard",
+      "name": "Rickard",
+      "nameVi": "Rickard",
+      "title": "Thief",
+      "classId": "thief",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 4,
+        "mag": 0,
+        "skill": 2,
+        "spd": 9,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "growths": {
+        "hp": 50,
+        "str": 50,
+        "mag": 0,
+        "skill": 30,
+        "spd": 50,
+        "lck": 40,
+        "def": 10,
+        "res": 2
+      },
+      "weaponRanks": {
+        "sword": "E"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/rickard.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_mage",
+      "name": "Enemy Mage (M)",
+      "nameVi": "Pháp sư nam địch",
+      "title": "Enemy Mage (M)",
+      "classId": "mage_m",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 3,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 2,
+        "res": 3
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 40,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/generic_mage.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Mage, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_soldier",
+      "name": "Enemy Soldier",
+      "nameVi": "Lính giáo địch",
+      "title": "Enemy Soldier",
+      "classId": "soldier",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 3,
+        "mag": 0,
+        "skill": 3,
+        "spd": 3,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 45,
+        "mag": 0,
+        "skill": 45,
+        "spd": 45,
+        "lck": 0,
+        "def": 45,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/enemy_soldier.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Soldier, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "emereus",
+      "name": "Emereus",
+      "nameVi": "Emereus",
+      "title": "General",
+      "classId": "general",
+      "level": 1,
+      "baseStats": {
+        "hp": 28,
+        "str": 9,
+        "mag": 1,
+        "skill": 1,
+        "spd": 4,
+        "lck": 0,
+        "def": 14,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "A",
+        "bow": "E"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/emereus.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "bantu",
+      "name": "Bantu",
+      "nameVi": "Bantu",
+      "title": "Manakete",
+      "classId": "manakete",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 2,
+        "mag": 0,
+        "skill": 3,
+        "spd": 4,
+        "lck": 1,
+        "def": 3,
+        "res": 1
+      },
+      "growths": {
+        "hp": 40,
+        "str": 20,
+        "mag": 10,
+        "skill": 20,
+        "spd": 10,
+        "lck": 10,
+        "def": 10,
+        "res": 0
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/bantu.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "catria",
+      "name": "Catria",
+      "nameVi": "Catria",
+      "title": "Pegasus Knight",
+      "classId": "pegasus_knight",
+      "level": 5,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 2,
+        "skill": 7,
+        "spd": 13,
+        "lck": 7,
+        "def": 8,
+        "res": 6
+      },
+      "growths": {
+        "hp": 60,
+        "str": 45,
+        "mag": 0,
+        "skill": 80,
+        "spd": 65,
+        "lck": 40,
+        "def": 25,
+        "res": 5
+      },
+      "weaponRanks": {
+        "lance": "C"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/catria.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_dracoknight",
+      "name": "Enemy Dragon Knight",
+      "nameVi": "Long kỵ sĩ địch",
+      "title": "Enemy Dragon Knight",
+      "classId": "dragon_knight",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 8,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 10,
+        "res": 3
+      },
+      "growths": {
+        "hp": 90,
+        "str": 25,
+        "mag": 0,
+        "skill": 10,
+        "spd": 40,
+        "lck": 0,
+        "def": 30,
+        "res": 10
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Dracoknight, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "est",
+      "name": "Est",
+      "nameVi": "Est",
+      "title": "Pegasus Knight",
+      "classId": "pegasus_knight",
+      "level": 3,
+      "baseStats": {
+        "hp": 19,
+        "str": 5,
+        "mag": 2,
+        "skill": 6,
+        "spd": 12,
+        "lck": 11,
+        "def": 7,
+        "res": 6
+      },
+      "growths": {
+        "hp": 40,
+        "str": 55,
+        "mag": 0,
+        "skill": 60,
+        "spd": 55,
+        "lck": 50,
+        "def": 20,
+        "res": 5
+      },
+      "weaponRanks": {
+        "lance": "C"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/est.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "minerva",
+      "name": "Minerva",
+      "nameVi": "Minerva",
+      "title": "Dragon Knight",
+      "classId": "dragon_knight",
+      "level": 1,
+      "baseStats": {
+        "hp": 24,
+        "str": 9,
+        "mag": 0,
+        "skill": 6,
+        "spd": 12,
+        "lck": 6,
+        "def": 12,
+        "res": 3
+      },
+      "growths": {
+        "hp": 40,
+        "str": 35,
+        "mag": 0,
+        "skill": 50,
+        "spd": 35,
+        "lck": 40,
+        "def": 30,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "D",
+        "axe": "A"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/minerva.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "palla",
+      "name": "Palla",
+      "nameVi": "Palla",
+      "title": "Pegasus Knight",
+      "classId": "pegasus_knight",
+      "level": 8,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 2,
+        "skill": 8,
+        "spd": 13,
+        "lck": 5,
+        "def": 8,
+        "res": 6
+      },
+      "growths": {
+        "hp": 60,
+        "str": 55,
+        "mag": 0,
+        "skill": 70,
+        "spd": 25,
+        "lck": 10,
+        "def": 25,
+        "res": 10
+      },
+      "weaponRanks": {
+        "lance": "B"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/palla.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "caesar",
+      "name": "Caesar",
+      "nameVi": "Caesar",
+      "title": "Mercenary",
+      "classId": "mercenary",
+      "level": 3,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 8,
+        "spd": 12,
+        "lck": 6,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 40,
+        "mag": 0,
+        "skill": 35,
+        "spd": 45,
+        "lck": 20,
+        "def": 15,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/caesar.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "radd",
+      "name": "Radd",
+      "nameVi": "Radd",
+      "title": "Mercenary",
+      "classId": "mercenary",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 4,
+        "mag": 0,
+        "skill": 8,
+        "spd": 10,
+        "lck": 1,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 40,
+        "mag": 0,
+        "skill": 35,
+        "spd": 45,
+        "lck": 40,
+        "def": 20,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/radd.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_horseman",
+      "name": "Enemy Mangudai",
+      "nameVi": "Cung kỵ địch",
+      "title": "Enemy Mangudai",
+      "classId": "mangudai",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 1,
+        "skill": 6,
+        "spd": 8,
+        "lck": 0,
+        "def": 6,
+        "res": 3
+      },
+      "growths": {
+        "hp": 60,
+        "str": 10,
+        "mag": 0,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 10,
+        "res": 10
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Horseman, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "maria",
+      "name": "Maria",
+      "nameVi": "Maria",
+      "title": "Sister",
+      "classId": "sister",
+      "level": 3,
+      "baseStats": {
+        "hp": 17,
+        "str": 0,
+        "mag": 2,
+        "skill": 2,
+        "spd": 3,
+        "lck": 0,
+        "def": 4,
+        "res": 8
+      },
+      "growths": {
+        "hp": 15,
+        "str": 0,
+        "mag": 20,
+        "skill": 25,
+        "spd": 25,
+        "lck": 75,
+        "def": 0,
+        "res": 50
+      },
+      "startingWeapons": [
+        "heal_staff"
+      ],
+      "avatarUrl": "/avatars/maria.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/.",
+      "weaponRanks": {
+        "staff": "C"
+      }
+    },
+    {
+      "id": "enemy_hero",
+      "name": "Enemy Hero",
+      "nameVi": "Dũng sĩ địch",
+      "title": "Enemy Hero",
+      "classId": "hero",
+      "level": 1,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 1,
+        "skill": 10,
+        "spd": 12,
+        "lck": 0,
+        "def": 7,
+        "res": 3
+      },
+      "growths": {
+        "hp": 80,
+        "str": 30,
+        "mag": 0,
+        "skill": 20,
+        "spd": 20,
+        "lck": 0,
+        "def": 30,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/generic_hero.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Hero, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_sniper",
+      "name": "Enemy Sniper",
+      "nameVi": "Thiện xạ địch",
+      "title": "Enemy Sniper",
+      "classId": "sniper",
+      "level": 1,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 1,
+        "skill": 8,
+        "spd": 9,
+        "lck": 0,
+        "def": 7,
+        "res": 3
+      },
+      "growths": {
+        "hp": 80,
+        "str": 20,
+        "mag": 0,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/generic_sniper.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Sniper, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "zharov",
+      "name": "Zharov",
+      "nameVi": "Zharov",
+      "title": "General",
+      "classId": "general",
+      "level": 3,
+      "baseStats": {
+        "hp": 31,
+        "str": 10,
+        "mag": 1,
+        "skill": 2,
+        "spd": 5,
+        "lck": 0,
+        "def": 15,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "D",
+        "bow": "E"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/zharov.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "jeorge",
+      "name": "Jeorge",
+      "nameVi": "Jeorge",
+      "title": "Sniper",
+      "classId": "sniper",
+      "level": 1,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 1,
+        "skill": 10,
+        "spd": 12,
+        "lck": 4,
+        "def": 8,
+        "res": 3
+      },
+      "growths": {
+        "hp": 40,
+        "str": 20,
+        "mag": 0,
+        "skill": 50,
+        "spd": 40,
+        "lck": 20,
+        "def": 10,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/jeorge.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/.",
+      "weaponRanks": {
+        "bow": "A"
+      }
+    },
+    {
+      "id": "linde",
+      "name": "Linde",
+      "nameVi": "Linde",
+      "title": "Mage (F)",
+      "classId": "mage_f",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 0,
+        "mag": 2,
+        "skill": 4,
+        "spd": 7,
+        "lck": 7,
+        "def": 3,
+        "res": 4
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 50,
+        "skill": 40,
+        "spd": 35,
+        "lck": 60,
+        "def": 0,
+        "res": 15
+      },
+      "weaponRanks": {
+        "tome": "D"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/linde.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_ballistician",
+      "name": "Enemy Ballistician",
+      "nameVi": "Pháo thủ địch",
+      "title": "Enemy Ballistician",
+      "classId": "ballistician",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 14,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 10,
+        "spd": 20,
+        "lck": 0,
+        "def": 50,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/generic_ballistician.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Ballistician, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "khozen",
+      "name": "Khozen",
+      "nameVi": "Khozen",
+      "title": "Manakete",
+      "classId": "manakete",
+      "level": 3,
+      "baseStats": {
+        "hp": 23,
+        "str": 2,
+        "mag": 0,
+        "skill": 2,
+        "spd": 2,
+        "lck": 0,
+        "def": 4,
+        "res": 1
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/khozen.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "midia",
+      "name": "Midia",
+      "nameVi": "Midia",
+      "title": "Paladin",
+      "classId": "paladin",
+      "level": 1,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 1,
+        "skill": 11,
+        "spd": 9,
+        "lck": 7,
+        "def": 9,
+        "res": 6
+      },
+      "growths": {
+        "hp": 80,
+        "str": 30,
+        "mag": 0,
+        "skill": 50,
+        "spd": 50,
+        "lck": 10,
+        "def": 20,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "lance": "C"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/midia.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "boah",
+      "name": "Boah",
+      "nameVi": "Boah",
+      "title": "Bishop",
+      "classId": "bishop",
+      "level": 1,
+      "baseStats": {
+        "hp": 22,
+        "str": 1,
+        "mag": 4,
+        "skill": 7,
+        "spd": 10,
+        "lck": 4,
+        "def": 5,
+        "res": 9
+      },
+      "growths": {
+        "hp": 10,
+        "str": 0,
+        "mag": 20,
+        "skill": 20,
+        "spd": 20,
+        "lck": 20,
+        "def": 0,
+        "res": 30
+      },
+      "weaponRanks": {
+        "tome": "B",
+        "staff": "C"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/boah.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "dolph",
+      "name": "Dolph",
+      "nameVi": "Dolph",
+      "title": "Armour Knight",
+      "classId": "knight",
+      "level": 4,
+      "baseStats": {
+        "hp": 22,
+        "str": 8,
+        "mag": 0,
+        "skill": 6,
+        "spd": 5,
+        "lck": 3,
+        "def": 13,
+        "res": 0
+      },
+      "growths": {
+        "hp": 70,
+        "str": 30,
+        "mag": 0,
+        "skill": 40,
+        "spd": 30,
+        "lck": 10,
+        "def": 45,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "C"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/dolph.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "macellan",
+      "name": "Macellan",
+      "nameVi": "Macellan",
+      "title": "Armour Knight",
+      "classId": "knight",
+      "level": 3,
+      "baseStats": {
+        "hp": 20,
+        "str": 8,
+        "mag": 0,
+        "skill": 5,
+        "spd": 3,
+        "lck": 4,
+        "def": 12,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 35,
+        "mag": 0,
+        "skill": 25,
+        "spd": 25,
+        "lck": 30,
+        "def": 30,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "D"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/macellan.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "tomas",
+      "name": "Tomas",
+      "nameVi": "Tomas",
+      "title": "Archer",
+      "classId": "archer",
+      "level": 8,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 0,
+        "skill": 6,
+        "spd": 5,
+        "lck": 4,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 65,
+        "str": 25,
+        "mag": 0,
+        "skill": 30,
+        "spd": 50,
+        "lck": 25,
+        "def": 10,
+        "res": 0
+      },
+      "weaponRanks": {
+        "bow": "C"
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/tomas.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_fire_dragon",
+      "name": "Enemy Fire Dragon",
+      "nameVi": "Hoả long địch",
+      "title": "Enemy Fire Dragon",
+      "classId": "fire_dragon",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 8,
+        "mag": 0,
+        "skill": 5,
+        "spd": 5,
+        "lck": 0,
+        "def": 10,
+        "res": 5
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "fire_breath"
+      ],
+      "avatarUrl": "/avatars/generic_fire_dragon.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Fire Dragon, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_general",
+      "name": "Enemy General",
+      "nameVi": "Tướng giáp địch",
+      "title": "Enemy General",
+      "classId": "general",
+      "level": 1,
+      "baseStats": {
+        "hp": 28,
+        "str": 8,
+        "mag": 1,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 15,
+        "res": 3
+      },
+      "growths": {
+        "hp": 90,
+        "str": 30,
+        "mag": 0,
+        "skill": 30,
+        "spd": 20,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/generic_general.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 General, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "volzhin",
+      "name": "Volzhin",
+      "nameVi": "Volzhin",
+      "title": "Bishop",
+      "classId": "bishop",
+      "level": 1,
+      "baseStats": {
+        "hp": 22,
+        "str": 1,
+        "mag": 3,
+        "skill": 1,
+        "spd": 14,
+        "lck": 0,
+        "def": 6,
+        "res": 10
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "tome": "A",
+        "staff": "D"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/volzhin.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "astram",
+      "name": "Astram",
+      "nameVi": "Astram",
+      "title": "Hero",
+      "classId": "hero",
+      "level": 1,
+      "baseStats": {
+        "hp": 26,
+        "str": 8,
+        "mag": 1,
+        "skill": 14,
+        "spd": 14,
+        "lck": 3,
+        "def": 8,
+        "res": 3
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 40,
+        "spd": 20,
+        "lck": 50,
+        "def": 10,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "A",
+        "axe": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/astram.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "jiol",
+      "name": "Jiol",
+      "nameVi": "Jiol",
+      "title": "General",
+      "classId": "general",
+      "level": 5,
+      "baseStats": {
+        "hp": 34,
+        "str": 11,
+        "mag": 1,
+        "skill": 3,
+        "spd": 6,
+        "lck": 0,
+        "def": 16,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "bow": "B",
+        "lance": "B"
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/jiol.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "gharnef",
+      "name": "Gharnef",
+      "nameVi": "Gharnef",
+      "title": "Warlock",
+      "classId": "warlock",
+      "level": 15,
+      "baseStats": {
+        "hp": 34,
+        "str": 2,
+        "mag": 5,
+        "skill": 5,
+        "spd": 18,
+        "lck": 0,
+        "def": 11,
+        "res": 10
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "tome": "A",
+        "staff": "E"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/gharnef.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "arran",
+      "name": "Arran",
+      "nameVi": "Arran",
+      "title": "Paladin",
+      "classId": "paladin",
+      "level": 10,
+      "baseStats": {
+        "hp": 24,
+        "str": 8,
+        "mag": 1,
+        "skill": 8,
+        "spd": 11,
+        "lck": 4,
+        "def": 10,
+        "res": 6
+      },
+      "growths": {
+        "hp": 50,
+        "str": 50,
+        "mag": 0,
+        "skill": 30,
+        "spd": 40,
+        "lck": 40,
+        "def": 15,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "lance": "A"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/arran.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_paladin",
+      "name": "Enemy Paladin",
+      "nameVi": "Kỵ sĩ xuống ngựa địch",
+      "title": "Enemy Paladin",
+      "classId": "paladin",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 2,
+        "spd": 6,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 35,
+        "mag": 0,
+        "skill": 30,
+        "spd": 20,
+        "lck": 0,
+        "def": 30,
+        "res": 20
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/generic_paladin.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Dismounted Knight, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "hollstadt",
+      "name": "Hollstadt",
+      "nameVi": "Hollstadt",
+      "title": "General",
+      "classId": "general",
+      "level": 7,
+      "baseStats": {
+        "hp": 37,
+        "str": 12,
+        "mag": 1,
+        "skill": 4,
+        "spd": 7,
+        "lck": 0,
+        "def": 17,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "bow": "B",
+        "lance": "C"
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/generic_general.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "morzas",
+      "name": "Morzas",
+      "nameVi": "Morzas",
+      "title": "Manakete",
+      "classId": "manakete",
+      "level": 15,
+      "baseStats": {
+        "hp": 29,
+        "str": 4,
+        "mag": 0,
+        "skill": 6,
+        "spd": 6,
+        "lck": 0,
+        "def": 6,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/morzas.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "lorenz",
+      "name": "Lorenz",
+      "nameVi": "Lorenz",
+      "title": "General",
+      "classId": "general",
+      "level": 5,
+      "baseStats": {
+        "hp": 34,
+        "str": 11,
+        "mag": 1,
+        "skill": 3,
+        "spd": 6,
+        "lck": 2,
+        "def": 17,
+        "res": 3
+      },
+      "growths": {
+        "hp": 70,
+        "str": 50,
+        "mag": 0,
+        "skill": 70,
+        "spd": 20,
+        "lck": 40,
+        "def": 30,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "A",
+        "bow": "B"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/lorenz.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "camus",
+      "name": "Camus",
+      "nameVi": "Camus",
+      "title": "Paladin",
+      "classId": "paladin",
+      "level": 14,
+      "baseStats": {
+        "hp": 40,
+        "str": 14,
+        "mag": 2,
+        "skill": 13,
+        "spd": 17,
+        "lck": 0,
+        "def": 15,
+        "res": 8
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "lance": "A"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/camus.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "michalis",
+      "name": "Michalis",
+      "nameVi": "Michalis",
+      "title": "Dragon Knight",
+      "classId": "dragon_knight",
+      "level": 12,
+      "baseStats": {
+        "hp": 37,
+        "str": 14,
+        "mag": 1,
+        "skill": 8,
+        "spd": 11,
+        "lck": 0,
+        "def": 19,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "axe": "A",
+        "lance": "B"
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/michalis.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "enemy_decoy_gharnef",
+      "name": "Enemy Dark Mage",
+      "nameVi": "Pháp sư hắc ám địch",
+      "title": "Enemy Dark Mage",
+      "classId": "dark_mage",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 4,
+        "res": 3
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/generic_dark_mage.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Dark Mage, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "elice",
+      "name": "Elice",
+      "nameVi": "Elice",
+      "title": "Sister",
+      "classId": "sister",
+      "level": 10,
+      "baseStats": {
+        "hp": 18,
+        "str": 0,
+        "mag": 2,
+        "skill": 5,
+        "spd": 6,
+        "lck": 3,
+        "def": 3,
+        "res": 8
+      },
+      "growths": {
+        "hp": 60,
+        "str": 0,
+        "mag": 30,
+        "skill": 50,
+        "spd": 60,
+        "lck": 80,
+        "def": 0,
+        "res": 30
+      },
+      "weaponRanks": {
+        "staff": "A"
+      },
+      "startingWeapons": [
+        "heal_staff"
+      ],
+      "avatarUrl": "/avatars/elice.png",
+      "statSource": "Nhân vật FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/base-stats/default/; growth https://serenesforest.net/shadow-dragon/characters/growth-rates/all/."
+    },
+    {
+      "id": "enemy_manakete",
+      "name": "Enemy Manakete",
+      "nameVi": "Long nhân địch",
+      "title": "Enemy Manakete",
+      "classId": "manakete",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 3,
+        "mag": 2,
+        "skill": 3,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 2
+      },
+      "growths": {
+        "hp": 100,
+        "str": 50,
+        "mag": 10,
+        "skill": 75,
+        "spd": 80,
+        "lck": 0,
+        "def": 50,
+        "res": 15
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/generic_manakete.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE3 Manakete, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "xemcel",
+      "name": "Xemcel",
+      "nameVi": "Xemcel",
+      "title": "Manakete",
+      "classId": "manakete",
+      "level": 20,
+      "baseStats": {
+        "hp": 34,
+        "str": 5,
+        "mag": 5,
+        "skill": 10,
+        "spd": 9,
+        "lck": 0,
+        "def": 9,
+        "res": 5
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/xemcel.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "enemy_mage_dragon",
+      "name": "Enemy Mage Dragon",
+      "nameVi": "Pháp long địch",
+      "title": "Enemy Mage Dragon",
+      "classId": "mage_dragon",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 0,
+        "mag": 7,
+        "skill": 2,
+        "spd": 0,
+        "lck": 0,
+        "def": 12,
+        "res": 11
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "mist_breath"
+      ],
+      "avatarUrl": "/avatars/generic_mage_dragon.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Mage Dragon, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "medeus",
+      "name": "Medeus",
+      "nameVi": "Medeus",
+      "title": "Earth Dragon",
+      "classId": "earth_dragon",
+      "level": 25,
+      "baseStats": {
+        "hp": 60,
+        "str": 24,
+        "mag": 0,
+        "skill": 26,
+        "spd": 21,
+        "lck": 0,
+        "def": 25,
+        "res": 23
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "dark_breath"
+      ],
+      "avatarUrl": "/avatars/medeus.png",
+      "isBoss": true,
+      "statSource": "Boss FE11 Shadow Dragon: base stats https://serenesforest.net/shadow-dragon/characters/boss-data/normal/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "luke",
+      "name": "Luke",
+      "nameVi": "Luke",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 7,
+        "mag": 0,
+        "skill": 5,
+        "spd": 7,
+        "lck": 4,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 60,
+        "mag": 0,
+        "skill": 50,
+        "spd": 50,
+        "lck": 40,
+        "def": 40,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "lance": "E"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/luke.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "roderick",
+      "name": "Roderick",
+      "nameVi": "Roderick",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 6,
+        "mag": 0,
+        "skill": 5,
+        "spd": 6,
+        "lck": 5,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 50,
+        "mag": 0,
+        "skill": 60,
+        "spd": 65,
+        "lck": 60,
+        "def": 40,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "E",
+        "lance": "D"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/roderick.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "cecil",
+      "name": "Cecil",
+      "nameVi": "Cecil",
+      "title": "Social Knight",
+      "classId": "cavalier",
+      "level": 3,
+      "baseStats": {
+        "hp": 19,
+        "str": 6,
+        "mag": 0,
+        "skill": 8,
+        "spd": 9,
+        "lck": 6,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 70,
+        "str": 45,
+        "mag": 10,
+        "skill": 70,
+        "spd": 75,
+        "lck": 50,
+        "def": 30,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "lance": "E"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/cecil.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "ryan",
+      "name": "Ryan",
+      "nameVi": "Ryan",
+      "title": "Archer",
+      "classId": "archer",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 7,
+        "mag": 0,
+        "skill": 4,
+        "spd": 4,
+        "lck": 3,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 50,
+        "mag": 0,
+        "skill": 80,
+        "spd": 50,
+        "lck": 40,
+        "def": 35,
+        "res": 0
+      },
+      "weaponRanks": {
+        "bow": "D"
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/ryan.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "marisha",
+      "name": "Marisha",
+      "nameVi": "Marisha",
+      "title": "Sister",
+      "classId": "sister",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "skill": 1,
+        "spd": 4,
+        "lck": 12,
+        "def": 1,
+        "res": 5
+      },
+      "growths": {
+        "hp": 50,
+        "str": 0,
+        "mag": 40,
+        "skill": 30,
+        "spd": 60,
+        "lck": 40,
+        "def": 20,
+        "res": 40
+      },
+      "weaponRanks": {
+        "staff": "C"
+      },
+      "startingWeapons": [
+        "heal_staff"
+      ],
+      "avatarUrl": "/avatars/marisha.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "enemy_bandit",
+      "name": "Enemy Fighter",
+      "nameVi": "Chiến binh rìu địch",
+      "title": "Enemy Fighter",
+      "classId": "fighter",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 5,
+        "mag": 0,
+        "skill": 1,
+        "spd": 7,
+        "lck": 0,
+        "def": 3,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 30,
+        "spd": 20,
+        "lck": 0,
+        "def": 50,
+        "res": 5
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Fighter, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "warren",
+      "name": "Warren",
+      "nameVi": "Warren",
+      "title": "Hunter",
+      "classId": "hunter",
+      "level": 2,
+      "baseStats": {
+        "hp": 22,
+        "str": 7,
+        "mag": 0,
+        "skill": 5,
+        "spd": 8,
+        "lck": 1,
+        "def": 4,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 60,
+        "mag": 0,
+        "skill": 60,
+        "spd": 40,
+        "lck": 40,
+        "def": 30,
+        "res": 0
+      },
+      "weaponRanks": {
+        "bow": "D"
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/warren.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "lumel",
+      "name": "Lumel",
+      "nameVi": "Lumel",
+      "title": "Dragon Knight",
+      "classId": "dragon_knight",
+      "level": 3,
+      "baseStats": {
+        "hp": 25,
+        "str": 10,
+        "mag": 1,
+        "skill": 8,
+        "spd": 9,
+        "lck": 0,
+        "def": 11,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "C",
+        "axe": "C"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/lumel.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "lykke",
+      "name": "Lykke",
+      "nameVi": "Lykke",
+      "title": "General",
+      "classId": "general",
+      "level": 1,
+      "baseStats": {
+        "hp": 28,
+        "str": 11,
+        "mag": 1,
+        "skill": 6,
+        "spd": 5,
+        "lck": 0,
+        "def": 12,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "D",
+        "bow": "E"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/lykke.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "yuliya",
+      "name": "Yuliya",
+      "nameVi": "Yuliya",
+      "title": "Sister",
+      "classId": "sister",
+      "level": 2,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "skill": 1,
+        "spd": 7,
+        "lck": 9,
+        "def": 2,
+        "res": 5
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 30,
+        "skill": 45,
+        "spd": 60,
+        "lck": 50,
+        "def": 20,
+        "res": 40
+      },
+      "weaponRanks": {
+        "staff": "B"
+      },
+      "startingWeapons": [
+        "heal_staff"
+      ],
+      "avatarUrl": "/avatars/yuliya.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "jubelo",
+      "name": "Jubelo",
+      "nameVi": "Jubelo",
+      "title": "Mage (M)",
+      "classId": "mage_m",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 0,
+        "mag": 1,
+        "skill": 1,
+        "spd": 6,
+        "lck": 5,
+        "def": 3,
+        "res": 3
+      },
+      "growths": {
+        "hp": 50,
+        "str": 0,
+        "mag": 50,
+        "skill": 40,
+        "spd": 50,
+        "lck": 50,
+        "def": 20,
+        "res": 20
+      },
+      "weaponRanks": {
+        "tome": "D"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/jubelo.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "sirius",
+      "name": "Sirius",
+      "nameVi": "Sirius",
+      "title": "Paladin",
+      "classId": "paladin",
+      "level": 1,
+      "baseStats": {
+        "hp": 28,
+        "str": 12,
+        "mag": 1,
+        "skill": 14,
+        "spd": 13,
+        "lck": 4,
+        "def": 11,
+        "res": 6
+      },
+      "growths": {
+        "hp": 95,
+        "str": 65,
+        "mag": 0,
+        "skill": 60,
+        "spd": 50,
+        "lck": 60,
+        "def": 50,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "B",
+        "lance": "A"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/sirius.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "gail",
+      "name": "Gail",
+      "nameVi": "Gail",
+      "title": "Pirate",
+      "classId": "pirate",
+      "level": 10,
+      "baseStats": {
+        "hp": 30,
+        "str": 9,
+        "mag": 0,
+        "skill": 8,
+        "spd": 6,
+        "lck": 0,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "axe": "B"
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/gail.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "torus",
+      "name": "Torus",
+      "nameVi": "Torus",
+      "title": "Ballistician",
+      "classId": "ballistician",
+      "level": 7,
+      "baseStats": {
+        "hp": 24,
+        "str": 4,
+        "mag": 0,
+        "skill": 2,
+        "spd": 5,
+        "lck": 0,
+        "def": 10,
+        "res": 0
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "iron_bow"
+      ],
+      "avatarUrl": "/avatars/torus.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "samuel",
+      "name": "Samuel",
+      "nameVi": "Samuel",
+      "title": "Mercenary",
+      "classId": "mercenary",
+      "level": 5,
+      "baseStats": {
+        "hp": 22,
+        "str": 6,
+        "mag": 0,
+        "skill": 10,
+        "spd": 11,
+        "lck": 3,
+        "def": 7,
+        "res": 0
+      },
+      "growths": {
+        "hp": 80,
+        "str": 30,
+        "mag": 0,
+        "skill": 30,
+        "spd": 70,
+        "lck": 30,
+        "def": 20,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "C"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/samuel.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "lang",
+      "name": "Lang",
+      "nameVi": "Lang",
+      "title": "General",
+      "classId": "general",
+      "level": 5,
+      "baseStats": {
+        "hp": 32,
+        "str": 12,
+        "mag": 1,
+        "skill": 7,
+        "spd": 6,
+        "lck": 0,
+        "def": 13,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "D",
+        "bow": "E"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/lang.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "phina",
+      "name": "Phina",
+      "nameVi": "Phina",
+      "title": "Dancer",
+      "classId": "dancer",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 2,
+        "mag": 0,
+        "skill": 2,
+        "spd": 13,
+        "lck": 8,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 60,
+        "str": 60,
+        "mag": 0,
+        "skill": 80,
+        "spd": 90,
+        "lck": 80,
+        "def": 15,
+        "res": 5
+      },
+      "weaponRanks": {
+        "sword": "E"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/phina.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "dall",
+      "name": "Dall",
+      "nameVi": "Dall",
+      "title": "Thief",
+      "classId": "thief",
+      "level": 10,
+      "baseStats": {
+        "hp": 25,
+        "str": 9,
+        "mag": 3,
+        "skill": 11,
+        "spd": 14,
+        "lck": 0,
+        "def": 5,
+        "res": 0
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "C"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/dall.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "yodel",
+      "name": "Yodel",
+      "nameVi": "Yodel",
+      "title": "Bishop",
+      "classId": "bishop",
+      "level": 5,
+      "baseStats": {
+        "hp": 28,
+        "str": 1,
+        "mag": 8,
+        "skill": 6,
+        "spd": 7,
+        "lck": 0,
+        "def": 5,
+        "res": 12
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "tome": "B",
+        "staff": "D"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/yodel.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "arlen",
+      "name": "Arlen",
+      "nameVi": "Arlen",
+      "title": "Mage (M)",
+      "classId": "mage_m",
+      "level": 10,
+      "baseStats": {
+        "hp": 26,
+        "str": 1,
+        "mag": 8,
+        "skill": 5,
+        "spd": 11,
+        "lck": 2,
+        "def": 8,
+        "res": 3
+      },
+      "growths": {
+        "hp": 80,
+        "str": 0,
+        "mag": 40,
+        "skill": 50,
+        "spd": 45,
+        "lck": 30,
+        "def": 25,
+        "res": 10
+      },
+      "weaponRanks": {
+        "tome": "B"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/arlen.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "enemy_berserker",
+      "name": "Enemy Berserker",
+      "nameVi": "Cuồng binh địch",
+      "title": "Enemy Berserker",
+      "classId": "berserker",
+      "level": 1,
+      "baseStats": {
+        "hp": 24,
+        "str": 7,
+        "mag": 0,
+        "skill": 2,
+        "spd": 7,
+        "lck": 0,
+        "def": 6,
+        "res": 0
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 10,
+        "spd": 20,
+        "lck": 0,
+        "def": 50,
+        "res": 10
+      },
+      "startingWeapons": [
+        "iron_axe"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Berserker, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_wyvern",
+      "name": "Enemy Dragon Knight",
+      "nameVi": "Long kỵ sĩ địch",
+      "title": "Enemy Dragon Knight",
+      "classId": "dragon_knight",
+      "level": 1,
+      "baseStats": {
+        "hp": 20,
+        "str": 8,
+        "mag": 1,
+        "skill": 5,
+        "spd": 7,
+        "lck": 0,
+        "def": 10,
+        "res": 3
+      },
+      "growths": {
+        "hp": 90,
+        "str": 25,
+        "mag": 0,
+        "skill": 10,
+        "spd": 40,
+        "lck": 0,
+        "def": 30,
+        "res": 10
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/generic_fighter.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Dracoknight, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_ice_dragon",
+      "name": "Enemy Ice Dragon",
+      "nameVi": "Băng long địch",
+      "title": "Enemy Ice Dragon",
+      "classId": "ice_dragon",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 5,
+        "mag": 0,
+        "skill": 8,
+        "spd": 5,
+        "lck": 0,
+        "def": 14,
+        "res": 9
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "ice_breath"
+      ],
+      "avatarUrl": "/avatars/generic_ice_dragon.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE12 Ice Dragon, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "eibel",
+      "name": "Eibel",
+      "nameVi": "Eibel",
+      "title": "General",
+      "classId": "general",
+      "level": 10,
+      "baseStats": {
+        "hp": 38,
+        "str": 15,
+        "mag": 1,
+        "skill": 11,
+        "spd": 11,
+        "lck": 0,
+        "def": 19,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "B",
+        "bow": "B"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/eibel.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "willow",
+      "name": "Willow",
+      "nameVi": "Willow",
+      "title": "Bishop",
+      "classId": "bishop",
+      "level": 10,
+      "baseStats": {
+        "hp": 30,
+        "str": 1,
+        "mag": 9,
+        "skill": 8,
+        "spd": 8,
+        "lck": 0,
+        "def": 6,
+        "res": 15
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "tome": "B",
+        "staff": "B"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/willow.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "sheena",
+      "name": "Sheena",
+      "nameVi": "Sheena",
+      "title": "General",
+      "classId": "general",
+      "level": 1,
+      "baseStats": {
+        "hp": 32,
+        "str": 11,
+        "mag": 1,
+        "skill": 12,
+        "spd": 8,
+        "lck": 9,
+        "def": 17,
+        "res": 3
+      },
+      "growths": {
+        "hp": 80,
+        "str": 70,
+        "mag": 0,
+        "skill": 65,
+        "spd": 60,
+        "lck": 80,
+        "def": 40,
+        "res": 10
+      },
+      "weaponRanks": {
+        "lance": "A",
+        "bow": "B"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/sheena.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "samson",
+      "name": "Samson",
+      "nameVi": "Samson",
+      "title": "Hero",
+      "classId": "hero",
+      "level": 5,
+      "baseStats": {
+        "hp": 34,
+        "str": 14,
+        "mag": 1,
+        "skill": 15,
+        "spd": 18,
+        "lck": 11,
+        "def": 13,
+        "res": 3
+      },
+      "growths": {
+        "hp": 90,
+        "str": 50,
+        "mag": 0,
+        "skill": 35,
+        "spd": 30,
+        "lck": 70,
+        "def": 35,
+        "res": 0
+      },
+      "weaponRanks": {
+        "sword": "D",
+        "axe": "B"
+      },
+      "startingWeapons": [
+        "iron_sword"
+      ],
+      "avatarUrl": "/avatars/samson.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
+    },
+    {
+      "id": "nehring",
+      "name": "Nehring",
+      "nameVi": "Nehring",
+      "title": "General",
+      "classId": "general",
+      "level": 15,
+      "baseStats": {
+        "hp": 40,
+        "str": 17,
+        "mag": 1,
+        "skill": 14,
+        "spd": 12,
+        "lck": 0,
+        "def": 20,
+        "res": 3
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "weaponRanks": {
+        "lance": "B",
+        "bow": "E"
+      },
+      "startingWeapons": [
+        "iron_lance"
+      ],
+      "avatarUrl": "/avatars/nehring.png",
+      "isBoss": true,
+      "statSource": "Boss FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/boss-data/stats/; growth bảng boss không có growth nên để 0."
+    },
+    {
+      "id": "enemy_bishop",
+      "name": "Enemy Bishop",
+      "nameVi": "Giám mục địch",
+      "title": "Enemy Bishop",
+      "classId": "bishop",
+      "level": 1,
+      "baseStats": {
+        "hp": 22,
+        "str": 1,
+        "mag": 3,
+        "skill": 2,
+        "spd": 4,
+        "lck": 0,
+        "def": 3,
+        "res": 8
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 20,
+        "res": 50
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/generic_bishop.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Bishop, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_dark_mage",
+      "name": "Enemy Dark Mage",
+      "nameVi": "Pháp sư hắc ám địch",
+      "title": "Enemy Dark Mage",
+      "classId": "dark_mage",
+      "level": 1,
+      "baseStats": {
+        "hp": 16,
+        "str": 0,
+        "mag": 2,
+        "skill": 1,
+        "spd": 3,
+        "lck": 0,
+        "def": 4,
+        "res": 3
+      },
+      "growths": {
+        "hp": 40,
+        "str": 0,
+        "mag": 30,
+        "skill": 30,
+        "spd": 30,
+        "lck": 0,
+        "def": 20,
+        "res": 20
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/generic_dark_mage.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Dark Mage, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "enemy_earth_dragon",
+      "name": "Enemy Earth Dragon",
+      "nameVi": "Địa long địch",
+      "title": "Enemy Earth Dragon",
+      "classId": "earth_dragon",
+      "level": 1,
+      "baseStats": {
+        "hp": 18,
+        "str": 14,
+        "mag": 0,
+        "skill": 10,
+        "spd": 8,
+        "lck": 0,
+        "def": 14,
+        "res": 19
+      },
+      "growths": {
+        "hp": 0,
+        "str": 0,
+        "mag": 0,
+        "skill": 0,
+        "spd": 0,
+        "lck": 0,
+        "def": 0,
+        "res": 0
+      },
+      "startingWeapons": [
+        "dark_breath"
+      ],
+      "avatarUrl": "/avatars/generic_earth_dragon.png",
+      "statSource": "Mẫu quân thường cấp 1: base stats theo bảng class FE11 Earth Dragon, growth theo bảng growth class địch FE11 (rồng không có dòng nên để 0 như dòng \"Transformed Dragon\"). Không phải số trích riêng từng quân."
+    },
+    {
+      "id": "nyna",
+      "name": "Nyna",
+      "nameVi": "Nyna",
+      "title": "Bishop",
+      "classId": "bishop",
+      "level": 7,
+      "baseStats": {
+        "hp": 25,
+        "str": 1,
+        "mag": 6,
+        "skill": 6,
+        "spd": 10,
+        "lck": 18,
+        "def": 4,
+        "res": 9
+      },
+      "growths": {
+        "hp": 45,
+        "str": 0,
+        "mag": 40,
+        "skill": 50,
+        "spd": 45,
+        "lck": 45,
+        "def": 10,
+        "res": 40
+      },
+      "weaponRanks": {
+        "tome": "B",
+        "staff": "A"
+      },
+      "startingWeapons": [
+        "fire"
+      ],
+      "avatarUrl": "/avatars/nyna.png",
+      "statSource": "Nhân vật FE12 New Mystery: base stats https://serenesforest.net/light-and-shadow/characters/base-stats/default/; growth https://serenesforest.net/light-and-shadow/characters/growth-rates/all/standard-classes/."
     }
   ]
 }

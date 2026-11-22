@@ -1,0 +1,377 @@
+{
+  "id": "chapter_20",
+  "name": "Chapter 20: Chosen by Fate",
+  "mapId": "chapter_20_chosen_by_fate",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 14
+    },
+    "description": "Seize throne 15,14"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 13,
+        "y": 24
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 12
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 14
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_3",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 14
+      },
+      "name": "Curate 3",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_4",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 18
+      },
+      "name": "Curate 4",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_1",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 1
+      },
+      "name": "Fire Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_2",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 11
+      },
+      "name": "Fire Dragon 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_3",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 12
+      },
+      "name": "Fire Dragon 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_4",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 19
+      },
+      "name": "Fire Dragon 4",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_1",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 6
+      },
+      "name": "General 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_2",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 6
+      },
+      "name": "General 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_3",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 13
+      },
+      "name": "General 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_4",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 14
+      },
+      "name": "General 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_5",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 18
+      },
+      "name": "General 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_6",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 19
+      },
+      "name": "General 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 11
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_2",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 18
+      },
+      "name": "Hero 2",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_3",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 20
+      },
+      "name": "Hero 3",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_1",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 15
+      },
+      "name": "Mage Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 9
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 9
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_3",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 12
+      },
+      "name": "Sniper 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_4",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 19
+      },
+      "name": "Sniper 4",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "medeus",
+      "characterId": "medeus",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "name": "Medeus",
+      "weaponId": "fire",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 13,
+      "y": 24
+    },
+    {
+      "x": 2,
+      "y": 2
+    },
+    {
+      "x": 3,
+      "y": 2
+    },
+    {
+      "x": 2,
+      "y": 3
+    },
+    {
+      "x": 25,
+      "y": 4
+    },
+    {
+      "x": 24,
+      "y": 4
+    },
+    {
+      "x": 24,
+      "y": 5
+    },
+    {
+      "x": 25,
+      "y": 5
+    },
+    {
+      "x": 5,
+      "y": 23
+    },
+    {
+      "x": 6,
+      "y": 23
+    },
+    {
+      "x": 7,
+      "y": 23
+    },
+    {
+      "x": 12,
+      "y": 24
+    },
+    {
+      "x": 14,
+      "y": 24
+    },
+    {
+      "x": 12,
+      "y": 25
+    },
+    {
+      "x": 13,
+      "y": 25
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "Boss Medeus weapon 'Earth Dragonstone' not in items.json; substituted with 'fire'."
+  ]
+}

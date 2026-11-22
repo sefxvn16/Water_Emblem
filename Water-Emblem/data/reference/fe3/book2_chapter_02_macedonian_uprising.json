@@ -53,5 +53,284 @@
     "FFFFFFFFF....FFFF....F...FFFFF",
     "FFFFFFFFFF..FFFFFF......FFFFFF",
     "F.FFFFFFFFF.FFFFFFF.....FFFFFF"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 2,
+    "title": "Book 2 Chapter 2: Macedonian Uprising",
+    "atlasFile": "b2c02.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 15,14",
+    "goalTile": {
+      "x": 15,
+      "y": 14
+    },
+    "lose": "Marth dies",
+    "boss": "Lumel (Dracoknight L3, Ridersbane)",
+    "unitCounts": {
+      "P": 6,
+      "N": 1,
+      "E": 14
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Catria",
+        "positions": [
+          {
+            "x": 17,
+            "y": 27
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 17,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 18,
+            "y": 26
+          },
+          {
+            "x": 18,
+            "y": 27
+          },
+          {
+            "x": 18,
+            "y": 28
+          },
+          {
+            "x": 19,
+            "y": 28
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "N",
+        "label": "Warren",
+        "positions": [
+          {
+            "x": 16,
+            "y": 18
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Bandit",
+        "positions": [
+          {
+            "x": 14,
+            "y": 1
+          },
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 19,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 6
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 14,
+            "y": 10
+          },
+          {
+            "x": 15,
+            "y": 10
+          },
+          {
+            "x": 16,
+            "y": 10
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 16,
+            "y": 8
+          },
+          {
+            "x": 15,
+            "y": 8
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 19,
+            "y": 15
+          },
+          {
+            "x": 16,
+            "y": 16
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Lumel",
+        "positions": [
+          {
+            "x": 15,
+            "y": 14
+          }
+        ]
+      }
+    ],
+    "markers": [],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 16,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 9,
+            "y": 23
+          },
+          {
+            "x": 11,
+            "y": 23
+          },
+          {
+            "x": 8,
+            "y": 25
+          },
+          {
+            "x": 10,
+            "y": 25
+          },
+          {
+            "x": 11,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 14,
+            "y": 1
+          },
+          {
+            "x": 15,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 19,
+            "y": 3
+          },
+          {
+            "x": 7,
+            "y": 6
+          },
+          {
+            "x": 22,
+            "y": 6
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 14,
+            "y": 7
+          },
+          {
+            "x": 15,
+            "y": 7
+          },
+          {
+            "x": 16,
+            "y": 7
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Catria Pegasus Knight L6 Slim Lance, Iron Sword (from start)",
+      "Warren Hunter L2 Iron Bow, Bridge Key (talk with Catria)",
+      "Linde Mage L4 Aura, Thunder, Nosferatu (joins after chapter)"
+    ],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

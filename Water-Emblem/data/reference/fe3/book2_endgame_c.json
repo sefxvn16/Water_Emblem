@@ -49,5 +49,212 @@
     "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
     "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
     "WWWWWWWWWWWWW_____WWWWWWWWWWWW"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 22,
+    "title": "Book 2 Endgame: The Dragon Altar, Part 3",
+    "atlasFile": "b2c22c.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Kill Medeus and seize throne 15,2",
+    "goalTile": {
+      "x": 15,
+      "y": 2
+    },
+    "lose": "Marth dies",
+    "boss": "Medeus (Dark Dragon L1, Dark Breath)",
+    "unitCounts": {
+      "P": 15,
+      "N": 4,
+      "E": 1
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 15,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 13,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 25
+          },
+          {
+            "x": 15,
+            "y": 25
+          },
+          {
+            "x": 16,
+            "y": 25
+          },
+          {
+            "x": 14,
+            "y": 26
+          },
+          {
+            "x": 16,
+            "y": 26
+          },
+          {
+            "x": 17,
+            "y": 26
+          },
+          {
+            "x": 13,
+            "y": 27
+          },
+          {
+            "x": 14,
+            "y": 27
+          },
+          {
+            "x": 15,
+            "y": 27
+          },
+          {
+            "x": 14,
+            "y": 28
+          },
+          {
+            "x": 16,
+            "y": 28
+          },
+          {
+            "x": 13,
+            "y": 29
+          },
+          {
+            "x": 15,
+            "y": 29
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Elice",
+        "positions": [
+          {
+            "x": 15,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "N",
+        "label": "Lena",
+        "positions": [
+          {
+            "x": 15,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "N",
+        "label": "Maria",
+        "positions": [
+          {
+            "x": 14,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "N",
+        "label": "Nyna",
+        "positions": [
+          {
+            "x": 16,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Medeus",
+        "positions": [
+          {
+            "x": 15,
+            "y": 6
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "altar",
+        "positions": [
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 4
+          },
+          {
+            "x": 18,
+            "y": 4
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 18,
+            "y": 8
+          }
+        ],
+        "declaredCount": 5
+      }
+    ],
+    "structures": {
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 15,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [
+      "Lena Bishop L3 Bolganone (talk with Julian)",
+      "Maria Bishop L1 Recover (talk with Minerva)",
+      "Nyna Bishop L7 Thoron (talk with Sirius)",
+      "Elice Bishop L5 Fortify (talk with Merric)"
+    ],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "4 clerics (Lena, Maria, Nyna, Elice) surrounding Medeus at 15,5 14,6 16,6 15,7 and 5 shrines (altars) at 15,3 12,4 18,4 12,8 18,8 now detected"
+    ],
+    "codesLine": "_ floor"
+  }
 }

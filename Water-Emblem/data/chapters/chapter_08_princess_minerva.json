@@ -1,0 +1,361 @@
+{
+  "id": "chapter_08",
+  "name": "Chapter 8: Princess Minerva",
+  "mapId": "chapter_08_princess_minerva",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 2,
+      "y": 1
+    },
+    "description": "Seize gate 2,1"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 27,
+        "y": 6
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "maria",
+      "characterId": "maria",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 12
+      },
+      "name": "Maria",
+      "weaponId": "heal_staff",
+      "level": 3,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_1",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 14
+      },
+      "name": "Archer 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "archer_2",
+      "characterId": "enemy_archer",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 14
+      },
+      "name": "Archer 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 1
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 1
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 1
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 2
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 5
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 15
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 18
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "minerva",
+      "characterId": "minerva",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 0
+      },
+      "name": "Minerva",
+      "weaponId": "iron_lance",
+      "level": 1,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_1",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 0
+      },
+      "name": "Pegasus Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_2",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 3
+      },
+      "name": "Pegasus Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 14
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 16
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "zharov",
+      "characterId": "zharov",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "name": "Zharov",
+      "weaponId": "steel_lance",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 27,
+      "y": 6
+    },
+    {
+      "x": 25,
+      "y": 3
+    },
+    {
+      "x": 26,
+      "y": 4
+    },
+    {
+      "x": 27,
+      "y": 4
+    },
+    {
+      "x": 28,
+      "y": 4
+    },
+    {
+      "x": 25,
+      "y": 5
+    },
+    {
+      "x": 26,
+      "y": 7
+    },
+    {
+      "x": 27,
+      "y": 7
+    },
+    {
+      "x": 28,
+      "y": 9
+    },
+    {
+      "x": 27,
+      "y": 10
+    },
+    {
+      "x": 28,
+      "y": 10
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "3 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "Unit Maria (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Chest at (19,10) (reward: Levin Sword) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (20,10) (reward: Physic) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (11,6) (reward: Wyrmslayer) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_19_10",
+      "position": {
+        "x": 19,
+        "y": 10
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "levin_sword"
+      }
+    },
+    {
+      "id": "chest_20_10",
+      "position": {
+        "x": 20,
+        "y": 10
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "physic_staff"
+      }
+    },
+    {
+      "id": "chest_11_6",
+      "position": {
+        "x": 11,
+        "y": 6
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "wyrmslayer"
+      }
+    }
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "maria",
+      "maxDistance": 1
+    }
+  ]
+}

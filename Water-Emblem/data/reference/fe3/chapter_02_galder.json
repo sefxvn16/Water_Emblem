@@ -45,5 +45,491 @@
     "MMMM.FH..rrrrrrbrr.....~~~~~~~",
     "MMMMMMMM.......b.r.....~~~~~~~",
     "MMMMMMMMM........r.....~...~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 2,
+    "title": "Chapter 2: The Pirates of Galder",
+    "atlasFile": "b1c02.md",
+    "size": {
+      "width": 30,
+      "height": 15
+    },
+    "goal": "Seize gate 2,2",
+    "goalTile": {
+      "x": 2,
+      "y": 2
+    },
+    "lose": "Marth dies",
+    "boss": "Gomer (Pirate L7, Hand Axe, Steel Sword)",
+    "unitCounts": {
+      "P": 11,
+      "N": 1,
+      "E": 16
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Barst",
+        "positions": [
+          {
+            "x": 22,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Bord",
+        "positions": [
+          {
+            "x": 21,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Cord",
+        "positions": [
+          {
+            "x": 20,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 18,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "Ogma",
+        "positions": [
+          {
+            "x": 20,
+            "y": 6
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 21,
+            "y": 8
+          },
+          {
+            "x": 19,
+            "y": 9
+          },
+          {
+            "x": 20,
+            "y": 9
+          },
+          {
+            "x": 21,
+            "y": 9
+          },
+          {
+            "x": 22,
+            "y": 9
+          },
+          {
+            "x": 19,
+            "y": 10
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "N",
+        "label": "Castor",
+        "positions": [
+          {
+            "x": 5,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 25,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 3
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Pirate",
+        "positions": [
+          {
+            "x": 21,
+            "y": 1
+          },
+          {
+            "x": 21,
+            "y": 2
+          },
+          {
+            "x": 22,
+            "y": 2
+          },
+          {
+            "x": 23,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 5
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 22,
+            "y": 1
+          },
+          {
+            "x": 24,
+            "y": 1
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E*",
+        "label": "Gomer",
+        "positions": [
+          {
+            "x": 2,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "shop",
+        "positions": [
+          {
+            "x": 7,
+            "y": 10
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 15,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 10
+          },
+          {
+            "x": 18,
+            "y": 11
+          },
+          {
+            "x": 6,
+            "y": 12
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 7,
+            "y": 10
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 24,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 21,
+            "y": 7
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 8,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 8,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 22,
+            "y": 4
+          },
+          {
+            "x": 22,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 6
+          },
+          {
+            "x": 22,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 12,
+            "y": 7
+          },
+          {
+            "x": 13,
+            "y": 7
+          },
+          {
+            "x": 18,
+            "y": 7
+          },
+          {
+            "x": 19,
+            "y": 7
+          },
+          {
+            "x": 20,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 4,
+            "y": 9
+          },
+          {
+            "x": 7,
+            "y": 9
+          },
+          {
+            "x": 8,
+            "y": 10
+          },
+          {
+            "x": 9,
+            "y": 10
+          },
+          {
+            "x": 10,
+            "y": 10
+          },
+          {
+            "x": 11,
+            "y": 10
+          },
+          {
+            "x": 12,
+            "y": 10
+          },
+          {
+            "x": 13,
+            "y": 10
+          },
+          {
+            "x": 15,
+            "y": 10
+          },
+          {
+            "x": 16,
+            "y": 10
+          },
+          {
+            "x": 17,
+            "y": 10
+          },
+          {
+            "x": 15,
+            "y": 11
+          },
+          {
+            "x": 15,
+            "y": 12
+          },
+          {
+            "x": 15,
+            "y": 13
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Ogma Mercenary L2 Iron Sword",
+      "Bord Fighter L3 Iron Axe,Iron Axe",
+      "Cord Fighter L3 Iron Axe",
+      "Barst Fighter L5 Iron Axe,Hand Axe (all from start)",
+      "Castor Hunter L3 Iron Bow (talk with Caeda)"
+    ],
+    "chests": [],
+    "villages": [
+      "8,2 3000G"
+    ],
+    "shops": [
+      {
+        "at": {
+          "x": 7,
+          "y": 10
+        },
+        "goods": "Iron Sword 420 | Iron Lance 380 | Iron Bow 330 | Iron Axe 430 | Steel Axe 600 | Hand Axe 450"
+      }
+    ],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

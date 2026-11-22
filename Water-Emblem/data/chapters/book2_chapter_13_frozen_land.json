@@ -1,0 +1,390 @@
+{
+  "id": "book2_chapter_13",
+  "name": "Book 2 Chapter 13: Frozen Land",
+  "mapId": "book2_chapter_13_frozen_land",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 14,
+      "y": 9
+    },
+    "description": "Seize gate 14,9"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 16,
+        "y": 27
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "barbarian_1",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 18
+      },
+      "name": "Barbarian 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_2",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 19
+      },
+      "name": "Barbarian 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_3",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 19
+      },
+      "name": "Barbarian 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_4",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 20
+      },
+      "name": "Barbarian 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_5",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 20
+      },
+      "name": "Barbarian 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_6",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 21
+      },
+      "name": "Barbarian 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_7",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 22
+      },
+      "name": "Barbarian 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_8",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 24
+      },
+      "name": "Barbarian 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_9",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 26
+      },
+      "name": "Barbarian 9",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_10",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 26
+      },
+      "name": "Barbarian 10",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_1",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 0,
+        "y": 24
+      },
+      "name": "Hunter 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hunter_2",
+      "characterId": "enemy_hunter",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 24
+      },
+      "name": "Hunter 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_1",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 9
+      },
+      "name": "Ice Dragon 1",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_2",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 9
+      },
+      "name": "Ice Dragon 2",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_3",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 10
+      },
+      "name": "Ice Dragon 3",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_4",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 10
+      },
+      "name": "Ice Dragon 4",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_5",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 10
+      },
+      "name": "Ice Dragon 5",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_6",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 22
+      },
+      "name": "Ice Dragon 6",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "ice_dragon_7",
+      "characterId": "enemy_ice_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 9
+      },
+      "name": "Ice Dragon 7",
+      "weaponId": "ice_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "wyvern_1",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 6
+      },
+      "name": "Wyvern 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "wyvern_2",
+      "characterId": "enemy_wyvern",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "name": "Wyvern 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 16,
+      "y": 27
+    },
+    {
+      "x": 18,
+      "y": 25
+    },
+    {
+      "x": 15,
+      "y": 26
+    },
+    {
+      "x": 18,
+      "y": 26
+    },
+    {
+      "x": 19,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 27
+    },
+    {
+      "x": 17,
+      "y": 27
+    },
+    {
+      "x": 19,
+      "y": 27
+    },
+    {
+      "x": 20,
+      "y": 27
+    },
+    {
+      "x": 16,
+      "y": 28
+    },
+    {
+      "x": 17,
+      "y": 28
+    },
+    {
+      "x": 18,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "3 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas."
+  ],
+  "uncertain": [
+    "Chest at (29,18) (reward: 10000G) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (17,20) (reward: Boots) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (20,8) (reward: Wyrmslayer) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_29_18",
+      "position": {
+        "x": 29,
+        "y": 18
+      },
+      "reward": {
+        "type": "gold",
+        "amount": 10000
+      }
+    },
+    {
+      "id": "chest_17_20",
+      "position": {
+        "x": 17,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "boots"
+      }
+    },
+    {
+      "id": "chest_20_8",
+      "position": {
+        "x": 20,
+        "y": 8
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "wyrmslayer"
+      }
+    }
+  ]
+}

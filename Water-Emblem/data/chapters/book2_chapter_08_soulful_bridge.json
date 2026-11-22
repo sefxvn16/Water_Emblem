@@ -1,0 +1,458 @@
+{
+  "id": "book2_chapter_08",
+  "name": "Book 2 Chapter 8: Soulful Bridge",
+  "mapId": "book2_chapter_08_soulful_bridge",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 8,
+      "y": 1
+    },
+    "description": "Seize gate 8,1"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 15,
+        "y": 16
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "jeorge",
+      "characterId": "jeorge",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 5
+      },
+      "name": "Jeorge",
+      "weaponId": "parthia",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "jeorge_2",
+      "characterId": "jeorge",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 6
+      },
+      "name": "Jeorge",
+      "weaponId": "parthia",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 1
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 2
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 2
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 3
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_5",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 4
+      },
+      "name": "Cavalier 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_6",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 4
+      },
+      "name": "Cavalier 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_7",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 4
+      },
+      "name": "Cavalier 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 1
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 2
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 3
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 29,
+        "y": 4
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 28,
+        "y": 2
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_1",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 28
+      },
+      "name": "General 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_2",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 29
+      },
+      "name": "General 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_3",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 29
+      },
+      "name": "General 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "general_4",
+      "characterId": "enemy_general",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 29
+      },
+      "name": "General 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_1",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 25
+      },
+      "name": "Paladin 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_2",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 26
+      },
+      "name": "Paladin 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_3",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 27
+      },
+      "name": "Paladin 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_4",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 27
+      },
+      "name": "Paladin 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_5",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 29
+      },
+      "name": "Paladin 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_6",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 29
+      },
+      "name": "Paladin 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_7",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 29
+      },
+      "name": "Paladin 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "paladin_8",
+      "characterId": "enemy_paladin",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 29
+      },
+      "name": "Paladin 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 12
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 22
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "hardin",
+      "characterId": "hardin",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 26
+      },
+      "name": "Hardin",
+      "weaponId": "gradivus",
+      "level": 1,
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 15,
+      "y": 16
+    },
+    {
+      "x": 15,
+      "y": 15
+    },
+    {
+      "x": 18,
+      "y": 15
+    },
+    {
+      "x": 20,
+      "y": 15
+    },
+    {
+      "x": 14,
+      "y": 16
+    },
+    {
+      "x": 16,
+      "y": 16
+    },
+    {
+      "x": 17,
+      "y": 16
+    },
+    {
+      "x": 19,
+      "y": 16
+    },
+    {
+      "x": 21,
+      "y": 16
+    },
+    {
+      "x": 23,
+      "y": 16
+    },
+    {
+      "x": 13,
+      "y": 17
+    },
+    {
+      "x": 16,
+      "y": 17
+    },
+    {
+      "x": 17,
+      "y": 17
+    },
+    {
+      "x": 18,
+      "y": 17
+    },
+    {
+      "x": 20,
+      "y": 17
+    },
+    {
+      "x": 21,
+      "y": 17
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Chiêu mộ jeorge_2: người nói (Gordin) không xuất trận trong chương này nên chưa khai được.",
+    "Làng (29,17): Atlas: nhận nhân vật Bantu ở đây; schema chưa có kiểu thưởng nhân vật."
+  ],
+  "uncertain": [
+    "Unit Jeorge (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Village at (29,17) rewards recruit/choice 'Bantu'; assigned reward itemId 'firestone'."
+  ]
+}

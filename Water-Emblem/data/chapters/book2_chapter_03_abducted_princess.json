@@ -1,0 +1,334 @@
+{
+  "id": "book2_chapter_03",
+  "name": "Book 2 Chapter 3: Abducted Princess",
+  "mapId": "book2_chapter_03_abducted_princess",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 19,
+      "y": 17
+    },
+    "description": "Seize gate 19,17"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 23,
+        "y": 27
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "palla",
+      "characterId": "palla",
+      "faction": "player",
+      "position": {
+        "x": 21,
+        "y": 6
+      },
+      "name": "Palla",
+      "weaponId": "silver_lance",
+      "level": 10
+    },
+    {
+      "id": "matthis",
+      "characterId": "matthis",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 0
+      },
+      "name": "Matthis",
+      "weaponId": "javelin",
+      "level": 4,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 17
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 17
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 18
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 18
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 14
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 14
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 15
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 15
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 16
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_6",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 16
+      },
+      "name": "Dracoknight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 20
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 0
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 2
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 6
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "lykke",
+      "characterId": "lykke",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 17
+      },
+      "name": "Lykke",
+      "weaponId": "steel_lance",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 23,
+      "y": 27
+    },
+    {
+      "x": 21,
+      "y": 6
+    },
+    {
+      "x": 23,
+      "y": 26
+    },
+    {
+      "x": 25,
+      "y": 26
+    },
+    {
+      "x": 22,
+      "y": 27
+    },
+    {
+      "x": 24,
+      "y": 27
+    },
+    {
+      "x": 25,
+      "y": 27
+    },
+    {
+      "x": 20,
+      "y": 28
+    },
+    {
+      "x": 22,
+      "y": 28
+    },
+    {
+      "x": 23,
+      "y": 28
+    },
+    {
+      "x": 25,
+      "y": 28
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth",
+    "palla"
+  ],
+  "villages": [
+    {
+      "id": "village_28_3",
+      "name": "Village (Bridge Key)",
+      "position": {
+        "x": 28,
+        "y": 3
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "bridge_key"
+      }
+    },
+    {
+      "id": "village_1_24",
+      "name": "Village (Iote's Shield)",
+      "position": {
+        "x": 1,
+        "y": 24
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "iotes_shield"
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "door_6_25",
+      "position": {
+        "x": 6,
+        "y": 25
+      }
+    },
+    {
+      "id": "door_6_26",
+      "position": {
+        "x": 6,
+        "y": 26
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Chiêu mộ matthis: người nói (Julian) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "Unit Matthis (N) assigned faction 'enemy' (recruit in atlas: true)."
+  ]
+}

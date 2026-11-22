@@ -49,5 +49,468 @@
     "W____________W",
     "W____________W",
     "______________"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 15,
+    "title": "Chapter 15: Manakete Princess",
+    "atlasFile": "b1c15.md",
+    "size": {
+      "width": 14,
+      "height": 30
+    },
+    "goal": "Seize throne 7,0",
+    "goalTile": {
+      "x": 7,
+      "y": 0
+    },
+    "lose": "Marth dies",
+    "boss": "Tiki (Manakete L5, Divinestone)",
+    "unitCounts": {
+      "P": 12,
+      "N": 0,
+      "E": 26
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 5,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 7,
+            "y": 22
+          },
+          {
+            "x": 8,
+            "y": 22
+          },
+          {
+            "x": 4,
+            "y": 23
+          },
+          {
+            "x": 6,
+            "y": 23
+          },
+          {
+            "x": 9,
+            "y": 23
+          },
+          {
+            "x": 7,
+            "y": 24
+          },
+          {
+            "x": 8,
+            "y": 24
+          },
+          {
+            "x": 4,
+            "y": 25
+          },
+          {
+            "x": 6,
+            "y": 25
+          },
+          {
+            "x": 5,
+            "y": 26
+          },
+          {
+            "x": 7,
+            "y": 26
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 4,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 6,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 6
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Hunter",
+        "positions": [
+          {
+            "x": 2,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 16
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Mercenary",
+        "positions": [
+          {
+            "x": 7,
+            "y": 10
+          },
+          {
+            "x": 6,
+            "y": 14
+          },
+          {
+            "x": 7,
+            "y": 18
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 11,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
+            "x": 11,
+            "y": 0
+          },
+          {
+            "x": 12,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 1
+          },
+          {
+            "x": 12,
+            "y": 1
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E*",
+        "label": "Tiki",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 6,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 10",
+        "positions": [
+          {
+            "x": 10,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 11",
+        "positions": [
+          {
+            "x": 12,
+            "y": 20
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 7,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 3",
+        "positions": [
+          {
+            "x": 6,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 4",
+        "positions": [
+          {
+            "x": 7,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 5",
+        "positions": [
+          {
+            "x": 1,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 6",
+        "positions": [
+          {
+            "x": 3,
+            "y": 8
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 7",
+        "positions": [
+          {
+            "x": 10,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 12
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "X",
+        "label": "chest 8",
+        "positions": [
+          {
+            "x": 1,
+            "y": 16
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 9",
+        "positions": [
+          {
+            "x": 3,
+            "y": 16
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 10,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 11,
+            "y": 9
+          },
+          {
+            "x": 10,
+            "y": 12
+          },
+          {
+            "x": 12,
+            "y": 12
+          },
+          {
+            "x": 2,
+            "y": 13
+          },
+          {
+            "x": 11,
+            "y": 13
+          },
+          {
+            "x": 1,
+            "y": 16
+          },
+          {
+            "x": 3,
+            "y": 16
+          },
+          {
+            "x": 2,
+            "y": 17
+          },
+          {
+            "x": 11,
+            "y": 17
+          },
+          {
+            "x": 10,
+            "y": 20
+          },
+          {
+            "x": 12,
+            "y": 20
+          },
+          {
+            "x": 2,
+            "y": 21
+          },
+          {
+            "x": 11,
+            "y": 21
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [
+      "Tiki Manakete L5 Divinestone (talk with Bantu)"
+    ],
+    "chests": [
+      "10,20 Pure Water",
+      "12,20 Guiding Ring",
+      "1,16 10000G",
+      "3,16 Bolganone",
+      "10,12 Earth Orb",
+      "12,12 Seraph Robe",
+      "1,8 Elysian Whip",
+      "3,8 Energy Drop",
+      "6,4 Starsphere",
+      "7,4 Lightsphere"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [
+      "grid detection for map1_15.png has rows shifted relative to the throne room"
+    ],
+    "codesLine": null
+  }
 }

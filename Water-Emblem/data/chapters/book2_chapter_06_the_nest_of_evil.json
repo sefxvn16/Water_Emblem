@@ -1,0 +1,393 @@
+{
+  "id": "book2_chapter_06",
+  "name": "Book 2 Chapter 6: The Nest of Evil",
+  "mapId": "book2_chapter_06_the_nest_of_evil",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 2
+    },
+    "description": "Seize throne 15,2"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 15,
+        "y": 19
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "samuel",
+      "characterId": "samuel",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 6
+      },
+      "name": "Samuel",
+      "weaponId": "killing_edge",
+      "level": 5,
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_1",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 2
+      },
+      "name": "Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_2",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 2
+      },
+      "name": "Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_3",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 3
+      },
+      "name": "Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_4",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 3
+      },
+      "name": "Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_5",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 3
+      },
+      "name": "Knight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_6",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 7
+      },
+      "name": "Knight 6",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_7",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 12
+      },
+      "name": "Knight 7",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_8",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 13
+      },
+      "name": "Knight 8",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_9",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 14
+      },
+      "name": "Knight 9",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_10",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 14
+      },
+      "name": "Knight 10",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_11",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 16
+      },
+      "name": "Knight 11",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_12",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 5,
+        "y": 17
+      },
+      "name": "Knight 12",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "knight_13",
+      "characterId": "enemy_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 19
+      },
+      "name": "Knight 13",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_1",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 2
+      },
+      "name": "Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_2",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 2
+      },
+      "name": "Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_3",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 12
+      },
+      "name": "Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_4",
+      "characterId": "enemy_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 27,
+        "y": 14
+      },
+      "name": "Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 29
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_2",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 29
+      },
+      "name": "Thief 2",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_3",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 29
+      },
+      "name": "Thief 3",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "thief_4",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 29
+      },
+      "name": "Thief 4",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "lang",
+      "characterId": "lang",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 2
+      },
+      "name": "Lang",
+      "weaponId": "javelin",
+      "level": 10,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 15,
+      "y": 19
+    },
+    {
+      "x": 13,
+      "y": 18
+    },
+    {
+      "x": 15,
+      "y": 18
+    },
+    {
+      "x": 14,
+      "y": 19
+    },
+    {
+      "x": 16,
+      "y": 19
+    },
+    {
+      "x": 13,
+      "y": 20
+    },
+    {
+      "x": 15,
+      "y": 20
+    },
+    {
+      "x": 16,
+      "y": 20
+    },
+    {
+      "x": 17,
+      "y": 20
+    },
+    {
+      "x": 14,
+      "y": 21
+    },
+    {
+      "x": 16,
+      "y": 21
+    },
+    {
+      "x": 18,
+      "y": 21
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_27_20",
+      "position": {
+        "x": 27,
+        "y": 20
+      }
+    }
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Rương (27,20): Atlas: phần thưởng \"Libra\" chưa có trong data/items.json; ô này bị bỏ.",
+    "1 khai báo cửa bị bỏ vì ô đó là rương theo dòng `chests:` của atlas.",
+    "Chiêu mộ samuel: người nói (Ogma or Caeda) không xuất trận trong chương này nên chưa khai được."
+  ],
+  "uncertain": [
+    "Unit Samuel (N) assigned faction 'enemy' (recruit in atlas: true).",
+    "Chest at (27,20) (reward: Libra) omitted because map tile is 'door', not 'chest'.",
+    "Chest at (28,20) (reward: Barrier) omitted because map tile is 'door', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_28_20",
+      "position": {
+        "x": 28,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "barrier_staff"
+      }
+    }
+  ]
+}

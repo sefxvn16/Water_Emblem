@@ -1,0 +1,467 @@
+{
+  "id": "book2_endgame_a",
+  "name": "Book 2 Endgame: The Dragon Altar, Part 1",
+  "mapId": "book2_endgame_a",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 15,
+      "y": 0
+    },
+    "description": "Seize gate 15,0"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 15,
+        "y": 27
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "barbarian_1",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 8,
+        "y": 0
+      },
+      "name": "Barbarian 1",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_2",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 0
+      },
+      "name": "Barbarian 2",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_3",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 9,
+        "y": 1
+      },
+      "name": "Barbarian 3",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_4",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 1
+      },
+      "name": "Barbarian 4",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_5",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 1
+      },
+      "name": "Barbarian 5",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_6",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 1
+      },
+      "name": "Barbarian 6",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_7",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 11,
+        "y": 4
+      },
+      "name": "Barbarian 7",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_8",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 9
+      },
+      "name": "Barbarian 8",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_9",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 14
+      },
+      "name": "Barbarian 9",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_10",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 16
+      },
+      "name": "Barbarian 10",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "barbarian_11",
+      "characterId": "enemy_barbarian",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 18
+      },
+      "name": "Barbarian 11",
+      "weaponId": "iron_axe",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_1",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 0
+      },
+      "name": "Dark Mage 1",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_2",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 1
+      },
+      "name": "Dark Mage 2",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_3",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "name": "Dark Mage 3",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_4",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 2
+      },
+      "name": "Dark Mage 4",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_5",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 2
+      },
+      "name": "Dark Mage 5",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_6",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 4
+      },
+      "name": "Dark Mage 6",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_7",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 4
+      },
+      "name": "Dark Mage 7",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_8",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 4
+      },
+      "name": "Dark Mage 8",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_9",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "name": "Dark Mage 9",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_10",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 11
+      },
+      "name": "Dark Mage 10",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_11",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 19
+      },
+      "name": "Dark Mage 11",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_12",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 21
+      },
+      "name": "Dark Mage 12",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dark_mage_13",
+      "characterId": "enemy_dark_mage",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 21
+      },
+      "name": "Dark Mage 13",
+      "weaponId": "fire",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_1",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 7,
+        "y": 2
+      },
+      "name": "Mage Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_2",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 2
+      },
+      "name": "Mage Dragon 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "mage_dragon_3",
+      "characterId": "enemy_mage_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 13
+      },
+      "name": "Mage Dragon 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 15,
+      "y": 27
+    },
+    {
+      "x": 15,
+      "y": 25
+    },
+    {
+      "x": 14,
+      "y": 26
+    },
+    {
+      "x": 16,
+      "y": 26
+    },
+    {
+      "x": 14,
+      "y": 27
+    },
+    {
+      "x": 17,
+      "y": 27
+    },
+    {
+      "x": 9,
+      "y": 28
+    },
+    {
+      "x": 11,
+      "y": 28
+    },
+    {
+      "x": 12,
+      "y": 28
+    },
+    {
+      "x": 13,
+      "y": 28
+    },
+    {
+      "x": 14,
+      "y": 28
+    },
+    {
+      "x": 16,
+      "y": 28
+    },
+    {
+      "x": 18,
+      "y": 28
+    },
+    {
+      "x": 19,
+      "y": 28
+    },
+    {
+      "x": 17,
+      "y": 29
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "doors": [
+    {
+      "id": "door_4_22",
+      "position": {
+        "x": 4,
+        "y": 22
+      }
+    },
+    {
+      "id": "door_26_22",
+      "position": {
+        "x": 26,
+        "y": 22
+      }
+    }
+  ],
+  "notes": [
+    "uncertain: map2_22_1.png Barbarian x11, Dark Mage x13, Mage Dragon x3 in c0504d now detected; red entrance box skipped; doors at 4,22 and 26,22 corrected",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "uncertain: map2_22_1.png Barbarian x11, Dark Mage x13, Mage Dragon x3 in c0504d now detected; red entrance box skipped; doors at 4,22 and 26,22 corrected",
+    "Chest at (2,22) (reward: Pure Water) omitted because map tile is 'wall', not 'chest'.",
+    "Chest at (24,22) (reward: Door Key) omitted because map tile is 'wall', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_2_22",
+      "position": {
+        "x": 2,
+        "y": 22
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "pure_water"
+      }
+    },
+    {
+      "id": "chest_24_22",
+      "position": {
+        "x": 24,
+        "y": 22
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "door_key"
+      }
+    }
+  ]
+}

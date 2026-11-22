@@ -50,5 +50,325 @@
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr",
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr",
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 16,
+    "title": "Book 2 Chapter 16: Regaining the Capital",
+    "atlasFile": "b2c16.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 24,8",
+    "goalTile": {
+      "x": 24,
+      "y": 8
+    },
+    "lose": "Marth dies",
+    "boss": "Willow (Bishop L10, Meteor, Recover)",
+    "unitCounts": {
+      "P": 12,
+      "N": 1,
+      "E": 30
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 17,
+            "y": 19
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 17,
+            "y": 18
+          },
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 16,
+            "y": 19
+          },
+          {
+            "x": 20,
+            "y": 19
+          },
+          {
+            "x": 22,
+            "y": 19
+          },
+          {
+            "x": 18,
+            "y": 20
+          },
+          {
+            "x": 17,
+            "y": 21
+          },
+          {
+            "x": 17,
+            "y": 22
+          },
+          {
+            "x": 18,
+            "y": 22
+          },
+          {
+            "x": 17,
+            "y": 23
+          },
+          {
+            "x": 18,
+            "y": 26
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "N",
+        "label": "Astram",
+        "positions": [
+          {
+            "x": 7,
+            "y": 14
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Cavalier",
+        "positions": [
+          {
+            "x": 6,
+            "y": 8
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 16,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 13
+          },
+          {
+            "x": 7,
+            "y": 26
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 8,
+            "y": 9
+          },
+          {
+            "x": 9,
+            "y": 10
+          },
+          {
+            "x": 7,
+            "y": 11
+          },
+          {
+            "x": 9,
+            "y": 11
+          },
+          {
+            "x": 6,
+            "y": 13
+          },
+          {
+            "x": 7,
+            "y": 13
+          },
+          {
+            "x": 8,
+            "y": 15
+          },
+          {
+            "x": 8,
+            "y": 16
+          },
+          {
+            "x": 7,
+            "y": 17
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 24,
+            "y": 9
+          },
+          {
+            "x": 23,
+            "y": 13
+          },
+          {
+            "x": 26,
+            "y": 10
+          },
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 24,
+            "y": 12
+          },
+          {
+            "x": 23,
+            "y": 14
+          },
+          {
+            "x": 24,
+            "y": 14
+          },
+          {
+            "x": 23,
+            "y": 11
+          },
+          {
+            "x": 22,
+            "y": 13
+          },
+          {
+            "x": 22,
+            "y": 15
+          },
+          {
+            "x": 25,
+            "y": 15
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 23,
+            "y": 8
+          },
+          {
+            "x": 25,
+            "y": 8
+          },
+          {
+            "x": 23,
+            "y": 9
+          },
+          {
+            "x": 25,
+            "y": 9
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Willow",
+        "positions": [
+          {
+            "x": 24,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "markers": [],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 24,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 24,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 7,
+            "y": 19
+          },
+          {
+            "x": 6,
+            "y": 20
+          },
+          {
+            "x": 8,
+            "y": 20
+          },
+          {
+            "x": 7,
+            "y": 21
+          },
+          {
+            "x": 9,
+            "y": 21
+          },
+          {
+            "x": 11,
+            "y": 21
+          },
+          {
+            "x": 6,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Astram Hero L5 Mercurius (talk with Jeorge)"
+    ],
+    "chests": [],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "_ floor | d door"
+  }
 }

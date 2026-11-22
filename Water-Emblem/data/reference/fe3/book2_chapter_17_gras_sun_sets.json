@@ -63,5 +63,422 @@
     "~~~~~..._...........~~~~~~~~~~",
     "~~~~~~~~~rrrbrrrrr~~~~~~~~~~~~",
     "~~~~~~~~~......F..~~~~~~~~~~~~"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 17,
+    "title": "Book 2 Chapter 17: Gra's Sun Sets",
+    "atlasFile": "b2c17.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 2,17",
+    "goalTile": {
+      "x": 2,
+      "y": 17
+    },
+    "lose": "Marth dies",
+    "boss": "Sheena (General L1, Silver Lance, Energy Drop)",
+    "unitCounts": {
+      "P": 15,
+      "N": 1,
+      "E": 21
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 19,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 18,
+            "y": 0
+          },
+          {
+            "x": 19,
+            "y": 0
+          },
+          {
+            "x": 17,
+            "y": 1
+          },
+          {
+            "x": 20,
+            "y": 1
+          },
+          {
+            "x": 13,
+            "y": 2
+          },
+          {
+            "x": 15,
+            "y": 2
+          },
+          {
+            "x": 16,
+            "y": 2
+          },
+          {
+            "x": 17,
+            "y": 2
+          },
+          {
+            "x": 18,
+            "y": 2
+          },
+          {
+            "x": 19,
+            "y": 2
+          },
+          {
+            "x": 20,
+            "y": 2
+          },
+          {
+            "x": 17,
+            "y": 3
+          },
+          {
+            "x": 18,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 3
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "N",
+        "label": "Samson",
+        "positions": [
+          {
+            "x": 3,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 4,
+            "y": 14
+          },
+          {
+            "x": 23,
+            "y": 18
+          },
+          {
+            "x": 3,
+            "y": 20
+          },
+          {
+            "x": 23,
+            "y": 21
+          },
+          {
+            "x": 9,
+            "y": 23
+          }
+        ],
+        "declaredCount": 5
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 18,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 13
+          },
+          {
+            "x": 8,
+            "y": 14
+          },
+          {
+            "x": 22,
+            "y": 14
+          },
+          {
+            "x": 9,
+            "y": 18
+          },
+          {
+            "x": 9,
+            "y": 22
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 19,
+            "y": 18
+          },
+          {
+            "x": 8,
+            "y": 27
+          },
+          {
+            "x": 10,
+            "y": 27
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 26,
+            "y": 29
+          },
+          {
+            "x": 27,
+            "y": 29
+          },
+          {
+            "x": 28,
+            "y": 29
+          }
+        ],
+        "declaredCount": 6
+      },
+      {
+        "side": "E*",
+        "label": "Sheena",
+        "positions": [
+          {
+            "x": 2,
+            "y": 17
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest",
+        "positions": [
+          {
+            "x": 15,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "drawbridge",
+        "positions": [
+          {
+            "x": 16,
+            "y": 5
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 6,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 8,
+            "y": 20
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 8,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 2,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 19,
+            "y": 4
+          },
+          {
+            "x": 20,
+            "y": 4
+          },
+          {
+            "x": 21,
+            "y": 4
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 15,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "V": {
+        "name": "village",
+        "positions": [
+          {
+            "x": 4,
+            "y": 1
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 4
+          },
+          {
+            "x": 16,
+            "y": 5
+          },
+          {
+            "x": 12,
+            "y": 28
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 15,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 1,
+            "y": 17
+          },
+          {
+            "x": 3,
+            "y": 17
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Sheena General L1 Silver Lance, Energy Drop (talk with Marth if no Gra soldiers harmed)",
+      "Samson Hero L5 Silver Axe (talk with Sheena)"
+    ],
+    "chests": [
+      "15,24 Elysian Whip"
+    ],
+    "villages": [
+      "4,1 Seraph Robe"
+    ],
+    "shops": [],
+    "uncertain": [
+      "marker at 16,5 is an X on bridge b (drawbridge), not a village (village is at 4,1 V); Dracoknight x6 and Archer x5 in e26b0a now detected; red boundary line in map2_17.png skipped",
+      "Thief x6 at 0,1 0,2 0,3 26,29 27,29 28,29 stand on sea tiles at the map edge; probably reinforcement entry points, not confirmed by the legend"
+    ],
+    "codesLine": "_ floor | p pillar | d door"
+  }
 }

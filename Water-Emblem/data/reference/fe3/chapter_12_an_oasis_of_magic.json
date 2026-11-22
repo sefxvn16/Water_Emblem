@@ -58,5 +58,447 @@
     ".................rrrrrrrrrrrrr",
     "................rrrrrrrrrrrrrr",
     "...............rrrrrrrrrrrrrrr"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 12,
+    "title": "Chapter 12: An Oasis of Magic",
+    "atlasFile": "b1c12.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 3,3",
+    "goalTile": {
+      "x": 3,
+      "y": 3
+    },
+    "lose": "Marth dies",
+    "boss": "Gharnef (Bishop L10, Imhullu, Falchion)",
+    "unitCounts": {
+      "P": 15,
+      "N": 0,
+      "E": 17
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 9,
+            "y": 26
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 8,
+            "y": 25
+          },
+          {
+            "x": 3,
+            "y": 26
+          },
+          {
+            "x": 5,
+            "y": 26
+          },
+          {
+            "x": 7,
+            "y": 26
+          },
+          {
+            "x": 10,
+            "y": 26
+          },
+          {
+            "x": 4,
+            "y": 27
+          },
+          {
+            "x": 6,
+            "y": 27
+          },
+          {
+            "x": 7,
+            "y": 27
+          },
+          {
+            "x": 8,
+            "y": 27
+          },
+          {
+            "x": 11,
+            "y": 27
+          },
+          {
+            "x": 3,
+            "y": 28
+          },
+          {
+            "x": 5,
+            "y": 28
+          },
+          {
+            "x": 9,
+            "y": 28
+          },
+          {
+            "x": 11,
+            "y": 28
+          }
+        ],
+        "declaredCount": 14
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 3,
+            "y": 0
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 11
+          },
+          {
+            "x": 0,
+            "y": 12
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Dracoknight",
+        "positions": [
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 19,
+            "y": 5
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 1,
+            "y": 9
+          },
+          {
+            "x": 2,
+            "y": 9
+          },
+          {
+            "x": 27,
+            "y": 11
+          },
+          {
+            "x": 28,
+            "y": 11
+          },
+          {
+            "x": 23,
+            "y": 20
+          },
+          {
+            "x": 9,
+            "y": 22
+          },
+          {
+            "x": 10,
+            "y": 22
+          }
+        ],
+        "declaredCount": 7
+      },
+      {
+        "side": "E",
+        "label": "Pegasus Knight",
+        "positions": [
+          {
+            "x": 20,
+            "y": 5
+          },
+          {
+            "x": 23,
+            "y": 6
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 26,
+            "y": 10
+          }
+        ]
+      },
+      {
+        "side": "E*",
+        "label": "Gharnef",
+        "positions": [
+          {
+            "x": 27,
+            "y": 23
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "armory",
+        "positions": [
+          {
+            "x": 9,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 26,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 28,
+            "y": 24
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Mage",
+        "positions": [
+          {
+            "x": 27,
+            "y": 25
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "vendor",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 3,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "H": {
+        "name": "house",
+        "positions": [
+          {
+            "x": 7,
+            "y": 13
+          },
+          {
+            "x": 16,
+            "y": 19
+          }
+        ],
+        "summarized": false
+      },
+      "S": {
+        "name": "shop",
+        "positions": [
+          {
+            "x": 7,
+            "y": 0
+          },
+          {
+            "x": 8,
+            "y": 0
+          },
+          {
+            "x": 9,
+            "y": 0
+          }
+        ],
+        "summarized": false
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 23,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 12
+          },
+          {
+            "x": 11,
+            "y": 23
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 25,
+            "y": 24
+          },
+          {
+            "x": 29,
+            "y": 24
+          },
+          {
+            "x": 25,
+            "y": 25
+          },
+          {
+            "x": 29,
+            "y": 25
+          },
+          {
+            "x": 25,
+            "y": 26
+          },
+          {
+            "x": 26,
+            "y": 26
+          },
+          {
+            "x": 27,
+            "y": 26
+          },
+          {
+            "x": 28,
+            "y": 26
+          },
+          {
+            "x": 29,
+            "y": 26
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 18,
+            "y": 21
+          },
+          {
+            "x": 27,
+            "y": 22
+          },
+          {
+            "x": 27,
+            "y": 23
+          },
+          {
+            "x": 10,
+            "y": 24
+          }
+        ],
+        "summarized": false
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 28,
+            "y": 24
+          },
+          {
+            "x": 26,
+            "y": 25
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "1 26,25 Talisman",
+      "2 28,24 Secret Book"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "D desert"
+  }
 }

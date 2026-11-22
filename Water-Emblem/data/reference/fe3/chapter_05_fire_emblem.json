@@ -41,5 +41,377 @@
     "______________W_______________",
     "WWWWWWWWWWWWWWW_______________",
     "WWWWWWWWWWWWWWW_______________"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 5,
+    "title": "Chapter 5: Fire Emblem",
+    "atlasFile": "b1c05.md",
+    "size": {
+      "width": 30,
+      "height": 21
+    },
+    "goal": "Seize throne 11,11",
+    "goalTile": {
+      "x": 11,
+      "y": 11
+    },
+    "lose": "Marth dies",
+    "boss": "Emereus (General L3, Steel Lance)",
+    "unitCounts": {
+      "P": 12,
+      "N": 2,
+      "E": 19
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 21,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 20,
+            "y": 11
+          },
+          {
+            "x": 19,
+            "y": 12
+          },
+          {
+            "x": 20,
+            "y": 12
+          },
+          {
+            "x": 20,
+            "y": 13
+          },
+          {
+            "x": 21,
+            "y": 13
+          },
+          {
+            "x": 22,
+            "y": 13
+          },
+          {
+            "x": 24,
+            "y": 13
+          },
+          {
+            "x": 25,
+            "y": 13
+          },
+          {
+            "x": 26,
+            "y": 13
+          },
+          {
+            "x": 23,
+            "y": 14
+          },
+          {
+            "x": 22,
+            "y": 15
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "N",
+        "label": "Rickard",
+        "positions": [
+          {
+            "x": 24,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "side": "N",
+        "label": "Wendell",
+        "positions": [
+          {
+            "x": 27,
+            "y": 9
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Archer",
+        "positions": [
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 13,
+            "y": 5
+          },
+          {
+            "x": 10,
+            "y": 14
+          },
+          {
+            "x": 12,
+            "y": 14
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 12
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 17
+          },
+          {
+            "x": 8,
+            "y": 18
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 13
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Soldier",
+        "positions": [
+          {
+            "x": 23,
+            "y": 1
+          },
+          {
+            "x": 26,
+            "y": 2
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 25,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 17
+          },
+          {
+            "x": 10,
+            "y": 17
+          },
+          {
+            "x": 13,
+            "y": 17
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Emereus",
+        "positions": [
+          {
+            "x": 11,
+            "y": 11
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "chest 1",
+        "positions": [
+          {
+            "x": 20,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 2",
+        "positions": [
+          {
+            "x": 9,
+            "y": 7
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 3",
+        "positions": [
+          {
+            "x": 7,
+            "y": 3
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 4",
+        "positions": [
+          {
+            "x": 16,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "chest 5",
+        "positions": [
+          {
+            "x": 3,
+            "y": 11
+          }
+        ]
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 24,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 11,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 16,
+            "y": 0
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
+            "x": 20,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      },
+      "p": {
+        "name": "pillar",
+        "positions": [
+          {
+            "x": 10,
+            "y": 11
+          },
+          {
+            "x": 12,
+            "y": 11
+          },
+          {
+            "x": 18,
+            "y": 11
+          },
+          {
+            "x": 19,
+            "y": 11
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [
+      "Wendell Curate L1 Thunder (talk with Marth or Merric)",
+      "Rickard Thief L1 Iron Sword (talk with Marth or Julian)"
+    ],
+    "chests": [
+      "1 20,7 5000G",
+      "2 9,7 Physic",
+      "3 7,3 Armorslayer",
+      "4 16,0 Killing Edge",
+      "5 3,11 Seraph Robe"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "_ floor | p pillar | d door"
+  }
 }

@@ -1,0 +1,358 @@
+{
+  "id": "chapter_19",
+  "name": "Chapter 19: The Dragonkin Realm",
+  "mapId": "chapter_19_the_dragonkin_realm",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 2,
+      "y": 13
+    },
+    "description": "Seize gate 2,13"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 29,
+        "y": 27
+      },
+      "name": "Marth",
+      "weaponId": "rapier"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 23,
+        "y": 12
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 15
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_3",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 17
+      },
+      "name": "Curate 3",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_4",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 18
+      },
+      "name": "Curate 4",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_5",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 24,
+        "y": 20
+      },
+      "name": "Curate 5",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_1",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 6
+      },
+      "name": "Fire Dragon 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_2",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 1,
+        "y": 13
+      },
+      "name": "Fire Dragon 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_3",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 3,
+        "y": 13
+      },
+      "name": "Fire Dragon 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_4",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 10,
+        "y": 13
+      },
+      "name": "Fire Dragon 4",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_5",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 14
+      },
+      "name": "Fire Dragon 5",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_6",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 14
+      },
+      "name": "Fire Dragon 6",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "fire_dragon_7",
+      "characterId": "enemy_fire_dragon",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 23
+      },
+      "name": "Fire Dragon 7",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "hero_1",
+      "characterId": "enemy_hero",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 22
+      },
+      "name": "Hero 1",
+      "weaponId": "iron_sword",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "manakete_1",
+      "characterId": "enemy_manakete",
+      "faction": "enemy",
+      "position": {
+        "x": 25,
+        "y": 4
+      },
+      "name": "Manakete 1",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "manakete_2",
+      "characterId": "enemy_manakete",
+      "faction": "enemy",
+      "position": {
+        "x": 6,
+        "y": 12
+      },
+      "name": "Manakete 2",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "manakete_3",
+      "characterId": "enemy_manakete",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 15
+      },
+      "name": "Manakete 3",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "manakete_4",
+      "characterId": "enemy_manakete",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 24
+      },
+      "name": "Manakete 4",
+      "weaponId": "fire_breath",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_1",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 12,
+        "y": 12
+      },
+      "name": "Sniper 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_2",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 13,
+        "y": 12
+      },
+      "name": "Sniper 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "sniper_3",
+      "characterId": "enemy_sniper",
+      "faction": "enemy",
+      "position": {
+        "x": 26,
+        "y": 20
+      },
+      "name": "Sniper 3",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "xemcel",
+      "characterId": "xemcel",
+      "faction": "enemy",
+      "position": {
+        "x": 2,
+        "y": 13
+      },
+      "name": "Xemcel",
+      "weaponId": "fire",
+      "level": 1,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 29,
+      "y": 27
+    },
+    {
+      "x": 27,
+      "y": 27
+    },
+    {
+      "x": 29,
+      "y": 24
+    },
+    {
+      "x": 29,
+      "y": 23
+    },
+    {
+      "x": 28,
+      "y": 24
+    },
+    {
+      "x": 25,
+      "y": 27
+    },
+    {
+      "x": 29,
+      "y": 22
+    },
+    {
+      "x": 28,
+      "y": 23
+    },
+    {
+      "x": 27,
+      "y": 24
+    },
+    {
+      "x": 26,
+      "y": 25
+    },
+    {
+      "x": 25,
+      "y": 26
+    },
+    {
+      "x": 24,
+      "y": 27
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "uncertain: player deployment positions are not marked on source map diagram map1_19.png",
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data.",
+    "Atlas không có dòng `P` cho chương này nên không có ô triển khai thật của FE3. Ô triển khai và vị trí Marth do dự án đặt bằng quy tắc tất định (ô đi được xa mục tiêu nhất rồi lan ra 12 ô quanh đó) chỉ để chơi thử — chưa xác nhận nguồn FE3."
+  ],
+  "uncertain": [
+    "uncertain: player deployment positions are not marked on source map diagram map1_19.png",
+    "Boss Xemcel weapon 'Mage Dragonstone' not in items.json; substituted with 'fire'.",
+    "Atlas has no P units or Marth listed for this chapter. Kept lordUnitId as 'marth'.",
+    "Chest at (14,20) (reward: Fire Dragonstone) omitted because map tile is 'castle', not 'chest'."
+  ],
+  "chests": [
+    {
+      "id": "chest_14_20",
+      "position": {
+        "x": 14,
+        "y": 20
+      },
+      "reward": {
+        "type": "item",
+        "itemId": "firestone"
+      }
+    }
+  ]
+}

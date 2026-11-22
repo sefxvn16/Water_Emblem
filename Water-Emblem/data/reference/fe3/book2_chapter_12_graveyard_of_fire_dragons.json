@@ -52,5 +52,434 @@
     "MMMMMMMMMMllWGGGGGGGGGWWTTTlll",
     "MMMMMMMMMlllWGGGGGGGGGGWGGGWWW",
     "MMMMMMMMllllWGGGGGGGGGGGGGGGGG"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 2,
+    "chapter": 12,
+    "title": "Book 2 Chapter 12: Graveyard of Fire Dragons",
+    "atlasFile": "b2c12.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize gate 1,2",
+    "goalTile": {
+      "x": 1,
+      "y": 2
+    },
+    "lose": "Marth dies",
+    "boss": "—",
+    "unitCounts": {
+      "P": 12,
+      "N": 0,
+      "E": 16
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 16,
+            "y": 27
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 18,
+            "y": 25
+          },
+          {
+            "x": 19,
+            "y": 25
+          },
+          {
+            "x": 18,
+            "y": 26
+          },
+          {
+            "x": 19,
+            "y": 26
+          },
+          {
+            "x": 20,
+            "y": 26
+          },
+          {
+            "x": 18,
+            "y": 27
+          },
+          {
+            "x": 15,
+            "y": 28
+          },
+          {
+            "x": 18,
+            "y": 28
+          },
+          {
+            "x": 20,
+            "y": 28
+          },
+          {
+            "x": 15,
+            "y": 29
+          },
+          {
+            "x": 16,
+            "y": 29
+          }
+        ],
+        "declaredCount": 11
+      },
+      {
+        "side": "E",
+        "label": "Barbarian",
+        "positions": [
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 8
+          },
+          {
+            "x": 14,
+            "y": 14
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Fire Dragon",
+        "positions": [
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 21,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 10
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 25,
+            "y": 3
+          }
+        ],
+        "declaredCount": 9
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 24,
+            "y": 27
+          },
+          {
+            "x": 26,
+            "y": 27
+          },
+          {
+            "x": 25,
+            "y": 27
+          }
+        ],
+        "declaredCount": 3
+      }
+    ],
+    "markers": [],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 0,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 2
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [],
+        "summarized": true
+      },
+      "T": {
+        "name": "fort",
+        "positions": [
+          {
+            "x": 0,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 13,
+            "y": 3
+          },
+          {
+            "x": 14,
+            "y": 3
+          },
+          {
+            "x": 15,
+            "y": 3
+          },
+          {
+            "x": 0,
+            "y": 4
+          },
+          {
+            "x": 11,
+            "y": 4
+          },
+          {
+            "x": 13,
+            "y": 19
+          },
+          {
+            "x": 14,
+            "y": 19
+          },
+          {
+            "x": 15,
+            "y": 19
+          },
+          {
+            "x": 24,
+            "y": 27
+          },
+          {
+            "x": 25,
+            "y": 27
+          },
+          {
+            "x": 26,
+            "y": 27
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [
+          {
+            "x": 0,
+            "y": 0
+          },
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 25,
+            "y": 4
+          },
+          {
+            "x": 0,
+            "y": 5
+          },
+          {
+            "x": 11,
+            "y": 5
+          },
+          {
+            "x": 25,
+            "y": 5
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 11,
+            "y": 8
+          },
+          {
+            "x": 16,
+            "y": 23
+          },
+          {
+            "x": 17,
+            "y": 23
+          },
+          {
+            "x": 18,
+            "y": 23
+          },
+          {
+            "x": 19,
+            "y": 23
+          },
+          {
+            "x": 20,
+            "y": 23
+          },
+          {
+            "x": 21,
+            "y": 23
+          },
+          {
+            "x": 22,
+            "y": 23
+          },
+          {
+            "x": 16,
+            "y": 24
+          },
+          {
+            "x": 22,
+            "y": 24
+          },
+          {
+            "x": 16,
+            "y": 25
+          },
+          {
+            "x": 22,
+            "y": 25
+          },
+          {
+            "x": 12,
+            "y": 26
+          },
+          {
+            "x": 16,
+            "y": 26
+          },
+          {
+            "x": 22,
+            "y": 26
+          },
+          {
+            "x": 12,
+            "y": 27
+          },
+          {
+            "x": 22,
+            "y": 27
+          },
+          {
+            "x": 23,
+            "y": 27
+          },
+          {
+            "x": 12,
+            "y": 28
+          },
+          {
+            "x": 23,
+            "y": 28
+          },
+          {
+            "x": 27,
+            "y": 28
+          },
+          {
+            "x": 28,
+            "y": 28
+          },
+          {
+            "x": 29,
+            "y": 28
+          },
+          {
+            "x": 12,
+            "y": 29
+          }
+        ],
+        "summarized": false
+      },
+      "b": {
+        "name": "bridge",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 25,
+            "y": 3
+          }
+        ],
+        "summarized": false
+      },
+      "l": {
+        "name": "lava",
+        "positions": [],
+        "summarized": true
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "25,27 Pisces (held by Thief)"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": "l lava"
+  }
 }

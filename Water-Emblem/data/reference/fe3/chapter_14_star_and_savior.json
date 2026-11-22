@@ -50,5 +50,334 @@
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr",
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr",
     "rrrrrrrrrrrrrrrrr__rrrrrrrrrrr"
-  ]
+  ],
+  "atlasUnits": {
+    "_doc": "Trích độc lập từ atlas FE3 bằng trình đọc riêng của Lead (không dùng script sinh dữ liệu chương), dùng làm kỳ vọng cho test chương. Không chép từ data/chapters. Xem PLAN mục 203.",
+    "book": 1,
+    "chapter": 14,
+    "title": "Chapter 14: Star and Savior",
+    "atlasFile": "b1c14.md",
+    "size": {
+      "width": 30,
+      "height": 30
+    },
+    "goal": "Seize throne 24,8",
+    "goalTile": {
+      "x": 24,
+      "y": 8
+    },
+    "lose": "Marth dies",
+    "boss": "Morzas (Manakete L1, Mage Dragonstone)",
+    "unitCounts": {
+      "P": 14,
+      "N": 0,
+      "E": 19
+    },
+    "units": [
+      {
+        "side": "P",
+        "label": "Marth",
+        "positions": [
+          {
+            "x": 12,
+            "y": 17
+          }
+        ]
+      },
+      {
+        "side": "P",
+        "label": "unit",
+        "positions": [
+          {
+            "x": 13,
+            "y": 17
+          },
+          {
+            "x": 15,
+            "y": 17
+          },
+          {
+            "x": 14,
+            "y": 18
+          },
+          {
+            "x": 16,
+            "y": 18
+          },
+          {
+            "x": 17,
+            "y": 18
+          },
+          {
+            "x": 20,
+            "y": 18
+          },
+          {
+            "x": 22,
+            "y": 18
+          },
+          {
+            "x": 17,
+            "y": 19
+          },
+          {
+            "x": 19,
+            "y": 19
+          },
+          {
+            "x": 20,
+            "y": 19
+          },
+          {
+            "x": 21,
+            "y": 19
+          },
+          {
+            "x": 23,
+            "y": 19
+          },
+          {
+            "x": 22,
+            "y": 20
+          }
+        ],
+        "declaredCount": 13
+      },
+      {
+        "side": "E",
+        "label": "Curate",
+        "positions": [
+          {
+            "x": 25,
+            "y": 8
+          },
+          {
+            "x": 28,
+            "y": 15
+          },
+          {
+            "x": 29,
+            "y": 15
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Fire Dragon",
+        "positions": [
+          {
+            "x": 7,
+            "y": 4
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Hero",
+        "positions": [
+          {
+            "x": 7,
+            "y": 15
+          }
+        ]
+      },
+      {
+        "side": "E",
+        "label": "Knight",
+        "positions": [
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 23,
+            "y": 10
+          },
+          {
+            "x": 23,
+            "y": 11
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E",
+        "label": "Mage",
+        "positions": [
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 10,
+            "y": 18
+          },
+          {
+            "x": 12,
+            "y": 21
+          }
+        ],
+        "declaredCount": 3
+      },
+      {
+        "side": "E",
+        "label": "Sniper",
+        "positions": [
+          {
+            "x": 27,
+            "y": 13
+          },
+          {
+            "x": 7,
+            "y": 18
+          }
+        ],
+        "declaredCount": 2
+      },
+      {
+        "side": "E",
+        "label": "Thief",
+        "positions": [
+          {
+            "x": 9,
+            "y": 19
+          },
+          {
+            "x": 10,
+            "y": 19
+          },
+          {
+            "x": 10,
+            "y": 20
+          },
+          {
+            "x": 11,
+            "y": 20
+          }
+        ],
+        "declaredCount": 4
+      },
+      {
+        "side": "E*",
+        "label": "Morzas",
+        "positions": [
+          {
+            "x": 24,
+            "y": 8
+          }
+        ]
+      }
+    ],
+    "markers": [
+      {
+        "side": "X",
+        "label": "reinforcement Archer",
+        "positions": [
+          {
+            "x": 29,
+            "y": 13
+          }
+        ]
+      },
+      {
+        "side": "X",
+        "label": "reinforcement Knight",
+        "positions": [
+          {
+            "x": 29,
+            "y": 11
+          },
+          {
+            "x": 29,
+            "y": 12
+          }
+        ],
+        "declaredCount": 2
+      }
+    ],
+    "structures": {
+      "C": {
+        "name": "castle",
+        "positions": [
+          {
+            "x": 24,
+            "y": 3
+          },
+          {
+            "x": 24,
+            "y": 16
+          }
+        ],
+        "summarized": false
+      },
+      "G": {
+        "name": "gate",
+        "positions": [
+          {
+            "x": 24,
+            "y": 8
+          }
+        ],
+        "summarized": false
+      },
+      "W": {
+        "name": "wall",
+        "positions": [],
+        "summarized": true
+      },
+      "d": {
+        "name": "door",
+        "positions": [
+          {
+            "x": 7,
+            "y": 19
+          },
+          {
+            "x": 6,
+            "y": 20
+          },
+          {
+            "x": 8,
+            "y": 20
+          },
+          {
+            "x": 7,
+            "y": 21
+          },
+          {
+            "x": 9,
+            "y": 21
+          },
+          {
+            "x": 11,
+            "y": 21
+          },
+          {
+            "x": 6,
+            "y": 22
+          }
+        ],
+        "summarized": false
+      }
+    },
+    "recruits": [],
+    "chests": [
+      "6,21 Wyrmslayer",
+      "7,20 Orion's Bolt",
+      "7,21 7500G",
+      "8,20 Secret Book",
+      "10,21 Devil Sword",
+      "11,21 Knight Crest",
+      "6,22 Warp"
+    ],
+    "villages": [],
+    "shops": [],
+    "uncertain": [],
+    "codesLine": null
+  }
 }

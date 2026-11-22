@@ -1,0 +1,329 @@
+{
+  "id": "chapter_17",
+  "name": "Chapter 17: A Knight-Filled Sky",
+  "mapId": "chapter_17_a_knight_filled_sky",
+  "lordUnitId": "marth",
+  "objective": {
+    "type": "seize",
+    "seizeTargetTile": {
+      "x": 20,
+      "y": 16
+    },
+    "description": "Seize gate 20,16"
+  },
+  "units": [
+    {
+      "id": "marth",
+      "characterId": "marth",
+      "faction": "player",
+      "position": {
+        "x": 17,
+        "y": 24
+      },
+      "name": "Marth",
+      "weaponId": "rapier",
+      "level": 1
+    },
+    {
+      "id": "cavalier_1",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 11
+      },
+      "name": "Cavalier 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_2",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 14,
+        "y": 12
+      },
+      "name": "Cavalier 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_3",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 12
+      },
+      "name": "Cavalier 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "cavalier_4",
+      "characterId": "enemy_cavalier",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 13
+      },
+      "name": "Cavalier 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_1",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 19,
+        "y": 18
+      },
+      "name": "Curate 1",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "curate_2",
+      "characterId": "enemy_curate",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 18
+      },
+      "name": "Curate 2",
+      "weaponId": "heal_staff",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_1",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 11
+      },
+      "name": "Dracoknight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_2",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 14
+      },
+      "name": "Dracoknight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_3",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 17,
+        "y": 15
+      },
+      "name": "Dracoknight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_4",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 18,
+        "y": 16
+      },
+      "name": "Dracoknight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "dracoknight_5",
+      "characterId": "enemy_dracoknight",
+      "faction": "enemy",
+      "position": {
+        "x": 22,
+        "y": 16
+      },
+      "name": "Dracoknight 5",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_1",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 11
+      },
+      "name": "Horseman 1",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "horseman_2",
+      "characterId": "enemy_horseman",
+      "faction": "enemy",
+      "position": {
+        "x": 21,
+        "y": 12
+      },
+      "name": "Horseman 2",
+      "weaponId": "iron_bow",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_1",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 11
+      },
+      "name": "Pegasus Knight 1",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_2",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 12
+      },
+      "name": "Pegasus Knight 2",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_3",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "name": "Pegasus Knight 3",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "pegasus_knight_4",
+      "characterId": "enemy_pegasus_knight",
+      "faction": "enemy",
+      "position": {
+        "x": 16,
+        "y": 15
+      },
+      "name": "Pegasus Knight 4",
+      "weaponId": "iron_lance",
+      "aiRole": "pursue"
+    },
+    {
+      "id": "thief_1",
+      "characterId": "enemy_thief",
+      "faction": "enemy",
+      "position": {
+        "x": 4,
+        "y": 8
+      },
+      "name": "Thief 1",
+      "weaponId": "iron_sword",
+      "aiRole": "thief"
+    },
+    {
+      "id": "michalis",
+      "characterId": "michalis",
+      "faction": "enemy",
+      "position": {
+        "x": 20,
+        "y": 16
+      },
+      "name": "Michalis",
+      "weaponId": "silver_lance",
+      "level": 20,
+      "aiRole": "stationary"
+    }
+  ],
+  "deploymentSlots": [
+    {
+      "x": 17,
+      "y": 24
+    },
+    {
+      "x": 23,
+      "y": 23
+    },
+    {
+      "x": 22,
+      "y": 24
+    },
+    {
+      "x": 23,
+      "y": 24
+    },
+    {
+      "x": 16,
+      "y": 25
+    },
+    {
+      "x": 18,
+      "y": 25
+    },
+    {
+      "x": 20,
+      "y": 25
+    },
+    {
+      "x": 21,
+      "y": 25
+    },
+    {
+      "x": 23,
+      "y": 25
+    },
+    {
+      "x": 16,
+      "y": 26
+    },
+    {
+      "x": 17,
+      "y": 26
+    },
+    {
+      "x": 19,
+      "y": 26
+    },
+    {
+      "x": 20,
+      "y": 26
+    },
+    {
+      "x": 22,
+      "y": 26
+    },
+    {
+      "x": 23,
+      "y": 26
+    }
+  ],
+  "carryoverUnitIds": [
+    "marth"
+  ],
+  "notes": [
+    "Generic unit levels and weapons are project conventions, not FE3 data.",
+    "Unit AI roles are project conventions, not FE3 data."
+  ],
+  "uncertain": [
+    "Village at (22,2) (reward: Starlight (requires Starsphere and Lightsphere)) omitted because map tile is 'plains', not 'village'."
+  ]
+}

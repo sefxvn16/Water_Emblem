@@ -679,7 +679,7 @@
     [
       "wall",
       "wall",
-      "castle",
+      "chest",
       "floor",
       "floor",
       "floor",
@@ -703,7 +703,7 @@
       "floor",
       "floor",
       "floor",
-      "castle",
+      "chest",
       "wall",
       "wall",
       "wall"
