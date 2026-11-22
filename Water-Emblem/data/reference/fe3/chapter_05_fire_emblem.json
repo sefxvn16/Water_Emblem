@@ -1,0 +1,45 @@
+{
+  "mapId": "chapter_05_fire_emblem",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 5,
+  "width": 30,
+  "height": 21,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c05.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": []
+  },
+  "legend": {
+    "_": "floor",
+    "W": "wall",
+    "d": "door",
+    "p": "pillar",
+    "G": "gate",
+    "C": "castle"
+  },
+  "rows": [
+    "_WWWW___W_______dWWWWWWWWWWWW_",
+    "_W_______________W__________WW",
+    "_W___WWWW____WWW_W__________WW",
+    "_W___W_dW____WWW_W____________",
+    "_W______W____WW_______________",
+    "WW______W_____W_____________WW",
+    "________WWW_WWWWWWWWWWWWWWWWWW",
+    "_________d__________dW________",
+    "_____________________W________",
+    "__W_W__WWWWWWWW______W________",
+    "__W_W__WWWWWWWWW_____W________",
+    "__WdW__WW_pGp_WW__pp_WWWCWWWWW",
+    "__W_W__WW_____WW____________WW",
+    "__W_W__WW_____WW____________W_",
+    "_______WW_____WW____________W_",
+    "_______WW_____WWWWWWW__WWWWWW_",
+    "___W___WW_____WWWWWWW__WWWWWW_",
+    "______________W_____W__W______",
+    "______________W_______________",
+    "WWWWWWWWWWWWWWW_______________",
+    "WWWWWWWWWWWWWWW_______________"
+  ]
+}

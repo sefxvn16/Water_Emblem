@@ -1,0 +1,63 @@
+{
+  "mapId": "chapter_16_camus_the_sable",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 16,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c16.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_16.png"
+    ]
+  },
+  "legend": {
+    ".": "plains",
+    "~": "sea",
+    "m": "mountain",
+    "F": "forest",
+    "W": "wall",
+    "S": "shop",
+    "C": "castle",
+    "G": "gate",
+    "T": "fort",
+    "r": "river",
+    "b": "bridge",
+    "=": "road",
+    "V": "village"
+  },
+  "rows": [
+    "...~~~~mmFFF.FF.FFFF.~~~~~~~~~",
+    "..~~~~~mWWW.F..FF.F.F~~~~..~~~",
+    ".~~~~mmmWWWF..FFFF.F..~~.SS~~.",
+    "~~~~mmmFCGC..FF..FTF....SS~~..",
+    "~~~mmmFF..FFFmmmmmmF......r...",
+    "~~mmmmF.FFF.mmmmmrrmFF....r...",
+    ".~~mmmFFFFFmmmmmmrrmF.....r...",
+    ".~~mmFFFFFmmmmmmmmrmmF...r....",
+    "..~~mmFFFmmmTTTTmmrm.....r....",
+    "..bbbTFmmmmm....mmrm..b..r....",
+    "...rmmmmmmm......m.rrrbrrr....",
+    "==.rmmmmmm............b.......",
+    "T=.rmmmmmmrr.........F........",
+    "==~.mmmmm.rr.........FF.......",
+    "bbbb.F.F.......F....FFF.......",
+    "~~..F..FFF...F.FFFFFFF........",
+    "~........F..W.................",
+    "~....T.FF...V.................",
+    "~.................FF........~~",
+    "~................FF........~~~",
+    "~...................==....~~~~",
+    "~...................=T=..~~~~~",
+    "~...................===.~~~~~~",
+    "~......................~~~~~~~",
+    "~...=======...........~~~~~~~~",
+    "~~.=T=T=T=T~~........~~~~~~~~~",
+    "~~~===.===~~~~...~~.~~~~~~~~~~",
+    "~~~~.....~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+    "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  ]
+}

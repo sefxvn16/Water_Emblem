@@ -49,4 +49,35 @@ describe('game maps match FE3 reference grids', () => {
     }
     expect(diffs.slice(0, 10), `${diffs.length} differing cells`).toEqual([]);
   });
+
+  it('every converted chapter map matches its independent FE3 reference grid', () => {
+    expect(refFiles.length).toBe(44);
+    const terrainsJson = readJson<{ terrains: { id: string }[] }>(join(dataDir, 'terrains.json'));
+    const validTerrains = new Set(terrainsJson.terrains.map((t) => t.id));
+
+    for (const file of refFiles) {
+      const ref = readJson<ReferenceGrid>(join(refDir, file));
+      const map = readJson<GameMap>(join(dataDir, 'maps', `${ref.mapId}.json`));
+      expect([map.width, map.height]).toEqual([ref.width, ref.height]);
+      expect(map.grid.length).toBe(ref.height);
+      expect(ref.rows.length).toBe(ref.height);
+
+      for (let y = 0; y < ref.height; y++) {
+        expect(map.grid[y].length).toBe(ref.width);
+        expect(ref.rows[y].length).toBe(ref.width);
+        for (let x = 0; x < ref.width; x++) {
+          const terrain = map.grid[y][x];
+          expect(
+            validTerrains.has(terrain),
+            `Map ${ref.mapId} cell (${x},${y}) has invalid terrain '${terrain}'`
+          ).toBe(true);
+
+          const expected = ref.legend[ref.rows[y][x]];
+          if (terrain === 'chest' || terrain === 'door') continue;
+          expect(terrain).toBe(expected);
+        }
+      }
+    }
+  });
 });
+

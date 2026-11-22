@@ -1,0 +1,60 @@
+{
+  "mapId": "chapter_19_the_dragonkin_realm",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 19,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c19.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_19.png"
+    ]
+  },
+  "legend": {
+    "m": "mountain",
+    ".": "plains",
+    "H": "house",
+    "S": "shop",
+    "M": "peak",
+    "T": "fort",
+    "W": "wall",
+    "C": "castle",
+    "G": "gate",
+    "_": "floor"
+  },
+  "rows": [
+    "mmmmmmmm................mmmmmm",
+    "m...Hmm...................mmmm",
+    "m.SS............mmm.........mm",
+    "m.............mmmmmm.........m",
+    "mmmmmm....mmmmmmmmmmmm.m.....m",
+    "mm.......mmmmmmmmmmmmmmm......",
+    "mm.......mmmmmmmmmmmmmmmm...mm",
+    "mmmm....mmmmmmmMMmmmmmm......m",
+    "mmmmmmmmmmmmmMMMMMMmmmmm.....m",
+    "mmmmmmMMmMMMMmMMMMMmmmmm......",
+    "mMMMMMMmmmmmmmmMMMmmmmm..m...m",
+    "MT.T.Mmmm..mmmmmmmmmmmm...m...",
+    "MWWW.......mmmmmmmmmmm...m.m..",
+    "MCGC.Mmm...mm..mmmmmm....m..m.",
+    "MT.T.Mmm.....m..m..........m..",
+    "mMMMMmmm..........m.mm..m.mm..",
+    "mmmmmmm......m...m..m.m...m...",
+    "mmmmm......mmmmmmm.mm.m....m..",
+    "mm........mmmmmmmmm.mT.m.m....",
+    "mmm......mmmWWWWWmmmm.........",
+    "mmmm....mmmWW_C_WWmmmm........",
+    "mmmmm...mmWW__W__WWmmmmm......",
+    "mm......mmWWW___WWWmmmm...T...",
+    "mmm.....mmmWW___WWmmmm.....m..",
+    "mmmmmm...mmmWW_WWmmmmmm.m.m...",
+    "mmmmmmm.mTmmWW_WWmmmm.mm...mmm",
+    "mmmmmmmmm...mW_Wmmm..m.T..mmmm",
+    "mmmmmmmmmmmm....m..mm.....m.m.",
+    "m.mmmmmmmmmm.....m.m.....mmmmm",
+    "mmmmmmmmmmmmmm.mmmmmmm.mmmmmmm"
+  ]
+}

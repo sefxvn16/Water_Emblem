@@ -1,0 +1,53 @@
+{
+  "mapId": "chapter_20_chosen_by_fate",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 20,
+  "width": 28,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c20.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": []
+  },
+  "legend": {
+    "W": "wall",
+    "_": "floor",
+    "s": "plains",
+    "p": "pillar",
+    "G": "gate"
+  },
+  "rows": [
+    "WWW_WWWWWWWW___W___WWWWWW_WW",
+    "__________WW_______WW_______",
+    "___________W_______W________",
+    "________WWWWWWW_WWWWWWW_____",
+    "________WWWWWWW_WWWWWWW_____",
+    "________W_____________W_____",
+    "________W_____________W_____",
+    "WWW_WWWWW__WWWW_WWWW__W_____",
+    "WWW_WWWWW__Ws_W_W_sW__WWW_WW",
+    "________W__WW_W_W_WW__WWW_WW",
+    "________W__W__p_p__W__W_____",
+    "_______WW__W__p_p__W__W_____",
+    "________W__W_WWWWW_W__W_____",
+    "________W__W_WWWWW_W__W____W",
+    "________W__W_W_G_W_W__W_____",
+    "WWW_WWWWW__W_______W__WWW_WW",
+    "WWW_WWWWW__WWWWWWWWW__WWW_WW",
+    "___________WWWWWWWWW__W_____",
+    "___________WWWWWWWWW__W_____",
+    "________W_____________W_____",
+    "___WWWWWW___________________",
+    "___WWWWWW_WWWWWW_WWWWWWWWWWW",
+    "___W______WWWWWW_WWWWWWWWWWW",
+    "W_WWW_____W_______WW_____s__",
+    "W_WW______W_______W_____s_s_",
+    "___WWWWWWWW_______WW__WW____",
+    "___WWWWWWWW___W___WW__WW____",
+    "______________W________W____",
+    "WWWWWWWWWWWWWWWWWWWWWWWW____",
+    "WWWWWWWWWWWWWWWWWWWWWWWW____"
+  ]
+}

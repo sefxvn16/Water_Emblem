@@ -1,0 +1,61 @@
+{
+  "mapId": "book2_chapter_09_sanctuary_of_sorcery",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 9,
+  "width": 30,
+  "height": 26,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c09.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "marker at 5,16 is buried Silver Axe in desert D (Cm_fe03_b2_9.png), not a village; village is at 24,5 V"
+    ]
+  },
+  "legend": {
+    "D": "sand",
+    "S": "shop",
+    "=": "road",
+    ".": "plains",
+    "H": "house",
+    "W": "wall",
+    "C": "castle",
+    "G": "gate",
+    "F": "forest",
+    "r": "river",
+    "V": "village",
+    "T": "fort",
+    "b": "bridge",
+    "_": "floor",
+    "d": "door"
+  },
+  "rows": [
+    "DDDDDDDSSSDDDDDDDDDDDDDDDDDDDD",
+    "DDD=DDD=..H=DDDDDDDDDDDDDDD==D",
+    "DDWWWDDD==.===DDDDDDDDDDDD=..=",
+    "DDCGC.=DDD===========DDDF=...=",
+    "DD==.rr.=DDDDD====...===W..==D",
+    "DDD=rrrr.=DDDDD===......V.==DD",
+    "DDD=rrr...DDDDDD========DDD=DD",
+    "DDDDFFF===DDDDDDDDDDDDDDDDDFDD",
+    "D=DDDDDDDDDDDDDDDDDDDDDDDDD==D",
+    "DDD=DDDDDDDDDDDDDDDDDFDF=DDD=D",
+    "D=DD==DDDDDDDDDDDDDDDDDD=DDD=D",
+    "D.DDDDDDDDDDDDDDDDDDDDDDDDDD.=",
+    "=TDDDDDDDDDDDDDDDDDDDDDDDFDD=D",
+    "D====DD===DDDDDDDDDDDDDDDDD=DD",
+    "DDDD====..=DDDDDDDDDDDDDDDDDD=",
+    "DDDDDDD=..=DDDDDDDDDDDDDDDD===",
+    "DDDDDDDD==DDDDDDDDDDDDDD===F==",
+    "DDDDDDDDD.DDDDDDDDDDDDD=F....=",
+    "DDDDDDDDrrbrrrrrrrrDDD=.......",
+    "DDDDDDDDr.......H.rDD=........",
+    "DDDDDDDDr.........r.........F.",
+    "DDDDDDDDr.........b....F..F...",
+    "DDDDDDDDr.........r......rrbrr",
+    "rrrrDDDDr..T......r......rrbrr",
+    "...rrrrrrrbrrrrrrrrrrrrrrW__dW",
+    "..................rrrrrrrWd__W"
+  ]
+}

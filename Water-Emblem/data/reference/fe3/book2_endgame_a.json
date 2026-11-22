@@ -1,0 +1,55 @@
+{
+  "mapId": "book2_endgame_a",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 22,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c22a.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "map2_22_1.png Barbarian x11, Dark Mage x13, Mage Dragon x3 in c0504d now detected; red entrance box skipped; doors at 4,22 and 26,22 corrected"
+    ]
+  },
+  "legend": {
+    "_": "floor",
+    "W": "wall",
+    "G": "gate",
+    "C": "castle",
+    "d": "door"
+  },
+  "rows": [
+    "___W_W_________G_________W_W__",
+    "___W_W___________________W_W__",
+    "___W_W___________________W_W__",
+    "___W_WWCWWWWWWWWWWWWWWWCWW_W__",
+    "___W_______________________W__",
+    "___WWWWWWWWWWW___WWWWWWWWWWW__",
+    "___WWWWWWWWWWW___WWWWWWWWWWW__",
+    "___WWWWWWWWWWW___WWWWWWWWWWW__",
+    "_____________W___W____________",
+    "_____WWWWWWWWW___WWWWWWWWW____",
+    "_____WWWWWWWWWW_WWWWWWWWWW____",
+    "WWW__WWWWWWWWWW_WWWWWWWWWW__WW",
+    "WWW__WWWWWWWWWW_WWWWWWWWWW__WW",
+    "WWW__W___________________W__WW",
+    "WWW__WWWWWWWWW___WWWWWWWWW__WW",
+    "_____WWWWWWWWW___WWWWWWWWW____",
+    "_____WWWWWWWWW___WWWWWWWWW____",
+    "______________________________",
+    "______________________________",
+    "______________________________",
+    "WWWWWWWWWWWWWW___WWWWWWWWWWWWW",
+    "WWWW_WWWWWWWWW___WWWWWWWWW_WWW",
+    "WWWWdWWWWWWWWW___WWWWWWWWWdWWW",
+    "_____________W___W____________",
+    "WWWW_WWWWWWWWW___WWWWWWWWW_WWW",
+    "WWWW_WWWWWWWWW___WWWWWWWWW_WWW",
+    "WWWW_WWWWWWWWW___WWWWWWWWW_WWW",
+    "______________________________",
+    "______________________________",
+    "______________________________"
+  ]
+}

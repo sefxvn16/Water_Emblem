@@ -1,0 +1,52 @@
+{
+  "mapId": "book2_chapter_01_the_grustian_expedition",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 1,
+  "width": 20,
+  "height": 20,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c01.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": []
+  },
+  "legend": {
+    "F": "forest",
+    ".": "plains",
+    "M": "peak",
+    "r": "river",
+    "m": "mountain",
+    "W": "wall",
+    "C": "castle",
+    "G": "gate",
+    "=": "road",
+    "S": "shop",
+    "V": "village",
+    "H": "house",
+    "T": "fort",
+    "c": "cliff"
+  },
+  "rows": [
+    "FFFF...MMMMMMMMMMMMr",
+    "FFF...mMMMMMMMMMMMrr",
+    "FF...mMMMMMMMMMMMMrr",
+    "WWW.mMMMMMMMMMMMMMrr",
+    "CGC.MMMMMMMMMMMMMrrr",
+    ".==..MMMMMMMMMMMM..r",
+    ".====mMMMMMMMMMM...S",
+    "F..===mMMMMMMMM..W..",
+    "F...===mMMMMMM...V..",
+    "FHFFMMMTmMMMM.H.....",
+    "FFFMMMMM==...H....HH",
+    "FF.MMMMM.==...===...",
+    "m.mmMMMM..==========",
+    "mmmmmMMMM..=========",
+    "mm.mmmMMM..========.",
+    "mMMMMmcMH...........",
+    "MMMMMMmmm...........",
+    "MMMMMMMm..........rr",
+    "MMMMMMMM.........rrr",
+    "MMMMMMMMM........rrr"
+  ]
+}

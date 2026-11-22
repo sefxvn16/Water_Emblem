@@ -1,0 +1,54 @@
+{
+  "mapId": "book2_endgame_b",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 22,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c22b.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "map2_22_2.png Mage Dragon x6 and Dark Mage x3 in c0504d now detected; chest arrows/doors corrected"
+    ]
+  },
+  "legend": {
+    "W": "wall",
+    "_": "floor",
+    "G": "gate",
+    "d": "door"
+  },
+  "rows": [
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWW__G__WWWWWWWWWWWWW",
+    "WWWWWWWWWWWW_____WWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWW_WWW_WWW_WWWWWWWWWWW",
+    "W___WWWWWW_WWW_WWW_WWWWWW___WW",
+    "W_d_WWWWWW_WWW_WWW_WWWWWW_d_WW",
+    "W___WWWWWW_________WWWWWW___WW",
+    "WWWWWWWWWW___W_W___WWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWW_WWWWWWWWWWWWWWW",
+    "WWWWWWWWWW_WWW_WWW_WWWWWWWWWWW",
+    "WWWWWWWWWW_WWW_WWW_WWWWWWWWWWW",
+    "WWWWWWWWWW_WWW_WWW_WWWWWWWWWWW",
+    "WWWWWWWWWW_WWW_WWW_WWWWWWWWWWW",
+    "___________WWW_WWW____________",
+    "WWWWWWWWWW_________WWWWWWWWWWW",
+    "WWW____WWW_________WWW____WWWW",
+    "WWWWWWWWWW_________WWWWWWWWWWW",
+    "WWWWWWWWWW_________WWWWWWWWWWW",
+    "WWWWWWWWWWW__WWW__WWWWWWWWWWWW",
+    "WWWWWWWWWWW__W_W__WWWWWWWWWWWW",
+    "WWWWWWWWWWW__W_W__WWWWWWWWWWWW",
+    "WWWWWWWWWWW__W_W__WWWWWWWWWWWW",
+    "WWWWWWWWWWW__WWW__WWWWWWWWWWWW",
+    "WWWW_____________________WWWWW",
+    "WWW_______________________WWWW"
+  ]
+}

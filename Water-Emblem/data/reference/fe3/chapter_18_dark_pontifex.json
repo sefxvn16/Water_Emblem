@@ -1,0 +1,52 @@
+{
+  "mapId": "chapter_18_dark_pontifex",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 18,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c18.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": []
+  },
+  "legend": {
+    "W": "wall",
+    "_": "floor",
+    "G": "gate",
+    "C": "castle"
+  },
+  "rows": [
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WW___WWWWWWWWWWWWWWWWWWW___WWW",
+    "WW__WW____WWWWWWWWW____WW__WWW",
+    "WW__WW____WWWWWWWWW____WW__WWW",
+    "WW__WW____WWWWWWWWW____WW__WWW",
+    "WW__WW____WWWWWWWWW____WW__WWW",
+    "_W___W____WWWWWWWWW____W___W_W",
+    "_W___W____WWWWGWWWW____W___W_W",
+    "_W__WW_______W_W_______WW__W_W",
+    "WW__WW_________________WW__WWW",
+    "WW__WWWWWWWWW___WWWWWWWWW__WWW",
+    "WW__WWWWWWWWW___WWWWWWWWW__WWW",
+    "WW___WWWWWWWW___WWWWWWWW___WWW",
+    "_W___WWWWWWWW___WWWWWWWW___W_W",
+    "WW___WWWWWWWW___WWWWWWWW___WWW",
+    "WW___WWWWWWWW___WWWWWWWW___WWW",
+    "WW_________________________WWW",
+    "WW________W_______W________WWW",
+    "_W______W_W_______W_W______W_W",
+    "WWC_____W___WWWWW___W_____CWWW",
+    "WWWWWWW_W___W___W___W_WWWWWWWW",
+    "WWWWWWW_WWWWW___WWWWW_WWWWWWWW",
+    "WWWWWWW_______________WWWWWWWW",
+    "_WWWWWW_______________WWWWWW_W",
+    "_WWWWWW_______________WWWWWW_W",
+    "______W_______________W______W",
+    "WWWWW_WWWWWWW___WWWWWWW_WWWWWW",
+    "WWWWW_WWWWWWW___WWWWWWW_WWWWWW"
+  ]
+}

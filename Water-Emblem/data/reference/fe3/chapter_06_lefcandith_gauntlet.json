@@ -1,0 +1,62 @@
+{
+  "mapId": "chapter_06_lefcandith_gauntlet",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 6,
+  "width": 14,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c06.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "player deployment positions are not marked on source map diagram map1_06.png"
+    ]
+  },
+  "legend": {
+    "M": "peak",
+    ".": "plains",
+    "=": "road",
+    "F": "forest",
+    "T": "fort",
+    "m": "mountain",
+    "S": "shop",
+    "H": "house",
+    "W": "wall",
+    "V": "village",
+    "C": "castle",
+    "G": "gate"
+  },
+  "rows": [
+    "MM.....==...FM",
+    "MM.T..====...M",
+    "Mm.=..====..SF",
+    "mm...==..==..F",
+    "mmF.m==HH===HF",
+    "mF.F=.=FF.==FM",
+    "mF..=mF....==.",
+    "m........MMW=W",
+    "m.....F.MMM.==",
+    "mF.....MMMM==.",
+    "m.....FMMMM=.=",
+    "mF....MMMM..==",
+    "mm....MMM...W.",
+    "Mmm..MMMMM..V.",
+    "M.F...MMMMM...",
+    "MMmm...mmMMMMM",
+    "MMMm...F.FmMMM",
+    "Mmm.......FmmM",
+    "T.mmm........F",
+    "M..mmTF......F",
+    "MM........F.FF",
+    "MM....F.....FF",
+    "M.Mm.F......FM",
+    "MF..........MM",
+    "MFFF...F.....T",
+    "MMFTF...WWW..M",
+    "MMMFF..FCGCF..",
+    "MMMMMFF...FFF.",
+    "MMMMMMMF....FM",
+    "MMMMMMMMF....M"
+  ]
+}

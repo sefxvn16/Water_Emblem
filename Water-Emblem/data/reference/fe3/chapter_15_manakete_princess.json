@@ -1,0 +1,53 @@
+{
+  "mapId": "chapter_15_manakete_princess",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 1,
+  "chapter": 15,
+  "width": 14,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book1/b1c15.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "grid detection for map1_15.png has rows shifted relative to the throne room"
+    ]
+  },
+  "legend": {
+    "_": "floor",
+    "W": "wall",
+    "C": "castle"
+  },
+  "rows": [
+    "______________",
+    "______________",
+    "__WWWWWWWWWW__",
+    "__W___CW___W__",
+    "__WCWWWWWWCW__",
+    "______________",
+    "WWWWW___WWWWW_",
+    "WWWWWW__WWWWWW",
+    "_W_W_W__W_____",
+    "WWCWWW__WWWCWW",
+    "______________",
+    "WWWWWW__WWWWWW",
+    "_____W__W_C_C_",
+    "WWCWWW__WWWCWW",
+    "______________",
+    "WWWWWW__WWWWWW",
+    "_C_C_W__W_____",
+    "WWCWWW__WWWCWW",
+    "______________",
+    "WWWWWW__WWWWWW",
+    "_____W__W_C_C_",
+    "WWCWWW__WWWCWW",
+    "______________",
+    "_____W__W_____",
+    "______________",
+    "W____________W",
+    "W____________W",
+    "W____________W",
+    "W____________W",
+    "______________"
+  ]
+}

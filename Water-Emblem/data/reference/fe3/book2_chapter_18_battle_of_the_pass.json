@@ -1,0 +1,52 @@
+{
+  "mapId": "book2_chapter_18_battle_of_the_pass",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 18,
+  "width": 30,
+  "height": 22,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c18.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": []
+  },
+  "legend": {
+    "M": "peak",
+    ".": "plains",
+    "F": "forest",
+    "r": "river",
+    "T": "fort",
+    "m": "mountain",
+    "c": "cliff",
+    "W": "wall",
+    "=": "road",
+    "V": "village",
+    "C": "castle",
+    "G": "gate"
+  },
+  "rows": [
+    "MMMMMMMMMM...FMMMMrrMMMMMMMMMM",
+    "MMMMMMMMMM.T.FmMMMrrrMMMMMMMMM",
+    "MMMMMMMMMMFFFmMMMMMrrMMMMMMMMM",
+    "MMMMMMMMMMM..mMMMMMMrMMMMMMMMM",
+    "MMMMMMMMMMM..mMMMMMMMrrrMMMMMM",
+    "MMMMMMMMMMMM.mMMMMMMMMrMMrMMMM",
+    "MMMMMMMMMMMM.FmMMMMMMMrMMMrMMM",
+    "MMMMMMmMMMM.FFFmMMMMMMrMMMMrMM",
+    "MMMMMM.mcM..FFmMMMMMMMrMMMMMrM",
+    "MMMMM....F...mMMMMMMMMrrMMMMMr",
+    "MMMM.........FmMMMMMMMrrMMMMMr",
+    "MMMM.........FFmMMmMMMrrmMMMrF",
+    "M..F.........T..FFFmMMrrrrrr.F",
+    "..................F....rr.FWWW",
+    ".W........................=WWW",
+    ".V.........mMMMMM........==CGC",
+    ".......mMMMMMMMMMM.....rrF.===",
+    "......mMMMMMMMMMMMMF..rrmMMMMM",
+    "MMF..mMMMMMMMMMMMMMMFrrmMMMMMM",
+    "MMMFmMMMMMMMMMMMMMMMMrmMMMMMMM",
+    "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+    "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"
+  ]
+}

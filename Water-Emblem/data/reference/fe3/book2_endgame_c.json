@@ -1,0 +1,53 @@
+{
+  "mapId": "book2_endgame_c",
+  "game": "Fire Emblem 3: Mystery of the Emblem",
+  "book": 2,
+  "chapter": 22,
+  "width": 30,
+  "height": 30,
+  "origin": "x=0 left, y=0 top",
+  "sources": {
+    "atlas": "book2/b2c22c.md",
+    "checkedOn": "2026-11-22",
+    "uncertain": [
+      "4 clerics (Lena, Maria, Nyna, Elice) surrounding Medeus at 15,5 14,6 16,6 15,7 and 5 shrines (altars) at 15,3 12,4 18,4 12,8 18,8 now detected"
+    ]
+  },
+  "legend": {
+    "W": "wall",
+    "_": "floor",
+    "G": "gate"
+  },
+  "rows": [
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "______W________G________W_____",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWW_________________WWWWWW",
+    "WWWWWWWWWWWW_______WWWWWWWWWWW",
+    "WWWWWWWWWWWW_______WWWWWWWWWWW",
+    "WWWWWWWWWWWW_______WWWWWWWWWWW",
+    "WWWWWWWWWWWW_______WWWWWWWWWWW",
+    "WWWWWWWWWWWW_______WWWWWWWWWWW",
+    "WWWWWW___________________WWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW",
+    "WWWWWWWWWWWWW_____WWWWWWWWWWWW"
+  ]
+}
