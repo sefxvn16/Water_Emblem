@@ -67,4 +67,18 @@ describe('experience and growth', () => {
     // PLAN item 157: Tiki and Xane gained FE11 personal growths (17 -> 19).
     expect(checked).toBe(19);
   });
+
+  it('growth rates ignore removed star shard items', () => {
+    const marth = chapter01Data.units.find(({ unit }) => unit.id === 'marth')!;
+    const baseGrowths = getEffectiveGrowthRates(marth);
+    const withDummyShard = {
+      ...marth,
+      inventory: [
+        { itemId: 'leo_shard', uses: 1 },
+        { itemId: 'starsphere', uses: 1 },
+      ],
+    };
+    const growths = getEffectiveGrowthRates(withDummyShard);
+    expect(growths).toEqual(baseGrowths);
+  });
 });

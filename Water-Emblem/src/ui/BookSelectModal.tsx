@@ -261,7 +261,7 @@ export const BookSelectModal: React.FC<BookSelectModalProps> = ({
                   Book 2: The Mystery of the Emblem
                 </h3>
                 <p style={{ fontSize: '13.5px', lineHeight: '1.6', color: '#cbd5e1', margin: 0 }}>
-                  One year after peace is restored, Hardin is crowned Emperor of Archanea but gradually succumbs to a sinister darkness. Marth is forced to take up arms once more, collecting the twelve Starsphere shards to restore the legendary Shield of Seals.
+                  One year after peace is restored, Hardin is crowned Emperor of Archanea but gradually succumbs to a sinister darkness. Marth is forced to take up arms once more, collecting the legendary Spheres to restore the Shield of Seals.
                 </p>
               </div>
 

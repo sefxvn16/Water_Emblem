@@ -45,7 +45,7 @@ describe('terrains and items match FE3 Akaneia specifications', () => {
     expect(registry.getMovementCost('drawbridge', 'flier')).toBe(1);
   });
 
-  it('items.json contains over 110 items with complete FE3 weaponry, staves, dragonstones and star shards', () => {
+  it('items.json contains over 110 items with complete FE3 weaponry, staves, dragonstones and legendary items', () => {
     const items = itemsJson.items;
     const itemIds = new Set(items.map((i) => i.id));
     expect(items.length).toBeGreaterThanOrEqual(110);
@@ -71,19 +71,19 @@ describe('terrains and items match FE3 Akaneia specifications', () => {
       expect(itemIds.has(dId), `Missing dragon item: ${dId}`).toBe(true);
     }
 
-    // Star Shards (all 12 zodiac shards)
-    const starShards = [
-      'aries_shard', 'taurus_shard', 'gemini_shard', 'cancer_shard',
-      'leo_shard', 'virgo_shard', 'libra_shard', 'scorpio_shard',
-      'sagittarius_shard', 'capricorn_shard', 'aquarius_shard', 'pisces_shard',
+    // Legendary weapons & sacred treasures
+    const legendaries = [
+      'falchion', 'mercurius', 'gradivus', 'parthia',
+      'firestone', 'divinestone', 'lightsphere', 'darksphere',
+      'iotes_shield', 'binding_shield', 'life_orb', 'earth_orb',
     ];
-    for (const shardId of starShards) {
-      expect(itemIds.has(shardId), `Missing star shard: ${shardId}`).toBe(true);
+    for (const legId of legendaries) {
+      expect(itemIds.has(legId), `Missing legendary/treasure item: ${legId}`).toBe(true);
     }
 
     // Special items, cards & orbs
     const specials = [
-      'iotes_shield', 'silver_card', 'member_card', 'starsphere', 'binding_shield',
+      'iotes_shield', 'silver_card', 'member_card', 'binding_shield',
       'life_orb', 'earth_orb', 'lightsphere', 'darksphere', 'power_ring',
       'dracoshield', 'secret_book', 'speed_ring', 'goddess_icon', 'seraph_robe',
       'talisman', 'boots', 'manual', 'door_key', 'chest_key', 'bridge_key',

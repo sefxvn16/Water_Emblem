@@ -13,55 +13,12 @@ const personalGrowthById = new Map(
     .map((character) => [character.id, character.personalGrowths!] as const),
 );
 
-export const STAR_SHARD_GROWTH_BONUSES: Readonly<Record<string, Readonly<Record<string, number>>>> = {
-  aries_shard: { hp: 20, str: 10, spd: 10, lck: 10 },
-  taurus_shard: { hp: 10, str: 10, skill: 10, spd: 10, def: 10 },
-  gemini_shard: { hp: 20, str: 10, def: 10 },
-  cancer_shard: { def: 50 },
-  leo_shard: { str: 50 },
-  virgo_shard: { hp: 10, str: 10, skill: 10, spd: 10, def: 10, res: 10 },
-  libra_shard: { hp: 10, str: 10, spd: 10, lck: 20 },
-  scorpio_shard: { hp: 20, str: 20, skill: 20 },
-  sagittarius_shard: { hp: 10, str: 10, skill: 40, spd: 10 },
-  capricorn_shard: { hp: 20, str: 10, def: 10 }, // FE3 Akaneia Refined bugfix (project/asm/capricorn.asm)
-  aquarius_shard: { hp: 10, str: 10, spd: 10, lck: 10, def: 10 },
-  pisces_shard: { hp: 10, str: 10, skill: 10, def: 10 },
-};
-
-export const STARSPHERE_ALL_GROWTH_BONUS = 50;
-
 export function getEffectiveGrowthRates(entry: ExtendedUnitState): Readonly<Record<string, number>> {
   const personal = personalGrowthById.get(entry.unit.id);
   const classId = entry.unit.mountedClassId ?? entry.unit.classId;
   const classGrowths = getClassDefinition(classId)?.growths;
-  const baseGrowths: Record<string, number> = personal && classGrowths
-    ? Object.fromEntries(GROWTH_KEYS.map((key) => [key, Math.max(0, (personal[key] ?? 0) + (classGrowths[key] ?? 0))]))
-    : { ...(entry.growths ?? {}) };
-
-  // Calculate Star Shards & Starsphere bonuses from unit inventory
-  const inventory = entry.inventory ?? [];
-  let starsphereBonus = 0;
-  const shardBonuses: Record<string, number> = {};
-
-  for (const item of inventory) {
-    if (item.itemId === 'starsphere') {
-      starsphereBonus += STARSPHERE_ALL_GROWTH_BONUS;
-    } else {
-      const shard = STAR_SHARD_GROWTH_BONUSES[item.itemId];
-      if (shard) {
-        for (const [stat, bonus] of Object.entries(shard)) {
-          shardBonuses[stat] = (shardBonuses[stat] ?? 0) + bonus;
-        }
-      }
-    }
-  }
-
-  return Object.fromEntries(
-    GROWTH_KEYS.map((key) => [
-      key,
-      Math.max(0, (baseGrowths[key] ?? 0) + starsphereBonus + (shardBonuses[key] ?? 0)),
-    ]),
-  );
+  if (!personal || !classGrowths) return entry.growths ?? {};
+  return Object.fromEntries(GROWTH_KEYS.map((key) => [key, Math.max(0, (personal[key] ?? 0) + (classGrowths[key] ?? 0))]));
 }
 
 function isPromoted(entry: ExtendedUnitState): boolean {

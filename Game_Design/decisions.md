@@ -68,13 +68,10 @@ Nguồn: Chủ dự án duyệt kế hoạch triển khai FE3 Akaneia Refined v�
 1. **Kị binh trong thành (Sàn, Ngai, Điện thờ, Trụ cột, Hành lang):**
    - **Không bắt buộc kị binh phải xuống ngựa (dismount) khi vào thành/lâu đài** theo chỉ đạo trực tiếp của chủ dự án ngày 2026-11-22 ("tôi đã yêu cầu là không cần xuống ngựa khi vào thành rồi, lại bổ sung là sao?").
    - Kị binh vào thành thì bị giảm MOV xuống ngang bằng hoặc chậm hơn bộ binh: chi phí di chuyển (movement cost) của kị binh trên các ô trong thành (`floor`, `throne`, `altar`, `pillar`, `corridor`) là **2–3 MOV/ô** (trong khi bộ binh tốn 1 MOV/ô).
-2. **Cơ chế 12 Star Shards và Starsphere (Cập nhật A12 theo FE3 Akaneia Refined):**
-   - Cập nhật quyết định A12 theo Kế hoạch FE3 Akaneia Refined đã được chủ dự án phê duyệt ngày 2026-11-22: 12 Mảnh Tinh Tú (Star Shards) khi mang trong hành trang sẽ cộng dồn tỉ lệ tăng trưởng (growth rates) theo chuẩn FE3 (kèm bản sửa lỗi Capricorn: HP +20%, Str +10%, Def +10%). Starsphere (Cầu Tinh Tú hoàn chỉnh) cộng +50% tỉ lệ tăng trưởng cho mọi chỉ số và duy trì độ bền vô hạn cho vũ khí trang bị.
-   - Các mảnh Shards và Starsphere đã có logic tính toán và kiểm thử trong `src/core/progression/experience.ts` và `src/core/combat/durability.ts`; các chương hiện tại (Ch1–Ch3) chưa đặt rơi/nhặt các mảnh này (nội dung Book 2) nên cơ chế không ảnh hưởng đến cân bằng Ch1–Ch3.
-3. **Dữ liệu danh mục tham chiếu (Catalog Reference Data) cho A13 và A17:**
+2. **Dữ liệu danh mục tham chiếu (Catalog Reference Data) cho A13 và A17:**
    - **A13 (Manakete biến hình):** Giữ nguyên quyết định A13: Manakete biến hình **không cần đá** (tối đa 5 lượt, Luck cao thêm 1 lượt, nghỉ 2 lượt). 7 loại Đá Rồng (Dragonstones) có trong `data/items.json` là dữ liệu danh mục trơ phục vụ tra cứu chuẩn FE3, không yêu cầu người chơi phải dùng đá để biến hình.
    - **A17 (Vật phẩm tăng chỉ số vĩnh viễn):** Giữ nguyên quyết định A17: Bỏ vật phẩm tăng chỉ số vĩnh viễn trong gameplay (Power Ring, Seraph Robe, Energy Drop...). Các vật phẩm này có trong `data/items.json` dưới dạng dữ liệu danh mục trơ tham chiếu FE3, không có logic sử dụng (không tiêu hao để tăng vĩnh viễn chỉ số của nhân vật).
-4. **Nâng cấp AI địch thông minh theo chuẩn Fire Emblem đời mới (Awakening / Three Houses):**
+3. **Nâng cấp AI địch thông minh theo chuẩn Fire Emblem đời mới (Awakening / Three Houses):**
    - Thứ tự hành động (Turn Order Priority): Healer có đồng đội bị thương trong tầm -> Quân tấn công tầm xa (Bows, Magic, Javelin) -> Quân dứt điểm kết liễu -> Quân cận chiến và các quân còn lại.
    - Tự bảo toàn & hồi phục (Self-Preservation): Đơn vị địch còn $\le 40\%$ máu và có mang Vulnerary/vật phẩm hồi máu thì tự uống máu (+30 HP) và di chuyển vào ô địa hình có chỉ số thủ/né cao.
    - Tránh tự sát (Anti-Suicide): Không lao vào tấn công khi sát thương gây ra $\le 2$ mà đối thủ phản đòn chí mạng/chết người.

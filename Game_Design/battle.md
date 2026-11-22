@@ -159,7 +159,7 @@ Nguồn tham khảo: `../reports/bao_cao_nghien_cuu_co_che_tactical_rpg.md`. Bá
 
 ## Đợt F cơ chế Book 2 (2026-11-19, PLAN mục 120–124)
 
-- **A12 Ngọc Sáng/Tối & 12 Star Shards (mục 120, 185, 186):** `lightsphere`/`darksphere` là vật phẩm mang theo (không bán ở cửa hàng). Quân cầm Ngọc Tối không nhận sát thương, trừ khi quân đánh cầm Ngọc Sáng. Cập nhật theo Kế hoạch FE3 Refined ngày 2026-11-22: 12 Mảnh Tinh Tú (Star Shards) khi mang trong hành trang cộng tỉ lệ tăng trưởng khi lên cấp; Starsphere cộng +50% growth mọi chỉ số và độ bền vũ khí vô hạn.
+- **A12 Ngọc Sáng/Tối (mục 120):** `lightsphere`/`darksphere` là vật phẩm mang theo (không bán ở cửa hàng, không cộng chỉ số — đúng quyết định chủ: bỏ chức năng tăng chỉ số). Quân cầm Ngọc Tối không nhận sát thương, trừ khi quân đánh cầm Ngọc Sáng.
 - **A13 Manakete (mục 121):** class `manakete` + nhân vật Tiki (chương test). Lệnh Transform: không cần đá (quyết định chủ A13), biến hình 5 lượt (+1 nếu Luck ≥ 15 [Giả định]), +5 Str/Def/Res, +3 Spd [Giả định], dùng vũ khí Dragon Breath (phép 1–2 ô); hết hạn nghỉ 2 lượt mới biến hình lại. 7 loại Dragonstones trong `items.json` là catalog trơ tham chiếu.
 - **A14 Ballista (mục 122):** ô địa hình `ballista`; quân cung (archer/sniper/hunter/mangudai) đứng trên đó bắn tầm 3–10, +6 Might [Giả định]. Địch dùng được như quân ta.
 - **A15 Triangle Attack (mục 123):** 3 quân bay đồng minh kề quanh 1 địch thì đòn của quân bay tấn công chắc chắn chí mạng (Crit 100%).
