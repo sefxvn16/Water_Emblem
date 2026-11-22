@@ -13,9 +13,20 @@
     187,
     188,
     189,
-    190
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201
   ],
-  "declared_by": "antigravity",
+  "declared_by": "antigravity + claude-lead",
   "declared_at": "2026-11-22",
   "allow": [
     "PLAN.md",
@@ -89,6 +100,13 @@
     "Water-Emblem/src/ui/TerrainInfoWindow.tsx",
     "Water-Emblem/tests/core/gameFeelUpgrade.test.ts",
     "Water-Emblem/tests/core/modernUIUpgrade.test.ts",
-    "Water-Emblem/tests/core/smartAI.test.ts"
+    "Water-Emblem/tests/core/smartAI.test.ts",
+    "Water-Emblem/src/core/data/chapterData.ts",
+    "Water-Emblem/src/renderer/movementAnimation.ts",
+    "Water-Emblem/src/ui/CombatResultPopup.tsx",
+    "Water-Emblem/tests/core/chestDoor.test.ts",
+    "Water-Emblem/tests/core/corePurity.test.ts",
+    "Water-Emblem/tests/core/experience.test.ts",
+    "Water-Emblem/tests/core/enemyTurnSimulation.test.ts"
   ]
 }
