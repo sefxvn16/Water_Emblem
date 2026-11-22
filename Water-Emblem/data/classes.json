@@ -46,7 +46,8 @@
         "res": -5
       },
       "description": "Marth, Prince of Altea. Wields swords with exceptional speed and leadership as the army commander.",
-      "descriptionVi": "Marth, Hoàng tử xứ Altea. Sử dụng kiếm với tốc độ và khả năng chỉ huy xuất chúng."
+      "descriptionVi": "Marth, Hoàng tử xứ Altea. Sử dụng kiếm với tốc độ và khả năng chỉ huy xuất chúng.",
+      "aiTargetRole": "leader"
     },
     {
       "id": "warlord",
@@ -194,7 +195,10 @@
       "classSkill": "lancefaire",
       "dismountedClassId": "paladin",
       "description": "Heavily armored shock cavalry. Sacrifices some speed for formidable physical defense and crushing charge attacks.",
-      "descriptionVi": "Thiết kỵ xung kích bọc giáp nặng. Đổi lấy phòng thủ vật lý kiên cố và đòn húc uy lực."
+      "descriptionVi": "Thiết kỵ xung kích bọc giáp nặng. Đổi lấy phòng thủ vật lý kiên cố và đòn húc uy lực.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "outrider",
@@ -339,7 +343,10 @@
       },
       "classSkill": "pavise",
       "description": "Clad in heavy steel armor giving excellent defense. Sluggish movements with reduced mobility.",
-      "descriptionVi": "Mặc giáp sắt hạng nặng mang lại phòng thủ vượt trội. Di chuyển chậm và tầm đi hạn chế."
+      "descriptionVi": "Mặc giáp sắt hạng nặng mang lại phòng thủ vượt trội. Di chuyển chậm và tầm đi hạn chế.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "general",
@@ -386,7 +393,10 @@
       },
       "classSkill": "pavise",
       "description": "Experienced Armor Knights who have promoted. Impassable living fortresses possessing colossal strength and defense.",
-      "descriptionVi": "Chiến tướng trọng giáp đã thăng cấp. Pháo đài thép sống với sức mạnh và phòng thủ áp đảo."
+      "descriptionVi": "Chiến tướng trọng giáp đã thăng cấp. Pháo đài thép sống với sức mạnh và phòng thủ áp đảo.",
+      "effectiveTags": [
+        "armor"
+      ]
     },
     {
       "id": "pegasus_knight",
@@ -534,7 +544,11 @@
       "classSkill": "lancefaire",
       "dismountedClassId": "dismounted_pegasus",
       "description": "Promoted Pegasus Knights who ride wyverns. Boast overwhelming strength and tough scales, though still weak to bows.",
-      "descriptionVi": "Kỵ sĩ Rồng đã thăng cấp cưỡi Wyvern. Sức mạnh áp đảo và lớp vảy cứng cáp, nhưng vẫn e sợ cung tên."
+      "descriptionVi": "Kỵ sĩ Rồng đã thăng cấp cưỡi Wyvern. Sức mạnh áp đảo và lớp vảy cứng cáp, nhưng vẫn e sợ cung tên.",
+      "effectiveTags": [
+        "flier",
+        "cavalry"
+      ]
     },
     {
       "id": "archer",
@@ -583,7 +597,8 @@
       "classSkill": "sureshot",
       "canUseBallista": true,
       "description": "Bowmen clad in armor with dependable defense. Excel at ranged attacks but cannot counter in close quarters.",
-      "descriptionVi": "Xạ thủ mặc giáp với phòng thủ ổn định. Đánh xa hiệu quả nhưng không thể cận chiến khi bị áp sát."
+      "descriptionVi": "Xạ thủ mặc giáp với phòng thủ ổn định. Đánh xa hiệu quả nhưng không thể cận chiến khi bị áp sát.",
+      "aiTargetRole": "ranged"
     },
     {
       "id": "sniper",
@@ -638,7 +653,8 @@
       },
       "canUseBallista": true,
       "description": "Experienced archers who have promoted. The master marksmen of the battlefield with pinpoint accuracy and critical hits.",
-      "descriptionVi": "Thiện xạ đã thăng cấp. Bậc thầy bách phát bách trúng với độ chính xác và tỷ lệ bạo kích cao."
+      "descriptionVi": "Thiện xạ đã thăng cấp. Bậc thầy bách phát bách trúng với độ chính xác và tỷ lệ bạo kích cao.",
+      "aiTargetRole": "ranged"
     },
     {
       "id": "hunter",
@@ -1266,7 +1282,8 @@
       },
       "classSkill": "healer",
       "description": "Holy men dedicated to aiding allies. Wield sacred staves to heal wounds and bolster defenses, but cannot attack.",
-      "descriptionVi": "Mục sư tận tụy sử dụng quyền trượng thánh để trị thương và bảo vệ đồng đội, không thể tấn công."
+      "descriptionVi": "Mục sư tận tụy sử dụng quyền trượng thánh để trị thương và bảo vệ đồng đội, không thể tấn công.",
+      "aiTargetRole": "healer"
     },
     {
       "id": "bishop",
@@ -1813,7 +1830,10 @@
       "canTransform": true,
       "transformWeaponId": "dragon_breath",
       "description": "Ancient race possessing dragon blood. Use sacred dragonstones to transform into fearsome elemental dragons.",
-      "descriptionVi": "Tộc Rồng cổ xưa mang huyết thống thần thánh, dùng Long Thạch để hóa thân thành rồng nguyên tố uy nghi."
+      "descriptionVi": "Tộc Rồng cổ xưa mang huyết thống thần thánh, dùng Long Thạch để hóa thân thành rồng nguyên tố uy nghi.",
+      "effectiveTags": [
+        "dragon"
+      ]
     },
     {
       "id": "chameleon",

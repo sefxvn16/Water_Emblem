@@ -1,4 +1,5 @@
 import balanceConfig from '../../../data/balance.json' with { type: 'json' };
+import classesJson from '../../../data/classes.json' with { type: 'json' };
 import { calculateMovementRange } from '../grid/pathfinding';
 import { getElevation, TerrainRegistry } from '../grid/terrain';
 import { GridUnit, MapData, Position } from '../grid/types';
@@ -58,13 +59,28 @@ interface AIWeights {
   readonly lowHpThreshold: number;
   readonly retreatHpFraction: number;
   readonly triangleAdvantageBonus: number;
-  readonly counterFreeBonus?: number;
-  readonly healStaffBaseScore?: number;
-  readonly healPerHpWeight?: number;
-  readonly antiSuicideThreshold?: number;
-  readonly selfHealHpThreshold?: number;
-  readonly selfHealScore?: number;
-  readonly maxRangeKitingBonus?: number;
+  readonly counterFreeBonus: number;
+  readonly healStaffBaseScore: number;
+  readonly healPerHpWeight: number;
+  readonly antiSuicideThreshold: number;
+  readonly selfHealHpThreshold: number;
+  readonly selfHealScore: number;
+  readonly maxRangeKitingBonus: number;
+  readonly antiSuicidePenalty: number;
+  readonly lethalCounterPenalty: number;
+  readonly bossHealBonus: number;
+  readonly threatScanDistance: number;
+  readonly targetRoleBonus: Readonly<Record<'healer' | 'ranged' | 'leader', number>>;
+}
+
+/** Target-priority role per class, declared as `aiTargetRole` in data/classes.json. */
+const targetRoleByClass = new Map<string, string | undefined>(
+  classesJson.classes.map((entry) => [entry.id, entry.aiTargetRole]),
+);
+
+/** Ids of units flagged `isBoss` in chapter data; feed this into AIContext.bossUnitIds. */
+export function collectBossUnitIds(entries: readonly ExtendedUnitState[]): Set<string> {
+  return new Set(entries.filter((entry) => entry.isBoss === true).map((entry) => entry.unit.id));
 }
 
 export interface AIContext {
@@ -83,6 +99,8 @@ export interface AIContext {
   readonly openedDoors?: ReadonlySet<string>;
   readonly unitInventoriesMap?: ReadonlyMap<string, readonly { itemId: string; uses: number }[]>;
   readonly itemsCatalog?: ReadonlyMap<string, ItemDefinition>;
+  /** Units flagged `isBoss` in chapter data (see collectBossUnitIds). */
+  readonly bossUnitIds?: ReadonlySet<string>;
 }
 
 export function sortEnemyTurnOrder(enemies: readonly ExtendedUnitState[], context: AIContext): ExtendedUnitState[] {
@@ -101,7 +119,7 @@ export function sortEnemyTurnOrder(enemies: readonly ExtendedUnitState[], contex
     const players = context.units.filter((u) => u.faction === 'player' && !u.isDead);
     for (const p of players) {
       const pStats = context.unitStatsMap.get(p.id);
-      if (pStats && getManhattanDistance(unit.position, p.position) <= 6 && (Math.max(stats.str, stats.mag) - pStats.def) * 2 >= pStats.hp) {
+      if (pStats && getManhattanDistance(unit.position, p.position) <= (balanceConfig.aiWeights as AIWeights).threatScanDistance && (Math.max(stats.str, stats.mag) - pStats.def) * 2 >= pStats.hp) {
         return 900;
       }
     }
@@ -186,9 +204,9 @@ export function evaluateAITurn(enemyUnit: GridUnit, role: AIRole, context: AICon
           if (dist >= minR && dist <= maxR) {
             const healAmount = Math.min((staff.healBase ?? 10) + Math.floor((enemyStats.mag ?? 0) / (staff.healMagDivisor ?? 1)), allyStats.maxHp - allyStats.hp);
             if (healAmount <= 0) continue;
-            let score = (weights.healStaffBaseScore ?? 40) + healAmount * (weights.healPerHpWeight ?? 2);
-            if (allyStats.hp <= allyStats.maxHp * (weights.lowHpThreshold ?? 0.4)) score += (weights.lowHpTargetBonus ?? 15) * 2;
-            if (ally.name?.toLowerCase().includes('boss') || ally.name?.toLowerCase().includes('captain') || ally.classId === 'boss') score += 30;
+            let score = weights.healStaffBaseScore + healAmount * weights.healPerHpWeight;
+            if (allyStats.hp <= allyStats.maxHp * weights.lowHpThreshold) score += weights.lowHpTargetBonus * 2;
+            if (context.bossUnitIds?.has(ally.id)) score += weights.bossHealBonus;
             potentialStaffActions.push({ type: 'staff', movePosition: tile, targetUnit: ally, staff, healAmount, score });
           }
         }
@@ -198,12 +216,12 @@ export function evaluateAITurn(enemyUnit: GridUnit, role: AIRole, context: AICon
 
   // 2. Self-Preservation: Vulnerary / healing consumable
   const potentialItemUses: AIActionItemUse[] = [];
-  if (availableConsumables.length > 0 && enemyStats.hp <= enemyStats.maxHp * (weights.selfHealHpThreshold ?? 0.4)) {
+  if (availableConsumables.length > 0 && enemyStats.hp <= enemyStats.maxHp * weights.selfHealHpThreshold) {
     const consumable = availableConsumables[0]!;
     const healAmount = consumable.healAmount ?? 10;
     for (const tile of candidateTiles) {
       const terrainId = map.grid[tile.y]?.[tile.x] ?? 'plains';
-      const score = (weights.selfHealScore ?? 85) + terrains.getAvoidBonus(terrainId, enemyUnit.moveType) * 0.5
+      const score = weights.selfHealScore + terrains.getAvoidBonus(terrainId, enemyUnit.moveType) * 0.5
         + terrains.getDefenseBonus(terrainId, enemyUnit.moveType) * 2 + Math.min(healAmount, enemyStats.maxHp - enemyStats.hp);
       potentialItemUses.push({ type: 'item_use', movePosition: tile, item: consumable, healAmount, score });
     }
@@ -254,29 +272,36 @@ export function evaluateAITurn(enemyUnit: GridUnit, role: AIRole, context: AICon
           const possibleDamage = forecast.attacker.damage * forecast.attacker.attackCount;
           score += possibleDamage * hitChance * weights.damageMultiplier;
 
-          if (possibleDamage >= targetStats.hp) score += weights.killBonus * hitChance;
+          const isKillingBlow = possibleDamage >= targetStats.hp;
+          if (isKillingBlow) score += weights.killBonus * hitChance;
 
+          // Expected counter damage, weighted by the counter's hit chance.
+          const counterDamage = forecast.defender.canCounter
+            ? forecast.defender.damage * forecast.defender.attackCount * hitProbability(forecast.defender.hitRate, rngMode)
+            : 0;
           if (!forecast.defender.canCounter) {
-            score += (weights.counterFreeBonus ?? 25);
-            if (distance > 1) score += (weights.maxRangeKitingBonus ?? 15);
+            score += weights.counterFreeBonus;
+            if (distance > 1) score += weights.maxRangeKitingBonus;
           } else {
-            const counterDamage = forecast.defender.damage * forecast.defender.attackCount * hitProbability(forecast.defender.hitRate, rngMode);
             score -= counterDamage * weights.counterDamagePenalty;
-            if (counterDamage >= enemyStats.hp && possibleDamage < targetStats.hp) score -= 100;
+            if (counterDamage >= enemyStats.hp && !isKillingBlow) score -= weights.lethalCounterPenalty;
           }
 
-          // Anti-suicide (Awakening / Three Houses): do NOT suicide into high def if counter is lethal
-          const counterTotal = forecast.defender.canCounter ? forecast.defender.damage * forecast.defender.attackCount : 0;
-          if (forecast.attacker.damage <= (weights.antiSuicideThreshold ?? 2) && counterTotal >= enemyStats.hp) score -= 200;
+          // Anti-suicide (Awakening / Three Houses): do NOT suicide into high def if counter is lethal.
+          // A killing blow ends the fight, so it is never cancelled by this rule.
+          if (!isKillingBlow && forecast.attacker.damage <= weights.antiSuicideThreshold && counterDamage >= enemyStats.hp) {
+            score -= weights.antiSuicidePenalty;
+          }
 
           // Focus fire: coordinate to eliminate wounded player units
           if (targetStats.hp < targetStats.maxHp) {
-            score += (1 - (targetStats.hp / targetStats.maxHp)) * (weights.lowHpTargetBonus ?? 15) * 2;
+            score += (1 - (targetStats.hp / targetStats.maxHp)) * weights.lowHpTargetBonus * 2;
           }
 
-          if (target.classId === 'curate' || target.classId === 'cleric' || target.classId === 'priest') score += 20;
-          else if ((target.classId === 'archer' || target.classId === 'sniper') && distance === 1) score += 15;
-          else if (target.classId === 'lord') score += 10;
+          const targetRole = target.classId ? targetRoleByClass.get(target.classId) : undefined;
+          if (targetRole === 'healer') score += weights.targetRoleBonus.healer;
+          else if (targetRole === 'ranged' && distance === 1) score += weights.targetRoleBonus.ranged;
+          else if (targetRole === 'leader') score += weights.targetRoleBonus.leader;
 
           score += terrains.getAvoidBonus(attackerTerrainId, enemyUnit.moveType) * 0.5;
           potentialAttacks.push({ type: 'attack', movePosition: tile, targetUnit: target, weapon, forecast, score });
