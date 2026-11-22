@@ -135,6 +135,62 @@ test('attack-heal-flow: interactive target-weapon-forecast flow for attack and s
   await weaponPicker.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(page.getByText('Actions (Marth)')).toBeVisible();
 
+  // PLAN item 201, for items 179 and 181: the flow above only ever cancels,
+  // so nothing here showed that confirming attacks, nor that the damage the
+  // forecast prints is the damage the blow deals. Walk the flow once more and
+  // confirm it.
+  await page.getByRole('button', { name: 'Attack', exact: true }).click();
+  await clickTile(page, 24, 4);
+  await expect(weaponPicker).toBeVisible();
+  await weaponPicker.getByText(/Rapier/i).click();
+  await expect(combatForecast).toBeVisible();
+
+  // Both sides print "HP: now → after". Read the defender's predicted HP and
+  // the hit rate straight off the panel.
+  const forecastReading = await combatForecast.evaluate((root) => {
+    const text = (root.textContent ?? '').replace(/\s+/g, ' ');
+    const transitions = [...text.matchAll(/HP: (\d+) → (\d+)/g)]
+      .map((match) => ({ before: Number(match[1]), after: Number(match[2]) }));
+    const hits = [...text.matchAll(/Hit:\s*(\d+)\s*%/g)].map((match) => Number(match[1]));
+    return { transitions, hits };
+  });
+  // Two cards, so two HP transitions and two hit rates.
+  expect(forecastReading.transitions).toHaveLength(2);
+  expect(forecastReading.hits).toHaveLength(2);
+  // Marth hits for certain here, so the predicted HP is not a probability.
+  expect(forecastReading.hits).toContain(100);
+
+  const pirateHp = async () => page.evaluate(() => {
+    const state = (window as unknown as {
+      __WATER_EMBLEM_STATE__?: {
+        extendedUnits?: { unit: { id: string; isDead?: boolean }; stats: { hp: number } }[];
+      };
+    }).__WATER_EMBLEM_STATE__;
+    const pirate = state?.extendedUnits?.find(({ unit }) => unit.id === 'enemy_pirate_5');
+    if (!pirate) return null;
+    return pirate.unit.isDead ? 0 : pirate.stats.hp;
+  });
+
+  const hpBefore = await pirateHp();
+  expect(hpBefore).not.toBeNull();
+  // CombatForecastWindow lays the attacker's card out first and the defender's
+  // second, and each card prints its own HP. Marth and this pirate both sit on
+  // 18 HP, so the cards cannot be told apart by value: take them in order.
+  const defenderCard = forecastReading.transitions[1]!;
+  expect(defenderCard.before).toBe(hpBefore);
+  expect(defenderCard.after).toBeLessThan(defenderCard.before);
+
+  const confirmAttack = combatForecast.locator('button[aria-label="⚔️ Attack!"]');
+  await expect(confirmAttack).toBeVisible();
+  await confirmAttack.click();
+  await expect(combatForecast).toHaveCount(0);
+
+  // Confirming is what strikes, and the pirate ends on exactly the HP the
+  // defender's card predicted. Marth's own card is a prediction of the
+  // counter, which is not certain (its hit rate is well under 100), so only
+  // the defender's side is asserted here.
+  await expect.poll(pirateHp, { timeout: 20000 }).toBe(defenderCard.after);
+
   // Close Action Menu
   await page.keyboard.press('Escape');
 

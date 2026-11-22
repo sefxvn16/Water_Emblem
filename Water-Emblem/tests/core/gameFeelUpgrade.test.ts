@@ -4,11 +4,14 @@ import { renderToString } from 'react-dom/server';
 import { PhaseBanner } from '../../src/ui/PhaseBanner';
 import { TerrainInfoWindow } from '../../src/ui/TerrainInfoWindow';
 import { defaultTerrainRegistry } from '../../src/core/grid/terrain';
-import { dueReinforcements } from '../../src/core/chapter/reinforcements';
+import { calculateMovementRange } from '../../src/core/grid/pathfinding';
+import { dueReinforcements, spawnReinforcements } from '../../src/core/chapter/reinforcements';
 import { resolveCombatConsequences } from '../../src/core/combat/combatResolution';
 import { chapter01Data } from '../../src/core/data/chapterData';
 import { SeededRNG } from '../../src/core/combat/rng';
-import type { CombatResult, ItemDefinition } from '../../src/core/combat/types';
+import type { CombatResult, ItemDefinition, UnitCombatStats } from '../../src/core/combat/types';
+import type { ExtendedUnitState } from '../../src/core/data/chapterData';
+import type { MapData } from '../../src/core/grid/types';
 
 describe('phase banners, reinforcements, and FE3 battle templates match canon specifications', () => {
   it('PhaseBanner renders correct content and styles for each phase', () => {
@@ -164,5 +167,98 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     expect(resolution.logs.some((l) => l.includes('has fallen!'))).toBe(true);
     expect(resolution.soundCues.some((c) => c.type === 'crit')).toBe(true);
     expect(resolution.soundCues.some((c) => c.type === 'death')).toBe(true);
+  });
+});
+
+/**
+ * PLAN item 201, for item 188. Two of the four tests above only render a
+ * component to a string and look for substrings, which cannot show that the
+ * reinforcement banner ever fires or that a mounted unit may now stand
+ * indoors. These drive the two rules behind them.
+ */
+describe('reinforcement arrivals and indoor mounts behave as item 188 claims (PLAN item 201)', () => {
+  const statsOf = (): UnitCombatStats => ({
+    hp: 24, maxHp: 24, str: 9, mag: 0, skill: 8, spd: 7, lck: 3, def: 7, res: 2,
+  });
+
+  const template = (id: string, x: number, y: number): ExtendedUnitState => ({
+    unit: { id, name: id, faction: 'enemy', position: { x, y }, mov: 5, moveType: 'foot', classId: 'fighter' },
+    stats: statsOf(), inventory: [], level: 3, exp: 0,
+  });
+
+  const map: MapData = {
+    id: 'test_spawn', name: 'Spawn room', width: 4, height: 1,
+    grid: [['plains', 'plains', 'wall', 'plains']],
+  };
+
+  it('puts a due reinforcement group on the field already spent, flagged as reinforcements, on walkable tiles only', () => {
+    const standing = [template('defender', 3, 0)];
+    const group = {
+      id: 'wave_1', turn: 2,
+      units: [template('newcomer_a', 0, 0), template('blocked', 2, 0)],
+    };
+
+    // Turn 1 is too early and turn 2 is the arrival; once spawned it never
+    // arrives twice.
+    expect(dueReinforcements(
+      { ...chapter01Data, reinforcements: [group] }, 1, [],
+    )).toHaveLength(0);
+    expect(dueReinforcements(
+      { ...chapter01Data, reinforcements: [group] }, 2, [],
+    ).map(({ id }) => id)).toEqual(['wave_1']);
+    expect(dueReinforcements(
+      { ...chapter01Data, reinforcements: [group] }, 2, ['wave_1'],
+    )).toHaveLength(0);
+
+    const result = spawnReinforcements(standing, group, map, defaultTerrainRegistry);
+    expect(result.units).toHaveLength(3);
+    expect(result.spawned.map(({ unit }) => unit.id)).toEqual(['newcomer_a', 'blocked']);
+
+    const arrival = result.spawned[0]!;
+    // The flag the banner and the faction tone read, and the rule from
+    // AGENTS.md: reinforcements do not act on the turn they appear.
+    expect(arrival.unit.isReinforcement).toBe(true);
+    expect(arrival.unit.hasActed).toBe(true);
+    expect(arrival.unit.position).toEqual({ x: 0, y: 0 });
+
+    // The second one was declared on a wall tile, so it is placed on the
+    // nearest walkable tile instead of inside the wall.
+    const displaced = result.spawned[1]!;
+    expect(displaced.unit.position).not.toEqual({ x: 2, y: 0 });
+    expect(defaultTerrainRegistry.getMovementCost(
+      map.grid[displaced.unit.position.y]![displaced.unit.position.x]!, 'foot', 'fighter',
+    )).not.toBeNull();
+    // Nobody is stacked on the unit already standing there.
+    expect(displaced.unit.position).not.toEqual({ x: 3, y: 0 });
+    // Pure function: the input list is untouched.
+    expect(standing).toHaveLength(1);
+  });
+
+  it('keeps a mounted unit mounted on indoor tiles and charges it strictly more movement than a foot unit', () => {
+    // decisions.md, applied by item 188: entering a building costs a mounted
+    // unit more movement but never forces it off its horse. Before item 188
+    // these tiles carried a noMount flag and charged a horse the same as a
+    // foot unit, so the strict comparison is what pins the new rule down.
+    for (const terrainId of ['throne', 'floor', 'corridor', 'altar', 'pillar'] as const) {
+      const footCost = defaultTerrainRegistry.getMovementCost(terrainId, 'foot', 'mercenary');
+      const horseCost = defaultTerrainRegistry.getMovementCost(terrainId, 'cavalry', 'cavalier');
+      expect(footCost).not.toBeNull();
+      // Passable for the horse, and dearer than for a foot unit.
+      expect(horseCost).not.toBeNull();
+      expect(horseCost!).toBeGreaterThan(footCost!);
+    }
+    // A mounted unit really does reach the throne and stands on it.
+    const throneMap: MapData = {
+      id: 'test_throne_walk', name: 'Throne approach', width: 3, height: 1,
+      grid: [['plains', 'floor', 'throne']],
+    };
+    const rider: ExtendedUnitState['unit'] = {
+      id: 'cain', name: 'Cain', faction: 'player', position: { x: 0, y: 0 },
+      mov: 7, moveType: 'cavalry', classId: 'cavalier',
+    };
+    const reachable = calculateMovementRange(rider, {
+      map: throneMap, terrains: defaultTerrainRegistry, units: [rider],
+    });
+    expect([...reachable.keys()].sort()).toEqual(['0,0', '1,0', '2,0']);
   });
 });

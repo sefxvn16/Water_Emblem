@@ -9,8 +9,29 @@ export interface SoundStepPlayer {
   playMoveStep: (moveType: MoveType) => void;
 }
 
+/**
+ * Opt-in flag that turns fast playback off for one run (PLAN item 201).
+ *
+ * Playwright reports a headless user agent, so `isFastAnimation` returns true
+ * for every browser test and the enemy phase collapses its waits and its
+ * camera tracking out of the run — which left item 186's camera criterion
+ * with no test that could observe it. Loading the page with
+ * `?cameraTracking=1` plays the enemy phase at its real pace, so a test can
+ * watch the map scroll from enemy to enemy exactly as a player sees it.
+ * Nothing reads this flag except `isFastAnimation`, and no default changes.
+ */
+export function isCameraTrackingForced(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return new URLSearchParams(window.location.search).get('cameraTracking') === '1';
+  } catch {
+    return false;
+  }
+}
+
 export function isFastAnimation(): boolean {
   if (typeof window === 'undefined') return false;
+  if (isCameraTrackingForced()) return false;
   const ua = window.navigator?.userAgent ?? '';
   return /HeadlessChrome|Playwright/i.test(ua);
 }
