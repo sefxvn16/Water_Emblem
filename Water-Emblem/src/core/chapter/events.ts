@@ -325,26 +325,20 @@ export function canLowerDrawbridge(entry: ExtendedUnitState): boolean {
   return opensLocksInately(entry) || holdsItemRole(entry, 'bridgeKey') || holdsItemRole(entry, 'masterKey');
 }
 
+/** Spend exactly one use of one key: the item with the exact role first, a Master Key only as fallback. */
 function spendKeyRoleUse(units: readonly ExtendedUnitState[], unitId: string, role: string): ExtendedUnitState[] {
-  return mapUnit(units, unitId, (entry) => ({
-    ...entry,
-    inventory: entry.inventory.flatMap((item) => {
-      const r = itemRoleById.get(item.itemId);
-      if (r !== role && r !== 'masterKey') return [item];
-      return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
-    }),
-  }));
-}
-
-/** Spend one Master Key use (PLAN item 155); innate lockpickers spend nothing. */
-function spendMasterKeyUse(units: readonly ExtendedUnitState[], unitId: string): ExtendedUnitState[] {
-  return mapUnit(units, unitId, (entry) => ({
-    ...entry,
-    inventory: entry.inventory.flatMap((item) => {
-      if (itemRoleById.get(item.itemId) !== 'masterKey') return [item];
-      return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
-    }),
-  }));
+  return mapUnit(units, unitId, (entry) => {
+    let index = entry.inventory.findIndex((item) => itemRoleById.get(item.itemId) === role);
+    if (index < 0) index = entry.inventory.findIndex((item) => itemRoleById.get(item.itemId) === 'masterKey');
+    if (index < 0) return entry;
+    return {
+      ...entry,
+      inventory: entry.inventory.flatMap((item, i) => {
+        if (i !== index) return [item];
+        return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
+      }),
+    };
+  });
 }
 
 /** Open the chest the unit stands on; the reward follows village rules. */
@@ -367,7 +361,7 @@ export function openChest(
   // classes and the lord with the Fire Emblem open for free).
   const usesKey = !opensLocksInately(opener)
     && !(opener.unit.id === chapter.lordUnitId && holdsItemRole(opener, 'lordChestKey'));
-  const units = usesKey ? spendMasterKeyUse(reward.state.units, unitId) : reward.state.units;
+  const units = usesKey ? spendKeyRoleUse(reward.state.units, unitId, 'chestKey') : reward.state.units;
   return {
     state: { ...reward.state, units, chestStates: { ...state.chestStates, [chest.id]: 'opened' } },
     events: [
@@ -387,7 +381,7 @@ export function openDoor(
   if (!opener || (state.doorStates?.[door.id] ?? 'closed') !== 'closed') return unchanged(state);
   if (getManhattanDistance(opener.unit.position, door.position) !== 1) return unchanged(state);
   if (!canOpenDoor(opener)) return unchanged(state);
-  const units = opensLocksInately(opener) ? state.units : spendMasterKeyUse(state.units, unitId);
+  const units = opensLocksInately(opener) ? state.units : spendKeyRoleUse(state.units, unitId, 'doorKey');
   return {
     state: { ...state, units, doorStates: { ...state.doorStates, [door.id]: 'opened' } },
     events: [{ type: 'door_opened', unitId, unitName: opener.unit.name, doorId: door.id }],
