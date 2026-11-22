@@ -38,11 +38,12 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     expect(reinHtml).toContain('REINFORCEMENTS!');
   });
 
-  it('TerrainInfoWindow displays Avoid, Def, and NoMount tags for indoor FE3 terrain', () => {
-    // Indoor terrain: floor has noMount = true
+  it('TerrainInfoWindow displays Avoid and Def, and cavalry enters indoor terrain without forced dismount', () => {
+    // Indoor terrain: floor is passable for cavalry without forced dismount
     const floorTerrain = defaultTerrainRegistry.get('floor');
     expect(floorTerrain).toBeDefined();
-    expect(floorTerrain?.noMount).toBe(true);
+    expect(floorTerrain?.movementCosts.cavalry).toBe(1);
+    expect(floorTerrain?.movementCosts.foot).toBe(1);
 
     const floorHtml = renderToString(
       React.createElement(TerrainInfoWindow, {
@@ -52,9 +53,13 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     );
     expect(floorHtml).toContain('Floor');
     expect(floorHtml).toContain('Avoid : 0%');
-    expect(floorHtml).toContain('NoMount');
+    expect(floorHtml).not.toContain('NoMount');
 
-    // Throne has Def +2, Avoid 20%, noMount = true
+    // Throne has Def +2, Avoid 20%, passable for cavalry
+    const throneTerrain = defaultTerrainRegistry.get('throne');
+    expect(throneTerrain).toBeDefined();
+    expect(throneTerrain?.movementCosts.cavalry).toBe(2);
+
     const throneHtml = renderToString(
       React.createElement(TerrainInfoWindow, {
         terrainId: 'throne',
@@ -64,9 +69,14 @@ describe('phase banners, reinforcements, and FE3 battle templates match canon sp
     expect(throneHtml).toContain('Throne');
     expect(throneHtml).toContain('Avoid : 20%');
     expect(throneHtml).toContain('Def : +2');
-    expect(throneHtml).toContain('NoMount');
+    expect(throneHtml).not.toContain('NoMount');
 
-    // Outdoor terrain: Plains does not have NoMount
+    // Pillar has Def +1, Avoid 20%, passable for cavalry
+    const pillarTerrain = defaultTerrainRegistry.get('pillar');
+    expect(pillarTerrain).toBeDefined();
+    expect(pillarTerrain?.movementCosts.cavalry).toBe(3);
+
+    // Outdoor terrain: Plains
     const plainsHtml = renderToString(
       React.createElement(TerrainInfoWindow, {
         terrainId: 'plains',

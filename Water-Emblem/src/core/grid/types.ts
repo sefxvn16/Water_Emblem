@@ -20,7 +20,6 @@ export interface TerrainDefinition {
   readonly healPercent: number;
   readonly movementCosts: Record<MoveType, number | null>;
   readonly sourceClassCosts?: Readonly<Record<string, number | null>>;
-  readonly noMount?: boolean;
 }
 
 export interface MapData {
