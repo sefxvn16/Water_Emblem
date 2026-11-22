@@ -4,10 +4,12 @@ import type { SeededRNG } from './rng';
 import type { ItemDefinition } from './types';
 import type { DialogueTable, GameEvent, VillageState } from '../chapter/events';
 import { resolveDefeat } from '../chapter/events';
-import { applyCombatExperience } from '../progression/experience';
+import { applyCombatExperience, type LevelUpEvent } from '../progression/experience';
 import { applyCombatDurability } from './durability';
 import { applyCombatWeaponExp } from './weaponExp';
 import { applyBossPhases } from '../chapter/bossPhases';
+
+export type { LevelUpEvent };
 
 export interface CombatSoundCue {
   type: 'miss' | 'crit' | 'nodamage' | 'weapon' | 'death';
@@ -22,6 +24,7 @@ export interface CombatResolutionResult {
   gold: number;
   villageStates: Record<string, VillageState>;
   defeatedUnitId: string | null;
+  levelUps?: LevelUpEvent[];
 }
 
 export interface ResolveCombatOptions {
@@ -157,5 +160,6 @@ export function resolveCombatConsequences(options: ResolveCombatOptions): Combat
     gold: currentGold,
     villageStates: currentVillageStates,
     defeatedUnitId: result.unitDefeatedId ?? null,
+    levelUps: expResult.levelUps,
   };
 }

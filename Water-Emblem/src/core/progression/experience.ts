@@ -98,11 +98,26 @@ function rollGrowth(rate: number, rng: SeededRNG): number {
   return guaranteed + (rng.roll1RN(remainder) ? 1 : 0);
 }
 
+export interface AwardExperienceResult {
+  entry: ExtendedUnitState;
+  gainedLevel: boolean;
+  oldLevel?: number;
+  newLevel?: number;
+  statGains?: Record<string, number>;
+}
+
+export interface LevelUpEvent {
+  unit: ExtendedUnitState;
+  oldLevel: number;
+  newLevel: number;
+  statGains: Record<string, number>;
+}
+
 export function awardExperience(
   entry: ExtendedUnitState,
   amount: number,
   rng: SeededRNG,
-): { entry: ExtendedUnitState; gainedLevel: boolean } {
+): AwardExperienceResult {
   const expConfig = balanceConfig.experience;
   if (entry.unit.faction !== 'player' || entry.stats.hp === 0 || entry.level >= expConfig.maxLevel || amount <= 0) {
     return { entry, gainedLevel: false };
@@ -111,25 +126,39 @@ export function awardExperience(
   next.exp += amount;
   if (next.exp < expConfig.expPerLevel) return { entry: next, gainedLevel: false };
   next.exp -= expConfig.expPerLevel;
+  const oldLevel = next.level;
   next.level += 1;
   const growths = getEffectiveGrowthRates(next);
+  const statGains: Record<string, number> = {};
   for (const key of STAT_KEYS) {
-    next.stats[key] = Math.min(balanceConfig.statCaps.stat, next.stats[key] + rollGrowth(growths[key] ?? 0, rng));
+    const rolled = rollGrowth(growths[key] ?? 0, rng);
+    const prevVal = next.stats[key];
+    next.stats[key] = Math.min(balanceConfig.statCaps.stat, prevVal + rolled);
+    statGains[key] = next.stats[key] - prevVal;
   }
   const hpGain = rollGrowth(growths.hp ?? 0, rng);
-  next.stats.maxHp = Math.min(balanceConfig.statCaps.hp, next.stats.maxHp + hpGain);
-  next.stats.hp = Math.min(next.stats.maxHp, next.stats.hp + hpGain);
+  const prevMaxHp = next.stats.maxHp;
+  next.stats.maxHp = Math.min(balanceConfig.statCaps.hp, prevMaxHp + hpGain);
+  statGains.hp = next.stats.maxHp - prevMaxHp;
+  next.stats.hp = Math.min(next.stats.maxHp, next.stats.hp + statGains.hp);
   if (next.level >= expConfig.maxLevel) next.exp = 0;
-  return { entry: next, gainedLevel: true };
+  return {
+    entry: next,
+    gainedLevel: true,
+    oldLevel,
+    newLevel: next.level,
+    statGains,
+  };
 }
 
 export function applyCombatExperience(
   entries: readonly ExtendedUnitState[],
   combat: CombatResult,
   rng: SeededRNG,
-): { entries: ExtendedUnitState[]; messages: string[] } {
+): { entries: ExtendedUnitState[]; messages: string[]; levelUps: LevelUpEvent[] } {
   const next = [...entries];
   const messages: string[] = [];
+  const levelUps: LevelUpEvent[] = [];
   const attackerId = combat.forecast.attacker.unit.id;
   const defenderId = combat.forecast.defender.unit.id;
   for (const actorId of [attackerId, defenderId]) {
@@ -143,6 +172,14 @@ export function applyCombatExperience(
     const awarded = awardExperience(actor, amount, rng);
     next[actorIndex] = awarded.entry;
     messages.push(`${actor.unit.name} +${amount} EXP${awarded.gainedLevel ? ` — Level Up! Lv.${awarded.entry.level}` : ''}`);
+    if (awarded.gainedLevel && awarded.oldLevel !== undefined && awarded.newLevel !== undefined && awarded.statGains) {
+      levelUps.push({
+        unit: awarded.entry,
+        oldLevel: awarded.oldLevel,
+        newLevel: awarded.newLevel,
+        statGains: awarded.statGains,
+      });
+    }
   }
-  return { entries: next, messages };
+  return { entries: next, messages, levelUps };
 }

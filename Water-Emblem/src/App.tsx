@@ -30,24 +30,11 @@ import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { PhaseBanner } from './ui/PhaseBanner';
 import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
-import { resolveCombatConsequences } from './core/combat/combatResolution';
+import { resolveCombatConsequences, type LevelUpEvent } from './core/combat/combatResolution';
 import { computeDangerZone, computeInspectedEnemyThreatKeys } from './core/simulation/enemyTurnSimulation';
 import {
-  bossStartEvent,
-  canOpenChest,
-  canOpenDoor,
-  openChest,
-  openDoor,
-  pillageVillage,
-  recruit,
-  seize,
-  visitVillage,
-  type ChapterState,
-  type ChestState,
-  type DialogueLine,
-  type DoorState,
-  type GameEvent,
-  type VillageState,
+  bossStartEvent, canOpenChest, canOpenDoor, openChest, openDoor, pillageVillage, recruit, seize, visitVillage,
+  type ChapterState, type ChestState, type DialogueLine, type DoorState, type GameEvent, type VillageState,
 } from './core/chapter/events';
 import { eventLogLines, villageRewardText } from './ui/eventLog';
 import { evaluateChapterOutcome } from './core/chapter/types';
@@ -60,6 +47,7 @@ import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
 import { SaveSlotsModal } from './ui/SaveSlotsModal';
 import { WorldMapModal } from './ui/WorldMapModal';
+import { LevelUpModal } from './ui/LevelUpModal';
 import { BattleSettingsMenu, HUD_EDGE, HUD_SIZE } from './ui/BattleSettingsMenu';
 
 // Scroll padding so the last tiles can scroll out from under the bottom-right HUD cluster.
@@ -236,21 +224,15 @@ export const App: React.FC = () => {
     if (!attackTargeting && !weaponPickerOpen && !staffTargeting && !warpTargeting && !tradeTargeting && !combatForecast && !staffForecast && !staffPickerOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setAttackTargeting(false);
-        setWeaponPickerOpen(false);
-        setStaffTargeting(null);
-        setWarpTargeting(null);
-        setTradeTargeting(false);
-        setSelectedTarget(null);
-        setSelectedStaffTarget(null);
-        setStaffPickerOpen(false);
-        setCombatForecast(null);
-        setStaffForecast(null);
+        setAttackTargeting(false); setWeaponPickerOpen(false); setStaffTargeting(null); setWarpTargeting(null);
+        setTradeTargeting(false); setSelectedTarget(null); setSelectedStaffTarget(null); setStaffPickerOpen(false);
+        setCombatForecast(null); setStaffForecast(null);
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [attackTargeting, weaponPickerOpen, staffTargeting, warpTargeting, tradeTargeting, combatForecast, staffForecast, staffPickerOpen]);
+  const [pendingLevelUp, setPendingLevelUp] = useState<LevelUpEvent | null>(null);
   const [combatLog, setCombatLog] = useState<string[]>([]);
   const [popupQueue, setPopupQueue] = useState<CombatPopupData[]>([]);
   const popupQueueRef = useRef<CombatPopupData[]>([]);
@@ -1011,6 +993,10 @@ export const App: React.FC = () => {
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
       setExtendedUnits(updatedUnits);
+      if (resolution.levelUps && resolution.levelUps.length > 0) {
+        const playerLevelUp = resolution.levelUps.find((lu) => lu.unit.unit.faction === 'player');
+        if (playerLevelUp) setPendingLevelUp(playerLevelUp);
+      }
 
       const outcome = evaluateChapterOutcome(updatedUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
       if (outcome !== 'ongoing') setChapterOutcome(outcome);
@@ -1874,6 +1860,10 @@ export const App: React.FC = () => {
         phaseUnits = resolution.units;
         for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
         for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
+        if (resolution.levelUps && resolution.levelUps.length > 0) {
+          const playerLevelUp = resolution.levelUps.find((lu) => lu.unit.unit.faction === 'player');
+          if (playerLevelUp) setPendingLevelUp(playerLevelUp);
+        }
       } else if (decision.type === 'staff') {
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, decision.movePosition);
@@ -2683,6 +2673,16 @@ export const App: React.FC = () => {
           }}
           onDeployBattle={() => setActiveScreen('none')}
           onClose={() => setActiveScreen('none')}
+        />
+      )}
+      {/* Animated Level Up Modal */}
+      {pendingLevelUp && (
+        <LevelUpModal
+          unit={pendingLevelUp.unit}
+          oldLevel={pendingLevelUp.oldLevel}
+          newLevel={pendingLevelUp.newLevel}
+          statGains={pendingLevelUp.statGains}
+          onClose={() => setPendingLevelUp(null)}
         />
       )}
     </div>

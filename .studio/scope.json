@@ -1,5 +1,5 @@
 {
-  "task_id": "188-fe3-ui-game-feel",
+  "task_id": "189-modern-fe-ui",
   "plan_items": [
     178,
     179,
@@ -11,7 +11,8 @@
     185,
     186,
     187,
-    188
+    188,
+    189
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-22",
@@ -46,6 +47,9 @@
     "Water-Emblem/src/ui/ConvoyWindow.tsx",
     "Water-Emblem/src/ui/WeaponPickerWindow.tsx",
     "Water-Emblem/src/ui/UnitInspectorWindow.tsx",
+    "Water-Emblem/src/ui/UnitInspectorParts.tsx",
+    "Water-Emblem/src/ui/UnitHoverWindow.tsx",
+    "Water-Emblem/src/ui/LevelUpModal.tsx",
     "Water-Emblem/src/renderer/Grid2D.tsx",
     "Water-Emblem/vite.config.ts",
     "Water-Emblem/tests/core/attackHealFlow.test.ts",
@@ -77,6 +81,7 @@
     "Water-Emblem/src/core/grid/types.ts",
     "Water-Emblem/src/ui/PhaseBanner.tsx",
     "Water-Emblem/src/ui/TerrainInfoWindow.tsx",
-    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts"
+    "Water-Emblem/tests/core/gameFeelUpgrade.test.ts",
+    "Water-Emblem/tests/core/modernUIUpgrade.test.ts"
   ]
 }

@@ -83,6 +83,33 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
         <div style={{ color: DS_COLORS.hpRemainingText, fontWeight: 'bold', fontSize: '13px', marginTop: '1px' }}>
           HP {u.stats.hp} / {u.stats.maxHp}
         </div>
+        {/* Modern 2-color HP gauge */}
+        <div
+          data-testid="hover-hp-bar"
+          style={{
+            marginTop: '4px',
+            width: '100%',
+            height: '5px',
+            backgroundColor: '#1e293b',
+            borderRadius: '3px',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${Math.max(0, Math.min(100, (u.stats.hp / Math.max(1, u.stats.maxHp)) * 100))}%`,
+              background:
+                u.stats.hp / Math.max(1, u.stats.maxHp) > 0.5
+                  ? 'linear-gradient(90deg, #16a34a, #22c55e)'
+                  : u.stats.hp / Math.max(1, u.stats.maxHp) > 0.25
+                    ? 'linear-gradient(90deg, #d97706, #f59e0b)'
+                    : 'linear-gradient(90deg, #b91c1c, #ef4444)',
+              borderRadius: '3px',
+              transition: 'width 0.3s ease',
+            }}
+          />
+        </div>
       </div>
 
       {/* Column 2: Center Portrait Avatar */}
@@ -112,7 +139,7 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
       </div>
 
       {/* Column 3: Equipped Weapon & Details Action */}
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '62px' }}>
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '62px', gap: '4px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
           <span style={{ fontWeight: 'bold', fontSize: '14px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {u.weapon?.name ?? 'Unarmed'}
@@ -126,6 +153,23 @@ export const UnitHoverWindow: React.FC<UnitHoverWindowProps> = ({
             />
           )}
         </div>
+
+        {u.weapon && (
+          <div
+            data-testid="hover-combat-preview"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              gap: '8px',
+              fontSize: '11px',
+              color: '#94a3b8',
+            }}
+          >
+            <span>Mt <strong style={{ color: '#f8fafc' }}>{u.weapon.might ?? '—'}</strong></span>
+            <span>Hit <strong style={{ color: '#f8fafc' }}>{u.weapon.hit ?? '—'}%</strong></span>
+          </div>
+        )}
 
         {onInspect && (
           <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '6px' }}>

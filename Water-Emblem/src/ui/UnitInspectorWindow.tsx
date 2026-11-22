@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import itemsJson from '../../data/items.json' with { type: 'json' };
 import { calculateDisplayedCombatStats } from '../core/combat/calculator';
 import { calculateSupportBonus } from '../core/combat/support';
@@ -10,7 +10,16 @@ import type { Position } from '../core/grid/types';
 import { defaultTerrainRegistry } from '../core/grid/terrain';
 import { DS_COLORS, DS_FONTS, DS_RADII, DS_SPACING, DS_Z } from './designSystem';
 import { getItemDisplayName, getItemIcon } from './itemIcon';
-import { ItemSlot, SectionTitle, StatBox, StatRow, WeaponCell } from './UnitInspectorParts';
+import {
+  ItemSlot,
+  SectionTitle,
+  SkillsTab,
+  StatBox,
+  StatRow,
+  SupportsTab,
+  WeaponCell,
+  WeaponRanksTab,
+} from './UnitInspectorParts';
 
 interface UnitInspectorWindowProps {
   unit: ExtendedUnitState;
@@ -20,6 +29,8 @@ interface UnitInspectorWindowProps {
   onClose: () => void;
 }
 
+type InspectorTab = 'stats' | 'ranks' | 'skills' | 'supports';
+
 export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   unit: u,
   allUnits,
@@ -28,6 +39,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
   onClose,
 }) => {
   const rootRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState<InspectorTab>('stats');
 
   useEffect(() => {
     const shownAt = performance.now();
@@ -74,37 +86,16 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
 
   const equippedInv = u.weapon ? u.inventory.find((inv) => inv.itemId === u.weapon!.id) : undefined;
   const weaponList: Array<{ name: string; uses: number | string; icon: string }> = u.weapon
-    ? [
-        {
-          name: u.weapon.name,
-          uses: equippedInv ? equippedInv.uses : (u.weapon.maxUses ?? 40),
-          icon: getItemIcon(u.weapon.id, u.weapon.type),
-        },
-      ]
+    ? [{ name: u.weapon.name, uses: equippedInv ? equippedInv.uses : (u.weapon.maxUses ?? 40), icon: getItemIcon(u.weapon.id, u.weapon.type) }]
     : [];
-
   const itemList: Array<{ name: string; uses: number | string; icon: string }> = [];
-
   let equippedSkipped = false;
   for (const inv of inventoryItems) {
     const isWeapon = ['sword', 'lance', 'axe', 'bow', 'staff'].includes(inv.type);
-    // The equipped weapon already heads the list; skip its own inventory
-    // entry so slot 1 is not shown twice (PLAN item 82). A second copy of
-    // the same weapon still shows.
-    if (isWeapon && !equippedSkipped && inv.id === u.weapon?.id) {
-      equippedSkipped = true;
-      continue;
-    }
-    const entry = {
-      name: inv.name,
-      uses: inv.uses,
-      icon: getItemIcon(inv.id, inv.type),
-    };
-    if (isWeapon && weaponList.length < 4) {
-      weaponList.push(entry);
-    } else {
-      itemList.push(entry);
-    }
+    if (isWeapon && !equippedSkipped && inv.id === u.weapon?.id) { equippedSkipped = true; continue; }
+    const entry = { name: inv.name, uses: inv.uses, icon: getItemIcon(inv.id, inv.type) };
+    if (isWeapon && weaponList.length < 4) weaponList.push(entry);
+    else itemList.push(entry);
   }
 
   const hpPct = u.stats.maxHp > 0 ? Math.min(100, (u.stats.hp / u.stats.maxHp) * 100) : 0;
@@ -165,50 +156,62 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           onClick={onClose}
           aria-label="Close unit details"
           style={{
-            width: '44px',
-            height: '44px',
-            minWidth: '44px',
-            padding: 0,
-            flexShrink: 0,
-            fontSize: '15px',
-            lineHeight: 1,
-            backgroundColor: 'transparent',
-            border: `1px solid ${tone.hairline}`,
-            borderRadius: DS_RADII.panel,
-            color: DS_COLORS.inspectorLabel,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxSizing: 'border-box',
+            width: '44px', height: '44px', minWidth: '44px', padding: 0, flexShrink: 0, fontSize: '15px', lineHeight: 1,
+            backgroundColor: 'transparent', border: `1px solid ${tone.hairline}`, borderRadius: DS_RADII.panel,
+            color: DS_COLORS.inspectorLabel, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box',
           }}
         >
           ✕
         </button>
       </div>
 
-      {/* Hero: portrait + identity + HP bar */}
-      <div style={{ display: 'flex', gap: DS_SPACING.xxxl, padding: '4px 16px 16px', alignItems: 'flex-start' }}>
+      {/* Modern FE Tab bar (Awakening / Three Houses style) */}
+      <div
+        role="tablist"
+        aria-label="Inspector Views"
+        style={{
+          display: 'flex', borderBottom: `1px solid ${tone.hairline}`, backgroundColor: 'rgba(0, 0, 0, 0.25)', padding: '0 8px', gap: '4px', marginBottom: '12px',
+        }}
+      >
+        {[
+          { id: 'stats', label: '⚔️ Stats' },
+          { id: 'ranks', label: '🛡️ Ranks' },
+          { id: 'skills', label: '✦ Skills' },
+          { id: 'supports', label: '🤝 Supports' },
+        ].map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <div
+              key={tab.id}
+              role="tab"
+              aria-selected={isActive}
+              tabIndex={0}
+              onClick={() => setActiveTab(tab.id as InspectorTab)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setActiveTab(tab.id as InspectorTab); } }}
+              style={{
+                flex: 1, textAlign: 'center', padding: '8px 4px', fontSize: '12px', fontWeight: isActive ? 600 : 400,
+                color: isActive ? DS_COLORS.goldText : DS_COLORS.inspectorLabel, borderBottom: isActive ? `2px solid ${DS_COLORS.gold}` : '2px solid transparent',
+                cursor: 'pointer', userSelect: 'none', transition: 'all 0.15s ease',
+              }}
+            >
+              {tab.label}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tab 1: Battle Overview & Stats */}
+      <div style={{ display: activeTab === 'stats' ? 'block' : 'none' }}>
+        {/* Hero: portrait + identity + HP bar */}
+        <div style={{ display: 'flex', gap: DS_SPACING.xxxl, padding: '4px 16px 16px', alignItems: 'flex-start' }}>
         <div
           style={{
-            width: '112px',
-            height: '112px',
-            flexShrink: 0,
-            backgroundColor: tone.track,
-            borderRadius: DS_RADII.large,
-            border: `1px solid ${DS_COLORS.inspectorFrame}`,
-            overflow: 'hidden',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            width: '112px', height: '112px', flexShrink: 0, backgroundColor: tone.track, borderRadius: DS_RADII.large,
+            border: `1px solid ${DS_COLORS.inspectorFrame}`, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
           {u.avatarUrl ? (
-            <img
-              src={u.avatarUrl}
-              alt={u.unit.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            />
+            <img src={u.avatarUrl} alt={u.unit.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           ) : (
             <span style={{ fontSize: '22px' }}>👤</span>
           )}
@@ -223,26 +226,15 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           </div>
           <div
             style={{
-              marginTop: '12px',
-              height: '10px',
-              backgroundColor: tone.track,
-              border: `1px solid ${tone.hairline}`,
-              borderRadius: DS_RADII.medium,
-              overflow: 'hidden',
-              position: 'relative',
+              marginTop: '12px', height: '10px', backgroundColor: tone.track, border: `1px solid ${tone.hairline}`,
+              borderRadius: DS_RADII.medium, overflow: 'hidden', position: 'relative',
             }}
           >
             <div style={{ height: '100%', width: `${hpPct}%`, background: 'linear-gradient(90deg, #16a34a, #22c55e)' }} />
             <span
               style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '11px',
-                fontWeight: 'bold',
-                color: '#fff',
+                position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '11px', fontWeight: 'bold', color: '#fff',
               }}
             >
               HP {u.stats.hp} / {u.stats.maxHp}
@@ -263,15 +255,8 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
               <div
                 key={`empty-w-${idx}`}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: tone.panel,
-                  border: `1px solid ${tone.hairline}`,
-                  borderRadius: DS_RADII.panel,
-                  padding: '8px 12px',
-                  color: '#5b6b85',
-                  fontSize: '12px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: tone.panel,
+                  border: `1px solid ${tone.hairline}`, borderRadius: DS_RADII.panel, padding: '8px 12px', color: '#5b6b85', fontSize: '12px',
                 }}
               >
                 —
@@ -344,17 +329,7 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
 
       {/* Support Bonus if active */}
       {sup && (sup.hit > 0 || sup.avoid > 0 || sup.crit > 0) && (
-        <div
-          style={{
-            backgroundColor: 'rgba(59, 130, 246, 0.15)',
-            border: '1px solid rgba(59, 130, 246, 0.35)',
-            padding: '6px 10px',
-            borderRadius: DS_RADII.medium,
-            fontSize: '12px',
-            color: '#bfdbfe',
-            margin: '0 16px 12px',
-          }}
-        >
+        <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.15)', border: '1px solid rgba(59, 130, 246, 0.35)', padding: '6px 10px', borderRadius: DS_RADII.medium, fontSize: '12px', color: '#bfdbfe', margin: '0 16px 12px' }}>
           Support Bonus: +{sup.hit}% Hit · +{sup.avoid}% Avo · +{sup.crit}% Crit
         </div>
       )}
@@ -372,6 +347,16 @@ export const UnitInspectorWindow: React.FC<UnitInspectorWindowProps> = ({
           Tile ({tile.x}, {tile.y}): {hoveredTerrain.name} · Avoid +{hoveredTerrain.avoidBonus}% · Def +{hoveredTerrain.defenseBonus}
         </div>
       )}
+      </div>
+
+      {/* Tab 2: Weapon Ranks & Inventory */}
+      {activeTab === 'ranks' && <WeaponRanksTab unit={u} tone={tone} inventoryItems={inventoryItems} />}
+
+      {/* Tab 3: Skills & Combat Arts */}
+      {activeTab === 'skills' && <SkillsTab unit={u} tone={tone} />}
+
+      {/* Tab 4: Supports */}
+      {activeTab === 'supports' && <SupportsTab unit={u} allUnits={allUnits} tone={tone} />}
     </div>
   );
 };
