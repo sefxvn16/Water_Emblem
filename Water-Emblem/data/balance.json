@@ -136,7 +136,16 @@
     "antiSuicideThreshold": 2,
     "selfHealHpThreshold": 0.4,
     "selfHealScore": 85,
-    "maxRangeKitingBonus": 15
+    "maxRangeKitingBonus": 15,
+    "antiSuicidePenalty": 200,
+    "lethalCounterPenalty": 100,
+    "bossHealBonus": 30,
+    "threatScanDistance": 6,
+    "targetRoleBonus": {
+      "healer": 20,
+      "ranged": 15,
+      "leader": 10
+    }
   },
   "popupDurationMs": 1400,
   "statCaps": {
