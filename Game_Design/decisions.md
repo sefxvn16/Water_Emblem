@@ -61,22 +61,13 @@ Nguồn: chủ dự án chốt sau bản đề xuất tổng hợp cơ chế FE3
 - **Nhóm A đã chốt (17:06):** A1–A7 đồng ý; A8 túi đồ theo FE3 (4 vũ khí + 4 vật phẩm); A9 WEx theo FE5 (rank vũ khí đã có sẵn trong dữ liệu, chỉ chưa tăng theo dùng); A10 **thăng cấp không cần đồ** — đủ cấp (≥10) thì người chơi được chọn thăng cấp, không cần Master Seal; A11 viện binh cuối pha địch; A12 **bỏ toàn bộ Astral Shards**, chỉ giữ Spheres nhưng **bỏ chức năng tăng chỉ số**, chỉ giữ chức năng dùng để đánh rồng/boss (vd Lightsphere khắc Darksphere, Binding Shield đuổi Earth Dragon); A13 manakete biến hình **không cần đá**, tối đa 5 lượt, Luck cao thêm 1 lượt, sau đó nghỉ 2 lượt mới biến hình lại; A14–A16 đồng ý (ballista, Triangle Attack, Dancer/Xane — nội dung Book 2); **A17 bỏ** (không làm vật phẩm tăng chỉ số).
 - **Nhóm B đã chốt, cứ làm không thay đổi.**
 
-## Quyết định bổ sung ngày 2026-11-22 (Chủ dự án phê duyệt)
+## Quyết định bổ sung ngày 2026-11-22
 
-Nguồn: Chủ dự án duyệt kế hoạch triển khai FE3 Akaneia Refined và các chỉ đạo ngày 2026-11-22.
+Nguồn: chỉ đạo trực tiếp của chủ dự án ngày 2026-11-22.
 
-1. **Kị binh trong thành (Sàn, Ngai, Điện thờ, Trụ cột, Hành lang):**
-   - **Không bắt buộc kị binh phải xuống ngựa (dismount) khi vào thành/lâu đài** theo chỉ đạo trực tiếp của chủ dự án ngày 2026-11-22 ("tôi đã yêu cầu là không cần xuống ngựa khi vào thành rồi, lại bổ sung là sao?").
-   - Kị binh vào thành thì bị giảm MOV xuống ngang bằng hoặc chậm hơn bộ binh: chi phí di chuyển (movement cost) của kị binh trên các ô trong thành (`floor`, `throne`, `altar`, `pillar`, `corridor`) là **2–3 MOV/ô** (trong khi bộ binh tốn 1 MOV/ô).
-2. **Dữ liệu danh mục tham chiếu (Catalog Reference Data) cho A13 và A17:**
-   - **A13 (Manakete biến hình):** Giữ nguyên quyết định A13: Manakete biến hình **không cần đá** (tối đa 5 lượt, Luck cao thêm 1 lượt, nghỉ 2 lượt). 7 loại Đá Rồng (Dragonstones) có trong `data/items.json` là dữ liệu danh mục trơ phục vụ tra cứu chuẩn FE3, không yêu cầu người chơi phải dùng đá để biến hình.
-   - **A17 (Vật phẩm tăng chỉ số vĩnh viễn):** Giữ nguyên quyết định A17: Bỏ vật phẩm tăng chỉ số vĩnh viễn trong gameplay (Power Ring, Seraph Robe, Energy Drop...). Các vật phẩm này có trong `data/items.json` dưới dạng dữ liệu danh mục trơ tham chiếu FE3, không có logic sử dụng (không tiêu hao để tăng vĩnh viễn chỉ số của nhân vật).
-3. **Nâng cấp AI địch thông minh theo chuẩn Fire Emblem đời mới (Awakening / Three Houses):**
-   - Thứ tự hành động (Turn Order Priority): Healer có đồng đội bị thương trong tầm -> Quân tấn công tầm xa (Bows, Magic, Javelin) -> Quân dứt điểm kết liễu -> Quân cận chiến và các quân còn lại.
-   - Tự bảo toàn & hồi phục (Self-Preservation): Đơn vị địch còn $\le 40\%$ máu và có mang Vulnerary/vật phẩm hồi máu thì tự uống máu (+30 HP) và di chuyển vào ô địa hình có chỉ số thủ/né cao.
-   - Tránh tự sát (Anti-Suicide): Không lao vào tấn công khi sát thương gây ra $\le 2$ mà đối thủ phản đòn chí mạng/chết người.
-   - Kiting tầm tối đa (Max-Range Kiting): Quân tầm xa ưu tiên đứng khoảng cách 2 ô khi tấn công quân cận chiến 1 ô để né phản đòn và giữ trống ô 1 ô cho đồng đội cận chiến.
-   - Dồn hỏa lực (Focus Fire): Tăng điểm ưu tiên nhắm vào các mục tiêu người chơi đã bị mất máu để nhanh chóng dứt điểm.
+- **Kị binh trong thành (Sàn, Ngai, Điện thờ, Trụ cột, Hành lang):**
+  - **Không bắt buộc kị binh phải xuống ngựa (dismount) khi vào thành/lâu đài** theo chỉ đạo trực tiếp của chủ dự án ngày 2026-11-22 ("tôi đã yêu cầu là không cần xuống ngựa khi vào thành rồi, lại bổ sung là sao?").
+  - Kị binh vào thành thì bị giảm MOV xuống ngang bằng hoặc chậm hơn bộ binh: chi phí di chuyển (movement cost) của kị binh trên các ô trong thành (`floor`, `throne`, `altar`, `pillar`, `corridor`) là **2–3 MOV/ô** (trong khi bộ binh tốn 1 MOV/ô). Con số 2–3 MOV mỗi ô trong thành là tham số do chủ dự án đặt, không gán cho bản Fire Emblem nào làm nguồn.
 
 ## Điểm còn cần chốt hoặc kiểm nguồn trước khi triển khai
 
