@@ -424,8 +424,10 @@ export function loadChapterData(
   if (!Array.isArray(deploymentSlotRows)) throw new Error('chapter.deploymentSlots must be an array');
   const deploymentSlots = deploymentSlotRows.map((value: unknown, index: number) =>
     readPosition(value, map, `chapter.deploymentSlots[${index}]`));
-  if (deploymentSlots.length > 0 && deploymentSlots.length !== carryoverUnitIds.length) {
-    throw new Error('Deployment slot count must match carryover unit count');
+  // Atlas FE3 có chương khai ô triển khai cho cả quân không tên (ví dụ Book 1 chương 5: `P unit x11`),
+  // nên số ô có thể nhiều hơn số nhân vật mang sang. Chỉ chặn khi thiếu ô cho một unit (PLAN mục 203).
+  if (deploymentSlots.length > 0 && deploymentSlots.length < carryoverUnitIds.length) {
+    throw new Error('Deployment slots must cover every carryover unit');
   }
   if (new Set(deploymentSlots.map(({ x, y }) => `${x},${y}`)).size !== deploymentSlots.length) {
     throw new Error('Duplicate deployment slot');
