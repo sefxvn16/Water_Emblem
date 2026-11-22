@@ -167,3 +167,108 @@ describe('chests and doors (PLAN item 92)', () => {
     expect(isGameSnapshot(bogus)).toBe(false);
   });
 });
+
+describe('chest key and door key each spend exactly one use per lock (PLAN item 191)', () => {
+  const chest = testChapter.chests![0]!;
+  const door = testChapter.doors![0]!;
+
+  function keyOf(units: readonly ExtendedUnitState[], unitId: string, itemId: string) {
+    return find(units, unitId).inventory.filter((i) => i.itemId === itemId);
+  }
+
+  it('a Chest Key is consumed when a non-thief opens a chest, and runs out', () => {
+    const state = stateOf(testChapter);
+    const cain = find(state.units, 'cain');
+    cain.unit.position = { x: 7, y: 4 };
+    cain.inventory = [...cain.inventory, { itemId: 'chest_key', uses: 2 }];
+
+    expect(canOpenChest(cain, testChapter)).toBe(true);
+    const first = openChest(state, 'cain', chest, testChapter, itemsJson.items);
+    expect(first.state.chestStates).toEqual({ test_chest: 'opened' });
+    expect(keyOf(first.state.units, 'cain', 'chest_key')[0]?.uses).toBe(1);
+
+    // Spending the last use removes the key, and without a key the unit can no longer open chests.
+    const spent = stateOf(testChapter);
+    const cain2 = find(spent.units, 'cain');
+    cain2.unit.position = { x: 7, y: 4 };
+    cain2.inventory = [...cain2.inventory, { itemId: 'chest_key', uses: 1 }];
+    const last = openChest(spent, 'cain', chest, testChapter, itemsJson.items);
+    expect(keyOf(last.state.units, 'cain', 'chest_key')).toEqual([]);
+    expect(canOpenChest(find(last.state.units, 'cain'), testChapter)).toBe(false);
+  });
+
+  it('a Door Key is consumed when a non-thief opens a door', () => {
+    const state = stateOf(testChapter);
+    const marth = find(state.units, 'marth');
+    marth.unit.position = { x: 0, y: 2 };
+    marth.inventory = [...marth.inventory, { itemId: 'door_key', uses: 2 }];
+
+    expect(canOpenDoor(marth)).toBe(true);
+    const result = openDoor(state, 'marth', door);
+    expect(result.state.doorStates).toEqual({ test_door: 'opened' });
+    expect(keyOf(result.state.units, 'marth', 'door_key')[0]?.uses).toBe(1);
+  });
+
+  it('opening one lock spends one use of one key, never several at once', () => {
+    const two = stateOf(testChapter);
+    const cain = find(two.units, 'cain');
+    cain.unit.position = { x: 7, y: 4 };
+    cain.inventory = [...cain.inventory, { itemId: 'chest_key', uses: 2 }, { itemId: 'chest_key', uses: 2 }];
+    const opened = openChest(two, 'cain', chest, testChapter, itemsJson.items);
+    expect(keyOf(opened.state.units, 'cain', 'chest_key').map((i) => i.uses)).toEqual([1, 2]);
+
+    const pair = stateOf(testChapter);
+    const marth = find(pair.units, 'marth');
+    marth.unit.position = { x: 0, y: 2 };
+    marth.inventory = [...marth.inventory, { itemId: 'door_key', uses: 2 }, { itemId: 'master_key', uses: 5 }];
+    const byDoorKey = openDoor(pair, 'marth', door);
+    expect(keyOf(byDoorKey.state.units, 'marth', 'door_key')[0]?.uses).toBe(1);
+    expect(keyOf(byDoorKey.state.units, 'marth', 'master_key')[0]?.uses).toBe(5);
+
+    const masters = stateOf(testChapter);
+    const marth2 = find(masters.units, 'marth');
+    marth2.unit.position = { x: 0, y: 2 };
+    marth2.inventory = [...marth2.inventory, { itemId: 'master_key', uses: 5 }, { itemId: 'master_key', uses: 5 }];
+    const byMaster = openDoor(masters, 'marth', door);
+    expect(keyOf(byMaster.state.units, 'marth', 'master_key').map((i) => i.uses)).toEqual([4, 5]);
+  });
+
+  it('a Master Key is the fallback only when no matching key is carried', () => {
+    const state = stateOf(testChapter);
+    const cain = find(state.units, 'cain');
+    cain.unit.position = { x: 7, y: 4 };
+    cain.inventory = [...cain.inventory, { itemId: 'master_key', uses: 5 }];
+    const result = openChest(state, 'cain', chest, testChapter, itemsJson.items);
+    expect(keyOf(result.state.units, 'cain', 'master_key')[0]?.uses).toBe(4);
+  });
+
+  it('thieves and the lord with the Fire Emblem still open locks for free', () => {
+    const state = stateOf(chapter03);
+    const julian = find(state.units, 'julian');
+    julian.unit.position = { x: 22, y: 2 };
+    julian.inventory = [...julian.inventory, { itemId: 'chest_key', uses: 1 }];
+    const chest03 = chapter03.chests![0]!;
+    const byThief = openChest(state, 'julian', chest03, chapter03, itemsJson.items);
+    expect(keyOf(byThief.state.units, 'julian', 'chest_key')[0]?.uses).toBe(1);
+
+    const lordState = stateOf(testChapter);
+    const marth = find(lordState.units, 'marth');
+    marth.unit.position = { x: 7, y: 4 };
+    marth.inventory = [...marth.inventory, { itemId: 'fire_emblem', uses: 1 }];
+    const byLord = openChest(lordState, 'marth', chest, testChapter, itemsJson.items);
+    expect(keyOf(byLord.state.units, 'marth', 'fire_emblem')[0]?.uses).toBe(1);
+  });
+
+  it('spending a key does not mutate the state passed in', () => {
+    const state = stateOf(testChapter);
+    const cain = find(state.units, 'cain');
+    cain.unit.position = { x: 7, y: 4 };
+    cain.inventory = [...cain.inventory, { itemId: 'chest_key', uses: 2 }];
+    const before = JSON.stringify(state);
+
+    const result = openChest(state, 'cain', chest, testChapter, itemsJson.items);
+
+    expect(JSON.stringify(state)).toBe(before);
+    expect(result.state.units).not.toBe(state.units);
+  });
+});

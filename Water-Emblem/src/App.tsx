@@ -24,7 +24,7 @@ import {
 } from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
 import { canDanceFor, executeDance } from './core/turn/dance';
-import { evaluateAITurn, sortEnemyTurnOrder, type AIDecision } from './core/ai/decision';
+import { collectBossUnitIds, evaluateAITurn, sortEnemyTurnOrder, type AIDecision } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { PhaseBanner } from './ui/PhaseBanner';
@@ -1778,6 +1778,7 @@ export const App: React.FC = () => {
       openedDoors: openedDoorKeys,
       unitInventoriesMap: new Map(phaseUnits.map((u) => [u.unit.id, u.inventory])),
       itemsCatalog: ITEM_BY_ID,
+      bossUnitIds: collectBossUnitIds(phaseUnits),
     });
 
     const sortedEnemies = activeEnemies.length > 0 ? sortEnemyTurnOrder(activeEnemies, buildAIContext(activeEnemies[0]!)) : [];

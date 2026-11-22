@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateAITurn, sortEnemyTurnOrder, type AIContext } from '../../src/core/ai/decision';
+import { collectBossUnitIds, evaluateAITurn, sortEnemyTurnOrder, type AIContext } from '../../src/core/ai/decision';
 import { defaultTerrainRegistry } from '../../src/core/grid/terrain';
 import type { GridUnit, MapData } from '../../src/core/grid/types';
 import type { ItemDefinition, UnitCombatStats } from '../../src/core/combat/types';
@@ -417,5 +417,106 @@ describe('smart FE enemy AI: turn order priority, self-healing, anti-suicide, an
     if (decision.type === 'attack') {
       expect(decision.targetUnit.id).toBe('player_wounded');
     }
+  });
+});
+
+describe('anti-suicide never cancels a killing blow and boss priority reads the data flag (PLAN item 192)', () => {
+  const enemyUnit: GridUnit = {
+    id: 'enemy_fighter', name: 'Brigand', faction: 'enemy', position: { x: 3, y: 3 },
+    mov: 5, moveType: 'foot', classId: 'fighter', isDead: false,
+  };
+  const targetUnit: GridUnit = {
+    id: 'barst', name: 'Barst', faction: 'player', position: { x: 4, y: 3 },
+    mov: 5, moveType: 'foot', classId: 'fighter', isDead: false,
+  };
+
+  /** Enemy deals 2 damage (<= antiSuicideThreshold) and dies to the counter. */
+  function contextWithTargetHp(targetHp: number): AIContext {
+    const statsMap = new Map<string, UnitCombatStats>([
+      ['enemy_fighter', { hp: 5, maxHp: 24, str: 8, mag: 0, skill: 8, spd: 7, lck: 2, def: 4, res: 0 }],
+      ['barst', { hp: targetHp, maxHp: 24, str: 11, mag: 0, skill: 10, spd: 7, lck: 5, def: 13, res: 0 }],
+    ]);
+    return {
+      map: mockMap,
+      terrains: defaultTerrainRegistry,
+      units: [enemyUnit, targetUnit],
+      unitStatsMap: statsMap,
+      unitWeaponsMap: new Map([['enemy_fighter', ironAxe], ['barst', ironAxe]]),
+      itemsCatalog,
+      unitInventoriesMap: new Map([['enemy_fighter', [{ itemId: 'iron_axe', uses: 30 }]]]),
+    };
+  }
+
+  it('still attacks when the weak blow kills, even though the counter would be lethal', () => {
+    const decision = evaluateAITurn(enemyUnit, 'pursue', contextWithTargetHp(2));
+    expect(decision.type).toBe('attack');
+    if (decision.type === 'attack') {
+      expect(decision.targetUnit.id).toBe('barst');
+      expect(decision.forecast.attacker.damage).toBeLessThanOrEqual(2);
+      expect(decision.forecast.attacker.damage * decision.forecast.attacker.attackCount)
+        .toBeGreaterThanOrEqual(2);
+      expect(decision.forecast.defender.damage).toBeGreaterThanOrEqual(5);
+    }
+  });
+
+  it('refuses the same attack when it does not kill', () => {
+    const decision = evaluateAITurn(enemyUnit, 'pursue', contextWithTargetHp(24));
+    expect(decision.type).not.toBe('attack');
+  });
+
+  it('collectBossUnitIds returns only units flagged isBoss in chapter data', () => {
+    const entryOf = (id: string, isBoss?: boolean): ExtendedUnitState => ({
+      unit: { ...enemyUnit, id, name: id },
+      stats: { hp: 10, maxHp: 10, str: 1, mag: 0, skill: 1, spd: 1, lck: 1, def: 1, res: 0 },
+      level: 1,
+      exp: 0,
+      inventory: [],
+      ...(isBoss === undefined ? {} : { isBoss }),
+    });
+    const ids = collectBossUnitIds([entryOf('a', true), entryOf('b', false), entryOf('c')]);
+    expect([...ids]).toEqual(['a']);
+  });
+
+  it('heals the boss ally over a more wounded ally, by the data flag and not by name', () => {
+    const healer: GridUnit = {
+      id: 'enemy_healer', name: 'Curate', faction: 'enemy', position: { x: 2, y: 2 },
+      mov: 5, moveType: 'foot', classId: 'curate', isDead: false,
+    };
+    const allyLow: GridUnit = {
+      id: 'ally_low', name: 'Brigand', faction: 'enemy', position: { x: 2, y: 3 },
+      mov: 5, moveType: 'foot', classId: 'fighter', isDead: false,
+    };
+    const allyBoss: GridUnit = {
+      id: 'ally_boss', name: 'Gharnef', faction: 'enemy', position: { x: 3, y: 2 },
+      mov: 5, moveType: 'foot', classId: 'fighter', isDead: false,
+    };
+    const farPlayer: GridUnit = {
+      id: 'marth', name: 'Marth', faction: 'player', position: { x: 9, y: 9 },
+      mov: 5, moveType: 'foot', classId: 'lord', isDead: false,
+    };
+
+    const statsMap = new Map<string, UnitCombatStats>([
+      ['enemy_healer', { hp: 18, maxHp: 18, str: 1, mag: 6, skill: 4, spd: 5, lck: 2, def: 2, res: 5 }],
+      ['ally_low', { hp: 10, maxHp: 24, str: 9, mag: 0, skill: 3, spd: 6, lck: 2, def: 5, res: 0 }],
+      ['ally_boss', { hp: 14, maxHp: 24, str: 9, mag: 0, skill: 3, spd: 6, lck: 2, def: 5, res: 0 }],
+      ['marth', { hp: 20, maxHp: 20, str: 7, mag: 0, skill: 8, spd: 9, lck: 7, def: 6, res: 0 }],
+    ]);
+    const base = {
+      map: mockMap,
+      terrains: defaultTerrainRegistry,
+      units: [healer, allyLow, allyBoss, farPlayer],
+      unitStatsMap: statsMap,
+      unitWeaponsMap: new Map([['enemy_healer', healStaff]]),
+      itemsCatalog,
+      unitInventoriesMap: new Map([['enemy_healer', [{ itemId: 'heal', uses: 20 }]]]),
+    };
+
+    const withoutFlag = evaluateAITurn(healer, 'pursue', base);
+    expect(withoutFlag.type).toBe('staff');
+    if (withoutFlag.type === 'staff') expect(withoutFlag.targetUnit.id).toBe('ally_low');
+
+    const withFlag = evaluateAITurn(healer, 'pursue', { ...base, bossUnitIds: new Set(['ally_boss']) });
+    expect(withFlag.type).toBe('staff');
+    if (withFlag.type === 'staff') expect(withFlag.targetUnit.id).toBe('ally_boss');
   });
 });

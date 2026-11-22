@@ -5,7 +5,7 @@ import type { ChapterData, ExtendedUnitState } from '../data/chapterData';
 import type { GameEvent, VillageState, ChestState, DialogueTable } from '../chapter/events';
 import { pillageVillage } from '../chapter/events';
 import type { TurnManager } from '../turn/turnManager';
-import { evaluateAITurn, type AIDecision } from '../ai/decision';
+import { collectBossUnitIds, evaluateAITurn, type AIDecision } from '../ai/decision';
 import { executeCombat } from '../combat/calculator';
 import type { SeededRNG } from '../combat/rng';
 import { defaultRNG } from '../combat/rng';
@@ -172,6 +172,7 @@ export function executeSingleEnemyAction(
       openedDoors: context.openedDoors,
       unitInventoriesMap: new Map(workingUnits.map((u) => [u.unit.id, u.inventory])),
       itemsCatalog: context.itemById,
+      bossUnitIds: collectBossUnitIds(workingUnits),
     });
   }
 
