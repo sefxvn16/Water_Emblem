@@ -88,6 +88,26 @@ def clean_fe3_text(raw_text: str) -> str:
     return text
 
 
+def clean_chapter_title(raw_title: str) -> str:
+    """Cleans a chapter title: strips bracket tags, normalizes whitespace and newlines, strips quotes."""
+    if not raw_title:
+        return ""
+    # Strip bracket codes
+    title = re.sub(r'\[[^\]]*\]', '', raw_title)
+    # Replace newlines with spaces and collapse whitespace
+    title = ' '.join(title.split())
+    # Strip outer quotes or stray quotes
+    title = title.strip(' "\'“”‘’')
+    return title
+
+
+def slugify_id(text: str) -> str:
+    """Generates a clean snake_case ID without quotes, newlines, or special characters."""
+    cleaned = clean_chapter_title(text).lower()
+    slug = re.sub(r'[^a-z0-9]+', '_', cleaned).strip('_')
+    return slug
+
+
 def parse_dialogue_file(filepath: str) -> List[Dict[str, str]]:
     """Parses an FE3 dialogue file into a list of {speaker, avatarUrl, text} objects."""
     if not os.path.isfile(filepath):

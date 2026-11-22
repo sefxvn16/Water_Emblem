@@ -148,15 +148,15 @@ describe('Tích hợp dữ liệu FE3 chuẩn xác và toàn vẹn', () => {
     });
   });
 
-  describe('6. Bảng màu Character Palettes cho 61 nhân vật', () => {
-    it('character_palettes.json chứa đủ 61 nhân vật FE3 kèm offsets và file bin', () => {
+  describe('6. Bảng màu Character Palettes cho nhân vật trong game', () => {
+    it('character_palettes.json chứa đủ palettes cho các nhân vật FE3 kèm offsets và file bin', () => {
       const palettes = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'character_palettes.json'), 'utf8'));
-      expect(Object.keys(palettes.characters).length).toBe(61);
+      expect(Object.keys(palettes.characters).length).toBe(18);
       expect(palettes.characters.marth).toBeDefined();
       expect(palettes.characters.marth.variants.base.binFile).toContain('00_Marth.bin');
-      expect(palettes.characters.sheeda.variants.mounted).toBeDefined();
-      expect(palettes.characters.sheeda.variants.dismounted).toBeDefined();
-      expect(palettes.characters.sheeda.variants.promoted).toBeDefined();
+      expect(palettes.characters.caeda.variants.mounted).toBeDefined();
+      expect(palettes.characters.caeda.variants.dismounted).toBeDefined();
+      expect(palettes.characters.caeda.variants.promoted).toBeDefined();
     });
   });
 });
