@@ -507,5 +507,8 @@
   "uncertain": [
     "Unit Roshea (N) assigned faction 'ally' (recruit in atlas: false).",
     "Village at (1,15) rewards recruit/choice 'Life Orb (from Aurelis King; Wolf Guard retreats)'; assigned reward itemId 'life_orb'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

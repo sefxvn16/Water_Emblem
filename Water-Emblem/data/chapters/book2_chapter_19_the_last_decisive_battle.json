@@ -521,5 +521,32 @@
   ],
   "uncertain": [
     "Village at (25,21) rewards recruit/choice 'Roshea'; assigned reward itemId 'silver_lance'."
-  ]
+  ],
+  "villages": [
+    {
+      "id": "village_25_21",
+      "name": "Roshea's Village",
+      "position": {
+        "x": 25,
+        "y": 21
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "roshea"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "roshea",
+      "characterId": "roshea",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 21
+      },
+      "weaponId": "iron_sword"
+    }
+  ],
+  "recruitments": []
 }

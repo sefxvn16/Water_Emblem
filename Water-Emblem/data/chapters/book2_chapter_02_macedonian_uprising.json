@@ -262,5 +262,7 @@
       "targetUnitId": "warren",
       "maxDistance": 1
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": []
 }

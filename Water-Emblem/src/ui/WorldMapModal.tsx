@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import worldMapData from '../../data/world_map.json' with { type: 'json' };
 import { soundManager } from '../audio/soundManager';
+import { chapters } from '../core/data/chapterData';
 
 interface WorldMapModalProps {
   currentChapterId: string;
@@ -820,7 +821,8 @@ export const WorldMapModal: React.FC<WorldMapModalProps> = ({
                       boxShadow: isSelectedCh ? '0 0 10px rgba(37,99,235,0.5)' : undefined,
                     }}
                   >
-                    <span>{chId.toUpperCase()}</span>
+                    {/* Tên chương thay cho id in hoa (PLAN mục 204). */}
+                    <span>{chapters[chId]?.name ?? chId.toUpperCase()}</span>
                     {isSelectedCh && <span style={{ color: '#fde047' }}>★ Current</span>}
                   </button>
                 );

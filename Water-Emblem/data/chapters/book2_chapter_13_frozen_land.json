@@ -386,5 +386,8 @@
         "itemId": "wyrmslayer"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

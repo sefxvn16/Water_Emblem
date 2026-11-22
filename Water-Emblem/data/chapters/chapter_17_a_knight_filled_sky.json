@@ -325,5 +325,8 @@
   ],
   "uncertain": [
     "Village at (22,2) (reward: Starlight (requires Starsphere and Lightsphere)) omitted because map tile is 'plains', not 'village'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

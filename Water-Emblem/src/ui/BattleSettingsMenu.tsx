@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import chapterObjectives from '../../data/chapter_objectives.json' with { type: 'json' };
+import { chapters } from '../core/data/chapterData';
+import { CAMPAIGN_CHAPTER_IDS, CHAPTER_SOURCES } from '../core/data/chapterRegistry';
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sectionHeadingStyle, sharedPanelStyle } from './designSystem';
 
 interface BattleSettingsMenuProps {
@@ -92,9 +94,10 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
     action();
   };
 
-  const objectiveEntry = chapterObjectives.find(
-    (o) => props.chapterId.includes(String(o.chapter).padStart(2, '0')) || o.chapterKey === props.chapterId
-  );
+  // Tra theo vị trí trong thứ tự chiến dịch (PLAN mục 204). Cách cũ so chuỗi số chương nên
+  // `book2_chapter_01` ăn vào dòng Book 1, và `chapterKey` dạng `b1_ch01` không khớp id nào.
+  const campaignIndex = CAMPAIGN_CHAPTER_IDS.indexOf(props.chapterId);
+  const objectiveEntry = campaignIndex >= 0 ? chapterObjectives[campaignIndex] : undefined;
   const displayObjective = props.objectiveText || objectiveEntry?.objectiveText || 'Seize gate / Defeat boss';
 
   return (
@@ -211,9 +214,11 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                 boxSizing: 'border-box',
               }}
             >
-              <option value="chapter_01">🗺️ Chapter 1: Marth Embarks (30x13)</option>
-              <option value="chapter_02">🗺️ Chapter 2: The Pirates of Galder (30x15)</option>
-              <option value="chapter_03">🗺️ Chapter 3: The Devil Mountain (30x20)</option>
+              {CHAPTER_SOURCES.map((source) => (
+                <option key={source.id} value={source.id}>
+                  {`🗺️ ${chapters[source.id]?.name ?? source.id} (${source.map.width}x${source.map.height})`}
+                </option>
+              ))}
               <option value="test_chapter_01">🧪 Test Map (8x8)</option>
             </select>
             <span style={{ fontSize: '13px', color: DS_COLORS.muted }}>

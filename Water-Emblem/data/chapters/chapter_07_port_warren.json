@@ -329,5 +329,8 @@
     "uncertain: player deployment positions are not marked on source map diagram map1_07.png",
     "uncertain: Pirate at 12,18 stands on a sea tile; meaning not stated in the diagram legend",
     "Atlas has no P units or Marth listed for this chapter. Kept lordUnitId as 'marth'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

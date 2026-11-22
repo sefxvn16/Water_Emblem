@@ -319,5 +319,54 @@
   "uncertain": [
     "Village at (25,16) rewards recruit/choice 'Jeorge'; assigned reward itemId 'silver_bow'.",
     "Village at (25,21) rewards recruit/choice 'Linde'; assigned reward itemId 'aura'."
-  ]
+  ],
+  "villages": [
+    {
+      "id": "village_25_16",
+      "name": "Jeorge's Village",
+      "position": {
+        "x": 25,
+        "y": 16
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "jeorge"
+      }
+    },
+    {
+      "id": "village_25_21",
+      "name": "Linde's Village",
+      "position": {
+        "x": 25,
+        "y": 21
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "linde"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "jeorge",
+      "characterId": "jeorge",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 16
+      },
+      "weaponId": "iron_bow"
+    },
+    {
+      "id": "linde",
+      "characterId": "linde",
+      "faction": "player",
+      "position": {
+        "x": 25,
+        "y": 21
+      },
+      "weaponId": "fire"
+    }
+  ],
+  "recruitments": []
 }

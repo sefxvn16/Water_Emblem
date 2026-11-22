@@ -38,15 +38,15 @@
       "aiRole": "pursue"
     },
     {
-      "id": "jeorge_2",
-      "characterId": "jeorge",
+      "id": "sniper_14_6",
+      "characterId": "enemy_sniper",
       "faction": "enemy",
       "position": {
         "x": 14,
         "y": 6
       },
-      "name": "Jeorge",
-      "weaponId": "parthia",
+      "name": "Enemy Sniper",
+      "weaponId": "iron_bow",
       "level": 5,
       "aiRole": "pursue"
     },
@@ -449,10 +449,45 @@
     "Generic unit levels and weapons are project conventions, not FE3 data.",
     "Unit AI roles are project conventions, not FE3 data.",
     "Chiêu mộ jeorge_2: người nói (Gordin) không xuất trận trong chương này nên chưa khai được.",
-    "Làng (29,17): Atlas: nhận nhân vật Bantu ở đây; schema chưa có kiểu thưởng nhân vật."
+    "Làng (29,17): Atlas: nhận nhân vật Bantu ở đây; schema chưa có kiểu thưởng nhân vật.",
+    "Atlas ghi hai ô cho một đơn vị có tên (Jeorge x2); ô thứ 2 dựng thành quân thường cùng class vì FE3 chỉ có một Jeorge (PLAN mục 206).",
+    "Quân thường sniper_14_6: vũ khí parthia (rank A) vượt rank mẫu quân thường nên dùng iron_bow (quy ước dự án)."
   ],
   "uncertain": [
     "Unit Jeorge (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Village at (29,17) rewards recruit/choice 'Bantu'; assigned reward itemId 'firestone'."
+  ],
+  "villages": [
+    {
+      "id": "village_29_17",
+      "name": "Bantu's Village",
+      "position": {
+        "x": 29,
+        "y": 17
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "bantu"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "bantu",
+      "characterId": "bantu",
+      "faction": "player",
+      "position": {
+        "x": 29,
+        "y": 17
+      },
+      "weaponId": "fire"
+    }
+  ],
+  "recruitments": [
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "jeorge",
+      "maxDistance": 1
+    }
   ]
 }

@@ -50,15 +50,15 @@
       "aiRole": "pursue"
     },
     {
-      "id": "abel_2",
-      "characterId": "abel",
+      "id": "cavalier_26_19",
+      "characterId": "enemy_cavalier",
       "faction": "enemy",
       "position": {
         "x": 26,
         "y": 19
       },
-      "name": "Abel",
-      "weaponId": "ridersbane",
+      "name": "Enemy Cavalier",
+      "weaponId": "iron_lance",
       "level": 1,
       "aiRole": "pursue"
     },
@@ -574,7 +574,9 @@
     "Quân thường ballistician_1: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
     "Quân thường ballistician_2: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
     "Làng (8,8): Atlas ghi \"Dracoshield or Energy Drop\"; lấy \"Dracoshield\".",
-    "Làng (11,8): Atlas: phần thưởng \"Energy Drop or Dracoshield\" chưa có trong data/items.json; ô này bị bỏ."
+    "Làng (11,8): Atlas: phần thưởng \"Energy Drop or Dracoshield\" chưa có trong data/items.json; ô này bị bỏ.",
+    "Atlas ghi hai ô cho một đơn vị có tên (Abel x2); ô thứ 2 dựng thành quân thường cùng class vì FE3 chỉ có một Abel (PLAN mục 206).",
+    "Quân thường cavalier_26_19: vũ khí ridersbane (rank C) vượt rank mẫu quân thường nên dùng iron_lance (quy ước dự án)."
   ],
   "uncertain": [
     "Unit Abel (N) assigned faction 'enemy' (recruit in atlas: true).",
@@ -583,9 +585,10 @@
   ],
   "recruitments": [
     {
-      "speakerUnitId": "marth",
-      "targetUnitId": "abel_2",
+      "speakerUnitId": "est",
+      "targetUnitId": "abel",
       "maxDistance": 1
     }
-  ]
+  ],
+  "optionalUnits": []
 }

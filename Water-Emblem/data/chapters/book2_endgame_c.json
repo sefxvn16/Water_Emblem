@@ -170,5 +170,8 @@
     "Unit Lena (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Unit Maria (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Unit Nyna (N) assigned faction 'enemy' (recruit in atlas: true)."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

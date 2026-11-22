@@ -285,5 +285,32 @@
     "uncertain: player deployment positions are not marked on source map diagram map1_06.png",
     "Atlas has no P units or Marth listed for this chapter. Kept lordUnitId as 'marth'.",
     "Village at (12,13) rewards recruit/choice 'Bantu'; assigned reward itemId 'firestone'."
-  ]
+  ],
+  "villages": [
+    {
+      "id": "village_12_13",
+      "name": "Bantu's Village",
+      "position": {
+        "x": 12,
+        "y": 13
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "bantu"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "bantu",
+      "characterId": "bantu",
+      "faction": "player",
+      "position": {
+        "x": 12,
+        "y": 13
+      },
+      "weaponId": "fire"
+    }
+  ],
+  "recruitments": []
 }

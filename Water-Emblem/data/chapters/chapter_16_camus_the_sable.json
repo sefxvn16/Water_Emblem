@@ -371,5 +371,8 @@
     "uncertain: player deployment positions are not marked on source map diagram map1_16.png",
     "Atlas has no P units or Marth listed for this chapter. Kept lordUnitId as 'marth'.",
     "Village at (12,17) rewards recruit/choice 'Hammerne, Est'; assigned reward itemId 'hammerne_staff'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

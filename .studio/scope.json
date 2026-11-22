@@ -1,5 +1,5 @@
 {
-  "task_id": "203-chapters",
+  "task_id": "204-chapter-routing+201-evidence",
   "plan_items": [
     178,
     179,
@@ -25,10 +25,14 @@
     199,
     200,
     201,
-    203
+    203,
+    204,
+    206,
+    208,
+    209
   ],
-  "declared_by": "claude-lead + antigravity",
-  "declared_at": "2026-11-22",
+  "declared_by": "claude-lead (201 evidence) + claude-lead (204 routing) + antigravity (206 extraction)",
+  "declared_at": "2026-11-23",
   "allow": [
     "PLAN.md",
     "AGENTS.md",
@@ -252,6 +256,11 @@
     "Water-Emblem/data/chapters/chapter_18_dark_pontifex.json",
     "Water-Emblem/data/chapters/chapter_19_the_dragonkin_realm.json",
     "Water-Emblem/data/chapters/chapter_20_chosen_by_fate.json",
-    "Water-Emblem/src/core/combat/arena.ts"
+    "Water-Emblem/src/core/combat/arena.ts",
+    "Water-Emblem/src/ui/WorldMapModal.tsx",
+    "Water-Emblem/tests/browser/preGameFlow.spec.ts",
+    "Water-Emblem/tests/core/chapterTransition.test.ts",
+    "Water-Emblem/tests/browser/modernUiLayout.spec.ts",
+    "Water-Emblem/tests/core/villageRecruit.test.ts"
   ]
 }

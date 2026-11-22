@@ -463,5 +463,8 @@
         "itemId": "door_key"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

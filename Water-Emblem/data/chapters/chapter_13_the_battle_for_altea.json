@@ -341,5 +341,53 @@
       "targetUnitId": "xane",
       "maxDistance": 1
     }
+  ],
+  "villages": [
+    {
+      "id": "village_8_8",
+      "name": "Arran's Village",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "arran"
+      }
+    },
+    {
+      "id": "village_11_8",
+      "name": "Samson's Village",
+      "position": {
+        "x": 11,
+        "y": 8
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "samson"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "arran",
+      "characterId": "arran",
+      "faction": "player",
+      "position": {
+        "x": 8,
+        "y": 8
+      },
+      "weaponId": "iron_sword"
+    },
+    {
+      "id": "samson",
+      "characterId": "samson",
+      "faction": "player",
+      "position": {
+        "x": 11,
+        "y": 8
+      },
+      "weaponId": "iron_sword"
+    }
   ]
 }

@@ -360,5 +360,8 @@
   ],
   "uncertain": [
     "Chest at (12,4) (reward: Physic (buried in cave)) omitted because map tile is 'gate', not 'chest'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

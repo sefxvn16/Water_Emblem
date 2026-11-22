@@ -511,5 +511,8 @@
   "uncertain": [
     "Unit Astram (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Boss Willow weapon 'Meteor' not in items.json; substituted with 'fire'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

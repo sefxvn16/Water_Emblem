@@ -361,6 +361,18 @@
         "type": "item",
         "itemId": "firestone"
       }
+    },
+    {
+      "id": "village_21_2",
+      "name": "Merric's Village",
+      "position": {
+        "x": 21,
+        "y": 2
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "merric"
+      }
     }
   ],
   "notes": [
@@ -372,5 +384,18 @@
   "uncertain": [
     "Unit Matthis (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Village at (21,2) rewards recruit/choice 'Merric'; assigned reward itemId 'excalibur'."
-  ]
+  ],
+  "optionalUnits": [
+    {
+      "id": "merric",
+      "characterId": "merric",
+      "faction": "player",
+      "position": {
+        "x": 21,
+        "y": 2
+      },
+      "weaponId": "fire"
+    }
+  ],
+  "recruitments": []
 }

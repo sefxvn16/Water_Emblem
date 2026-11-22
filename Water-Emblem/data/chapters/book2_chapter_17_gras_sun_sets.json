@@ -397,5 +397,13 @@
         "itemId": "elysian_whip"
       }
     }
+  ],
+  "optionalUnits": [],
+  "recruitments": [
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "sheena",
+      "maxDistance": 1
+    }
   ]
 }

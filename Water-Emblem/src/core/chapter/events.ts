@@ -2,6 +2,8 @@ import { getManhattanDistance } from '../combat/calculator';
 import type { ChapterChest, ChapterData, ChapterDoor, ChapterReward, ChapterVillage, ExtendedUnitState } from '../data/chapterData';
 import { addItemToInventory } from '../data/inventory';
 import { getClassDefinition } from '../class/classRules';
+import { defaultTerrainRegistry } from '../grid/terrain';
+import type { MapData, MoveType } from '../grid/types';
 import { evaluateChapterOutcome } from './types';
 import defaultDialoguesJson from '../../../data/dialogues/default_dialogues.json' with { type: 'json' };
 import itemsJson from '../../../data/items.json' with { type: 'json' };
@@ -172,16 +174,72 @@ function applyReward(
   };
 }
 
+/** Ô trống gần làng nhất mà quân vừa nhận đi được, quét theo vòng tăng dần và thứ tự cố định
+    để kết quả tái lập được (PLAN mục 206). */
+function freeTileNear(
+  state: ChapterState,
+  centre: { x: number; y: number },
+  moveType: MoveType,
+  map: MapData,
+): { x: number; y: number } | undefined {
+  const occupied = new Set(state.units
+    .filter(({ unit }) => !unit.isDead)
+    .map(({ unit }) => `${unit.position.x},${unit.position.y}`));
+  for (let radius = 0; radius <= 3; radius += 1) {
+    for (let dy = -radius; dy <= radius; dy += 1) {
+      for (let dx = -radius; dx <= radius; dx += 1) {
+        if (Math.abs(dx) + Math.abs(dy) !== radius) continue;
+        const x = centre.x + dx;
+        const y = centre.y + dy;
+        const terrain = map.grid[y]?.[x];
+        if (!terrain || occupied.has(`${x},${y}`)) continue;
+        if (defaultTerrainRegistry.getMovementCost(terrain, moveType) === null) continue;
+        return { x, y };
+      }
+    }
+  }
+  return undefined;
+}
+
+/** Thăm làng nhận nhân vật: unit được khai trong `chapter.optionalUnits` nhập đội và hiện lên bản đồ. */
+function applyUnitReward(
+  state: ChapterState,
+  unitId: string,
+  village: ChapterVillage,
+  recruitId: string,
+  chapter?: ChapterData,
+  map?: MapData,
+): EventResult | undefined {
+  if (!chapter || !map) return undefined;
+  if (state.units.some(({ unit }) => unit.id === recruitId)) return { state, events: [] };
+  const template = chapter.optionalUnits.find(({ unit }) => unit.id === recruitId);
+  if (!template) return undefined;
+  const position = freeTileNear(state, village.position, template.unit.moveType, map);
+  if (!position) return undefined;
+  const joined = structuredClone(template);
+  return {
+    state: {
+      ...state,
+      units: [...state.units, { ...joined, unit: { ...joined.unit, position, hasActed: true } }],
+    },
+    events: [{ type: 'unit_recruited', unitId: recruitId, speakerId: unitId }],
+  };
+}
+
 export function visitVillage(
   state: ChapterState,
   unitId: string,
   village: ChapterVillage,
   items: readonly ItemInfo[],
   dialogues: DialogueTable,
+  chapter?: ChapterData,
+  map?: MapData,
 ): EventResult {
   const visitor = state.units.find(({ unit }) => unit.id === unitId);
   if (!visitor || (state.villageStates[village.id] ?? 'intact') !== 'intact') return unchanged(state);
-  const reward = applyReward(state, unitId, village.reward, 'village', items);
+  const reward = village.reward.type === 'unit'
+    ? applyUnitReward(state, unitId, village, village.reward.unitId, chapter, map)
+    : applyReward(state, unitId, village.reward, 'village', items);
   if (!reward) return unchanged(state);
   const villageTable = lookup(dialogues, 'villages');
   const villageLines = typeof villageTable === 'object' && villageTable !== null ? lookup(villageTable, village.id) : undefined;

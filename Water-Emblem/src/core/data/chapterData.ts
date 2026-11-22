@@ -9,6 +9,7 @@ import devilMountainMapJson from '../../../data/maps/chapter_03_devil_mountain.j
 import itemsJson from '../../../data/items.json' with { type: 'json' };
 import charactersJson from '../../../data/characters.json' with { type: 'json' };
 import classesJson from '../../../data/classes.json' with { type: 'json' };
+import { CHAPTER_SOURCES } from './chapterRegistry';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
 import type { ItemDefinition, UnitCombatStats } from '../combat/types';
@@ -72,7 +73,15 @@ export interface ChapterReward {
   itemId?: string;
 }
 
-export type ChapterVillageReward = ChapterReward;
+/** Thăm làng nhận một nhân vật vào đội (PLAN mục 206, nguồn: kịch bản FE3 trong kho build files).
+    `unitId` phải trỏ một unit khai trong `optionalUnits` của chương, nên dữ liệu nhân vật vẫn được
+    `loadChapterData` kiểm đầy đủ và unit đó không đứng trên bản đồ cho tới khi được nhận. */
+export interface ChapterUnitReward {
+  readonly type: 'unit';
+  readonly unitId: string;
+}
+
+export type ChapterVillageReward = ChapterReward | ChapterUnitReward;
 
 export interface ChapterVillage {
   id: string;
@@ -466,21 +475,32 @@ export function loadChapterData(
       throw new Error(`Village ${villageId} at (${position.x},${position.y}) must be on a village tile, found ${tile}`);
     }
     const rewardRaw = requireRecord(item.reward, `chapter.villages[${index}].reward`);
-    const rewardType = requireChoice(rewardRaw.type, ['gold', 'item'], `chapter.villages[${index}].reward.type`);
-    const reward: ChapterVillageReward = {
-      type: rewardType,
-      ...(rewardType === 'gold'
-        ? { amount: requireInteger(rewardRaw.amount, `chapter.villages[${index}].reward.amount`, 1) }
-        : {
-            itemId: (() => {
-              const itemId = requireString(rewardRaw.itemId, `chapter.villages[${index}].reward.itemId`);
-              if (!itemById.has(itemId)) {
-                throw new Error(`Village ${villageId} reward references unknown item ${itemId}`);
-              }
-              return itemId;
-            })(),
-          }),
-    };
+    const rewardType = requireChoice(rewardRaw.type, ['gold', 'item', 'unit'], `chapter.villages[${index}].reward.type`);
+    const reward: ChapterVillageReward = rewardType === 'unit'
+      ? {
+          type: 'unit',
+          unitId: (() => {
+            const rewardUnitId = requireString(rewardRaw.unitId, `chapter.villages[${index}].reward.unitId`);
+            if (!optionalUnits.some(({ unit }) => unit.id === rewardUnitId && unit.faction === 'player')) {
+              throw new Error(`Village ${villageId} reward references ${rewardUnitId}, which must be a player unit in chapter.optionalUnits`);
+            }
+            return rewardUnitId;
+          })(),
+        }
+      : {
+          type: rewardType,
+          ...(rewardType === 'gold'
+            ? { amount: requireInteger(rewardRaw.amount, `chapter.villages[${index}].reward.amount`, 1) }
+            : {
+                itemId: (() => {
+                  const itemId = requireString(rewardRaw.itemId, `chapter.villages[${index}].reward.itemId`);
+                  if (!itemById.has(itemId)) {
+                    throw new Error(`Village ${villageId} reward references unknown item ${itemId}`);
+                  }
+                  return itemId;
+                })(),
+              }),
+        };
     return { id: villageId, name: villageName, position, reward };
   });
 
@@ -609,7 +629,13 @@ export const testChapter01Data = loadChapterData(
   itemsJson.items as ItemDefinition[],
 );
 
+/** 44 chương chiến dịch từ `chapterRegistry.ts` (PLAN mục 204). Ba chương đầu giữ đúng object đã
+    dựng ở trên để các test và `initialChapterData` dùng chung một tham chiếu. */
 export const chapters: Record<string, ChapterData> = {
+  ...Object.fromEntries(CHAPTER_SOURCES.map((source) => [
+    source.id,
+    loadChapterData(source.chapter, source.map, itemsJson.items as ItemDefinition[]),
+  ])),
   chapter_01: chapter01Data,
   chapter_02: chapter02Data,
   chapter_03: chapter03Data,

@@ -373,5 +373,8 @@
   ],
   "uncertain": [
     "Boss Medeus weapon 'Earth Dragonstone' not in items.json; substituted with 'fire'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

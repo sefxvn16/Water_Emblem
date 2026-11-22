@@ -263,5 +263,32 @@
   "uncertain": [
     "Boss Lorenz weapon 'Broken Lance' not in items.json; substituted with 'iron_lance'.",
     "Village at (17,8) rewards recruit/choice 'Marisha'; assigned reward itemId 'mend_staff'."
-  ]
+  ],
+  "villages": [
+    {
+      "id": "village_17_8",
+      "name": "Marisha's Village",
+      "position": {
+        "x": 17,
+        "y": 8
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "marisha"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "marisha",
+      "characterId": "marisha",
+      "faction": "player",
+      "position": {
+        "x": 17,
+        "y": 8
+      },
+      "weaponId": "heal_staff"
+    }
+  ],
+  "recruitments": []
 }

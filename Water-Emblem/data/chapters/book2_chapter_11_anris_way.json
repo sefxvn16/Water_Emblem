@@ -334,5 +334,8 @@
     "Generic unit levels and weapons are project conventions, not FE3 data.",
     "Unit AI roles are project conventions, not FE3 data."
   ],
-  "uncertain": []
+  "uncertain": [],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

@@ -260,5 +260,8 @@
         "itemId": "hammerne_staff"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

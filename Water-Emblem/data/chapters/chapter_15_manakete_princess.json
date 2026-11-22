@@ -491,5 +491,8 @@
         "itemId": "lightsphere"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

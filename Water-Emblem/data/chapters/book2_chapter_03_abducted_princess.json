@@ -330,5 +330,7 @@
   ],
   "uncertain": [
     "Unit Matthis (N) assigned faction 'enemy' (recruit in atlas: true)."
-  ]
+  ],
+  "optionalUnits": [],
+  "recruitments": []
 }

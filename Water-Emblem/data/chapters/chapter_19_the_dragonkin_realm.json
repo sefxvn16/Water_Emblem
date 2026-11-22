@@ -354,5 +354,8 @@
         "itemId": "firestone"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

@@ -38,14 +38,14 @@
       "aiRole": "pursue"
     },
     {
-      "id": "rickard_2",
-      "characterId": "rickard",
+      "id": "thief_24_13",
+      "characterId": "enemy_thief",
       "faction": "enemy",
       "position": {
         "x": 24,
         "y": 13
       },
-      "name": "Rickard",
+      "name": "Enemy Thief",
       "weaponId": "iron_sword",
       "level": 3,
       "aiRole": "pursue"
@@ -508,10 +508,12 @@
     "Unit AI roles are project conventions, not FE3 data.",
     "Quân thường ballistician_1: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
     "Quân thường ballistician_2: atlas/bản nháp ghi stonehoist (rank C) nhưng mẫu quân thường chỉ có rank E, nên dùng thunderbolt.",
-    "Chiêu mộ rickard_2: người nói (Julian) không xuất trận trong chương này nên chưa khai được."
+    "Chiêu mộ rickard_2: người nói (Julian) không xuất trận trong chương này nên chưa khai được.",
+    "Atlas ghi hai ô cho một đơn vị có tên (Rickard x2); ô thứ 2 dựng thành quân thường cùng class vì FE3 chỉ có một Rickard (PLAN mục 206)."
   ],
   "uncertain": [
     "Unit Rickard (N) assigned faction 'enemy' (recruit in atlas: true).",
     "Boss Torus weapon 'Quickrain' not in items.json; substituted with 'fire'."
-  ]
+  ],
+  "optionalUnits": []
 }

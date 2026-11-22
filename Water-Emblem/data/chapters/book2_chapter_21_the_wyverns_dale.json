@@ -379,5 +379,7 @@
   ],
   "uncertain": [
     "uncertain: map2_21.png Barbarian x10, Wyvern x3, Dark Mage x1 in c0504d now detected; red down arrow at 20,0 pointing to shops skipped"
-  ]
+  ],
+  "optionalUnits": [],
+  "recruitments": []
 }

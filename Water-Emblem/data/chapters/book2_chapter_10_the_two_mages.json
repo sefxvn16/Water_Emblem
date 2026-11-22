@@ -453,5 +453,14 @@
         "itemId": "unlock_staff"
       }
     }
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": [
+    {
+      "speakerUnitId": "merric",
+      "targetUnitId": "arlen",
+      "maxDistance": 1
+    }
   ]
 }

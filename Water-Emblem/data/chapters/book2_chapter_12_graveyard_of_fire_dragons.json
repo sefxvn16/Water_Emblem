@@ -286,5 +286,8 @@
   ],
   "uncertain": [
     "Chest at (25,27) (reward: Pisces (held by Thief)) omitted because map tile is 'fort', not 'chest'."
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

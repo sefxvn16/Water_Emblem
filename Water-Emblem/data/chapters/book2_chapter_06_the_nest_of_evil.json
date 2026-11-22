@@ -389,5 +389,8 @@
         "itemId": "barrier_staff"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

@@ -1,7 +1,5 @@
 ﻿import React, { useState, useMemo, useEffect, useRef } from 'react';
 import talysMapRaw from '../data/maps/chapter_01_talys.json' with { type: 'json' };
-import galderMapRaw from '../data/maps/chapter_02_galder.json' with { type: 'json' };
-import devilMountainMapRaw from '../data/maps/chapter_03_devil_mountain.json' with { type: 'json' };
 import testMapRaw from '../data/maps/test_map_01.json' with { type: 'json' };
 import ch01Dialogues from '../data/dialogues/chapter_01_dialogues.json' with { type: 'json' };
 import ch02Dialogues from '../data/dialogues/chapter_02_dialogues.json' with { type: 'json' };
@@ -41,6 +39,8 @@ import { evaluateChapterOutcome } from './core/chapter/types';
 import { carryUnitsToChapter, placeDeployedUnits } from './core/chapter/transition';
 import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData } from './storage/saveLoad';
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
+import { CHAPTER_SOURCES, nextCampaignChapterId } from './core/data/chapterRegistry';
+import worldMapData from '../data/world_map.json' with { type: 'json' };
 import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
@@ -95,10 +95,10 @@ import { TerrainInfoWindow } from './ui/TerrainInfoWindow';
 import { CombatResultPopup } from './ui/CombatResultPopup';
 import { buildCombatPopup, type CombatPopupData } from './ui/combatPopupData';
 
+// 44 bản đồ chiến dịch lấy từ cùng registry mà `chapterData` dùng (PLAN mục 204), nên không còn
+// danh sách bản đồ viết tay ở đây.
 const chapterMaps: Record<string, MapData> = {
-  chapter_01: talysMapRaw as MapData,
-  chapter_02: galderMapRaw as MapData,
-  chapter_03: devilMountainMapRaw as MapData,
+  ...Object.fromEntries(CHAPTER_SOURCES.map((source) => [source.id, source.map])),
   test_chapter_01: testMapRaw as MapData,
 };
 
@@ -115,6 +115,29 @@ const chapterDialogues: Record<string, ChapterDialogueData> = {
   chapter_03: ch03Dialogues as ChapterDialogueData,
 };
 
+/** Khoá dẫn chuyện trong `world_map.json` (`b1_ch04`, `b2_ch01`) từ id chương. */
+function narrationKey(chapterId: string): string {
+  const book2 = /^book2_chapter_(\d+)$/.exec(chapterId);
+  if (book2) return `b2_ch${book2[1]}`;
+  const endgame = /^book2_endgame_([abc])$/.exec(chapterId);
+  if (endgame) return `b2_ch${22 + 'abc'.indexOf(endgame[1] ?? 'a')}`;
+  const book1 = /^chapter_(\d+)$/.exec(chapterId);
+  return book1 ? `b1_ch${book1[1]}` : chapterId;
+}
+
+/** 41 chương mở ở mục 203 chưa có file hội thoại riêng. Thay vì dùng thoại của chương 1 (nội dung
+    sai chương), dựng thoại tạm từ dẫn chuyện trong `world_map.json` và tên chương. */
+function fallbackDialogues(chapterId: string, chapterName: string): ChapterDialogueData {
+  const narrations = (worldMapData as { chapterNarrations?: Record<string, string[]> }).chapterNarrations ?? {};
+  const lines = narrations[narrationKey(chapterId)] ?? [];
+  const toLine = (text: string): DialogueLine => ({ speaker: chapterName, text, avatarUrl: '/avatars/marth.png' });
+  return {
+    chapterId,
+    opening: lines.length ? lines.map(toLine) : [toLine(chapterName)],
+    ending: [toLine(`${chapterName} — chapter clear.`)],
+  };
+}
+
 declare global {
   interface Window {
     __WATER_EMBLEM_STATE__?: unknown;
@@ -125,7 +148,9 @@ export const App: React.FC = () => {
   const [currentChapterId, setCurrentChapterId] = useState<string>('chapter_01');
   const currentChapter = chapters[currentChapterId] ?? chapter01Data;
   const mapData = chapterMaps[currentChapterId] ?? (talysMapRaw as MapData);
-  const currentDialogues = chapterDialogues[currentChapterId] ?? (ch01Dialogues as ChapterDialogueData);
+  const currentDialogues = chapterDialogues[currentChapterId]
+    ?? fallbackDialogues(currentChapterId, currentChapter.name);
+  const nextChapterId = nextCampaignChapterId(currentChapterId);
   const chapterObjective = currentChapter.objective;
   const lordName = currentChapter.units.find(({ unit }) => unit.id === currentChapter.lordUnitId)?.unit.name ?? 'The lord';
 
@@ -332,10 +357,15 @@ export const App: React.FC = () => {
     };
   }, [extendedUnits, turnState, currentChapterId]);
 
-  const loadChapter = (chapterId: string, carryoverUnits?: readonly ExtendedUnitState[]) => {
+  /** Trả về false khi id chương không có dữ liệu, để nơi gọi biết mà không đóng màn đang mở
+      (trước đây World Map vẫn đóng rồi đẩy người chơi về chương cũ mà không báo — PLAN mục 204). */
+  const loadChapter = (chapterId: string, carryoverUnits?: readonly ExtendedUnitState[]): boolean => {
     setPopupQueue([]);
     const targetChapter = chapters[chapterId];
-    if (!targetChapter) return;
+    if (!targetChapter) {
+      showNotice(`Chapter ${chapterId} has no data yet`);
+      return false;
+    }
     setCurrentChapterId(chapterId);
     const participatingIds = new Set(extendedUnits
       .filter(({ unit }) => unit.faction === 'player' && !unit.isDead)
@@ -351,7 +381,9 @@ export const App: React.FC = () => {
     setTurnState(turnManager.getState());
     setChapterOutcome('ongoing');
     setShowStoryIntro(true);
-    setShowPreparation(chapterId === 'chapter_02' || chapterId === 'chapter_03');
+    // Màn chuẩn bị mở khi chương có ô triển khai và có quân mang sang (PLAN mục 204),
+    // thay vì gắn cứng hai id chương.
+    setShowPreparation(targetChapter.deploymentSlots.length > 0 && targetChapter.carryoverUnitIds.length > 0);
     if (!carryoverUnits) setGold(0);
     setVillageStates({});
     setChestStates({});
@@ -372,6 +404,7 @@ export const App: React.FC = () => {
     setHoveredUnitSummary(null);
     showNotice(`Switched to ${targetChapter.name}`);
     setCombatLog([`📜 Started ${targetChapter.name}`]);
+    return true;
   };
 
   const toggleDeployment = (unitId: string) => {
@@ -1281,7 +1314,10 @@ export const App: React.FC = () => {
     if (!currentVillageAtPendingPos || !selectedExtUnit || !pendingMovePos) return;
     const village = currentVillageAtPendingPos;
     executeWithMove(() => {
-      const result = visitVillage(chapterState(), selectedExtUnit.unit.id, village, itemsJson.items, currentDialogues);
+      // chapter + mapData: làng trao nhân vật cần biết unit nào khai trong optionalUnits và ô nào
+      // đi được để đặt quân vừa nhận (PLAN mục 206).
+      const result = visitVillage(chapterState(), selectedExtUnit.unit.id, village, itemsJson.items,
+        currentDialogues, currentChapter, mapData);
       if (result.events.length === 0) return;
       soundManager.playSfx('item_get');
       const dialogue = result.events.find((event) => event.type === 'dialogue');
@@ -2445,10 +2481,11 @@ export const App: React.FC = () => {
       {chapterOutcome === 'victory' && (
         <DialogueBox
           dialogues={currentDialogues.ending} title="🏆 STAGE CLEAR!" themeColor="green"
-          actionButtonText={currentChapterId === 'chapter_01' ? '⚔️ Advance to Chapter 2: The Pirates of Galder ➔' : currentChapterId === 'chapter_02' ? '⚔️ Advance to Chapter 3: The Devil Mountain ➔' : '🔄 Continue / Restart Chapter ➔'}
+          actionButtonText={nextChapterId
+            ? `⚔️ Advance to ${chapters[nextChapterId]?.name ?? nextChapterId} ➔`
+            : '🔄 Continue / Restart Chapter ➔'}
           onConfirm={() => {
-            if (currentChapterId === 'chapter_01') loadChapter('chapter_02', [...extendedUnits, ...reserveUnits]);
-            else if (currentChapterId === 'chapter_02') loadChapter('chapter_03', [...extendedUnits, ...reserveUnits]);
+            if (nextChapterId) loadChapter(nextChapterId, [...extendedUnits, ...reserveUnits]);
             else handleRestartChapter();
           }}
         />
@@ -2512,8 +2549,7 @@ export const App: React.FC = () => {
         <WorldMapModal
           currentChapterId={currentChapterId}
           onSelectChapter={(chapterId) => {
-            loadChapter(chapterId);
-            setActiveScreen('none');
+            if (loadChapter(chapterId)) setActiveScreen('none');
           }}
           onDeployBattle={() => setActiveScreen('none')}
           onClose={() => setActiveScreen('none')}

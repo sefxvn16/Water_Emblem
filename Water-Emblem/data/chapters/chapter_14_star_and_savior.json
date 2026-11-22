@@ -431,5 +431,8 @@
         "itemId": "warp_staff"
       }
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": [],
+  "recruitments": []
 }

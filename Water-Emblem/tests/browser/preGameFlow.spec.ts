@@ -81,4 +81,41 @@ test.describe('Pre-game Navigation Flow (Title, Save Slots, Book Select, World M
     await openSettings(page);
     await expectPlayerPhase(page);
   });
+
+  // PLAN mục 204: cả 44 chương phải vào được trận. Trước đó màn chọn chương chỉ có 4 dòng và
+  // World Map bấm chương chưa có dữ liệu thì im lặng đóng, đẩy người chơi về chương cũ.
+  test('every chapter in the world map can be entered from the chapter picker', async ({ page }) => {
+    test.setTimeout(300_000);
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: /CONTINENT OF ARCHANEA/i }).click();
+    await page.getByRole('button', { name: /Deploy to Battle/i }).click();
+    const startBattle = page.getByRole('button', { name: /Start Battle/i });
+    if (await startBattle.isVisible()) await startBattle.click();
+
+    await openSettings(page);
+    const picker = page.getByLabel('Chapter');
+    const chapterIds = await picker.locator('option').evaluateAll(
+      (options) => options.map((option) => (option as HTMLOptionElement).value),
+    );
+    // 44 chương chiến dịch + bản đồ kiểm thử.
+    expect(chapterIds).toHaveLength(45);
+    expect(chapterIds.slice(0, 3)).toEqual(['chapter_01', 'chapter_02', 'chapter_03']);
+    expect(chapterIds).toContain('book2_chapter_01');
+    expect(chapterIds).toContain('book2_endgame_c');
+
+    for (const chapterId of chapterIds) {
+      await openSettings(page);
+      await page.getByLabel('Chapter').selectOption(chapterId);
+      await expect
+        .poll(async () => page.evaluate(() => (window as unknown as {
+          __WATER_EMBLEM_STATE__?: { currentChapterId?: string };
+        }).__WATER_EMBLEM_STATE__?.currentChapterId), { timeout: 15_000 })
+        .toBe(chapterId);
+      const units = await page.evaluate(() => (window as unknown as {
+        __WATER_EMBLEM_STATE__?: { extendedUnits?: unknown[] };
+      }).__WATER_EMBLEM_STATE__?.extendedUnits?.length ?? 0);
+      expect(units, `${chapterId}: vào trận mà không có quân nào trên bản đồ`).toBeGreaterThan(0);
+    }
+  });
 });

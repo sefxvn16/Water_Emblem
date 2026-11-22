@@ -356,6 +356,13 @@
       "speakerUnitId": "marth",
       "targetUnitId": "maria",
       "maxDistance": 1
+    },
+    {
+      "speakerUnitId": "marth",
+      "targetUnitId": "minerva",
+      "maxDistance": 1
     }
-  ]
+  ],
+  "villages": [],
+  "optionalUnits": []
 }

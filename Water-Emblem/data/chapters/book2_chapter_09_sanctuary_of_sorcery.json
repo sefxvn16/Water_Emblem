@@ -510,5 +510,32 @@
         "itemId": "secret_book"
       }
     }
-  ]
+  ],
+  "villages": [
+    {
+      "id": "village_24_5",
+      "name": "Minerva's Village",
+      "position": {
+        "x": 24,
+        "y": 5
+      },
+      "reward": {
+        "type": "unit",
+        "unitId": "minerva"
+      }
+    }
+  ],
+  "optionalUnits": [
+    {
+      "id": "minerva",
+      "characterId": "minerva",
+      "faction": "player",
+      "position": {
+        "x": 24,
+        "y": 5
+      },
+      "weaponId": "iron_lance"
+    }
+  ],
+  "recruitments": []
 }
