@@ -63,18 +63,24 @@ describe('game maps match FE3 reference grids', () => {
       expect(ref.rows.length).toBe(ref.height);
 
       for (let y = 0; y < ref.height; y++) {
-        expect(map.grid[y].length).toBe(ref.width);
-        expect(ref.rows[y].length).toBe(ref.width);
+        const mapRow = map.grid[y];
+        const refRow = ref.rows[y];
+        expect(mapRow, `Map ${ref.mapId} is missing row ${y}`).toBeDefined();
+        expect(refRow, `Reference ${ref.mapId} is missing row ${y}`).toBeDefined();
+        expect(mapRow!.length).toBe(ref.width);
+        expect(refRow!.length).toBe(ref.width);
         for (let x = 0; x < ref.width; x++) {
-          const terrain = map.grid[y][x];
+          const terrain = mapRow![x];
           expect(
-            validTerrains.has(terrain),
+            terrain !== undefined && validTerrains.has(terrain),
             `Map ${ref.mapId} cell (${x},${y}) has invalid terrain '${terrain}'`
           ).toBe(true);
 
-          const expected = ref.legend[ref.rows[y][x]];
+          const code = refRow![x];
+          expect(code, `Reference ${ref.mapId} cell (${x},${y}) has no atlas code`).toBeDefined();
+          const expected = ref.legend[code!];
           if (terrain === 'chest' || terrain === 'door') continue;
-          expect(terrain).toBe(expected);
+          expect(terrain, `Map ${ref.mapId} cell (${x},${y}) code '${code}'`).toBe(expected);
         }
       }
     }
