@@ -91,8 +91,30 @@ export function calculateDisplayedCombatStats(
   };
 }
 
-export function isWeaponEffective(weapon: ItemDefinition, defenderUnit: GridUnit): boolean {
-  return weapon.effectiveAgainst.includes(defenderUnit.moveType);
+export function isWeaponEffective(
+  weapon: ItemDefinition,
+  defenderUnit: GridUnit,
+  defenderHasIoteShield = false
+): boolean {
+  if (defenderHasIoteShield) return false;
+  if (!weapon.effectiveAgainst || weapon.effectiveAgainst.length === 0) return false;
+
+  const classDef = defenderUnit.classId ? getClassDefinition(defenderUnit.classId) : undefined;
+  const isCavalry = defenderUnit.moveType === 'cavalry' || classDef?.mountKind === 'ground';
+  const isFlier = defenderUnit.moveType === 'flier' || classDef?.mountKind === 'flying';
+  const isArmor = defenderUnit.moveType === 'armor' || defenderUnit.classId === 'knight' || defenderUnit.classId === 'general' || defenderUnit.classId === 'cataphract';
+  const isDragon = defenderUnit.classId === 'manakete' || (defenderUnit.transformTurns !== undefined && defenderUnit.transformTurns > 0) || defenderUnit.classId === 'dragon_knight';
+
+  const moveType = defenderUnit.moveType as string;
+  for (const rawTag of weapon.effectiveAgainst) {
+    const tag = rawTag as string;
+    if (tag === moveType) return true;
+    if (tag === 'cavalry' && isCavalry) return true;
+    if (tag === 'flier' && isFlier) return true;
+    if (tag === 'armor' && isArmor) return true;
+    if (tag === 'dragon' && isDragon) return true;
+  }
+  return false;
 }
 
 export function calculateAttackSpeed(stats: UnitCombatStats, weapon?: ItemDefinition): number {
@@ -116,7 +138,8 @@ export function calculateCombatSide(
   heightDiff = 0,
   skillMods?: SkillModifiers,
   opponentSkillMods?: SkillModifiers,
-  blockedByDarksphere = false
+  blockedByDarksphere = false,
+  opponentHasIoteShield = false
 ): CombatSideForecast {
   if (!weapon) {
     return {
@@ -163,7 +186,7 @@ export function calculateCombatSide(
   const classDefinition = getClassDefinition(unit.classId);
 
   // Tính Effective Might
-  const isEffective = isWeaponEffective(weapon, opponentUnit);
+  const isEffective = isWeaponEffective(weapon, opponentUnit, opponentHasIoteShield);
   let effectiveMight = isEffective
     ? weapon.might * balanceConfig.effectiveMultiplier
     : weapon.might;
@@ -260,7 +283,14 @@ export function calculateCombatForecast(
   allUnits?: readonly GridUnit[],
   elevations?: { readonly attacker: number; readonly defender: number },
   skills?: { readonly attacker?: SkillModifiers; readonly defender?: SkillModifiers },
-  spheres?: { readonly attackerHasLight?: boolean; readonly attackerHasDark?: boolean; readonly defenderHasLight?: boolean; readonly defenderHasDark?: boolean }
+  spheres?: {
+    readonly attackerHasLight?: boolean;
+    readonly attackerHasDark?: boolean;
+    readonly defenderHasLight?: boolean;
+    readonly defenderHasDark?: boolean;
+    readonly attackerHasIoteShield?: boolean;
+    readonly defenderHasIoteShield?: boolean;
+  }
 ): CombatForecast {
   const heightDiff = elevations ? elevations.attacker - elevations.defender : 0;
   let attackerSide = calculateCombatSide(
@@ -278,7 +308,8 @@ export function calculateCombatForecast(
     heightDiff,
     skills?.attacker,
     skills?.defender,
-    Boolean(spheres?.defenderHasDark && !spheres?.attackerHasLight)
+    Boolean(spheres?.defenderHasDark && !spheres?.attackerHasLight),
+    Boolean(spheres?.defenderHasIoteShield)
   );
 
   let defenderSide = calculateCombatSide(
@@ -296,7 +327,8 @@ export function calculateCombatForecast(
     -heightDiff,
     skills?.defender,
     skills?.attacker,
-    Boolean(spheres?.attackerHasDark && !spheres?.defenderHasLight)
+    Boolean(spheres?.attackerHasDark && !spheres?.defenderHasLight),
+    Boolean(spheres?.attackerHasIoteShield)
   );
 
   // Đánh 2 lần (Double Attack)

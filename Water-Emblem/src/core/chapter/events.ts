@@ -26,7 +26,7 @@ export type GameEvent =
       readonly unitName: string;
       readonly itemId: string;
       readonly itemName: string;
-      readonly source: 'village' | 'seize' | 'loot' | 'chest';
+      readonly source: 'village' | 'seize' | 'loot' | 'chest' | 'desert';
       readonly fromUnitName?: string;
     }
   | {
@@ -38,13 +38,14 @@ export type GameEvent =
       readonly unitName: string;
       readonly itemId: string;
       readonly itemName: string;
-      readonly source: 'village' | 'seize' | 'loot' | 'chest';
+      readonly source: 'village' | 'seize' | 'loot' | 'chest' | 'desert';
       readonly fromUnitName?: string;
     }
   | { readonly type: 'village_visited'; readonly unitId: string; readonly unitName: string; readonly villageId: string; readonly villageName: string }
   | { readonly type: 'village_destroyed'; readonly unitId: string; readonly villageId: string; readonly villageName: string }
   | { readonly type: 'chest_opened'; readonly unitId: string; readonly unitName: string; readonly chestId: string }
   | { readonly type: 'door_opened'; readonly unitId: string; readonly unitName: string; readonly doorId: string }
+  | { readonly type: 'drawbridge_lowered'; readonly unitId: string; readonly unitName: string; readonly bridgeId: string }
   | { readonly type: 'unit_recruited'; readonly unitId: string; readonly speakerId: string }
   | { readonly type: 'chapter_seized'; readonly unitId: string }
   | { readonly type: 'dialogue'; readonly kind: DialogueKind; readonly lines: readonly DialogueLine[] };
@@ -58,6 +59,10 @@ export interface ChapterState {
   readonly chestStates?: Readonly<Record<string, ChestState>>;
   /** Opened doors (PLAN item 92); absent = every door still closed. */
   readonly doorStates?: Readonly<Record<string, DoorState>>;
+  /** Lowered drawbridges; absent = every drawbridge raised. */
+  readonly drawbridgeStates?: Readonly<Record<string, 'raised' | 'lowered'>>;
+  /** Collected hidden treasures; absent = none collected. */
+  readonly collectedTreasures?: Readonly<Record<string, boolean>>;
 }
 
 export interface EventResult {
@@ -307,12 +312,28 @@ export function opensLocksInately(entry: ExtendedUnitState): boolean {
 export function canOpenChest(entry: ExtendedUnitState, chapter: ChapterData): boolean {
   if (opensLocksInately(entry)) return true;
   if (entry.unit.id === chapter.lordUnitId && holdsItemRole(entry, 'lordChestKey')) return true;
-  return holdsItemRole(entry, 'masterKey');
+  return holdsItemRole(entry, 'chestKey') || holdsItemRole(entry, 'masterKey');
 }
 
 /** Thief-line classes or a Master Key (itemRole 'masterKey', one use per lock) open doors. */
 export function canOpenDoor(entry: ExtendedUnitState): boolean {
-  return opensLocksInately(entry) || holdsItemRole(entry, 'masterKey');
+  return opensLocksInately(entry) || holdsItemRole(entry, 'doorKey') || holdsItemRole(entry, 'masterKey');
+}
+
+/** Thief-line classes, Bridge Key, or Master Key can lower drawbridges. */
+export function canLowerDrawbridge(entry: ExtendedUnitState): boolean {
+  return opensLocksInately(entry) || holdsItemRole(entry, 'bridgeKey') || holdsItemRole(entry, 'masterKey');
+}
+
+function spendKeyRoleUse(units: readonly ExtendedUnitState[], unitId: string, role: string): ExtendedUnitState[] {
+  return mapUnit(units, unitId, (entry) => ({
+    ...entry,
+    inventory: entry.inventory.flatMap((item) => {
+      const r = itemRoleById.get(item.itemId);
+      if (r !== role && r !== 'masterKey') return [item];
+      return item.uses > 1 ? [{ ...item, uses: item.uses - 1 }] : [];
+    }),
+  }));
 }
 
 /** Spend one Master Key use (PLAN item 155); innate lockpickers spend nothing. */
@@ -370,5 +391,76 @@ export function openDoor(
   return {
     state: { ...state, units, doorStates: { ...state.doorStates, [door.id]: 'opened' } },
     events: [{ type: 'door_opened', unitId, unitName: opener.unit.name, doorId: door.id }],
+  };
+}
+
+/** Lower a drawbridge from an adjacent tile. */
+export function lowerDrawbridge(
+  state: ChapterState,
+  unitId: string,
+  bridge: { readonly id: string; readonly position: { readonly x: number; readonly y: number } },
+): EventResult {
+  const opener = state.units.find(({ unit }) => unit.id === unitId);
+  if (!opener || (state.drawbridgeStates?.[bridge.id] ?? 'raised') !== 'raised') return unchanged(state);
+  if (getManhattanDistance(opener.unit.position, bridge.position) !== 1) return unchanged(state);
+  if (!canLowerDrawbridge(opener)) return unchanged(state);
+  const units = opensLocksInately(opener) ? state.units : spendKeyRoleUse(state.units, unitId, 'bridgeKey');
+  return {
+    state: { ...state, units, drawbridgeStates: { ...state.drawbridgeStates, [bridge.id]: 'lowered' } },
+    events: [{ type: 'drawbridge_lowered', unitId, unitName: opener.unit.name, bridgeId: bridge.id }],
+  };
+}
+
+/** Search for hidden treasure when ending movement on a desert / sand tile. */
+export function findDesertTreasure(
+  state: ChapterState,
+  unitId: string,
+  hiddenTreasures: readonly { readonly id: string; readonly position: { readonly x: number; readonly y: number }; readonly itemId: string }[],
+  items: readonly ItemInfo[],
+  rng: { roll1RN: (chance: number) => boolean },
+): EventResult {
+  const finder = state.units.find(({ unit }) => unit.id === unitId);
+  if (!finder || finder.unit.isDead) return unchanged(state);
+  const treasure = hiddenTreasures.find(
+    (t) => !state.collectedTreasures?.[t.id]
+      && t.position.x === finder.unit.position.x
+      && t.position.y === finder.unit.position.y,
+  );
+  if (!treasure) return unchanged(state);
+
+  const isThief = opensLocksInately(finder);
+  const chance = isThief ? 100 : Math.min(100, Math.max(10, finder.stats.lck * 4));
+  if (!rng.roll1RN(chance)) return unchanged(state);
+
+  const itemDef = items.find((i) => i.id === treasure.itemId) ?? { id: treasure.itemId, name: treasure.itemId };
+  const added = tryWithItem(finder, itemDef, items);
+  const units = mapUnit(state.units, unitId, () => added.entry);
+  const nextTreasures = { ...state.collectedTreasures, [treasure.id]: true };
+
+  const event: GameEvent = added.added
+    ? {
+        type: 'item_gained',
+        unitId,
+        unitName: finder.unit.name,
+        itemId: itemDef.id,
+        itemName: itemDef.name,
+        source: 'desert',
+      }
+    : {
+        type: 'item_overflow',
+        unitId,
+        unitName: finder.unit.name,
+        itemId: itemDef.id,
+        itemName: itemDef.name,
+        source: 'desert',
+      };
+
+  return {
+    state: {
+      ...state,
+      units,
+      collectedTreasures: nextTreasures,
+    },
+    events: [event],
   };
 }

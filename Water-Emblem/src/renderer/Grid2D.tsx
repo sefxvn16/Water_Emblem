@@ -22,6 +22,7 @@ interface Grid2DProps {
   movementPath?: readonly Position[] | null;
   pendingDestination?: Position | null;
   activeMovingUnit?: { unitId: string; pos: Position } | null;
+  activeActingEnemyId?: string | null;
   getUnitDisplay: (unitId: string) => UnitDisplay | undefined;
   onTileClick: (x: number, y: number) => void;
   onTileHover: (x: number, y: number) => void;
@@ -35,25 +36,34 @@ const FALLBACK_TERRAIN = { bg: '#333', icon: '' };
 /** Avatar + HP bar for one unit. Stationary units render in the overlay layer
     above the movement arrow; the traveling unit renders at its animated
     position — so the arrow never covers a unit. */
-const UnitToken: React.FC<{ unit: UnitDisplay; selected: boolean; traveling: boolean }> = ({
+const UnitToken: React.FC<{ unit: UnitDisplay; selected: boolean; traveling: boolean; acting?: boolean }> = ({
   unit,
   selected,
   traveling,
+  acting,
 }) => {
   const hpRatio = unit.maxHp > 0 ? unit.hp / unit.maxHp : 0;
   const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
   const tone = getFactionTone(unit.faction, unit.isReinforcement);
   const avatarBg = !traveling && unit.hasActed ? '#4b5563' : tone.tokenBg;
-  const avatarBorder = traveling
-    ? `2px solid ${tone.tokenBorder}`
+  const avatarBorder = acting
+    ? '2px solid #ef4444'
+    : traveling
+      ? `2px solid ${tone.tokenBorder}`
+      : selected
+        ? '2px solid #FFEB3B'
+        : unit.hasActed
+          ? '2px solid #6b7280'
+          : `2px solid ${tone.tokenBorder}`;
+  const avatarBoxShadow = acting
+    ? '0 0 14px 4px #ef4444'
     : selected
-      ? '2px solid #FFEB3B'
-      : unit.hasActed
-        ? '2px solid #6b7280'
-        : `2px solid ${tone.tokenBorder}`;
+      ? '0 0 10px 2px #FFEB3B'
+      : '0 2px 4px rgba(0,0,0,0.4)';
 
   return (
     <div
+      data-acting-enemy={acting ? 'true' : undefined}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -73,11 +83,7 @@ const UnitToken: React.FC<{ unit: UnitDisplay; selected: boolean; traveling: boo
           overflow: 'hidden',
           backgroundColor: avatarBg,
           border: avatarBorder,
-          boxShadow: selected
-            ? '0 0 8px #facc15'
-            : traveling
-              ? '0 4px 12px rgba(0,0,0,0.7)'
-              : '0 2px 6px rgba(0,0,0,0.6)',
+          boxShadow: avatarBoxShadow,
           filter: !traveling && unit.hasActed ? 'grayscale(90%) opacity(0.65)' : undefined,
           display: 'flex',
           alignItems: 'center',
@@ -153,6 +159,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({
   movementPath,
   pendingDestination,
   activeMovingUnit,
+  activeActingEnemyId,
   getUnitDisplay,
   onTileClick,
   onTileHover,
@@ -324,7 +331,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({
                 pointerEvents: 'none',
               }}
             >
-              <UnitToken unit={unit} selected={overlay.selected} traveling={false} />
+              <UnitToken unit={unit} selected={overlay.selected} traveling={false} acting={unitId === activeActingEnemyId} />
             </div>
           );
         }),
@@ -352,7 +359,7 @@ export const Grid2D: React.FC<Grid2DProps> = ({
               pointerEvents: 'none',
             }}
           >
-            <UnitToken unit={unit} selected={false} traveling />
+            <UnitToken unit={unit} selected={false} traveling acting={activeMovingUnit.unitId === activeActingEnemyId} />
           </div>
         );
       })()}

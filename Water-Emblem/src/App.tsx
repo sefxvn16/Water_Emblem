@@ -23,6 +23,7 @@ import {
   getUsableWeapons,
 } from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
+import { canDanceFor, executeDance } from './core/turn/dance';
 import { evaluateAITurn, type AIDecision } from './core/ai/decision';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
@@ -255,6 +256,7 @@ export const App: React.FC = () => {
   useEffect(() => { popupQueueRef.current = popupQueue; }, [popupQueue]);
   const popupIdRef = useRef(0);
   const [isProcessingAI, setIsProcessingAI] = useState(false);
+  const [activeActingEnemyId, setActiveActingEnemyId] = useState<string | null>(null);
   const [gold, setGold] = useState<number>(0);
   const [villageStates, setVillageStates] = useState<Record<string, VillageState>>({});
   const [chestStates, setChestStates] = useState<Record<string, ChestState>>({});
@@ -646,6 +648,8 @@ export const App: React.FC = () => {
         attackerHasDark: holds(selectedExtUnit, 'darksphere'),
         defenderHasLight: holds(target, 'lightsphere'),
         defenderHasDark: holds(target, 'darksphere'),
+        attackerHasIoteShield: holds(selectedExtUnit, 'iotes_shield') || holds(selectedExtUnit, 'iote_shield'),
+        defenderHasIoteShield: holds(target, 'iotes_shield') || holds(target, 'iote_shield'),
       }
     ));
   };
@@ -1224,23 +1228,19 @@ export const App: React.FC = () => {
     });
   };
 
-  // PLAN item 124: dancer refreshes an adjacent acted ally.
-  const danceTarget = selectedExtUnit?.unit.classId === 'dancer' && pendingMovePos
-    ? extendedUnits.find((entry) => entry.unit.faction === 'player' && !entry.unit.isDead
-      && entry.unit.id !== selectedExtUnit.unit.id && entry.unit.hasActed
-      && getManhattanDistance(entry.unit.position, pendingMovePos) === 1)
+  // PLAN item 124 / 186: dancer refreshes an adjacent acted ally via pure dance core.
+  const danceTarget = selectedExtUnit && pendingMovePos
+    ? extendedUnits.find((entry) => canDanceFor(selectedExtUnit, entry, getManhattanDistance(entry.unit.position, pendingMovePos)))
     : undefined;
 
   const handleDance = () => {
     if (!selectedExtUnit || !danceTarget) return;
     executeWithMove(() => {
-      const next = extendedUnits.map((entry) => entry.unit.id === danceTarget.unit.id
-        ? { ...entry, unit: { ...entry.unit, hasActed: false } }
-        : entry);
-      turnManager.replaceUnits(next.map(({ unit }) => unit));
-      setExtendedUnits(next);
+      const result = executeDance(selectedExtUnit, danceTarget, extendedUnits, 18, defaultRNG);
+      turnManager.replaceUnits(result.updatedUnits.map(({ unit }) => unit));
+      setExtendedUnits([...result.updatedUnits]);
       soundManager.playSfx('accept');
-      setCombatLog((prev) => [`💃 ${selectedExtUnit.unit.name} dances for ${danceTarget.unit.name}!`, ...prev]);
+      setCombatLog((prev) => [result.message, ...prev]);
       turnManager.waitSelectedUnit();
       syncState();
     });
@@ -1738,7 +1738,10 @@ export const App: React.FC = () => {
       const path = range.get(`${dest.x},${dest.y}`)?.path;
       if (path && path.length > 1) {
         await new Promise<void>((resolve) => {
-          runMovementAnimation(path, enemy.unit.moveType, soundManager, (pos) => setActiveMovingUnit({ unitId: enemy.unit.id, pos }), () => {
+          runMovementAnimation(path, enemy.unit.moveType, soundManager, (pos) => {
+            setActiveMovingUnit({ unitId: enemy.unit.id, pos });
+            if (!fastPlayback) scrollToTile(pos);
+          }, () => {
             enemy.unit.position = { ...dest };
             setExtendedUnits([...phaseUnits]);
             setActiveMovingUnit(null);
@@ -1765,6 +1768,10 @@ export const App: React.FC = () => {
     const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
 
     for (const enemy of activeEnemies) {
+      setActiveActingEnemyId(enemy.unit.id);
+      scrollToTile(enemy.unit.position);
+      if (!fastPlayback) await sleep(200);
+
       const openingMove = enemy.openingMove;
       const isOpeningMoveActive = openingMove && (turnState.turnNumber === (openingMove.turn ?? 1));
       let decision: AIDecision;
@@ -1919,10 +1926,12 @@ export const App: React.FC = () => {
       }
 
       enemy.unit.hasActed = true;
+      setActiveActingEnemyId(null);
       setExtendedUnits([...phaseUnits]);
       if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber }) !== 'ongoing') break;
     }
 
+    setActiveActingEnemyId(null);
     setVillageStates(nextVillageStates);
 
     // PLAN item 94: reinforcements arrive at the end of the enemy phase
@@ -2118,6 +2127,7 @@ export const App: React.FC = () => {
               movementPath={moveCommitted ? null : plannedPath}
               pendingDestination={pendingMovePos}
               activeMovingUnit={activeMovingUnit}
+              activeActingEnemyId={activeActingEnemyId}
               getUnitDisplay={getUnitDisplay}
               onTileClick={handleTileClick}
               onTileHover={handleTileHover}

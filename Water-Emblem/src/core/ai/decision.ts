@@ -277,6 +277,8 @@ export function evaluateAITurn(
               attackerHasDark: context.sphereHolders.dark.has(enemyUnit.id),
               defenderHasLight: context.sphereHolders.light.has(target.id),
               defenderHasDark: context.sphereHolders.dark.has(target.id),
+              attackerHasIoteShield: context.unitInventoriesMap?.get(enemyUnit.id)?.some((i) => i.itemId === 'iotes_shield' || i.itemId === 'iote_shield'),
+              defenderHasIoteShield: context.unitInventoriesMap?.get(target.id)?.some((i) => i.itemId === 'iotes_shield' || i.itemId === 'iote_shield'),
             } : undefined
           );
 

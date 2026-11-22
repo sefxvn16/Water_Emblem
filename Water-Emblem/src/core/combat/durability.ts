@@ -22,6 +22,8 @@ export function applyCombatDurability(
   const sideIds = new Set([result.forecast.attacker.unit.id, result.forecast.defender.unit.id]);
   return units.map((entry) => {
     if (!sideIds.has(entry.unit.id) || !entry.weapon) return entry;
+    // FE3 canon: holding the Starsphere grants infinite durability (weapons never degrade)
+    if (entry.inventory.some((item) => item.itemId === 'starsphere')) return entry;
     const weapon = entry.weapon;
     const strikes = result.events.filter(
       (event) => event.attackerId === entry.unit.id && (event.isHit || weapon.isMagic),

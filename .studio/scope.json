@@ -1,5 +1,5 @@
 {
-  "task_id": "185-fe3-core-data",
+  "task_id": "186-fe3-mechanics-camera",
   "plan_items": [
     178,
     179,
@@ -8,7 +8,8 @@
     182,
     183,
     184,
-    185
+    185,
+    186
   ],
   "declared_by": "antigravity",
   "declared_at": "2026-11-22",
@@ -58,6 +59,14 @@
     "Water-Emblem/tests/core/batchE.test.ts",
     "Water-Emblem/data/terrains.json",
     "Water-Emblem/data/items.json",
-    "Water-Emblem/tests/core/terrainsAndItemsFE3.test.ts"
+    "Water-Emblem/tests/core/terrainsAndItemsFE3.test.ts",
+    "Water-Emblem/src/core/progression/experience.ts",
+    "Water-Emblem/src/core/combat/durability.ts",
+    "Water-Emblem/src/core/turn/dance.ts",
+    "Water-Emblem/src/core/chapter/events.ts",
+    "Water-Emblem/tests/core/danceCore.test.ts",
+    "Water-Emblem/tests/core/effectiveDamage.test.ts",
+    "Water-Emblem/tests/core/starShards.test.ts",
+    "Water-Emblem/tests/browser/enemyPhaseTracking.spec.ts"
   ]
 }
