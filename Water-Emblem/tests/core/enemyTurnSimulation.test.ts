@@ -101,7 +101,7 @@ describe('enemyTurnSimulation module (PLAN item 135)', () => {
     }
   });
 
-  it('executeSingleEnemyAction handles item_use decision (PLAN item 54 + 196)', () => {
+  it('core enemy phase handles item_use and matches the loop the app runs', () => {
     const units = structuredClone(chapter01Data.units);
     const boss = units.find((u) => u.isBoss)!;
     boss.stats.hp = 5;

@@ -87,7 +87,7 @@ Nhánh chưa gộp cần xử trong G1: `cs/water-batch1-h1-h2` (H1, H2 của m�
 Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sau khi tách, test hành vi phải cho cùng kết quả. Mục nào đổi schema JSON hoặc giao diện công khai của core phải được chủ dự án duyệt trước khi code.
 
 - [ ] 54. Định nghĩa `GameEvent` và tách vòng lượt địch khỏi `App.tsx`.
-  - Tiêu chí xong: `src/core/turn/enemyPhase.ts` nhận state + RNG, trả state mới + `GameEvent[]`; `App.tsx` không còn vòng lặp lượt địch; âm thanh và log dựng từ sự kiện; unit test có seed cho tấn công, chết, rơi đồ, cướp làng và kết thúc chương giữa lượt địch.
+  - Tiêu chí xong: `src/core/turn/enemyPhase.ts` nhận state + RNG, trả state mới + `GameEvent[]`; `App.tsx` không còn vòng lặp lượt địch; âm thanh và log dựng từ sự kiện; unit test có seed cho tấn công, chết, rơi đồ, cướp làng và kết thúc chương giữa lượt địch. test: Water-Emblem/tests/core/enemyPhase.test.ts > runEnemyPhase module (PLAN items 54 + 196)
   - Kết quả: CHỜ NGƯỜI DÙNG: Chờ duyệt kế hoạch và hình dạng kiểu `GameEvent` (giao diện công khai của core).
   - Kiểm bởi: subagent
 
