@@ -19,16 +19,19 @@ Chỉ giữ hình ảnh, bản đồ và nhân vật của FE3; mạch chương 
 | Mã | Cơ chế | File sở hữu |
 |---|---|---|
 | C01, C03, C10 | Tam giác vũ khí; vũ khí khắc class; trượng hỗ trợ | `battle.md` |
-| V04, V05, V07, V08 | Canto; đánh kẹp; lợi thế cao độ; bẫy/chặn lối | `battle.md` |
+| V04, V05, V07 | Canto; đánh kẹp; lợi thế cao độ | `battle.md` |
 | B01–B03 | Vùng nguy hiểm; đường mục tiêu địch; đòn báo trước | `battle.md`, hiển thị ở `art_ui.md` |
 | B04–B06 | Viện binh báo trước; bảo vệ mục tiêu; thoát bản đồ | `campaign.md` |
 | B09–B11 | Thu phục trong trận; vai trò AI; boss nhiều pha | `characters.md`, `battle.md`, `campaign.md` theo quy tắc chung/sự kiện |
 | N01–N04 | Kỹ năng cá nhân; kỹ năng class; chuyển lớp phân nhánh; reclass | `characters.md` |
 | N06, N10, N11 | Quan hệ hỗ trợ; vai trò phi sát thương; tuyển địch | `characters.md` |
 | Q04–Q07 | Độ khó; dự báo; chuẩn bị trận; tua/bỏ hoạt cảnh | `campaign.md`, `art_ui.md` |
-| Q10, Q12 | Bản đồ giải đố; bản đồ ngẫu nhiên | `campaign.md` |
 
-Danh sách này có 29 mã. B09 là điều kiện thu phục trong trận; N11 là quy tắc đưa đơn vị thu phục vào đội. C01 **không bao gồm Break**. V05 là đòn phối hợp do đánh kẹp vị trí, **không tự thêm** Chain Attack hoặc Attack Stance. Q12 áp dụng cho mode riêng, không thay bản đồ FE3 của chiến dịch.
+Danh sách này có 25 mã. B09 là điều kiện thu phục trong trận; N11 là quy tắc đưa đơn vị thu phục vào đội. C01 **không bao gồm Break**. V05 là đòn phối hợp do đánh kẹp vị trí, **không tự thêm** Chain Attack hoặc Attack Stance.
+
+**Q10 "Bản đồ giải đố" và Q12 "Bản đồ ngẫu nhiên" đã bị gỡ bỏ hoàn toàn** theo lệnh chủ dự án 2026-11-19 ("A 1, 2: bỏ"; PLAN mục 147, 148), và chủ dự án xác nhận lại 2026-11-23 là chưa từng yêu cầu hai chế độ này. Cả hai vào tài liệu ngay commit đầu `ce40a64` chép từ đề án cũ, không có câu duyệt nào của chủ dự án. Loại mục tiêu `puzzle` và module sinh bản đồ `randomMap.ts` cùng nút Random Skirmish đã xóa khỏi code; game chỉ có chiến dịch FE3.
+
+**V08 "Bẫy/chặn lối" đã bị gỡ bỏ hoàn toàn** theo lệnh chủ dự án 2026-11-19 ("làm gì có bẫy. Bỏ"). Cơ chế từng được làm ở PLAN mục 105 rồi gỡ hết ở mục 149: module `traps.ts`, đường nối App/save/dữ liệu chương và `trapMinHp` đã xóa. Game không có bẫy; không dựng lại. Chủ dự án nhắc lại 2026-11-23 rằng game không có bẫy và không có phá vật che — dòng này và các dòng trong `battle.md`, `characters.md`, `PLAN.md` mục 61 còn sót tên hai cơ chế đó đã được dọn cùng ngày.
 
 **C12 "Phá vật che chắn" đã bị gỡ bỏ hoàn toàn** theo lệnh chủ dự án 2026-11-19 ("bỏ. không có cơ chế này" — chủ không nhớ đã duyệt C12; mục này nằm trong danh sách từ commit đầu 2026-11-13 với chi tiết "chờ chốt"). Tường (`wall`) không phá được; code/data/test của cơ chế đã xóa (PLAN mục 143).
 
@@ -76,11 +79,11 @@ Nguồn: chỉ đạo trực tiếp của chủ dự án ngày 2026-11-22.
 | C01, C03, Hit/Avoid/Crit | Phương án nền FE11/FE12 được **tạm chốt**; 17 vũ khí FE11 đã đồng bộ số và class đã có catalog; rank khởi đầu đã được kiểm khi nạp và combat, nhưng `galder_pirate` D là mức tối thiểu suy ra từ Hand Axe. Support FE11 dùng điểm/ngưỡng theo chương cho 11 quan hệ; bonus class FE11 đã áp dụng cho Sniper, Blade Dancer, Berserker và Marauder. Cần đối chiếu tiếp rank generic và quan hệ ngoài nhóm hiện có. |
 | EXP, level-up và growth sau reclass | Chủ dự án yêu cầu thêm EXP và growth hiện đại. Đã có EXP, level, giới hạn 30/60 và 1RN theo FE8; đã nạp growth cá nhân cho 15 nhân vật và growth class cho 35 class có đối ứng FE11, tính lại tỷ lệ hiệu dụng khi đổi class; chưa có dynamic adjustment của FE11. Phần tung 1RN vẫn theo FE8, tạo cơ chế lai đã ghi nguồn. |
 | RNG và support bổ sung | 2RN hiện được dùng nhất quán cả combat và điểm sát thương kỳ vọng AI; support dùng 11 quan hệ FE11 đã đối chiếu. Hybrid RN và anti-screwage chưa được đưa vào chỉ vì xuất hiện trong đề án. |
-| V04, V05, V07, V08 | Cần giới hạn Canto, vị trí kích hoạt đánh kẹp, cao độ, số loại bẫy; bản đồ FE3 gốc không tự có các dữ liệu này. |
+| V04, V05, V07 | Cần giới hạn Canto, vị trí kích hoạt đánh kẹp, cao độ; bản đồ FE3 gốc không tự có các dữ liệu này. |
 | B02, B03, B10 | Cần quyết định địch công bố mục tiêu dự kiến hay hành động đã khóa, và lúc nào được đổi ý; AI không được dùng thông tin bị che. |
 | B09, N11 | Cần xác định nhân vật nào có thể chiêu mộ, điều kiện, tỉ lệ và hậu quả với câu chuyện. |
 | N03, N04 | Cây class và hướng FE11 cho Master Seal/reclass đã **tạm chốt**; item, kho đồ, UI promotion và growth cá nhân + class đã có và được kiểm một phần trên Chromium. Reclass và giới hạn số class chưa có; mapping của class Water Emblem vào các nhóm FE11 cần chốt khi triển khai. Chỉ đánh PASS sau khi kiểm đủ luồng. |
-| Q04, Q10, Q12 | Cần số mức độ khó, quy tắc sinh map, điều kiện giải đố và cách lưu thành tích; chưa có phạm vi nội dung được duyệt. |
+| Q04 | Cần số mức độ khó và cách lưu thành tích; chưa có phạm vi nội dung được duyệt. |
 | Thiết bị mục tiêu, quy mô chương và quyền asset | Đã có số đo Chromium headless (xem `PLAN.md` mục 5), nhưng chưa có ngân sách và kiểm trên thiết bị mục tiêu; số chương và quyền tái sử dụng từng asset cũng chưa chốt. |
 
 ## Bản đồ chuyển nội dung từ đề án cũ

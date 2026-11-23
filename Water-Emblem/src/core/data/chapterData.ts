@@ -277,7 +277,22 @@ export function loadChapterData(
       ? { bossUnitId: requireString(objectiveRaw.bossUnitId, 'chapter.objective.bossUnitId') }
       : {}),
     ...(objectiveType === 'seize'
-      ? { seizeTargetTile: readPosition(objectiveRaw.seizeTargetTile, map, 'chapter.objective.seizeTargetTile') }
+      ? {
+          seizeTargetTile: readPosition(objectiveRaw.seizeTargetTile, map, 'chapter.objective.seizeTargetTile'),
+          // PLAN item 210: FE3 asks for both a defeat and a seize in exactly one
+          // chapter; the unit ids live in the chapter JSON, never in code.
+          ...(objectiveRaw.requiresDefeatOf !== undefined
+            ? {
+                requiresDefeatOf: (() => {
+                  if (!Array.isArray(objectiveRaw.requiresDefeatOf) || objectiveRaw.requiresDefeatOf.length === 0) {
+                    throw new Error('chapter.objective.requiresDefeatOf must be a nonempty array');
+                  }
+                  return objectiveRaw.requiresDefeatOf.map((unitId: unknown, index: number) =>
+                    requireString(unitId, `chapter.objective.requiresDefeatOf[${index}]`));
+                })(),
+              }
+            : {}),
+        }
       : {}),
     ...(objectiveType === 'protect'
       ? {

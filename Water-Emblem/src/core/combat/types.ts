@@ -18,6 +18,10 @@ export interface ItemDefinition {
   readonly healBase?: number;
   readonly healMagDivisor?: number;
   readonly healAmount?: number;
+  /** Recover staff (PLAN item 209, FE11: "Restores all HP to an ally"). */
+  readonly healFull?: boolean;
+  /** Fortify staff (PLAN item 209, FE11: "Restores (Magic/2 + 8) HP to all allies", range 0 means map-wide). */
+  readonly healAllAllies?: boolean;
   /** Item role declared in data/items.json (PLAN item 134): healing consumable, door key, or the lord's chest key. */
   readonly itemRole?: 'healing' | 'masterKey' | 'lordChestKey';
   /** Shop price in gold (PLAN item 91; FE11 values in data/items.json). */

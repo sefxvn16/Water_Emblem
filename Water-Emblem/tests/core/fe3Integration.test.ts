@@ -5,6 +5,8 @@ import itemsJson from '../../data/items.json';
 import objectivesJson from '../../data/chapter_objectives.json';
 import ch01Dialogues from '../../data/dialogues/chapter_01_dialogues.json';
 import ch02Dialogues from '../../data/dialogues/chapter_02_dialogues.json';
+import ch03Dialogues from '../../data/dialogues/chapter_03_dialogues.json';
+import defaultDialogues from '../../data/dialogues/default_dialogues.json';
 import { chapter01Data, chapter02Data, chapter03Data, type ChapterData } from '../../src/core/data/chapterData';
 import { evaluateChapterOutcome } from '../../src/core/chapter/types';
 import {
@@ -27,7 +29,12 @@ describe('Tích hợp dữ liệu FE3 chuẩn xác và toàn vẹn', () => {
       expect(ch1.ending[0].speaker).toBe('King Mostyn');
       expect(ch1.ending[1].text).toContain('Captain Ogma');
 
-      expect(ch1.villages.village_west[0].text).toContain('5000 gold');
+      // PLAN item 208: the 5000 gold belongs to the EAST village
+      // (dialogue_04, $E1B120); the west village hands over a Vulnerary
+      // (dialogue_142, $e2bef4). The id on this assertion was wrong before.
+      expect(ch1.villages.village_east[0].text).toContain('5000 gold');
+      expect(ch1.villages.village_west[0].text).toContain('Vulnerary');
+      expect(ch1.villages.village_west[0].text).not.toContain('5000 gold');
       expect(ch1.villages.village_non_lord[0].text).toContain('village is waiting for you with its gates open');
 
       expect(ch1.boss_gazzak.startCombat).toContain('What? The Altean army!?');
@@ -44,8 +51,10 @@ describe('Tích hợp dữ liệu FE3 chuẩn xác và toàn vẹn', () => {
       expect(ch2.recruit_castor[0].text).toContain("Castor!? You're Castor!");
       expect(ch2.recruit_castor[1].text).toContain('My mother is ill');
 
-      expect(ch2.villages.village_center[0].text).toContain('Sister Lena');
-      expect(ch2.villages.village_center[0].text).toContain('3000 Gold');
+      // PLAN item 208: the key must be the village id the chapter declares
+      // (`village_galder`), or the visit falls back to the default line.
+      expect(ch2.villages.village_galder[0].text).toContain('Sister Lena');
+      expect(ch2.villages.village_galder[0].text).toContain('3000 Gold');
 
       expect(ch2.boss_gomer.startCombat).toContain('Don\'t underestimate the Galder pirates');
       expect(ch2.ending[1].text).toContain('Soothsires on Devil Mountain');
@@ -254,7 +263,13 @@ describe('FE3 dialogue and objective tables decide what core events carry (PLAN 
     expect(westVisit.events).toContainEqual(
       expect.objectContaining({ type: 'item_gained', itemId: 'vulnerary', source: 'village' }),
     );
-    expect(westLines.lines[0]!.speaker).toBe('Talys Elder');
+    // Two different speakers, as FE3 has them: the east village's elder speaks
+    // dialogue_04 with portrait [64][04], used nowhere else in the script, while
+    // the west village uses the generic villager portrait [6c][04] that other
+    // chapters' villagers reuse (dialogue/142.txt, and 214, 245, 460).
+    expect(westLines.lines[0]!.speaker).toBe('Talys Villager');
+    expect(westLines.lines[0]!.speaker).not.toBe(eastLines.lines[0]!.speaker);
+    expect(westLines.lines[0]!.text).toContain('Vulnerary');
 
     // With no table at all the visit falls back to the shared default line,
     // which is how we know the two above came from the chapter's own file.
@@ -262,6 +277,59 @@ describe('FE3 dialogue and objective tables decide what core events carry (PLAN 
     const fallbackLines = fallback.events.find((event) => event.type === 'dialogue');
     if (fallbackLines?.type !== 'dialogue') throw new Error('expected a dialogue event');
     expect(fallbackLines.lines[0]!.text).not.toContain('5000 gold');
+  });
+
+  /**
+   * PLAN item 208. Every village of chapters 1-3 must speak its own chapter's
+   * line. A village id with no matching key in the chapter's dialogue table
+   * silently falls back to default_dialogues.json, which is how chapter 2's
+   * Lena request went missing: the chapter declares `village_galder` while the
+   * table used `village_center`. The default lines are read here and asserted
+   * against, so a missing key fails instead of passing quietly.
+   */
+  it('speaks each village of chapters 1-3 its own chapter line, never the shared default', () => {
+    const defaultTexts = new Set(
+      (defaultDialogues as { defaultVillage: { text: string }[] }).defaultVillage.map(({ text }) => text),
+    );
+    const chapters = [
+      { chapter: chapter01Data, dialogues: ch01Dialogues },
+      { chapter: chapter02Data, dialogues: ch02Dialogues },
+      { chapter: chapter03Data, dialogues: ch03Dialogues },
+    ];
+
+    const spoken: string[] = [];
+    for (const { chapter, dialogues } of chapters) {
+      for (const village of chapter.villages ?? []) {
+        const visit = visitVillage(stateOf(chapter), chapter.lordUnitId, village, items, dialogues);
+        const event = visit.events.find((candidate) => candidate.type === 'dialogue');
+        if (event?.type !== 'dialogue') throw new Error(`${chapter.id}/${village.id}: no dialogue event`);
+        const text = event.lines[0]!.text;
+        expect(event.lines.length, `${chapter.id}/${village.id} phải có lời`).toBeGreaterThan(0);
+        expect(defaultTexts.has(text), `${chapter.id}/${village.id} đang rơi về thoại mặc định`).toBe(false);
+        spoken.push(`${chapter.id}/${village.id}`);
+        // The same visit with an empty table must speak the default instead,
+        // so the line above can only have come from the chapter's own file.
+        const bare = visitVillage(stateOf(chapter), chapter.lordUnitId, village, items, {});
+        const bareEvent = bare.events.find((candidate) => candidate.type === 'dialogue');
+        if (bareEvent?.type !== 'dialogue') throw new Error(`${chapter.id}/${village.id}: no fallback dialogue`);
+        expect(bareEvent.lines[0]!.text).not.toBe(text);
+      }
+    }
+    expect(spoken).toHaveLength(4);
+
+    // Chapter 1's two villages pay different rewards, so FE3 gives them
+    // different lines: the Vulnerary village does not offer 5000 gold.
+    const west = chapter01Data.villages!.find(({ id }) => id === 'village_west')!;
+    const east = chapter01Data.villages!.find(({ id }) => id === 'village_east')!;
+    const lineOf = (village: typeof west): string => {
+      const event = visitVillage(stateOf(chapter01Data), chapter01Data.lordUnitId, village, items, ch01Dialogues)
+        .events.find((candidate) => candidate.type === 'dialogue');
+      if (event?.type !== 'dialogue') throw new Error('expected a dialogue event');
+      return event.lines.map(({ text }) => text).join(' ');
+    };
+    expect(lineOf(east)).toContain('5000 gold');
+    expect(lineOf(west)).not.toContain('5000 gold');
+    expect(lineOf(west)).not.toBe(lineOf(east));
   });
 
   it('speaks the FE3 boss quote when Gazzak engages and his death line when he falls', () => {

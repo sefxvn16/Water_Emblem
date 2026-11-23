@@ -398,7 +398,8 @@
     "Rương (12,20): Atlas: phần thưởng \"Guiding Ring\" chưa có trong data/items.json; ô này bị bỏ.",
     "Rương (3,8): Atlas: phần thưởng \"Energy Drop\" chưa có trong data/items.json; ô này bị bỏ.",
     "Rương (6,4): Atlas: phần thưởng \"Starsphere\" chưa có trong data/items.json; ô này bị bỏ.",
-    "Chiêu mộ tiki: người nói (Bantu) không xuất trận trong chương này nên chưa khai được."
+    "Chiêu mộ tiki: người nói (Bantu) không xuất trận trong chương này nên chưa khai được.",
+    "PLAN 210: the seize tile at 7,0 is a throne. The FE3 objective string for this chapter is \"Seize throne\" (project/text/statusObjectives, entry 15 -> statusObjectives_02) and the atlas puts boss Tiki (E*) on 7,0, but the atlas grid transcription had read that tile as floor and listed no gate or throne for this map; the atlas grid and structures line were corrected in the same change."
   ],
   "uncertain": [
     "uncertain: grid detection for map1_15.png has rows shifted relative to the throne room",

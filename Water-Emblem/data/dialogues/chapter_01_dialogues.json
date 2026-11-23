@@ -25,9 +25,9 @@
   "villages": {
     "village_west": [
       {
-        "speaker": "Talys Elder",
+        "speaker": "Talys Villager",
         "avatarUrl": "/avatars/village_man.png",
-        "text": "Prince Marth, thank you for coming. Here is 5000 gold that the villagers have collected. Please use it to equip yourselves, and save this country from the Galder pirates."
+        "text": "Oh, you're the prince of Altea! It's like a dream to be able to meet you... Um... This Vulnerary is a small token of my appreciation. Please accept it."
       }
     ],
     "village_east": [

@@ -9,7 +9,10 @@
       "x": 15,
       "y": 2
     },
-    "description": "Kill Medeus and seize throne 15,2"
+    "description": "Defeat Medeus / Seize throne",
+    "requiresDefeatOf": [
+      "medeus"
+    ]
   },
   "units": [
     {

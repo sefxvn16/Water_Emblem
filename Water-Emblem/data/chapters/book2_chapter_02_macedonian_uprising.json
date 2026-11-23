@@ -7,9 +7,9 @@
     "type": "seize",
     "seizeTargetTile": {
       "x": 15,
-      "y": 14
+      "y": 8
     },
-    "description": "Seize gate 15,14"
+    "description": "Seize castle"
   },
   "units": [
     {

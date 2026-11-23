@@ -9,17 +9,19 @@
   "sources": {
     "atlas": "book1/b1c15.md",
     "checkedOn": "2026-11-22",
-    "uncertain": [
-      "grid detection for map1_15.png has rows shifted relative to the throne room"
+    "uncertain": [],
+    "corrections": [
+      "PLAN 210 (2026-11-23): tile (7,0) read as floor by the pixel pass, corrected to G (gate/throne). The chapter objective string in the FE3 ROM is \"Seize throne\" (project/text/statusObjectives entry 15 -> statusObjectives_02, $f0b03c) and the atlas places boss Tiki (E*) on 7,0, so the seize tile exists; the pixel pass had already been flagged uncertain here (\"rows shifted relative to the throne room\"). The atlas grid and its structures line were corrected in the same change."
     ]
   },
   "legend": {
     "_": "floor",
     "W": "wall",
-    "C": "castle"
+    "C": "castle",
+    "G": "throne"
   },
   "rows": [
-    "______________",
+    "_______G______",
     "______________",
     "__WWWWWWWWWW__",
     "__W___CW___W__",

@@ -12,6 +12,14 @@ export interface ChapterObjective {
   readonly surviveTurns?: number;
   /** Escape (PLAN item 109): tiles units can escape from. */
   readonly escapeTiles?: readonly { x: number; y: number }[];
+  /**
+   * Seize (PLAN item 210): units that must be dead before the seize counts.
+   * FE3's objective string for Book 2 Endgame part 3 is "Defeat Medeus /
+   * Seize throne" (project/text/statusObjectives entry 44 -> statusObjectives_03,
+   * $f0b056), the one chapter in the game that asks for both. Declared in the
+   * chapter's JSON so no unit id is named in code.
+   */
+  readonly requiresDefeatOf?: readonly string[];
   readonly description?: string;
   readonly descriptionVi?: string;
 }
@@ -71,7 +79,11 @@ export function evaluateChapterOutcome(
   } else if (objective.type === 'seize' && seizeCommandUsed && objective.seizeTargetTile
     && lord.position.x === objective.seizeTargetTile.x
     && lord.position.y === objective.seizeTargetTile.y) {
-    return 'victory';
+    const stillStanding = (objective.requiresDefeatOf ?? []).some((unitId) => {
+      const required = units.find((u) => u.id === unitId);
+      return required !== undefined && !required.isDead;
+    });
+    if (!stillStanding) return 'victory';
   }
 
   return 'ongoing';

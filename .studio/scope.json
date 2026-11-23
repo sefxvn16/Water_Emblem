@@ -1,5 +1,5 @@
 {
-  "task_id": "204-chapter-routing+201-evidence",
+  "task_id": "204-chapter-routing+201-evidence+208-210",
   "plan_items": [
     178,
     179,
@@ -29,7 +29,8 @@
     204,
     206,
     208,
-    209
+    209,
+    210
   ],
   "declared_by": "claude-lead (201 evidence) + claude-lead (204 routing) + antigravity (206 extraction)",
   "declared_at": "2026-11-23",
@@ -262,6 +263,10 @@
     "Water-Emblem/tests/core/chapterTransition.test.ts",
     "Water-Emblem/tests/browser/modernUiLayout.spec.ts",
     "Water-Emblem/tests/core/villageRecruit.test.ts",
-    "Water-Emblem/src/core/data/shop.ts"
+    "Water-Emblem/src/core/data/shop.ts",
+    "Water-Emblem/src/core/chapter/types.ts",
+    "Water-Emblem/src/core/combat/types.ts",
+    "Water-Emblem/tests/core/chapter.test.ts",
+    "Water-Emblem/tests/core/staff.test.ts"
   ]
 }

@@ -14,6 +14,34 @@ describe('Chapter Win/Loss Conditions', () => {
     descriptionVi: 'Quét sạch toàn bộ quân địch',
   };
 
+  /**
+   * PLAN mục 210. FE3 có đúng một chương đòi cả hai: chuỗi mục tiêu của Book 2
+   * Endgame phần 3 là "Defeat Medeus / Seize throne" (`statusObjectives_03`,
+   * $f0b056). Chương khai `requiresDefeatOf`, lõi không nhắc tên nhân vật nào.
+   */
+  it('không cho thắng khi chiếm ngai mà quân phải hạ vẫn còn sống (PLAN mục 210)', () => {
+    const objective: ChapterObjective = {
+      type: 'seize',
+      seizeTargetTile: { x: 15, y: 2 },
+      requiresDefeatOf: ['medeus'],
+      description: 'Defeat Medeus / Seize throne',
+    };
+    const onThrone = (medeusDead: boolean): GridUnit[] => [
+      { id: 'marth', name: 'Marth', faction: 'player', position: { x: 15, y: 2 }, mov: 4, moveType: 'foot', isDead: false },
+      { id: 'medeus', name: 'Medeus', faction: 'enemy', position: { x: 15, y: 5 }, mov: 0, moveType: 'armor', isDead: medeusDead },
+    ];
+
+    // Marth đứng đúng ô ngai và đã bấm Seize, nhưng Medeus còn sống.
+    expect(evaluateChapterOutcome(onThrone(false), objective, true, 'marth')).toBe('ongoing');
+    // Hạ Medeus rồi chiếm mới thắng.
+    expect(evaluateChapterOutcome(onThrone(true), objective, true, 'marth')).toBe('victory');
+    // Hạ Medeus nhưng chưa chiếm ngai thì chưa thắng.
+    expect(evaluateChapterOutcome(onThrone(true), objective, false, 'marth')).toBe('ongoing');
+    // Chương không khai requiresDefeatOf vẫn thắng chỉ bằng chiếm ngai.
+    const plain: ChapterObjective = { type: 'seize', seizeTargetTile: { x: 15, y: 2 } };
+    expect(evaluateChapterOutcome(onThrone(false), plain, true, 'marth')).toBe('victory');
+  });
+
   it('kết quả là ongoing khi Marth và Boss còn sống', () => {
     const units: GridUnit[] = [
       { id: 'marth', name: 'Marth', faction: 'player', position: { x: 0, y: 0 }, mov: 4, moveType: 'foot', isDead: false },

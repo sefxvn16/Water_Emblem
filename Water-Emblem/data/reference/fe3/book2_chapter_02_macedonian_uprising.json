@@ -67,7 +67,7 @@
     "goal": "Seize gate 15,14",
     "goalTile": {
       "x": 15,
-      "y": 14
+      "y": 8
     },
     "lose": "Marth dies",
     "boss": "Lumel (Dracoknight L3, Ridersbane)",

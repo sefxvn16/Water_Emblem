@@ -24,7 +24,7 @@ import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 export const STAFF_EXP_PER_USE: number = balanceConfig.staffExpPerUse;
 
 export function isHealStaff(definition: ItemDefinition): boolean {
-  return definition.type === 'staff' && definition.healBase !== undefined;
+  return definition.type === 'staff' && (definition.healBase !== undefined || definition.healFull === true);
 }
 
 /** Warp staff (PLAN item 156, FE11/FE12): declared by `warp` in items.json. */
@@ -62,6 +62,12 @@ export function getStaffTargets(
     });
   }
   if (!isHealStaff(staff)) return [];
+  if (staff.healAllAllies) {
+    return units.filter((candidate) => {
+      if (candidate.unit.faction !== user.unit.faction || candidate.unit.isDead) return false;
+      return candidate.stats.hp < candidate.stats.maxHp;
+    });
+  }
   return units.filter((candidate) => {
     if (candidate.unit.faction !== user.unit.faction || candidate.unit.isDead) return false;
     if (candidate.stats.hp >= candidate.stats.maxHp) return false;
@@ -129,10 +135,13 @@ export function calculateStaffForecast(
   target: ExtendedUnitState,
   staff: ItemDefinition,
 ): StaffForecast {
-  const healPotential = (staff.healBase ?? 0)
-    + Math.floor(healer.stats.mag / (staff.healMagDivisor ?? 1))
-    + getHealBonus(skillIdsOf(healer));
-  const healAmount = Math.max(0, Math.min(healPotential, target.stats.maxHp - target.stats.hp));
+  const missingHp = Math.max(0, target.stats.maxHp - target.stats.hp);
+  const healPotential = staff.healFull
+    ? missingHp
+    : (staff.healBase ?? 0)
+      + Math.floor(healer.stats.mag / (staff.healMagDivisor ?? 1))
+      + getHealBonus(skillIdsOf(healer));
+  const healAmount = Math.max(0, Math.min(healPotential, missingHp));
   const targetHpAfter = Math.min(target.stats.maxHp, target.stats.hp + healAmount);
   const staffItem = healer.inventory.find((i) => i.itemId === staff.id);
   const staffRemainingUses = Math.max(0, (staffItem?.uses ?? 1) - 1);
@@ -249,6 +258,76 @@ export interface StaffUseResult {
   messages: string[];
 }
 
+/**
+ * Fortify staff use (PLAN item 209, FE11): heals (Magic/2 + 8) HP to all living wounded allies
+ * across the map, spends exactly 1 staff use, awards staff EXP and WEx once.
+ */
+export function applyFortifyUse(
+  units: readonly ExtendedUnitState[],
+  userId: string,
+  staffId: string,
+  itemById: ReadonlyMap<string, ItemDefinition>,
+  rng: SeededRNG,
+): StaffUseResult | null {
+  const user = units.find((candidate) => candidate.unit.id === userId);
+  const staff = itemById.get(staffId);
+  if (!user || !staff || !isHealStaff(staff) || !staff.healAllAllies) return null;
+  if (!getUsableStaves(user, itemById).some((candidate) => candidate.id === staffId)) return null;
+
+  const woundedTargets = getStaffTargets(units, user, staff, user.unit.position);
+  if (woundedTargets.length === 0) return null;
+
+  const healPotential = (staff.healBase ?? 0)
+    + Math.floor(user.stats.mag / (staff.healMagDivisor ?? 1))
+    + getHealBonus(skillIdsOf(user));
+
+  const staffIndex = user.inventory.findIndex((item) => item.itemId === staffId);
+  const staffEntry = user.inventory[staffIndex]!;
+  const remaining = staffEntry.uses - 1;
+  const nextInventory = remaining > 0
+    ? user.inventory.map((item, index) => (index === staffIndex ? { ...item, uses: remaining } : item))
+    : user.inventory.filter((_, index) => index !== staffIndex);
+
+  let nextUser: ExtendedUnitState = { ...user, inventory: nextInventory };
+  if (remaining <= 0 && user.weapon?.id === staffId) {
+    const firstUsable = getUsableWeapons(nextUser, itemById)[0];
+    nextUser = { ...nextUser, weapon: firstUsable?.definition };
+  }
+  const awarded = awardExperience(nextUser, STAFF_EXP_PER_USE, rng);
+  nextUser = gainWeaponExp(awarded.entry, 'staff', STAFF_WEX_BY_RANK[staff.requiredRank ?? 'E']);
+
+  let totalHealed = 0;
+  const woundedIds = new Set(woundedTargets.map((t) => t.unit.id));
+
+  const nextUnits = units.map((candidate) => {
+    if (candidate.unit.id === userId) {
+      if (woundedIds.has(candidate.unit.id)) {
+        const healed = Math.min(healPotential, candidate.stats.maxHp - candidate.stats.hp);
+        totalHealed += healed;
+        return { ...nextUser, stats: { ...nextUser.stats, hp: nextUser.stats.hp + healed } };
+      }
+      return nextUser;
+    }
+    if (woundedIds.has(candidate.unit.id)) {
+      const healed = Math.min(healPotential, candidate.stats.maxHp - candidate.stats.hp);
+      totalHealed += healed;
+      return { ...candidate, stats: { ...candidate.stats, hp: candidate.stats.hp + healed } };
+    }
+    return candidate;
+  });
+
+  const messages = [
+    `${user.unit.name} used ${staff.name}`,
+    `${user.unit.name} +${STAFF_EXP_PER_USE} EXP${awarded.gainedLevel ? ` — Level Up! Lv.${nextUser.level}` : ''}`,
+  ];
+
+  return {
+    units: nextUnits,
+    healed: totalHealed,
+    messages,
+  };
+}
+
 export function applyStaffUse(
   units: readonly ExtendedUnitState[],
   userId: string,
@@ -257,19 +336,26 @@ export function applyStaffUse(
   itemById: ReadonlyMap<string, ItemDefinition>,
   rng: SeededRNG,
 ): StaffUseResult | null {
+  const staff = itemById.get(staffId);
+  if (staff?.healAllAllies) {
+    return applyFortifyUse(units, userId, staffId, itemById, rng);
+  }
+
   const user = units.find((candidate) => candidate.unit.id === userId);
   const target = units.find((candidate) => candidate.unit.id === targetId);
-  const staff = itemById.get(staffId);
   if (!user || !target || !staff || !isHealStaff(staff)) return null;
   if (!getUsableStaves(user, itemById).some((candidate) => candidate.id === staffId)) return null;
   if (!getStaffTargets(units, user, staff, user.unit.position).some((candidate) => candidate.unit.id === targetId)) {
     return null;
   }
 
-  const healAmount = (staff.healBase ?? 0)
-    + Math.floor(user.stats.mag / (staff.healMagDivisor ?? 1))
-    + getHealBonus(skillIdsOf(user));
-  const healed = Math.min(healAmount, target.stats.maxHp - target.stats.hp);
+  const missingHp = Math.max(0, target.stats.maxHp - target.stats.hp);
+  const healAmount = staff.healFull
+    ? missingHp
+    : (staff.healBase ?? 0)
+      + Math.floor(user.stats.mag / (staff.healMagDivisor ?? 1))
+      + getHealBonus(skillIdsOf(user));
+  const healed = Math.min(healAmount, missingHp);
 
   const staffIndex = user.inventory.findIndex((item) => item.itemId === staffId);
   const staffEntry = user.inventory[staffIndex]!;

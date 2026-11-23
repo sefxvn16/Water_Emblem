@@ -38,7 +38,7 @@ N01 chọn kỹ năng cá nhân để các nhân vật cùng class vẫn có vai
 
 N03 là promotion có nhánh; N04 cho đổi sang class khác. Cây class đã tạm chốt và lưu trong `data/classes.json`. Chủ dự án giao chọn cơ chế FE hiện đại, nên **tạm chốt** theo [sổ tay FE11 của Nintendo](https://www.nintendo.com/eu/media/downloads/games_8/emanuals/nintendo_ds_21/Manual_NintendoDS_FireEmblemShadowDragon_EN.pdf): Master Seal ở cấp ≥10; reclass trong Battle Preparation từ chương 4, giữ level/EXP và weapon rank đã luyện cho từng loại vũ khí. Hàm core promotion hiện trả về level 1/0 EXP theo FE11 `item.cpp:182-215` và `unit.cpp:2049-2058`. Master Seal, kho vật phẩm và UI promotion đã có; reclass và giới hạn số class chưa triển khai. Growth cá nhân và class đã tách trong dữ liệu, nhưng các class Water Emblem mới chưa có mapping reclass theo nhóm FE11. Màn chuẩn bị chương 2 vẫn dùng để chọn quân theo thiết kế chương mẫu, chưa mở reclass. Đề án cũ có gợi ý lên class tự động không cần item; không áp dụng.
 
-Class phải có vai trò đọc được qua di chuyển, tầm, vũ khí, khả năng hỗ trợ hoặc chống chịu. Tác dụng của kỵ binh, quân bay và giáp khi gặp cao độ, bẫy, cover hoặc vũ khí khắc class cần được đặc tả thống nhất với `battle.md`.
+Class phải có vai trò đọc được qua di chuyển, tầm, vũ khí, khả năng hỗ trợ hoặc chống chịu. Tác dụng của kỵ binh, quân bay và giáp khi gặp cao độ hoặc vũ khí khắc class cần được đặc tả thống nhất với `battle.md`. Bẫy (V08) và phá vật che (C12) đã bị gỡ bỏ theo lệnh chủ dự án 2026-11-19, không đưa vào đặc tả class.
 
 ## Quan hệ và vai trò hỗ trợ
 

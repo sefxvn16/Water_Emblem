@@ -102,7 +102,7 @@ B10 (vai trò AI) được gán theo từng đơn vị/nhóm ở chương; `batt
 
 Q04 chọn nhiều độ khó. Cần chốt số mức, thông số nào đổi giữa các mức (quân số, trang bị, AI, mức cảnh báo, tài nguyên), cùng tiêu chí để không tạo thông tin ẩn bất công. Đề án cũ dùng Normal/Hard/Maddening và gắn growth mode theo độ khó, nhưng các quy tắc đó chưa được duyệt.
 
-Q10 là bản đồ giải đố: đội hình và tài nguyên định trước, mục tiêu rõ, có thể kiểm nghiệm lời giải. Q12 là bản đồ ngẫu nhiên: cần chốt bộ tile, thuật toán tạo map, điều kiện kết nối, vị trí xuất phát, mục tiêu và cách kiểm bản đồ luôn chơi được. Hai mode này tách dữ liệu khỏi chiến dịch FE3. Tháp 50 tầng, skirmish cày cấp và Ironman trong đề án cũ chưa được chọn.
+Q10 (bản đồ giải đố) và Q12 (bản đồ ngẫu nhiên) **đã bị gỡ bỏ** theo lệnh chủ dự án 2026-11-19 ("A 1, 2: bỏ"; PLAN mục 147, 148) và chủ dự án xác nhận lại 2026-11-23 là chưa từng yêu cầu hai chế độ này. Game chỉ có chiến dịch FE3; không có mode sinh bản đồ và không có loại mục tiêu giải đố. Tháp 50 tầng, skirmish cày cấp và Ironman trong đề án cũ cũng chưa được chọn.
 
 ## Dữ liệu và quyền nội dung
 
@@ -128,5 +128,5 @@ Nguồn độc lập để kiểm số lượng/trang bị/sự kiện: [GCGX Ch
 - **B05 Bảo vệ mục tiêu (mục 108):** mục tiêu chương `protect` (`protectUnitId` + `surviveTurns`): quân được bảo vệ chết thì thua; sống sót qua số lượt quy định hoặc diệt hết địch thì thắng.
 - **B06 Thoát bản đồ (mục 109):** mục tiêu chương `escape` (`escapeTiles`): quân đứng trên ô thoát có lệnh Escape rời bản đồ; Marth (lord) thoát thì thắng. Quân đã thoát không còn trên bản đồ, không bị địch nhắm, không chắn đường.
 - **Q04 Độ khó (mục 115):** 3 mức Normal/Hard/Lunatic chọn ở màn hình tiêu đề, lưu trong save. Địch được cộng chỉ số khi nạp chương [Giả định]: Hard +4 HP/+2 mọi chỉ số khác, Lunatic +8 HP/+4.
-- **Q10 Bản đồ giải đố (mục 118):** mục tiêu chương `puzzle` với 2 dạng [Giả định]: `reach_tile` (quân ta tới ô đích trong `maxTurns` lượt) và `defeat_targets` (hạ các quân đích trong `maxTurns` lượt); quá hạn thì thua.
-- **Q12 Bản đồ ngẫu nhiên (mục 119):** mode Random Skirmish ở màn hình tiêu đề: sinh bản đồ 12×10 theo seed (cùng seed cùng bản đồ) — đồng bằng/rừng/núi/đỉnh, sông ngang giữa với 1 cầu, fort + gate phía địch, 2 hàng dưới là bãi triển khai. Quân lấy từ chương test đặt lại vị trí, mục tiêu rout. Save của skirmish chỉ nạp lại được trong cùng phiên [Giả định] (chương sinh lúc chạy).
+- **Q10 Bản đồ giải đố (mục 118) — ĐÃ GỠ BỎ** theo lệnh chủ dự án 2026-11-19 ("A 1, 2: bỏ"; PLAN mục 148): loại mục tiêu `puzzle` (`reach_tile`, `defeat_targets`) đã xóa khỏi union, phần parsing, phần đánh giá kết quả và test (commit `daae194`). Loại mục tiêu hợp lệ còn lại: `seize`, `rout`, `defeat_boss`, `protect`, `escape`.
+- **Q12 Bản đồ ngẫu nhiên (mục 119) — ĐÃ GỠ BỎ** theo cùng lệnh (PLAN mục 147): `src/core/chapter/randomMap.ts`, nút Random Skirmish ở màn hình tiêu đề, khối `skirmish` trong `balance.json` và test liên quan đã xóa (commit `dcdec36`).

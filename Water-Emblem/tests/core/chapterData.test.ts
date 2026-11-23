@@ -514,6 +514,61 @@ describe('FE3 campaign chapters', () => {
       .toThrow(/which is not buyable/);
   });
 
+  /**
+   * PLAN mục 210. Bảng `chapter_objectives.json` trước đây chưa từng được đối chiếu với FE3.
+   * Nguồn quyết định là bảng chuỗi mục tiêu trong kho build files Akaneia Refined:
+   * `project/text/statusObjectives/table.txt` ($f0afa6) là danh sách 45 `entry` theo thứ tự
+   * chương (entry đầu là chỗ dự phòng "All bugs removed"), mỗi entry trỏ tới một trong ba chuỗi:
+   * `statusObjectives_01` = "Seize castle" ($f0b022), `_02` = "Seize throne" ($f0b03c),
+   * `_03` = "Defeat Medeus / Seize throne" ($f0b056). Chuỗi dưới đây chép từ bảng đó
+   * (C = castle, T = throne, M = Medeus), không chép từ JSON của game.
+   */
+  it('the chapter objective table matches the FE3 source table', () => {
+    const FE3_SEQUENCE = [
+      'CCCCTCCCCTT',
+      'CCTTCCTCTCC',
+      'CCCTCCCTCCC',
+      'TCTTCCTCTTM',
+    ].join('').split('');
+    const EXPECTED: Record<string, string> = {
+      C: 'seize_castle', T: 'seize_throne', M: 'defeat_boss_and_seize',
+    };
+
+    const objectives = readJson(path.join(WE_ROOT, 'data/chapter_objectives.json')) as {
+      chapterKey: string; objectiveType: string;
+    }[];
+    expect(objectives).toHaveLength(FE3_SEQUENCE.length);
+    objectives.forEach((row, position) => {
+      const code = FE3_SEQUENCE[position]!;
+      expect(row.objectiveType, `${row.chapterKey}: bảng FE3 ghi ${EXPECTED[code]}`)
+        .toBe(EXPECTED[code]);
+    });
+  });
+
+  /**
+   * PLAN mục 210. Một mục tiêu `seize` chỉ chơi được khi ô đích thật là cổng hoặc ngai.
+   * Phép kiểm này phát hiện Book 2 chương 2 khai ô chiếm (15,14) — một ô rừng — trong khi
+   * atlas ghi `G gate 15,8`; chương đó trước đây không thể thắng.
+   */
+  it('puts every seize target on a gate or throne tile', () => {
+    const unconfirmed: string[] = [];
+    for (const { id } of campaignChapters()) {
+      const chapter = readJson(path.join(WE_ROOT, 'data/chapters', `${id}.json`)) as {
+        mapId?: string; notes?: string[];
+        objective: { type: string; seizeTargetTile?: { x: number; y: number } };
+      };
+      if (chapter.objective.type !== 'seize') continue;
+      const target = chapter.objective.seizeTargetTile;
+      expect(target, `${id}: mục tiêu seize phải có seizeTargetTile`).toBeDefined();
+      const map = readJson(path.join(WE_ROOT, 'data/maps', `${chapter.mapId ?? id}.json`)) as MapData;
+      const tile = map.grid[target!.y]?.[target!.x];
+      if (tile === 'gate' || tile === 'throne') continue;
+      unconfirmed.push(`${id} (${target!.x},${target!.y}) = ${tile}`);
+    }
+    // Không chương nào được để ô chiếm trên ô không chiếm được.
+    expect(unconfirmed).toEqual([]);
+  });
+
   it('declares generic enemy levels and weapons as a project convention, not FE3 data', () => {
     for (const { id } of campaignChapters()) {
       if (HANDMADE_CHAPTERS.has(id)) continue;
