@@ -11,7 +11,7 @@ import type { SeededRNG } from '../combat/rng';
 import { defaultRNG } from '../combat/rng';
 import { resolveCombatConsequences, type CombatResolutionResult } from '../combat/combatResolution';
 import { computeCombinedThreatKeys, computeUnitThreatKeys } from '../grid/threatRange';
-import { getAttackRange, skillIdsOf } from '../class/classRules';
+import { getAttackRange, skillIdsOf, useVulnerary } from '../class/classRules';
 import { dueReinforcements, spawnReinforcements, announcedReinforcements } from '../chapter/reinforcements';
 import { evaluateChapterOutcome, type ChapterObjective } from '../chapter/types';
 import { tickSpecialStates } from '../combat/transform';
@@ -45,6 +45,8 @@ export interface EnemyActionStep {
   pillageEvents?: readonly GameEvent[];
   lootedChestId?: string;
   logs: string[];
+  events: readonly GameEvent[];
+  unitsAfter?: readonly ExtendedUnitState[];
 }
 
 export interface EnemyPhaseOutcome {
@@ -57,6 +59,7 @@ export interface EnemyPhaseOutcome {
   isPhaseEnded: boolean;
   announcements: string[];
   logs: string[];
+  events?: readonly GameEvent[];
 }
 
 /**
@@ -177,15 +180,29 @@ export function executeSingleEnemyAction(
   }
 
   const stepLogs: string[] = [];
+  const stepEvents: GameEvent[] = [];
   let combatResolutionResult: CombatResolutionResult | undefined;
   let rawResult: CombatResult | undefined;
   let hpBefore: { attacker: number; defender: number } | undefined;
   const movePos = 'movePosition' in decision ? decision.movePosition : enemy.unit.position;
 
+  if (movePos.x !== enemy.unit.position.x || movePos.y !== enemy.unit.position.y) {
+    stepEvents.push({
+      type: 'unit_moved',
+      unitId: enemy.unit.id,
+      from: { ...enemy.unit.position },
+      to: { ...movePos },
+    });
+  }
+
+  const meInWorking = workingUnits.find((u) => u.unit.id === enemy.unit.id);
+  if (meInWorking) {
+    meInWorking.unit.position = { ...movePos };
+  }
+
   if (decision.type === 'attack') {
     if (decision.weapon.id !== enemy.weapon?.id) {
       stepLogs.push(`  ⚔️ ${enemy.unit.name} switches to ${decision.weapon.name}!`);
-      const meInWorking = workingUnits.find((u) => u.unit.id === enemy.unit.id);
       if (meInWorking) {
         meInWorking.weapon = decision.weapon;
       }
@@ -211,13 +228,55 @@ export function executeSingleEnemyAction(
     workingGold = combatResolutionResult.gold;
     workingVillageStates = combatResolutionResult.villageStates;
     stepLogs.push(...combatResolutionResult.logs);
+
+    stepEvents.push({
+      type: 'attack_resolved',
+      attackerId: enemy.unit.id,
+      defenderId: decision.targetUnit.id,
+      strikes: rawResult.events.map((ev) => ({
+        attackerId: ev.attackerId,
+        defenderId: ev.defenderId,
+        isHit: ev.isHit,
+        isCrit: ev.isCrit,
+        damageDealt: ev.damageDealt,
+        defenderHpAfter: ev.defenderHpAfter,
+      })),
+      hpBefore,
+      hpAfter: {
+        attacker: workingUnits.find((u) => u.unit.id === enemy.unit.id)?.stats.hp ?? 0,
+        defender: workingUnits.find((u) => u.unit.id === decision.targetUnit.id)?.stats.hp ?? 0,
+      },
+    });
+
+    if (combatResolutionResult.defeatedUnitId) {
+      const dead = workingUnits.find((u) => u.unit.id === combatResolutionResult!.defeatedUnitId);
+      if (dead) {
+        stepEvents.push({
+          type: 'unit_died',
+          unitId: dead.unit.id,
+          unitName: dead.unit.name,
+          faction: dead.unit.faction,
+        });
+      }
+    }
+
+    if (combatResolutionResult.defeatEvents.length > 0) {
+      stepEvents.push(...combatResolutionResult.defeatEvents);
+    }
+
+    if (combatResolutionResult.levelUps) {
+      for (const lu of combatResolutionResult.levelUps) {
+        stepEvents.push({
+          type: 'level_up',
+          unitId: lu.unit.unit.id,
+          unitName: lu.unit.unit.name,
+          newLevel: lu.newLevel,
+          statGains: lu.statGains,
+        });
+      }
+    }
   } else if (decision.type === 'staff') {
     stepLogs.push(`🟢 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and uses ${decision.staff.name} on ${decision.targetUnit.name}!`);
-    // Cập nhật vị trí di chuyển trước khi dùng gậy
-    const meBeforeStaff = workingUnits.find((u) => u.unit.id === enemy.unit.id);
-    if (meBeforeStaff) {
-      meBeforeStaff.unit.position = { ...decision.movePosition };
-    }
     const staffResult = applyStaffUse(
       workingUnits,
       enemy.unit.id,
@@ -236,6 +295,29 @@ export function executeSingleEnemyAction(
         stepLogs.push(`  ✨ ${targetEntry.unit.name} recovered ${decision.healAmount} HP!`);
       }
     }
+    stepEvents.push({
+      type: 'staff_used',
+      userId: enemy.unit.id,
+      targetId: decision.targetUnit.id,
+      staffId: decision.staff.id,
+      healAmount: decision.healAmount,
+    });
+  } else if (decision.type === 'item_use') {
+    stepLogs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}) and uses ${decision.item.name}!`);
+    if (meInWorking) {
+      const changed = useVulnerary(meInWorking, decision.item);
+      if (changed) {
+        meInWorking.stats = changed.stats;
+        meInWorking.inventory = changed.inventory;
+        stepLogs.push(`  🧪 ${enemy.unit.name} used ${decision.item.name} and recovered ${decision.item.healAmount ?? 10} HP!`);
+        stepEvents.push({
+          type: 'item_used',
+          unitId: enemy.unit.id,
+          itemId: decision.item.id,
+          healAmount: decision.item.healAmount ?? 10,
+        });
+      }
+    }
   } else if (decision.type === 'move_only') {
     stepLogs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
   } else {
@@ -243,7 +325,7 @@ export function executeSingleEnemyAction(
   }
 
   let pillageEvents: readonly GameEvent[] | undefined;
-  if (decision.type === 'move_only' || decision.type === 'attack') {
+  if (decision.type === 'move_only' || decision.type === 'attack' || decision.type === 'staff' || decision.type === 'item_use') {
     const raid = pillageVillage(
       { units: workingUnits, gold: workingGold, villageStates: workingVillageStates },
       enemy.unit.id,
@@ -251,6 +333,9 @@ export function executeSingleEnemyAction(
     );
     workingVillageStates = { ...raid.state.villageStates };
     pillageEvents = raid.events;
+    if (pillageEvents && pillageEvents.length > 0) {
+      stepEvents.push(...pillageEvents);
+    }
   }
 
   let lootedChestId: string | undefined;
@@ -284,6 +369,8 @@ export function executeSingleEnemyAction(
       pillageEvents,
       lootedChestId,
       logs: stepLogs,
+      events: stepEvents,
+      unitsAfter: workingUnits,
     },
     updatedUnits: workingUnits,
     updatedVillageStates: workingVillageStates,
@@ -301,7 +388,7 @@ export function executeSingleEnemyAction(
 export function finalizeEnemyPhase(
   units: ExtendedUnitState[],
   context: EnemyPhaseContext,
-  turnManager: TurnManager,
+  turnManager?: TurnManager,
 ): EnemyPhaseOutcome {
   const terrains = context.terrains ?? defaultTerrainRegistry;
   let phaseUnits = [...units];
@@ -330,7 +417,7 @@ export function finalizeEnemyPhase(
 
   // 3. Switch to Player Phase if ongoing
   if (outcome === 'ongoing') {
-    turnManager.switchPhase('player_phase');
+    if (turnManager) turnManager.switchPhase('player_phase');
     phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', context.mapData, terrains);
 
     // Tick transformation / imitation
@@ -357,7 +444,7 @@ export function finalizeEnemyPhase(
     }
   }
 
-  turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
+  if (turnManager) turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
 
   return {
     units: phaseUnits,

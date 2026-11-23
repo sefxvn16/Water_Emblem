@@ -1,5 +1,5 @@
 {
-  "task_id": "204-chapter-routing+201-evidence+208-210",
+  "task_id": "G1-app-refactor",
   "plan_items": [
     178,
     179,
@@ -30,7 +30,13 @@
     206,
     208,
     209,
-    210
+    210,
+    54,
+    55,
+    57,
+    58,
+    59,
+    75
   ],
   "declared_by": "claude-lead (201 evidence) + claude-lead (204 routing) + antigravity (206 extraction)",
   "declared_at": "2026-11-23",
@@ -270,6 +276,8 @@
     "Water-Emblem/tests/core/staff.test.ts",
     "Water-Emblem/src/core/combat/equip.ts",
     "Water-Emblem/tests/core/turn.test.ts",
-    "Water-Emblem/src/core/turn/statusEffects.ts"
+    "Water-Emblem/src/core/turn/statusEffects.ts",
+    "Water-Emblem/src/core/turn/enemyPhase.ts",
+    "Water-Emblem/tests/core/enemyPhase.test.ts"
   ]
 }

@@ -22,7 +22,7 @@ import {
 } from './core/combat/equip';
 import { defaultRNG } from './core/combat/rng';
 import { canDanceFor, executeDance } from './core/turn/dance';
-import { collectBossUnitIds, evaluateAITurn, sortEnemyTurnOrder, type AIDecision } from './core/ai/decision';
+import { runEnemyPhase } from './core/turn/enemyPhase';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { PhaseBanner } from './ui/PhaseBanner';
@@ -31,7 +31,7 @@ import { buildBoardView } from './core/grid/boardView';
 import { resolveCombatConsequences, type LevelUpEvent } from './core/combat/combatResolution';
 import { computeDangerZone, computeInspectedEnemyThreatKeys } from './core/simulation/enemyTurnSimulation';
 import {
-  bossStartEvent, canOpenChest, canOpenDoor, openChest, openDoor, pillageVillage, recruit, seize, visitVillage,
+  bossStartEvent, canOpenChest, canOpenDoor, openChest, openDoor, recruit, seize, visitVillage,
   type ChapterState, type ChestState, type DialogueLine, type DialogueTable, type DoorState, type GameEvent, type VillageState,
 } from './core/chapter/events';
 import { eventLogLines, villageRewardText } from './ui/eventLog';
@@ -68,10 +68,10 @@ import { CONVOY_SLOTS, depositToConvoy, sendToConvoy, withdrawFromConvoy } from 
 import { ShopWindow } from './ui/ShopWindow';
 import { ArenaWindow } from './ui/ArenaWindow';
 import { ARENA_TIERS, canEnterArena, generateArenaOpponent, runArenaFight, type ArenaFightOutcome, type ArenaTier } from './core/combat/arena';
-import { announcedReinforcements, dueReinforcements, spawnReinforcements } from './core/chapter/reinforcements';
+import { announcedReinforcements } from './core/chapter/reinforcements';
 import { applyDifficulty, type Difficulty } from './core/chapter/difficulty';
 import { getSkillModifiers } from './core/combat/skills';
-import { canTransform, imitateUnit, tickSpecialStates, transformUnit } from './core/combat/transform';
+import { canTransform, imitateUnit, transformUnit } from './core/combat/transform';
 import { buyItem, getShopStock, sellItem, sellValue } from './core/data/shop';
 import {
   applyStaffUse,
@@ -1793,252 +1793,128 @@ export const App: React.FC = () => {
     const scrollToTile = (pos: Position) => {
       document.querySelector(`[data-testid="tile-${pos.x}-${pos.y}"]`)?.scrollIntoView({ behavior: fastPlayback ? 'auto' : 'smooth', block: 'center', inline: 'center' });
     };
+    const phaseResult = runEnemyPhase({
+      mapData,
+      chapter: currentChapter,
+      chapterObjective,
+      items: itemsJson.items as ItemDefinition[],
+      itemById: ITEM_BY_ID,
+      dialogues: currentDialogues as DialogueTable,
+      turnNumber: turnState.turnNumber,
+      openedDoors: openedDoorKeys,
+      gold,
+      villageStates,
+      chestStates,
+      spawnedReinforcements,
+      units: extendedUnits,
+    }, defaultRNG);
+
     let phaseUnits = healUnitsOnTerrain(
       extendedUnits.map((entry) => ({ ...entry, unit: { ...entry.unit }, stats: { ...entry.stats } })),
       'enemy', mapData, defaultTerrainRegistry,
     );
-    const activeEnemies = phaseUnits.filter((u) => u.unit.faction === 'enemy' && !u.unit.isDead);
-    const statsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.stats]));
-    const weaponsMap = new Map(phaseUnits.map((u) => [u.unit.id, u.weapon]));
-    let nextVillageStates: Record<string, VillageState> = { ...villageStates };
 
-    const buildAIContext = (actingEnemy: ExtendedUnitState) => ({
-      map: mapData,
-      terrains: defaultTerrainRegistry,
-      units: phaseUnits.map((u) => u.unit),
-      unitStatsMap: statsMap,
-      unitWeaponsMap: weaponsMap,
-      unitSkillsMap: new Map(phaseUnits.map((u) => [u.unit.id, skillIdsOf(u)])),
-      unitLevelsMap: new Map(phaseUnits.map((u) => [u.unit.id, u.level])),
-      sphereHolders: {
-        light: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'lightsphere')).map((u) => u.unit.id)),
-        dark: new Set(phaseUnits.filter((u) => u.inventory.some((i) => i.itemId === 'darksphere')).map((u) => u.unit.id)),
-      },
-      villageTargets: currentChapter.villages?.filter((v) => (nextVillageStates[v.id] ?? 'intact') === 'intact').map((v) => v.position),
-      chestTargets: (currentChapter.chests ?? []).filter((c) => chestStates[c.id] !== 'opened').map((c) => c.position),
-      patrolTargets: actingEnemy.patrolPoints,
-      turnNumber: turnState.turnNumber,
-      openedDoors: openedDoorKeys,
-      unitInventoriesMap: new Map(phaseUnits.map((u) => [u.unit.id, u.inventory])),
-      itemsCatalog: ITEM_BY_ID,
-      bossUnitIds: collectBossUnitIds(phaseUnits),
-    });
-
-    const sortedEnemies = activeEnemies.length > 0 ? sortEnemyTurnOrder(activeEnemies, buildAIContext(activeEnemies[0]!)) : [];
-    const logs: string[] = [`🔴 ENEMY PHASE (Turn ${turnState.turnNumber})`];
-
-    for (const enemy of sortedEnemies) {
+    for (const step of phaseResult.steps) {
+      const enemy = phaseUnits.find((u) => u.unit.id === step.enemy.unit.id) ?? step.enemy;
+      const decision = step.decision;
       setActiveActingEnemyId(enemy.unit.id);
       scrollToTile(enemy.unit.position);
       if (!fastPlayback) await sleep(200);
 
-      const openingMove = enemy.openingMove;
-      const isOpeningMoveActive = openingMove && (turnState.turnNumber === (openingMove.turn ?? 1));
-      let decision: AIDecision;
-
-      if (isOpeningMoveActive) {
-        const target = openingMove.targetPosition;
-        decision = (enemy.unit.position.x !== target.x || enemy.unit.position.y !== target.y)
-          ? { type: 'move_only', movePosition: target }
-          : { type: 'wait' };
-        if (openingMove.nextAiRole) enemy.aiRole = openingMove.nextAiRole;
-      } else {
-        decision = evaluateAITurn(enemy.unit, enemy.aiRole ?? 'pursue', buildAIContext(enemy));
-      }
-
       if (decision.type === 'attack') {
         if (decision.weapon.id !== enemy.weapon?.id) {
-          logs.push(`  ⚔️ ${enemy.unit.name} switches to ${decision.weapon.name}!`);
           enemy.weapon = decision.weapon;
-          const me = phaseUnits.find((u) => u.unit.id === enemy.unit.id);
-          if (me) me.weapon = decision.weapon;
-          weaponsMap.set(enemy.unit.id, decision.weapon);
         }
         scrollToTile(enemy.unit.position);
-        await animateEnemyMove(enemy, decision.movePosition);
+        await animateEnemyMove(enemy, step.movePosition);
         await sleep(200);
-        logs.push(`🔴 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and attacks ${decision.targetUnit.name}!`);
 
-        const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
-        const hpBefore = { attacker: enemy.stats.hp, defender: targetEntry?.stats.hp ?? 0 };
-        const result = executeCombat(decision.forecast, defaultRNG);
-        // PLAN item 133: executeCombat is pure — write the post-combat HP
-        // from the result back into the phase units (previously the HP
-        // arrived via mutation of the shared forecast stats objects).
-        const attackerEntry = phaseUnits.find((u) => u.unit.id === enemy.unit.id);
-        if (attackerEntry) attackerEntry.stats.hp = result.forecast.attacker.stats.hp;
-        if (targetEntry) targetEntry.stats.hp = result.forecast.defender.stats.hp;
-        if (targetEntry) {
-          const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, hpBefore, result);
-          setPopupQueue((queue) => [...queue, popup]);
-          // PLAN item 140: hold the phase on this combat's popup until it
-          // is dismissed (click or the 2.5s auto-dismiss), FE-style.
-          while (!fastPlayback && popupQueueRef.current.some((entry) => entry.id === popup.id)) {
-            await sleep(100);
-          }
-          await sleep(150);
-        }
-        // PLAN item 135: Combat consequences handled by the stateless simulation layer
-        const resolution = resolveCombatConsequences({
-          units: phaseUnits,
-          result,
-          rng: defaultRNG,
-          itemById: ITEM_BY_ID,
-          itemsList: itemsJson.items as ItemDefinition[],
-          chapter: currentChapter,
-          dialogues: currentDialogues as DialogueTable,
-          gold,
-          villageStates: nextVillageStates,
-        });
-
-        for (const cue of resolution.soundCues) {
-          if (cue.type === 'weapon') soundManager.playWeaponHit(cue.weaponType ?? 'axe');
-          else soundManager.playSfx(cue.type);
-        }
-
-        logs.push(...resolution.logs);
-        if (resolution.defeatEvents.length > 0) {
-          logs.push(...eventLogLines(resolution.defeatEvents, '  '));
-          queueOverflows(resolution.defeatEvents);
-        }
-        nextVillageStates = resolution.villageStates;
-        phaseUnits = resolution.units;
-        for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
-        for (const entry of phaseUnits) weaponsMap.set(entry.unit.id, entry.weapon);
-        if (resolution.levelUps && resolution.levelUps.length > 0) {
-          const playerLevelUp = resolution.levelUps.find((lu) => lu.unit.unit.faction === 'player');
-          if (playerLevelUp) setPendingLevelUp(playerLevelUp);
-        }
-      } else if (decision.type === 'staff') {
-        scrollToTile(enemy.unit.position);
-        await animateEnemyMove(enemy, decision.movePosition);
-        await sleep(200);
-        logs.push(`🟢 ${enemy.unit.name} moves to (${decision.movePosition.x},${decision.movePosition.y}) and casts ${decision.staff.name} on ${decision.targetUnit.name}!`);
-        soundManager.playSfx('heal');
-
-        const staffResult = applyStaffUse(
-          phaseUnits,
-          enemy.unit.id,
-          decision.targetUnit.id,
-          decision.staff.id,
-          ITEM_BY_ID,
-          defaultRNG,
-        );
-        if (staffResult) {
-          phaseUnits = staffResult.units;
-          logs.push(...staffResult.messages);
-          for (const entry of phaseUnits) statsMap.set(entry.unit.id, entry.stats);
-        } else {
+        if (step.rawCombatResult && step.hpBefore) {
           const targetEntry = phaseUnits.find((u) => u.unit.id === decision.targetUnit.id);
           if (targetEntry) {
-            targetEntry.stats.hp = Math.min(targetEntry.stats.maxHp, targetEntry.stats.hp + decision.healAmount);
-            logs.push(`  ✨ ${targetEntry.unit.name} recovered ${decision.healAmount} HP!`);
+            const popup = buildCombatPopup(++popupIdRef.current, enemy, targetEntry, step.hpBefore, step.rawCombatResult);
+            setPopupQueue((queue) => [...queue, popup]);
+            while (!fastPlayback && popupQueueRef.current.some((entry) => entry.id === popup.id)) {
+              await sleep(100);
+            }
+            await sleep(150);
           }
         }
-        await sleep(200);
-      } else if (decision.type === 'item_use') {
-        scrollToTile(enemy.unit.position);
-        await animateEnemyMove(enemy, decision.movePosition);
-        const changed = useVulnerary(enemy, decision.item);
-        if (changed) {
-          enemy.stats = changed.stats;
-          enemy.inventory = changed.inventory;
-          statsMap.set(enemy.unit.id, changed.stats);
-          soundManager.playSfx('heal');
-          logs.push(`  🧪 ${enemy.unit.name} used ${decision.item.name} and recovered ${decision.item.healAmount ?? 10} HP!`);
+
+        if (step.combatResult) {
+          for (const cue of step.combatResult.soundCues) {
+            if (cue.type === 'weapon') soundManager.playWeaponHit(cue.weaponType ?? 'axe');
+            else soundManager.playSfx(cue.type);
+          }
+          if (step.combatResult.defeatEvents.length > 0) {
+            queueOverflows(step.combatResult.defeatEvents);
+          }
+          if (step.combatResult.levelUps && step.combatResult.levelUps.length > 0) {
+            const playerLevelUp = step.combatResult.levelUps.find((lu) => lu.unit.unit.faction === 'player');
+            if (playerLevelUp) setPendingLevelUp(playerLevelUp);
+          }
         }
-        await sleep(200);
-      } else if (decision.type === 'move_only') {
+      } else if (step.decision.type === 'staff') {
         scrollToTile(enemy.unit.position);
-        await animateEnemyMove(enemy, decision.movePosition);
+        await animateEnemyMove(enemy, step.movePosition);
+        await sleep(200);
+        soundManager.playSfx('heal');
+        await sleep(200);
+      } else if (step.decision.type === 'item_use') {
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, step.movePosition);
+        soundManager.playSfx('heal');
+        await sleep(200);
+      } else if (step.decision.type === 'move_only') {
+        scrollToTile(enemy.unit.position);
+        await animateEnemyMove(enemy, step.movePosition);
         await sleep(100);
-        logs.push(`🔴 ${enemy.unit.name} advances towards (${decision.movePosition.x},${decision.movePosition.y}).`);
-      } else {
-        logs.push(`🔴 ${enemy.unit.name} holds position on guard.`);
       }
 
-      if (decision.type === 'move_only' || decision.type === 'attack' || decision.type === 'staff' || decision.type === 'item_use') {
-        const raid = pillageVillage({ units: phaseUnits, gold, villageStates: nextVillageStates }, enemy.unit.id, currentChapter);
-        nextVillageStates = { ...raid.state.villageStates };
-        logs.push(...eventLogLines(raid.events));
+      if (step.lootedChestId) {
+        setChestStates((prev) => ({ ...prev, [step.lootedChestId!]: 'opened' }));
       }
 
-      // PLAN item 110: a thief standing on a chest loots it.
-      if (enemy.aiRole === 'thief' && !enemy.unit.isDead) {
-        const chest = (currentChapter.chests ?? []).find((c) =>
-          chestStates[c.id] !== 'opened'
-          && c.position.x === enemy.unit.position.x && c.position.y === enemy.unit.position.y);
-        if (chest) {
-          setChestStates((prev) => ({ ...prev, [chest.id]: 'opened' }));
-          logs.push(`  💰 ${enemy.unit.name} loots the chest!`);
-        }
+      if (step.unitsAfter) {
+        phaseUnits = step.unitsAfter.map((u) => ({ ...u, unit: { ...u.unit }, stats: { ...u.stats } }));
       }
-
       enemy.unit.hasActed = true;
       setActiveActingEnemyId(null);
       setExtendedUnits([...phaseUnits]);
-      if (evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber }) !== 'ongoing') break;
+
+      if (step.events.some((e) => e.type === 'chapter_outcome')) break;
     }
 
     setActiveActingEnemyId(null);
-    setVillageStates(nextVillageStates);
+    setVillageStates(phaseResult.state.villageStates);
+    setChestStates(phaseResult.state.chestStates);
 
-    // PLAN item 94: reinforcements arrive at the end of the enemy phase
-    // and do not act on the turn they appear.
-    let nextSpawnedReinforcements = spawnedReinforcements;
-    let anyReinforcementsSpawned = false;
-    for (const group of dueReinforcements(currentChapter, turnState.turnNumber, spawnedReinforcements)) {
-      const spawned = spawnReinforcements(phaseUnits, group, mapData, defaultTerrainRegistry);
-      phaseUnits = spawned.units;
-      nextSpawnedReinforcements = [...nextSpawnedReinforcements, group.id];
-      if (spawned.spawned.length > 0) {
-        anyReinforcementsSpawned = true;
-        logs.push(`⚔️ Enemy reinforcements have arrived! (${spawned.spawned.length} units)`);
-      }
-    }
-    if (nextSpawnedReinforcements !== spawnedReinforcements) {
-      setSpawnedReinforcements(nextSpawnedReinforcements);
-    }
-    // PLAN item 188: Reinforcements banner
-    if (anyReinforcementsSpawned) {
+    const reinforcementsSpawned = phaseResult.state.spawnedReinforcements.length > spawnedReinforcements.length;
+    if (reinforcementsSpawned) {
+      setSpawnedReinforcements(phaseResult.state.spawnedReinforcements);
       setActivePhaseBanner('reinforcements');
       await sleep(1200);
       setActivePhaseBanner(null);
     }
 
-    setCombatLog((prev) => [...logs, ...prev].slice(0, 30));
+    setCombatLog((prev) => [...phaseResult.state.logs, ...prev].slice(0, 30));
 
-    // Kiểm tra kết quả chương sau lượt địch
-    const outcome = evaluateChapterOutcome(phaseUnits.map((u) => u.unit), chapterObjective, false, currentChapter.lordUnitId, { turnNumber: turnState.turnNumber });
-    if (outcome !== 'ongoing') setChapterOutcome(outcome);
-
-    // Chuyển lại về Player Phase
-    if (outcome === 'ongoing') {
+    if (phaseResult.state.chapterOutcome !== 'ongoing') {
+      setChapterOutcome(phaseResult.state.chapterOutcome as 'victory' | 'defeat');
+    } else {
       soundManager.playSfx('player_phase');
-      // PLAN item 188: Player phase banner
       setActivePhaseBanner('player');
       await sleep(1000);
       setActivePhaseBanner(null);
       turnManager.switchPhase('player_phase');
-      phaseUnits = healUnitsOnTerrain(phaseUnits, 'player', mapData, defaultTerrainRegistry);
-      // PLAN items 121/124: tick transformation/imitation timers.
-      const ticked = tickSpecialStates(phaseUnits, ITEM_BY_ID);
-      phaseUnits = ticked.units;
-      for (const event of ticked.events) {
-        logs.push(event.kind === 'transform_end'
-          ? `🐉 ${event.unitName} returns to human form.`
-          : `🎭 ${event.unitName}'s imitation ends.`);
-      }
-      phaseUnits = phaseUnits.map((u) => u.unit.faction === 'player' && !u.unit.isDead ? { ...u, unit: { ...u.unit, hasActed: false } } : u);
-      // PLAN item 94: warn about reinforcements arriving this turn.
-      const arriving = announcedReinforcements(currentChapter, turnState.turnNumber + 1, nextSpawnedReinforcements);
-      if (arriving.length > 0) {
-        showNotice('⚠️ Enemy reinforcements will arrive at the end of this turn!');
-        setCombatLog((prev) => ['⚠️ Enemy reinforcements will arrive at the end of this turn!', ...prev]);
+      if (phaseResult.state.announcements.length > 0) {
+        showNotice(phaseResult.state.announcements[0]!);
+        setCombatLog((prev) => [phaseResult.state.announcements[0]!, ...prev]);
       }
     }
-    turnManager.replaceUnits(phaseUnits.map(({ unit }) => unit));
-    setExtendedUnits(phaseUnits);
+
+    turnManager.replaceUnits(phaseResult.state.units.map(({ unit }) => unit));
+    setExtendedUnits(phaseResult.state.units);
     setIsProcessingAI(false);
     syncState();
   };

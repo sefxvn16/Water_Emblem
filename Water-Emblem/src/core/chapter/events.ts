@@ -4,7 +4,7 @@ export type { ChapterChest, ChapterDoor };
 import { addItemToInventory } from '../data/inventory';
 import { getClassDefinition } from '../class/classRules';
 import { defaultTerrainRegistry, type TerrainRegistry } from '../grid/terrain';
-import type { MapData, MoveType } from '../grid/types';
+import type { MapData, MoveType, Position, UnitFaction } from '../grid/types';
 import { evaluateChapterOutcome } from './types';
 import defaultDialoguesJson from '../../../data/dialogues/default_dialogues.json' with { type: 'json' };
 import itemsJson from '../../../data/items.json' with { type: 'json' };
@@ -51,7 +51,50 @@ export type GameEvent =
   | { readonly type: 'drawbridge_lowered'; readonly unitId: string; readonly unitName: string; readonly bridgeId: string }
   | { readonly type: 'unit_recruited'; readonly unitId: string; readonly speakerId: string }
   | { readonly type: 'chapter_seized'; readonly unitId: string }
-  | { readonly type: 'dialogue'; readonly kind: DialogueKind; readonly lines: readonly DialogueLine[] };
+  | { readonly type: 'dialogue'; readonly kind: DialogueKind; readonly lines: readonly DialogueLine[] }
+  | { readonly type: 'enemy_phase_started'; readonly turnNumber: number }
+  | { readonly type: 'enemy_phase_ended'; readonly turnNumber: number }
+  | { readonly type: 'unit_moved'; readonly unitId: string; readonly from: Position; readonly to: Position; readonly path?: readonly Position[] }
+  | {
+      readonly type: 'attack_resolved';
+      readonly attackerId: string;
+      readonly defenderId: string;
+      readonly strikes: readonly {
+        readonly attackerId: string;
+        readonly defenderId: string;
+        readonly isHit: boolean;
+        readonly isCrit: boolean;
+        readonly damageDealt: number;
+        readonly defenderHpAfter?: number;
+      }[];
+      readonly hpBefore: { readonly attacker: number; readonly defender: number };
+      readonly hpAfter: { readonly attacker: number; readonly defender: number };
+    }
+  | { readonly type: 'unit_died'; readonly unitId: string; readonly unitName: string; readonly faction: UnitFaction }
+  | {
+      readonly type: 'level_up';
+      readonly unitId: string;
+      readonly unitName?: string;
+      readonly newLevel?: number;
+      readonly statGains: Readonly<Record<string, number>>;
+    }
+  | {
+      readonly type: 'staff_used';
+      readonly userId: string;
+      readonly targetId: string;
+      readonly staffId: string;
+      readonly healAmount: number;
+    }
+  | {
+      readonly type: 'item_used';
+      readonly unitId: string;
+      readonly itemId: string;
+      readonly healAmount: number;
+    }
+  | {
+      readonly type: 'chapter_outcome';
+      readonly outcome: 'ongoing' | 'victory' | 'defeat';
+    };
 
 /** The slice of game state that chapter events can change. */
 export interface ChapterState {
@@ -317,7 +360,7 @@ export function recruit(
   }
   const units = state.units.map((entry) => {
     if (entry.unit.id !== targetId) return entry;
-    const converted: ExtendedUnitState = { ...entry, unit: { ...entry.unit, faction: 'player' } };
+    const converted: ExtendedUnitState = { ...entry, unit: { ...entry.unit, faction: 'player', hasActed: false } };
     delete converted.aiRole;
     return converted;
   });

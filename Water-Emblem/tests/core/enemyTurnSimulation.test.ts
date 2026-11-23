@@ -100,4 +100,42 @@ describe('enemyTurnSimulation module (PLAN item 135)', () => {
       }
     }
   });
+
+  it('executeSingleEnemyAction handles item_use decision (PLAN item 54 + 196)', () => {
+    const units = structuredClone(chapter01Data.units);
+    const boss = units.find((u) => u.isBoss)!;
+    boss.stats.hp = 5;
+    boss.stats.maxHp = 30;
+    boss.inventory = [{ itemId: 'vulnerary', uses: 3 }];
+    boss.aiRole = 'stationary';
+    boss.openingMove = undefined;
+
+    // Player units placed far away
+    for (const u of units) {
+      if (u.unit.faction === 'player') {
+        u.unit.position = { x: 0, y: 0 };
+      }
+    }
+
+    const { step, updatedUnits } = executeSingleEnemyAction(boss, units, {
+      mapData,
+      chapter: chapter01Data,
+      chapterObjective: chapter01Data.objective,
+      items: itemsJson.items as ItemDefinition[],
+      itemById,
+      dialogues: {},
+      turnNumber: 1,
+      openedDoors: new Set(),
+      gold: 1000,
+      villageStates: {},
+      chestStates: {},
+      spawnedReinforcements: [],
+    });
+
+    expect(step.decision.type).toBe('item_use');
+    const healedBoss = updatedUnits.find((u) => u.unit.id === boss.unit.id)!;
+    expect(healedBoss.stats.hp).toBe(15);
+    expect(healedBoss.inventory.find((i) => i.itemId === 'vulnerary')!.uses).toBe(2);
+    expect(step.events.some((e) => e.type === 'item_used')).toBe(true);
+  });
 });
