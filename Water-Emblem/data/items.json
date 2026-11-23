@@ -1351,11 +1351,12 @@
       "type": "staff",
       "minRange": 1,
       "maxRange": 99,
-      "maxUses": 5,
-      "price": 1800,
+      "maxUses": 3,
+      "price": 2520,
       "requiredRank": "B",
+      "silence": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "hammerne_staff",
@@ -1365,10 +1366,15 @@
       "minRange": 1,
       "maxRange": 1,
       "maxUses": 3,
-      "price": 3000,
-      "requiredRank": "C",
+      "price": 0,
+      "buyable": false,
+      "requiredRank": "E",
+      "hammerne": true,
+      "usableByCharacterIds": [
+        "lena"
+      ],
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "rescue_staff",
@@ -1378,24 +1384,33 @@
       "minRange": 1,
       "maxRange": 99,
       "maxUses": 5,
-      "price": 2400,
-      "requiredRank": "B",
+      "price": 1500,
+      "requiredRank": "E",
+      "rescue": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "aum_staff",
       "name": "Aum Staff",
       "nameVi": "Thánh trượng Phục Sinh",
       "type": "staff",
-      "minRange": 1,
-      "maxRange": 1,
+      "minRange": 0,
+      "maxRange": 0,
       "maxUses": 1,
       "price": 0,
       "buyable": false,
       "requiredRank": "A",
+      "aum": true,
+      "usableByCharacterIds": [
+        "caeda",
+        "minerva",
+        "maria",
+        "elice",
+        "nyna"
+      ],
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "unlock_staff",
@@ -1404,11 +1419,12 @@
       "type": "staff",
       "minRange": 1,
       "maxRange": 2,
-      "maxUses": 10,
-      "price": 1200,
-      "requiredRank": "D",
+      "maxUses": 5,
+      "price": 1050,
+      "requiredRank": "C",
+      "unlock": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "thief_staff",
@@ -1418,10 +1434,11 @@
       "minRange": 1,
       "maxRange": 99,
       "maxUses": 5,
-      "price": 2000,
-      "requiredRank": "C",
+      "price": 1250,
+      "requiredRank": "E",
+      "thief": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "watch_staff",
@@ -1434,7 +1451,9 @@
       "price": 1500,
       "requiredRank": "C",
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "none",
+      "buyable": false,
+      "note": "PLAN 209: no FE11/FE12 source. A staff named Watch appears in neither the FE11 staff table nor the 22-staff FE12 table, and its effect (revealing units hidden by fog) needs Fog of War, which the project has not chosen (Game_Design/decisions.md). Kept only so the id stays valid for the item 185 catalogue test; buyable:false so no shop sells a staff that cannot be used. Remove it once the owner approves changing that test."
     },
     {
       "id": "again_staff",
@@ -1444,10 +1463,11 @@
       "minRange": 1,
       "maxRange": 99,
       "maxUses": 3,
-      "price": 5000,
-      "requiredRank": "A",
+      "price": 2520,
+      "requiredRank": "B",
+      "again": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE3"
+      "sourceGame": "FE12"
     },
     {
       "id": "barrier_staff",
@@ -1456,11 +1476,12 @@
       "type": "staff",
       "minRange": 1,
       "maxRange": 1,
-      "maxUses": 15,
-      "price": 1400,
-      "requiredRank": "C",
+      "maxUses": 18,
+      "price": 2160,
+      "requiredRank": "D",
+      "barrier": true,
       "effectiveAgainst": [],
-      "sourceGame": "FE11"
+      "sourceGame": "FE12"
     },
     {
       "id": "power_ring",

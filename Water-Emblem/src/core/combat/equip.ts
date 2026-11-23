@@ -23,9 +23,11 @@ export function getUsableWeapons(
   itemById: ReadonlyMap<string, ItemDefinition>,
 ): UsableWeapon[] {
   const usable: UsableWeapon[] = [];
+  const isSilenced = Boolean(entry.statusEffects?.some((e) => e.type === 'silence' && e.duration > 0));
   for (const item of entry.inventory) {
     const definition = itemById.get(item.itemId);
     if (!definition || item.uses <= 0) continue;
+    if (isSilenced && definition.type === 'tome') continue;
     if (!isWeaponUsable(entry.unit, definition)) continue;
     usable.push({
       itemId: item.itemId,

@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { TurnManager } from '../../src/core/turn/turnManager';
 import { GridUnit } from '../../src/core/grid/types';
+import { tickStatusEffects } from '../../src/core/turn/statusEffects';
+import type { ExtendedUnitState } from '../../src/core/data/chapterData';
 
 describe('TurnManager & Phase Transition', () => {
   const getInitialUnits = (): GridUnit[] => [
@@ -149,5 +151,41 @@ describe('TurnManager & Phase Transition', () => {
     expect(manager.getState().reachableTiles).toBeNull();
     expect(manager.getState().units[0]?.position).toEqual({ x: 2, y: 2 });
     expect(manager.getState().units[0]?.hasActed).toBe(true);
+  });
+
+  it('tickStatusEffects giảm thời hạn hiệu ứng đúng phe ở đầu phase (PLAN item 209)', () => {
+    const playerUnit: ExtendedUnitState = {
+      unit: { id: 'marth', name: 'Marth', faction: 'player', position: { x: 0, y: 0 }, mov: 4, moveType: 'foot' },
+      stats: { hp: 20, maxHp: 20, str: 6, mag: 0, skill: 6, spd: 8, lck: 7, def: 5, res: 9 },
+      inventory: [],
+      level: 1,
+      exp: 0,
+      statusEffects: [{ type: 'barrier', value: 7, duration: 7 }],
+    };
+    const enemyUnit: ExtendedUnitState = {
+      unit: { id: 'enemy_1', name: 'Pirate', faction: 'enemy', position: { x: 5, y: 5 }, mov: 5, moveType: 'bandit' },
+      stats: { hp: 20, maxHp: 20, str: 7, mag: 0, skill: 3, spd: 3, lck: 1, def: 3, res: 0 },
+      inventory: [],
+      level: 1,
+      exp: 0,
+      statusEffects: [{ type: 'silence', value: 1, duration: 1 }],
+    };
+
+    const units = [playerUnit, enemyUnit];
+
+    // Đầu pha địch: chỉ giảm hiệu ứng của phe địch, phe ta không đổi
+    const enemyPhaseStart = tickStatusEffects(units, 'enemy');
+    const p1 = enemyPhaseStart.units.find((u) => u.unit.id === 'marth')!;
+    const e1 = enemyPhaseStart.units.find((u) => u.unit.id === 'enemy_1')!;
+    expect(p1.statusEffects?.[0]?.duration).toBe(7);
+    expect(p1.stats.res).toBe(9);
+    expect(e1.statusEffects).toEqual([]);
+
+    // Đầu pha ta: giảm hiệu ứng của phe ta
+    const playerPhaseStart = tickStatusEffects(enemyPhaseStart.units, 'player');
+    const p2 = playerPhaseStart.units.find((u) => u.unit.id === 'marth')!;
+    expect(p2.statusEffects?.[0]?.duration).toBe(6);
+    expect(p2.statusEffects?.[0]?.value).toBe(6);
+    expect(p2.stats.res).toBe(8);
   });
 });

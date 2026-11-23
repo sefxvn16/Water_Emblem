@@ -36,6 +36,30 @@ export interface ItemDefinition {
   /** Warp staff (PLAN item 156, FE11/FE12): sends an adjacent ally to any
    * traversable visible tile. */
   readonly warp?: boolean;
+  /** Characters allowed to use this item/staff (PLAN item 209: Hammerne, Aum). */
+  readonly usableByCharacterIds?: readonly string[];
+  /** Rescue staff (PLAN item 209, FE12): pulls an ally next to the caster. */
+  readonly rescue?: boolean;
+  /** Unlock staff (PLAN item 209, FE12): opens a door 1-2 tiles away. */
+  readonly unlock?: boolean;
+  /** Thief staff (PLAN item 209, FE12): opens any chest on the map. */
+  readonly thief?: boolean;
+  /** Hammerne staff (PLAN item 209, FE12): repairs an adjacent ally's weapon or staff to max uses. */
+  readonly hammerne?: boolean;
+  /** Aum staff (PLAN item 209, FE12): revives a fallen ally next to the caster. */
+  readonly aum?: boolean;
+  /** Barrier staff (PLAN item 209, FE12): raises an ally's Res by 7, decreasing each turn. */
+  readonly barrier?: boolean;
+  /** Silence staff (PLAN item 209, FE12): prevents an enemy from using tomes or staves for 1 turn. */
+  readonly silence?: boolean;
+  /** Again staff (PLAN item 209, FE12): lets an ally act again. */
+  readonly again?: boolean;
+}
+
+export interface StatusEffect {
+  readonly type: 'barrier' | 'silence';
+  readonly value: number;
+  readonly duration: number;
 }
 
 export interface UnitCombatStats {

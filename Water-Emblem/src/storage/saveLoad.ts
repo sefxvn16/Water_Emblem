@@ -7,7 +7,7 @@ import itemsJson from '../../data/items.json' with { type: 'json' };
 import type { ChapterOutcome } from '../core/chapter/types';
 import { DIFFICULTIES, type Difficulty } from '../core/chapter/difficulty';
 import { SKILLS } from '../core/combat/skills';
-import type { ItemDefinition } from '../core/combat/types';
+import type { ItemDefinition, StatusEffect } from '../core/combat/types';
 import { chapters, type ExtendedUnitState, type InventoryEntry } from '../core/data/chapterData';
 import type { GamePhase } from '../core/turn/turnManager';
 import { getClassDefinition, getDismountedClassId, isGroundDismountedForm } from '../core/class/classRules';
@@ -98,6 +98,13 @@ function isStats(value: unknown): boolean {
     && (value.bld === undefined || isNonnegativeInteger(value.bld));
 }
 
+function isStatusEffect(value: unknown): value is StatusEffect {
+  return isRecord(value)
+    && (value.type === 'barrier' || value.type === 'silence')
+    && typeof value.value === 'number' && Number.isInteger(value.value) && value.value >= 0
+    && typeof value.duration === 'number' && Number.isInteger(value.duration) && value.duration >= 0;
+}
+
 function isSavedUnit(value: unknown): value is ExtendedUnitState {
   // weapon may be absent: an unarmed unit (last weapon broke — PLAN item 84).
   if (!isRecord(value) || !isRecord(value.unit) || (value.weapon !== undefined && !isRecord(value.weapon))) return false;
@@ -133,7 +140,8 @@ function isSavedUnit(value: unknown): value is ExtendedUnitState {
     && (weaponId === undefined || value.inventory.some((entry: { itemId: string }) => entry.itemId === weaponId))
     && (value.aiRole === undefined || ['stationary', 'pursue', 'pillage', 'patrol', 'retreat', 'thief', 'flee'].includes(value.aiRole as string))
     && (value.personalSkill === undefined || (typeof value.personalSkill === 'string' && value.personalSkill in SKILLS))
-    && (value.imitateBackup === undefined || (isRecord(value.imitateBackup) && isStats(value.imitateBackup.stats)));
+    && (value.imitateBackup === undefined || (isRecord(value.imitateBackup) && isStats(value.imitateBackup.stats)))
+    && (value.statusEffects === undefined || (Array.isArray(value.statusEffects) && value.statusEffects.every(isStatusEffect)));
 }
 
 export function isGameSnapshot(value: unknown): value is GameSnapshot {

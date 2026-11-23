@@ -12,7 +12,7 @@ import classesJson from '../../../data/classes.json' with { type: 'json' };
 import { CHAPTER_SOURCES } from './chapterRegistry';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
-import type { ItemDefinition, UnitCombatStats } from '../combat/types';
+import type { ItemDefinition, StatusEffect, UnitCombatStats } from '../combat/types';
 import type { GridUnit, MapData, MoveType, Position, UnitFaction, WeaponRank } from '../grid/types';
 import { initialSupportPoints } from '../combat/support';
 import { SKILLS } from '../combat/skills';
@@ -65,6 +65,8 @@ export interface ExtendedUnitState {
   title?: string;
   avatarUrl?: string;
   growths?: Record<string, number>;
+  /** Turn-based status effects (PLAN item 209: Barrier, Silence). */
+  statusEffects?: readonly StatusEffect[];
 }
 
 export interface ChapterReward {

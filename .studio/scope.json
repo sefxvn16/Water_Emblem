@@ -267,6 +267,9 @@
     "Water-Emblem/src/core/chapter/types.ts",
     "Water-Emblem/src/core/combat/types.ts",
     "Water-Emblem/tests/core/chapter.test.ts",
-    "Water-Emblem/tests/core/staff.test.ts"
+    "Water-Emblem/tests/core/staff.test.ts",
+    "Water-Emblem/src/core/combat/equip.ts",
+    "Water-Emblem/tests/core/turn.test.ts",
+    "Water-Emblem/src/core/turn/statusEffects.ts"
   ]
 }

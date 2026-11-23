@@ -1,8 +1,9 @@
 import { getManhattanDistance } from '../combat/calculator';
 import type { ChapterChest, ChapterData, ChapterDoor, ChapterReward, ChapterVillage, ExtendedUnitState } from '../data/chapterData';
+export type { ChapterChest, ChapterDoor };
 import { addItemToInventory } from '../data/inventory';
 import { getClassDefinition } from '../class/classRules';
-import { defaultTerrainRegistry } from '../grid/terrain';
+import { defaultTerrainRegistry, type TerrainRegistry } from '../grid/terrain';
 import type { MapData, MoveType } from '../grid/types';
 import { evaluateChapterOutcome } from './types';
 import defaultDialoguesJson from '../../../data/dialogues/default_dialogues.json' with { type: 'json' };
@@ -174,15 +175,18 @@ function applyReward(
   };
 }
 
-/** Ô trống gần làng nhất mà quân vừa nhận đi được, quét theo vòng tăng dần và thứ tự cố định
-    để kết quả tái lập được (PLAN mục 206). */
-function freeTileNear(
-  state: ChapterState,
+/** Ô trống gần tâm nhất mà quân đi được, quét theo vòng tăng dần và thứ tự cố định
+    để kết quả tái lập được (PLAN mục 206, 209). */
+export function freeTileNear(
+  unitsOrState: readonly ExtendedUnitState[] | ChapterState,
   centre: { x: number; y: number },
   moveType: MoveType,
   map: MapData,
+  classId?: string,
+  terrains: TerrainRegistry = defaultTerrainRegistry,
 ): { x: number; y: number } | undefined {
-  const occupied = new Set(state.units
+  const units: readonly ExtendedUnitState[] = 'units' in unitsOrState ? unitsOrState.units : unitsOrState;
+  const occupied = new Set(units
     .filter(({ unit }) => !unit.isDead)
     .map(({ unit }) => `${unit.position.x},${unit.position.y}`));
   for (let radius = 0; radius <= 3; radius += 1) {
@@ -193,7 +197,7 @@ function freeTileNear(
         const y = centre.y + dy;
         const terrain = map.grid[y]?.[x];
         if (!terrain || occupied.has(`${x},${y}`)) continue;
-        if (defaultTerrainRegistry.getMovementCost(terrain, moveType) === null) continue;
+        if (!terrains.isPassable(terrain, moveType, classId)) continue;
         return { x, y };
       }
     }
