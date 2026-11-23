@@ -279,7 +279,8 @@
     "Generic unit levels and weapons are project conventions, not FE3 data.",
     "Unit AI roles are project conventions, not FE3 data.",
     "Làng (12,13): Atlas: nhận nhân vật Bantu ở đây; schema chưa có kiểu thưởng nhân vật.",
-    "Atlas không có dòng `P` cho chương này nên không có ô triển khai thật của FE3. Ô triển khai và vị trí Marth do dự án đặt bằng quy tắc tất định (ô đi được xa mục tiêu nhất rồi lan ra 12 ô quanh đó) chỉ để chơi thử — chưa xác nhận nguồn FE3."
+    "Atlas không có dòng `P` cho chương này nên không có ô triển khai thật của FE3. Ô triển khai và vị trí Marth do dự án đặt bằng quy tắc tất định (ô đi được xa mục tiêu nhất rồi lan ra 12 ô quanh đó) chỉ để chơi thử — chưa xác nhận nguồn FE3.",
+    "Mặt hàng từng cửa hàng lấy theo atlas FE3; giá dùng `price` trong data/items.json (số FE11) chứ không dùng giá FE3 trong atlas (PLAN mục 206)."
   ],
   "uncertain": [
     "uncertain: player deployment positions are not marked on source map diagram map1_06.png",
@@ -312,5 +313,22 @@
       "weaponId": "fire"
     }
   ],
-  "recruitments": []
+  "recruitments": [],
+  "shops": [
+    {
+      "id": "shop_12_2",
+      "position": {
+        "x": 12,
+        "y": 2
+      },
+      "goods": [
+        "iron_sword",
+        "steel_sword",
+        "steel_lance",
+        "javelin",
+        "slim_lance",
+        "iron_bow"
+      ]
+    }
+  ]
 }

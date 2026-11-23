@@ -1,6 +1,8 @@
 // PLAN mục 206: thăm làng nhận nhân vật vào đội. Nguồn: kịch bản FE3 trong kho build files
 // (`project/text/dialogue/*.txt`) cho thấy Merric, Bantu, Jeorge, Linde, Arran/Samson, Castor,
 // Minerva, Marisha gia nhập khi thăm làng, chứ không phải trao vật phẩm.
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import talysChapterJson from '../../data/chapters/chapter_01_talys.json' with { type: 'json' };
 import talysMapJson from '../../data/maps/chapter_01_talys.json' with { type: 'json' };
@@ -11,6 +13,7 @@ import type { ChapterState } from '../../src/core/chapter/events';
 import type { ItemDefinition } from '../../src/core/combat/types';
 import type { MapData } from '../../src/core/grid/types';
 
+const WE_ROOT = path.resolve(__dirname, '../..');
 const map = talysMapJson as MapData;
 const items = itemsJson.items as ItemDefinition[];
 
@@ -78,6 +81,35 @@ describe('village that hands over a character (PLAN mục 206)', () => {
     const second = visitVillage(first.state, visitor.unit.id, village, items, {}, chapter, map);
     expect(second.state.units.filter(({ unit }) => unit.id === 'merric')).toHaveLength(1);
     expect(second.events.some((event) => event.type === 'unit_recruited')).toBe(false);
+  });
+
+  it('closes the other village of an exclusive pair, so Arran and Samson cannot both join', () => {
+    const chapter = loadChapterData(
+      JSON.parse(fs.readFileSync(path.join(WE_ROOT, 'data/chapters/chapter_13_the_battle_for_altea.json'), 'utf8')),
+      JSON.parse(fs.readFileSync(path.join(WE_ROOT, 'data/maps/chapter_13_the_battle_for_altea.json'), 'utf8')) as MapData,
+      items,
+    );
+    const pair = (chapter.villages ?? []).filter((village) => village.exclusiveGroup === 'arran_or_samson');
+    expect(pair, 'chương 13 phải có hai làng loại trừ lẫn nhau').toHaveLength(2);
+    const [first, second] = pair as [typeof pair[0], typeof pair[0]];
+
+    const state: ChapterState = {
+      units: structuredClone(chapter.units), gold: 0,
+      villageStates: {}, chestStates: {}, doorStates: {},
+    };
+    const visitor = state.units.find(({ unit }) => unit.faction === 'player')!;
+    visitor.unit.position = { ...first.position };
+    const map = JSON.parse(fs.readFileSync(path.join(WE_ROOT, 'data/maps/chapter_13_the_battle_for_altea.json'), 'utf8')) as MapData;
+
+    const afterFirst = visitVillage(state, visitor.unit.id, first, items, {}, chapter, map);
+    expect(afterFirst.state.villageStates[first.id]).toBe('visited');
+    expect(afterFirst.state.villageStates[second.id], 'làng còn lại trong cặp phải đóng').toBe('visited');
+
+    // Thăm làng kia sau đó không trao thêm nhân vật nào.
+    const joinedFirst = afterFirst.state.units.filter(({ unit }) => unit.faction === 'player').length;
+    const afterSecond = visitVillage(afterFirst.state, visitor.unit.id, second, items, {}, chapter, map);
+    expect(afterSecond.state.units.filter(({ unit }) => unit.faction === 'player')).toHaveLength(joinedFirst);
+    expect(afterSecond.events).toHaveLength(0);
   });
 
   it('rejects a village unit reward that no optionalUnits entry declares', () => {

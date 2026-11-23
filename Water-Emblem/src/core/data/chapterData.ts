@@ -88,6 +88,9 @@ export interface ChapterVillage {
   name: string;
   position: { x: number; y: number };
   reward: ChapterVillageReward;
+  /** Nhóm loại trừ lẫn nhau (PLAN mục 206): thăm một làng trong nhóm thì các làng còn lại đóng.
+      FE3 dùng cho cặp Arran / Samson ở Book 1 chương 13 (atlas ghi `mutually exclusive`). */
+  exclusiveGroup?: string;
 }
 
 export interface ChapterChest {
@@ -99,6 +102,14 @@ export interface ChapterChest {
 export interface ChapterDoor {
   id: string;
   position: { x: number; y: number };
+}
+
+/** Tiệm trong chương (PLAN mục 206): atlas FE3 ghi từng tiệm bán những món nào.
+    Giá vẫn lấy `price` trong `data/items.json` (số FE11), không lấy giá FE3 của atlas. */
+export interface ChapterShop {
+  readonly id: string;
+  readonly position: { x: number; y: number };
+  readonly goods: readonly string[];
 }
 
 /** Enemy reinforcements arriving at the end of the enemy phase of `turn` (PLAN item 94). */
@@ -122,6 +133,7 @@ export interface ChapterData {
   readonly villages?: readonly ChapterVillage[];
   readonly chests?: readonly ChapterChest[];
   readonly doors?: readonly ChapterDoor[];
+  readonly shops?: readonly ChapterShop[];
   readonly reinforcements?: readonly ChapterReinforcement[];
   readonly seizeReward?: ChapterReward;
 }
@@ -501,7 +513,10 @@ export function loadChapterData(
                 })(),
               }),
         };
-    return { id: villageId, name: villageName, position, reward };
+    const exclusiveGroup = item.exclusiveGroup === undefined
+      ? undefined
+      : requireString(item.exclusiveGroup, `chapter.villages[${index}].exclusiveGroup`);
+    return { id: villageId, name: villageName, position, reward, ...(exclusiveGroup ? { exclusiveGroup } : {}) };
   });
 
   const villageIds = villages.map((v) => v.id);
@@ -561,6 +576,36 @@ export function loadChapterData(
   const doorPositions = doors.map((d) => `${d.position.x},${d.position.y}`);
   if (new Set(doorPositions).size !== doorPositions.length) throw new Error('Multiple doors occupy one tile');
 
+  const shopRows = data.shops ?? [];
+  if (!Array.isArray(shopRows)) throw new Error('chapter.shops must be an array');
+  const shops: ChapterShop[] = shopRows.map((value: unknown, index: number) => {
+    const item = requireRecord(value, `chapter.shops[${index}]`);
+    const shopId = requireString(item.id, `chapter.shops[${index}].id`);
+    const position = readPosition(item.position, map, `chapter.shops[${index}].position`);
+    const tile = map.grid[position.y]?.[position.x];
+    if (tile !== 'shop') {
+      throw new Error(`Shop ${shopId} at (${position.x},${position.y}) must be on a shop tile, found ${tile}`);
+    }
+    if (!Array.isArray(item.goods) || item.goods.length === 0) {
+      throw new Error(`chapter.shops[${index}].goods must be a nonempty array`);
+    }
+    const goods = item.goods.map((raw: unknown, goodsIndex: number) => {
+      const itemId = requireString(raw, `chapter.shops[${index}].goods[${goodsIndex}]`);
+      const definition = itemById.get(itemId);
+      if (!definition) throw new Error(`Shop ${shopId} sells unknown item ${itemId}`);
+      if (definition.price === undefined || definition.buyable === false) {
+        throw new Error(`Shop ${shopId} sells ${itemId}, which is not buyable`);
+      }
+      return itemId;
+    });
+    if (new Set(goods).size !== goods.length) throw new Error(`Shop ${shopId} lists one item twice`);
+    return { id: shopId, position, goods };
+  });
+  const shopIds = shops.map((s) => s.id);
+  if (new Set(shopIds).size !== shopIds.length) throw new Error('Duplicate shop ID');
+  const shopPositions = shops.map((s) => `${s.position.x},${s.position.y}`);
+  if (new Set(shopPositions).size !== shopPositions.length) throw new Error('Multiple shops occupy one tile');
+
   const reinforcementRows = data.reinforcements ?? [];
   if (!Array.isArray(reinforcementRows)) throw new Error('chapter.reinforcements must be an array');
   const knownUnitIds = new Set([...units, ...optionalUnits].map((entry) => entry.unit.id));
@@ -602,7 +647,7 @@ export function loadChapterData(
     };
   }
 
-  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, reinforcements, seizeReward };
+  return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, shops, reinforcements, seizeReward };
 }
 
 export const chapter01Data = loadChapterData(

@@ -26,10 +26,24 @@ export interface ShopResult {
   gold: number;
 }
 
-export function getShopStock(itemById: ReadonlyMap<string, ItemDefinition>): ItemDefinition[] {
-  return [...itemById.values()].filter(
-    (definition) => definition.price !== undefined && definition.buyable !== false,
-  );
+/**
+ * Hàng của một tiệm. `goods` là danh sách mặt hàng của tiệm đó trong chương
+ * (atlas FE3 ghi từng tiệm bán gì — PLAN mục 206); không truyền thì tiệm bán
+ * mọi món mua được trong catalog như trước mục 206.
+ */
+export function getShopStock(
+  itemById: ReadonlyMap<string, ItemDefinition>,
+  goods?: readonly string[],
+): ItemDefinition[] {
+  const sellable = (definition: ItemDefinition) =>
+    definition.price !== undefined && definition.buyable !== false;
+  if (goods) {
+    return goods.flatMap((itemId) => {
+      const definition = itemById.get(itemId);
+      return definition && sellable(definition) ? [definition] : [];
+    });
+  }
+  return [...itemById.values()].filter(sellable);
 }
 
 /** Gold received for selling one entry (FE11: half, scaled by remaining uses; divisor in data/balance.json). */

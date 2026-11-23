@@ -379,7 +379,8 @@
     "Generic unit levels and weapons are project conventions, not FE3 data.",
     "Unit AI roles are project conventions, not FE3 data.",
     "Chiêu mộ matthis: người nói (Lena) không xuất trận trong chương này nên chưa khai được.",
-    "Làng (21,2): Atlas: nhận nhân vật Merric ở đây; schema chưa có kiểu thưởng nhân vật."
+    "Làng (21,2): Atlas: nhận nhân vật Merric ở đây; schema chưa có kiểu thưởng nhân vật.",
+    "Mặt hàng từng cửa hàng lấy theo atlas FE3; giá dùng `price` trong data/items.json (số FE11) chứ không dùng giá FE3 trong atlas (PLAN mục 206)."
   ],
   "uncertain": [
     "Unit Matthis (N) assigned faction 'enemy' (recruit in atlas: true).",
@@ -397,5 +398,22 @@
       "weaponId": "fire"
     }
   ],
-  "recruitments": []
+  "recruitments": [],
+  "shops": [
+    {
+      "id": "shop_15_3",
+      "position": {
+        "x": 15,
+        "y": 3
+      },
+      "goods": [
+        "iron_sword",
+        "iron_lance",
+        "iron_bow",
+        "iron_axe",
+        "steel_axe",
+        "hand_axe"
+      ]
+    }
+  ]
 }

@@ -244,8 +244,21 @@ export function visitVillage(
   const villageTable = lookup(dialogues, 'villages');
   const villageLines = typeof villageTable === 'object' && villageTable !== null ? lookup(villageTable, village.id) : undefined;
   const lines = dialogueLines(villageLines) ?? DEFAULT_VILLAGE_LINES;
+  // Làng cùng nhóm loại trừ đóng lại khi một làng trong nhóm đã được thăm (PLAN mục 206:
+  // FE3 cho chọn Arran HOẶC Samson ở Book 1 chương 13, không được cả hai).
+  const closedByExclusivity: Record<string, VillageState> = {};
+  if (village.exclusiveGroup && chapter) {
+    for (const sibling of chapter.villages ?? []) {
+      if (sibling.id === village.id || sibling.exclusiveGroup !== village.exclusiveGroup) continue;
+      if ((state.villageStates[sibling.id] ?? 'intact') !== 'intact') continue;
+      closedByExclusivity[sibling.id] = 'visited';
+    }
+  }
   return {
-    state: { ...reward.state, villageStates: { ...state.villageStates, [village.id]: 'visited' } },
+    state: {
+      ...reward.state,
+      villageStates: { ...state.villageStates, ...closedByExclusivity, [village.id]: 'visited' },
+    },
     events: [
       ...reward.events,
       { type: 'village_visited', unitId, unitName: visitor.unit.name, villageId: village.id, villageName: village.name },

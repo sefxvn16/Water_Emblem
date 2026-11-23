@@ -261,6 +261,7 @@
     "Water-Emblem/tests/browser/preGameFlow.spec.ts",
     "Water-Emblem/tests/core/chapterTransition.test.ts",
     "Water-Emblem/tests/browser/modernUiLayout.spec.ts",
-    "Water-Emblem/tests/core/villageRecruit.test.ts"
+    "Water-Emblem/tests/core/villageRecruit.test.ts",
+    "Water-Emblem/src/core/data/shop.ts"
   ]
 }

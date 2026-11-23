@@ -452,5 +452,22 @@
       "x": 24,
       "y": 16
     }
+  ],
+  "shops": [
+    {
+      "id": "shop_2_2",
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "goods": [
+        "iron_sword",
+        "iron_lance",
+        "iron_bow",
+        "iron_axe",
+        "steel_axe",
+        "hand_axe"
+      ]
+    }
   ]
 }

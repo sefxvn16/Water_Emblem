@@ -389,5 +389,22 @@
       "x": 21,
       "y": 8
     }
+  ],
+  "shops": [
+    {
+      "id": "shop_7_10",
+      "position": {
+        "x": 7,
+        "y": 10
+      },
+      "goods": [
+        "iron_sword",
+        "iron_lance",
+        "iron_bow",
+        "iron_axe",
+        "steel_axe",
+        "hand_axe"
+      ]
+    }
   ]
 }

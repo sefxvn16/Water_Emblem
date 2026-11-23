@@ -328,7 +328,8 @@
     "Generic unit levels and weapons are project conventions, not FE3 data.",
     "Unit AI roles are project conventions, not FE3 data.",
     "Làng (8,8): Atlas: nhận nhân vật Arran ở đây; schema chưa có kiểu thưởng nhân vật.",
-    "Làng (11,8): Atlas: nhận nhân vật Samson ở đây; schema chưa có kiểu thưởng nhân vật."
+    "Làng (11,8): Atlas: nhận nhân vật Samson ở đây; schema chưa có kiểu thưởng nhân vật.",
+    "Atlas ghi hai làng Arran và Samson loại trừ lẫn nhau; hai làng dùng cùng `exclusiveGroup` nên thăm một làng thì làng kia đóng (PLAN mục 206)."
   ],
   "uncertain": [
     "Unit Xane (N) assigned faction 'enemy' (recruit in atlas: true).",
@@ -353,7 +354,8 @@
       "reward": {
         "type": "unit",
         "unitId": "arran"
-      }
+      },
+      "exclusiveGroup": "arran_or_samson"
     },
     {
       "id": "village_11_8",
@@ -365,7 +367,8 @@
       "reward": {
         "type": "unit",
         "unitId": "samson"
-      }
+      },
+      "exclusiveGroup": "arran_or_samson"
     }
   ],
   "optionalUnits": [

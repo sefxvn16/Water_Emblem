@@ -13,6 +13,7 @@ import itemsJson from '../../data/items.json';
 import charactersJson from '../../data/characters.json';
 import classesJson from '../../data/classes.json';
 import { initialChapterData, loadChapterData } from '../../src/core/data/chapterData';
+import { getShopStock } from '../../src/core/data/shop';
 import type { ItemDefinition } from '../../src/core/combat/types';
 import type { MapData } from '../../src/core/grid/types';
 import { defaultTerrainRegistry } from '../../src/core/grid/terrain';
@@ -463,6 +464,54 @@ describe('FE3 campaign chapters', () => {
       expect(chapter.objective.type, `${id}: điều kiện thắng phải khớp bảng tra (${row.objectiveText})`)
         .toBe(expectedType);
     });
+  });
+
+  // PLAN mục 206: atlas FE3 có 5 tiệm (Book 1 chương 1, 2, 3, 4, 6), mỗi tiệm một danh sách mặt hàng.
+  it('sells only the goods the FE3 atlas lists for that shop', () => {
+    const withShops = campaignChapters()
+      .map(({ id }) => ({
+        id,
+        chapter: readJson(path.join(WE_ROOT, 'data/chapters', `${id}.json`)) as {
+          shops?: { id: string; position: { x: number; y: number }; goods: string[] }[];
+        },
+        map: readJson(path.join(WE_ROOT, 'data/maps', `${id}.json`)) as MapData,
+      }))
+      .filter(({ chapter }) => (chapter.shops ?? []).length > 0);
+    expect(withShops.map(({ id }) => id)).toEqual([
+      'chapter_01_talys', 'chapter_02_galder', 'chapter_03_devil_mountain',
+      'chapter_04_champions_of_aurelis', 'chapter_06_lefcandith_gauntlet',
+    ]);
+
+    const itemById = new Map((itemsJson.items as ItemDefinition[]).map((item) => [item.id, item]));
+    const wholeCatalog = getShopStock(itemById);
+    for (const { id, chapter, map } of withShops) {
+      for (const shop of chapter.shops!) {
+        expect(map.grid[shop.position.y]![shop.position.x],
+          `${id}: tiệm ${shop.id} phải nằm trên ô shop`).toBe('shop');
+        const stock = getShopStock(itemById, shop.goods);
+        expect(stock.map((item) => item.id), `${id}: hàng của tiệm ${shop.id} phải đúng danh sách atlas`)
+          .toEqual(shop.goods);
+        // Không còn bán cả catalog như trước mục 206.
+        expect(stock.length).toBeLessThan(wholeCatalog.length);
+        for (const item of stock) {
+          expect(item.price, `${id}: ${item.id} phải có giá để bán`).toBeGreaterThan(0);
+          expect(item.buyable).not.toBe(false);
+        }
+      }
+    }
+  });
+
+  it('rejects a chapter shop that sells an unknown or unbuyable item', () => {
+    const raw = JSON.parse(JSON.stringify(talysChapterJson)) as Record<string, unknown>;
+    const map = talysMapJson as MapData;
+    const shopTile = { x: 24, y: 1 };
+    raw.shops = [{ id: 'shop_bad', position: shopTile, goods: ['phantom_item'] }];
+    expect(() => loadChapterData(raw, map, itemsJson.items as ItemDefinition[]))
+      .toThrow(/sells unknown item phantom_item/);
+
+    raw.shops = [{ id: 'shop_bad', position: shopTile, goods: ['rapier'] }];
+    expect(() => loadChapterData(raw, map, itemsJson.items as ItemDefinition[]))
+      .toThrow(/which is not buyable/);
   });
 
   it('declares generic enemy levels and weapons as a project convention, not FE3 data', () => {

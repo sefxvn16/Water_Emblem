@@ -1431,6 +1431,13 @@ export const App: React.FC = () => {
   const canShop = Boolean(selectedExtUnit && pendingMovePos
     && (mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains') === 'shop');
 
+  // PLAN mục 206: tiệm của chương chỉ bán đúng danh sách mặt hàng atlas FE3 ghi; chương nào chưa
+  // khai `shops` thì tiệm bán cả catalog như trước.
+  const activeShopGoods = (currentChapter.shops ?? []).find((shop) =>
+    (pendingMovePos && shop.position.x === pendingMovePos.x && shop.position.y === pendingMovePos.y)
+    || (selectedExtUnit && shop.position.x === selectedExtUnit.unit.position.x
+      && shop.position.y === selectedExtUnit.unit.position.y))?.goods;
+
   // PLAN item 93: Arena is available on arena terrain for an armed unit with gold.
   const canArena = Boolean(selectedExtUnit && pendingMovePos
     && (mapData.grid[pendingMovePos.y]?.[pendingMovePos.x] ?? 'plains') === 'arena'
@@ -2339,7 +2346,7 @@ export const App: React.FC = () => {
       {shopOpen && selectedExtUnit && (
         <ShopWindow
           unitName={selectedExtUnit.unit.name} gold={gold}
-          stock={getShopStock(ITEM_BY_ID).map((def) => ({
+          stock={getShopStock(ITEM_BY_ID, activeShopGoods).map((def) => ({
             itemId: def.id, name: def.name, type: def.type, price: def.price ?? 0, maxUses: def.maxUses,
             canBuy: gold >= (def.price ?? 0) && (hasRoomFor(selectedExtUnit, def.id, ITEM_BY_ID) || convoy.length < CONVOY_SLOTS),
           }))}

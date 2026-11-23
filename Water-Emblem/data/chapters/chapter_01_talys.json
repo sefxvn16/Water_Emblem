@@ -302,5 +302,21 @@
         "amount": 5000
       }
     }
+  ],
+  "shops": [
+    {
+      "id": "shop_24_1",
+      "position": {
+        "x": 24,
+        "y": 1
+      },
+      "goods": [
+        "iron_sword",
+        "iron_lance",
+        "javelin",
+        "iron_bow",
+        "iron_axe"
+      ]
+    }
   ]
 }
