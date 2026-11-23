@@ -8,6 +8,24 @@ Phạm vi hiện tại: FE3 Book 1 Chương 1–3 trên giao diện 2D. Theo th�
 
 Quy tắc làm việc, kiến trúc và định dạng mục: theo `AGENTS.md`. Mỗi mục chỉ được đánh `[x]` khi dòng Kết quả là `PASS: <bằng chứng>` và đã chạy `node .studio/gate.mjs`. Mục nào cần chủ dự án quyết thì ghi `CHỜ NGƯỜI DÙNG` kèm câu hỏi.
 
+## Lộ trình 26 mục còn lại (lập 2026-11-23)
+
+Thứ tự dưới đây xếp theo phụ thuộc thật, không theo số mục. Lý do xếp vậy: `src/App.tsx` đang **2.579 dòng** và vẫn giữ luật chơi, nên 8 mục khác nhau đều phải sửa đúng file đó — không chạy song song được, và làm cơ chế mới trước khi tách sẽ chỉ làm file đó dài thêm. Kích thước hiện tại của bốn file vượt ngưỡng 400 dòng của `AGENTS.md`: `App.tsx` 2.579, `WorldMapModal.tsx` 856, `ThreeScene.tsx` 726, `chapterData.ts` 707.
+
+**G0 — Đóng nốt dữ liệu FE3** (mục 207, 206, 53, 178). Không đụng `App.tsx`, giao Antigravity được phần lớn, chạy được ngay và song song với việc khác. 207 là script sinh lại dữ liệu chương từ atlas (brief đã viết ở `work/207/BRIEF.md`). 206 còn nhóm 7 vật phẩm. 53 đối chiếu quân và sự kiện Chương 1–3 với FE3 — nay làm được vì mục 210 đã dựng cách tra bảng nguồn trong kho build files. 178 chỉ còn chờ kiểm lại vì lỗi chặn nó (mục 208) đã xong.
+
+**G1 — Tách luật khỏi `App.tsx`** (mục 54, 196, 55, 57, 58, 193, 197, 199, 59, 75). Đây là khối lớn nhất và là cổ chai của mọi việc sau. Một chuỗi liên tục, không tách thành nhiều đợt duyệt: 54 + 196 (một việc: `GameEvent` và vòng lượt địch vào lõi, xóa bản sao trong `App.tsx`) → 55 (hành động người chơi vào lõi) → 57 (lưới 2D thành renderer) → 58 (dọn kiểu, bỏ `any`, kiểm dữ liệu khi nạp) → 193 + 197 + 199 (ba lỗi giao diện, tua/bỏ lượt địch, hiện đủ lần thăng cấp — ba mục này nhỏ đi hẳn khi làm sau 57) → 59 (chốt dùng hay gỡ XState, quyết sau khi vòng lượt đã ở trong lõi) → 75 (phát hiện High/Medium của code review 2026-11-18; H1 và H2 đã sửa trên nhánh `cs/water-batch1-h1-h2` chưa gộp, phần còn lại phần lớn nằm trong chính các file G1 chạm tới). Tiêu chí ra khỏi G1: `App.tsx` dưới 400 dòng và không còn công thức, vòng lượt địch hay so sánh ID nhân vật; `src/core/` không import React.
+
+**G2 — Cơ chế đã chọn còn thiếu** (mục 61, 70, 62, 63, 64, 65, 34). Bảy mục này đang treo vì cùng một lý do: thiếu quyết định của chủ dự án về tham số, không phải thiếu code. Cách làm: Lead soạn **một** bảng quyết định cho cả bảy, mỗi dòng kèm số đề xuất và nguồn FE11/FE12 trích dẫn được, chủ dự án duyệt hoặc sửa một lượt; sau đó triển khai liền mạch. Gồm: giới hạn Canto, vị trí kích hoạt đánh kẹp, số bậc cao độ (mục 70 là phần thiết kế cao độ, phải chốt trước 61), đường mục tiêu địch, đòn báo trước, vai trò AI, viện binh báo trước, bảo vệ mục tiêu, thoát bản đồ, boss nhiều pha, bảng kỹ năng cá nhân và kỹ năng class, số mức độ khó và thông số đổi theo mức, luật reclass từ Chương 4. Bảng này cũng gom luôn hai điểm còn treo của mục 206 (Energy Drop cần cơ chế vật phẩm tăng chỉ số vĩnh viễn; Starsphere có tác dụng khác nhau giữa FE11 và FE12).
+
+**G3 — Chiến dịch chơi được từ Chương 4** (mục 66). Cần G0 xong (dữ liệu), G1 xong (kiến trúc) và G2 xong (reclass ở mục 34 thuộc chương 4 trở đi).
+
+**G4 — Port 3D** (mục 41, 72, 97). Đóng băng theo `AGENTS.md` cho tới khi chủ dự án mở giai đoạn này. Không làm trong G0–G3.
+
+**G5 — Phát hành** (mục 9). Gồm cả việc kiểm quyền sử dụng asset và tên lấy từ FE3; repo đã là public từ 2026-11-23 nên việc này không còn để sau được (xem mục 172).
+
+Nhánh chưa gộp cần xử trong G1: `cs/water-batch1-h1-h2` (H1, H2 của mục 75).
+
 ## Hiện trạng đã kiểm ngày 2026-11-17
 
 - Gate `node .studio/gate.mjs`: **Result: FAIL**. Vitest PASS, build PASS; Playwright 19/20 PASS, fail `tests/browser/battle.spec.ts:178` (test 3D tìm `canvas`, nhưng giao diện mặc định đã là 2D).
