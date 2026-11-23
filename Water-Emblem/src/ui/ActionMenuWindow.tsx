@@ -97,24 +97,34 @@ export const ActionMenuWindow: React.FC<ActionMenuWindowProps> = (props) => {
       setPos(null);
       return;
     }
-    const box = rootRef.current;
-    const anchor = getTileRect(props.anchorTile);
-    let next: { left: number; top: number } | null = null;
-    if (box && anchor) {
-      const avoids = (props.actions?.targetPositions ?? props.avoidPositions ?? [])
-        .map(getTileRect)
-        .filter((r): r is NonNullable<typeof r> => r !== null);
-      next = computeActionMenuPosition(
-        anchor,
-        avoids,
-        box.offsetWidth || ACTION_MENU_WIDTH,
-        box.offsetHeight || 280,
-        window.innerWidth,
-        window.innerHeight,
-      );
-    }
-    setPos((prev) => (prev?.left === next?.left && prev?.top === next?.top ? prev : next));
-  });
+    const updatePos = () => {
+      const box = rootRef.current;
+      const anchor = getTileRect(props.anchorTile);
+      let next: { left: number; top: number } | null = null;
+      if (box && anchor) {
+        const avoids = (props.actions?.targetPositions ?? props.avoidPositions ?? [])
+          .map(getTileRect)
+          .filter((r): r is NonNullable<typeof r> => r !== null);
+        next = computeActionMenuPosition(
+          anchor,
+          avoids,
+          box.offsetWidth || ACTION_MENU_WIDTH,
+          box.offsetHeight || 280,
+          window.innerWidth,
+          window.innerHeight,
+        );
+      }
+      setPos((prev) => (prev?.left === next?.left && prev?.top === next?.top ? prev : next));
+    };
+
+    updatePos();
+    window.addEventListener('resize', updatePos);
+    window.addEventListener('scroll', updatePos, true);
+    return () => {
+      window.removeEventListener('resize', updatePos);
+      window.removeEventListener('scroll', updatePos, true);
+    };
+  }, [isSoloMountAction, props.anchorTile, props.actions, props.avoidPositions]);
 
   if (mountLabel === null && actions === null) return null;
 

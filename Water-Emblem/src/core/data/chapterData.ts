@@ -9,6 +9,7 @@ import devilMountainMapJson from '../../../data/maps/chapter_03_devil_mountain.j
 import itemsJson from '../../../data/items.json' with { type: 'json' };
 import charactersJson from '../../../data/characters.json' with { type: 'json' };
 import classesJson from '../../../data/classes.json' with { type: 'json' };
+import { validateMapData, validateItemCatalog } from './validateData';
 import { CHAPTER_SOURCES } from './chapterRegistry';
 import type { AIRole } from '../ai/decision';
 import type { ChapterObjective } from '../chapter/types';
@@ -667,28 +668,30 @@ export function loadChapterData(
   return { id, name, mapId, lordUnitId, objective, units, optionalUnits, recruitments, carryoverUnitIds, deploymentSlots, villages, chests, doors, shops, reinforcements, seizeReward };
 }
 
+const validatedItems = validateItemCatalog(itemsJson);
+
 export const chapter01Data = loadChapterData(
   talysChapterJson,
-  talysMapJson as MapData,
-  itemsJson.items as ItemDefinition[],
+  validateMapData(talysMapJson, 'talysMap'),
+  validatedItems,
 );
 
 export const chapter02Data = loadChapterData(
   galderChapterJson,
-  galderMapJson as MapData,
-  itemsJson.items as ItemDefinition[],
+  validateMapData(galderMapJson, 'galderMap'),
+  validatedItems,
 );
 
 export const chapter03Data = loadChapterData(
   devilMountainChapterJson,
-  devilMountainMapJson as MapData,
-  itemsJson.items as ItemDefinition[],
+  validateMapData(devilMountainMapJson, 'devilMountainMap'),
+  validatedItems,
 );
 
 export const testChapter01Data = loadChapterData(
   testChapterJson,
-  testMapJson as MapData,
-  itemsJson.items as ItemDefinition[],
+  validateMapData(testMapJson, 'testMap'),
+  validatedItems,
 );
 
 /** 44 chương chiến dịch từ `chapterRegistry.ts` (PLAN mục 204). Ba chương đầu giữ đúng object đã
@@ -696,7 +699,7 @@ export const testChapter01Data = loadChapterData(
 export const chapters: Record<string, ChapterData> = {
   ...Object.fromEntries(CHAPTER_SOURCES.map((source) => [
     source.id,
-    loadChapterData(source.chapter, source.map, itemsJson.items as ItemDefinition[]),
+    loadChapterData(source.chapter, source.map, validatedItems),
   ])),
   chapter_01: chapter01Data,
   chapter_02: chapter02Data,

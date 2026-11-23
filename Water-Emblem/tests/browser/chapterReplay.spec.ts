@@ -27,6 +27,44 @@ function loadFixture(name: string): ReplayFixture {
   return JSON.parse(readFileSync(p, 'utf8')) as ReplayFixture;
 }
 
+// Dismiss level-up modal if present (PLAN item 193/199). Click Continue button, fallback to Enter/Space.
+async function dismissLevelUpModal(page: Page): Promise<boolean> {
+  let dismissed = false;
+  try {
+    const modal = page.getByTestId('level-up-modal');
+    while ((await modal.count()) > 0 && (await modal.isVisible())) {
+      dismissed = true;
+      const btn = modal.getByRole('button', { name: /Continue/i });
+      if ((await btn.count()) > 0 && (await btn.isVisible())) {
+        await btn.click({ timeout: 1000 }).catch(async () => {
+          await btn.dispatchEvent('click').catch(() => {});
+          await page.keyboard.press('Enter').catch(() => {});
+        });
+      } else {
+        await modal.click({ position: { x: 5, y: 5 } }).catch(() => {});
+        await page.keyboard.press('Enter').catch(() => {});
+      }
+      await page.waitForTimeout(100);
+    }
+  } catch {
+    // Modal may have closed during check
+  }
+  return dismissed;
+}
+
+// During enemy phase, combat may trigger level up modals that pause turn flow.
+// Continuously dismiss any level up modal until player phase is reached.
+async function waitForPlayerPhase(page: Page): Promise<void> {
+  const start = Date.now();
+  while (Date.now() - start < 15000) {
+    await dismissLevelUpModal(page);
+    const phase = await page.evaluate(() => (window as any).__WATER_EMBLEM_STATE__?.turnState?.activePhase);
+    if (phase === 'player_phase') break;
+    await page.waitForTimeout(100);
+  }
+  await expectPlayerPhase(page);
+}
+
 // Save then load right after the first battle starts; the replay must still win afterwards.
 async function saveAndLoad(page: Page): Promise<void> {
   await openSettings(page);
@@ -36,7 +74,7 @@ async function saveAndLoad(page: Page): Promise<void> {
   await page.getByRole('button', { name: /Load Game/i }).click();
   await expect(page.getByText(/Save file loaded/i)).toBeVisible();
   await openSettings(page);
-  await expectPlayerPhase(page);
+  await waitForPlayerPhase(page);
 }
 
 async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
@@ -47,11 +85,13 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
     // PLAN item 131: a village visit / recruit / chest from the previous
     // step may have opened the reward popup; dismiss it before clicking.
     await dismissRewardPopup(page);
+    await dismissLevelUpModal(page);
     if (step.kind === 'tile') {
       // Enemy phase must be over before the player selects tiles again.
-      await expectPlayerPhase(page);
+      await waitForPlayerPhase(page);
       await closeSettings(page);
       await page.getByTestId(step.testId).dispatchEvent('click');
+      await dismissLevelUpModal(page);
     } else if (step.kind === 'select') {
       await openSettings(page);
       await page.locator('select').first().selectOption(step.value);
@@ -65,6 +105,7 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
       await btn.click({ timeout: 15000 }).catch(async () => {
         await btn.dispatchEvent('click');
       });
+      await dismissLevelUpModal(page);
       if (/Seize/i.test(step.name)) {
         await expect(page.getByRole('heading', { name: /STAGE CLEAR/i }), where).toBeVisible();
         seizes += 1;
@@ -72,7 +113,7 @@ async function replay(page: Page, fixture: ReplayFixture): Promise<number> {
         await expect(page.getByRole('heading', { name: /Battle Preparation/i }), where).toBeVisible();
       } else if (/Start Battle/i.test(step.name)) {
         await openSettings(page);
-        await expectPlayerPhase(page);
+        await waitForPlayerPhase(page);
         if (!savedOnce) {
           await saveAndLoad(page);
           savedOnce = true;

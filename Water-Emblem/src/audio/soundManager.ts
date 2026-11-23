@@ -85,14 +85,24 @@ class SoundManager {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      const savedMute = localStorage.getItem('we_sound_muted');
-      if (savedMute !== null) this._isMuted = savedMute === 'true';
+      try {
+        const savedMute = localStorage.getItem('we_sound_muted');
+        if (savedMute !== null) this._isMuted = savedMute === 'true';
 
-      const savedBgm = localStorage.getItem('we_sound_bgm_vol');
-      if (savedBgm !== null) this._bgmVolume = Math.max(0, Math.min(1, parseFloat(savedBgm)));
+        const savedBgm = localStorage.getItem('we_sound_bgm_vol');
+        if (savedBgm !== null) {
+          const parsed = parseFloat(savedBgm);
+          if (Number.isFinite(parsed)) this._bgmVolume = Math.max(0, Math.min(1, parsed));
+        }
 
-      const savedSfx = localStorage.getItem('we_sound_sfx_vol');
-      if (savedSfx !== null) this._sfxVolume = Math.max(0, Math.min(1, parseFloat(savedSfx)));
+        const savedSfx = localStorage.getItem('we_sound_sfx_vol');
+        if (savedSfx !== null) {
+          const parsed = parseFloat(savedSfx);
+          if (Number.isFinite(parsed)) this._sfxVolume = Math.max(0, Math.min(1, parsed));
+        }
+      } catch {
+        // Protected from SecurityError or storage disabled (PLAN item 75 / M3)
+      }
 
       Howler.mute(this._isMuted);
     }
@@ -103,12 +113,15 @@ class SoundManager {
   }
 
   set bgmVolume(val: number) {
+    if (!Number.isFinite(val)) return;
     this._bgmVolume = Math.max(0, Math.min(1, val));
     if (this.currentBgmHowl) {
       this.currentBgmHowl.volume(this._bgmVolume);
     }
     if (typeof window !== 'undefined') {
-      localStorage.setItem('we_sound_bgm_vol', this._bgmVolume.toString());
+      try {
+        localStorage.setItem('we_sound_bgm_vol', this._bgmVolume.toString());
+      } catch { /* ignore */ }
     }
   }
 
@@ -117,9 +130,12 @@ class SoundManager {
   }
 
   set sfxVolume(val: number) {
+    if (!Number.isFinite(val)) return;
     this._sfxVolume = Math.max(0, Math.min(1, val));
     if (typeof window !== 'undefined') {
-      localStorage.setItem('we_sound_sfx_vol', this._sfxVolume.toString());
+      try {
+        localStorage.setItem('we_sound_sfx_vol', this._sfxVolume.toString());
+      } catch { /* ignore */ }
     }
   }
 
@@ -131,7 +147,9 @@ class SoundManager {
     this._isMuted = val;
     Howler.mute(val);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('we_sound_muted', val.toString());
+      try {
+        localStorage.setItem('we_sound_muted', val.toString());
+      } catch { /* ignore */ }
     }
   }
 
@@ -146,12 +164,6 @@ class SoundManager {
       return;
     }
 
-    if (this.currentBgmHowl) {
-      const oldHowl = this.currentBgmHowl;
-      oldHowl.fade(oldHowl.volume(), 0, 400);
-      setTimeout(() => oldHowl.stop(), 400);
-    }
-
     let howl = this.bgmCache.get(trackId);
     if (!howl) {
       const srcBase = BGM_SOURCES[trackId];
@@ -164,6 +176,16 @@ class SoundManager {
       this.bgmCache.set(trackId, howl);
     }
 
+    if (this.currentBgmHowl && this.currentBgmHowl !== howl) {
+      const oldHowl = this.currentBgmHowl;
+      oldHowl.fade(oldHowl.volume(), 0, 400);
+      setTimeout(() => {
+        if (this.currentBgmHowl !== oldHowl) {
+          oldHowl.stop();
+        }
+      }, 400);
+    }
+
     this.currentBgmId = trackId;
     this.currentBgmHowl = howl;
     howl.volume(0);
@@ -174,12 +196,12 @@ class SoundManager {
   stopBgm(fadeDuration = 400): void {
     if (!this.currentBgmHowl) return;
     const howl = this.currentBgmHowl;
+    this.currentBgmHowl = null;
+    this.currentBgmId = null;
     howl.fade(howl.volume(), 0, fadeDuration);
     setTimeout(() => {
-      howl.stop();
-      if (this.currentBgmHowl === howl) {
-        this.currentBgmHowl = null;
-        this.currentBgmId = null;
+      if (this.currentBgmHowl !== howl) {
+        howl.stop();
       }
     }, fadeDuration);
   }

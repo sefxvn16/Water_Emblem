@@ -36,7 +36,8 @@
     57,
     58,
     59,
-    75
+    75,
+    211
   ],
   "declared_by": "claude-lead (201 evidence) + claude-lead (204 routing) + antigravity (206 extraction)",
   "declared_at": "2026-11-23",
@@ -292,6 +293,19 @@
     "Water-Emblem/src/ui/*.tsx",
     "Water-Emblem/src/renderer/*.tsx",
     "Water-Emblem/src/core/turn/*.ts",
-    "Water-Emblem/tests/core/*.test.ts"
+    "Water-Emblem/tests/core/*.test.ts",
+    "Water-Emblem/package.json",
+    "Water-Emblem/package-lock.json",
+    "Water-Emblem/src/audio/soundManager.ts",
+    "Water-Emblem/src/core/grid/terrain.ts",
+    "Water-Emblem/src/core/data/validateData.ts",
+    "Water-Emblem/src/ui/hooks/BattleWindows.tsx",
+    "Water-Emblem/src/ui/hooks/ScreenModals.tsx",
+    "Water-Emblem/src/ui/hooks/actionTargetingHelpers.ts",
+    "Water-Emblem/src/ui/hooks/itemCatalog.ts",
+    "Water-Emblem/src/ui/hooks/selectionHelpers.ts",
+    "Water-Emblem/src/ui/hooks/useMapActions.ts",
+    "Water-Emblem/src/ui/hooks/useTradeAction.ts",
+    "Water-Emblem/tests/core/planG1B.test.ts"
   ]
 }

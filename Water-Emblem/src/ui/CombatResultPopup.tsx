@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import type { CombatPopupData, CombatPopupSide } from './combatPopupData';
+import balanceConfig from '../../data/balance.json' with { type: 'json' };
 
 interface CombatResultPopupProps {
   /** Entry currently shown (head of the queue), or null. */
@@ -7,7 +8,7 @@ interface CombatResultPopupProps {
   onDismiss: () => void;
 }
 
-export const POPUP_DURATION_MS = 1400;
+export const POPUP_DURATION_MS = balanceConfig.durations?.combatPopupMs ?? balanceConfig.popupDurationMs ?? 1400;
 
 const SidePanel: React.FC<{ side: CombatPopupSide }> = ({ side }) => {
   const enemy = side.faction === 'enemy';
@@ -74,6 +75,7 @@ export const CombatResultPopup: React.FC<CombatResultPopupProps> = ({ entry, onD
     const timer = window.setTimeout(onDismiss, POPUP_DURATION_MS);
     // Ignore the very input event that triggered the combat (it may still be bubbling).
     const dismissOnInput = (event: Event) => {
+      if (document.querySelector('[data-testid="level-up-modal"]')) return;
       if (event.timeStamp >= shownAt) onDismiss();
     };
     document.addEventListener('mousedown', dismissOnInput);

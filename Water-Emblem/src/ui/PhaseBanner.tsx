@@ -1,4 +1,5 @@
 import React from 'react';
+import balanceConfig from '../../data/balance.json' with { type: 'json' };
 
 export interface PhaseBannerProps {
   phase: 'player' | 'enemy' | 'reinforcements' | null;
@@ -6,12 +7,15 @@ export interface PhaseBannerProps {
 }
 
 /**
- * Phase transition banner (PLAN item 188):
+ * Phase transition banner (PLAN item 188, 193):
  * Displays "PLAYER PHASE", "ENEMY PHASE", or "REINFORCEMENTS!" banner
- * across the screen following FE3 / Akaneia Refined visual direction.
+ * across the screen following FE3 / Akaneia Refined visual direction
+ * with smooth entry/exit keyframe animation.
  */
 export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phase, turnNumber }) => {
   if (!phase) return null;
+
+  const durationSec = (balanceConfig.durations?.phaseBannerMs ?? 1000) / 1000;
 
   const config = {
     player: {
@@ -51,6 +55,26 @@ export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phase, turnNumber }) =
         pointerEvents: 'none',
       }}
     >
+      <style>{`
+        @keyframes fadeSlideInOut {
+          0% {
+            opacity: 0;
+            transform: scale(0.92) translateY(-8px);
+          }
+          15% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+          80% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(1.04) translateY(6px);
+          }
+        }
+      `}</style>
       <div
         style={{
           width: '100%',
@@ -67,7 +91,7 @@ export const PhaseBanner: React.FC<PhaseBannerProps> = ({ phase, turnNumber }) =
           letterSpacing: '4px',
           textShadow: '0 2px 4px rgba(0,0,0,0.8), 0 0 12px rgba(255,255,255,0.4)',
           textTransform: 'uppercase',
-          animation: 'fadeSlideInOut 1.5s ease forwards',
+          animation: `fadeSlideInOut ${durationSec}s ease forwards`,
         }}
       >
         {config.text}

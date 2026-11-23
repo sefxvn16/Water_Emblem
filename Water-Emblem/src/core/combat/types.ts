@@ -85,6 +85,8 @@ export interface CombatSideForecast {
   readonly attackSpeed: number;
   readonly attackCount: number;
   readonly canCounter: boolean;
+  /** Tactical avoid rate (PLAN item 75 / M2). */
+  readonly avoid?: number;
   /** Sure Strike proc chance (PLAN item 152), rolled at execution. */
   readonly sureStrikeChance?: number;
   /** Pavise proc chance (PLAN item 152), rolled at execution. */

@@ -148,6 +148,18 @@
     }
   },
   "popupDurationMs": 1400,
+  "durations": {
+    "phaseBannerMs": 1000,
+    "reinforcementBannerMs": 1200,
+    "combatPopupMs": 1400,
+    "stepNormalMs": 65,
+    "stepFastMs": 25,
+    "aiFocusMs": 200,
+    "aiActionPauseMs": 150,
+    "screenShakeCritMs": 240,
+    "screenShakeHitMs": 150,
+    "statusNoticeMs": 3000
+  },
   "statCaps": {
     "hp": 60,
     "stat": 30

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import type { ExtendedUnitState } from '../core/data/chapterData';
 import { soundManager } from '../audio/soundManager';
 import { DS_COLORS, DS_FONTS, DS_RADII, DS_Z, primaryButtonStyle } from './designSystem';
@@ -29,12 +29,6 @@ const STAT_DISPLAY_CONFIG: readonly StatDisplayConfig[] = [
   { key: 'res', label: 'Res' },
 ];
 
-function isHeadless(): boolean {
-  if (typeof window === 'undefined') return false;
-  const ua = window.navigator?.userAgent ?? '';
-  return /HeadlessChrome|Playwright/i.test(ua);
-}
-
 export const LevelUpModal: React.FC<LevelUpModalProps> = ({
   unit,
   oldLevel,
@@ -42,27 +36,26 @@ export const LevelUpModal: React.FC<LevelUpModalProps> = ({
   statGains,
   onClose,
 }) => {
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     soundManager.playSfx('levelup');
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        onClose();
+        e.stopPropagation();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', onKeyDown);
 
-    // In automated headless tests / fast replay, auto-dismiss to unblock recorded replays
-    let timer: number | undefined;
-    if (isHeadless()) {
-      timer = window.setTimeout(onClose, 150);
-    }
-
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      if (timer !== undefined) window.clearTimeout(timer);
     };
-  }, [onClose]);
+  }, []);
 
   const className = getClassDefinition(unit.unit.classId)?.name ?? unit.unit.classId;
 

@@ -7,10 +7,15 @@ import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 
 const STAT_KEYS = ['str', 'mag', 'skill', 'spd', 'lck', 'def', 'res'] as const;
 const GROWTH_KEYS = ['hp', ...STAT_KEYS] as const;
-const personalGrowthById = new Map(
+
+if (!charactersJson || !Array.isArray(charactersJson.characters)) {
+  throw new Error('characters.json must contain a characters array');
+}
+
+const personalGrowthById = new Map<string, Readonly<Record<string, number>>>(
   (charactersJson.characters as readonly { id: string; personalGrowths?: Readonly<Record<string, number>> }[])
-    .filter((character) => character.personalGrowths !== undefined)
-    .map((character) => [character.id, character.personalGrowths!] as const),
+    .filter((char) => Boolean(char.personalGrowths))
+    .map((char) => [char.id, char.personalGrowths!] as const),
 );
 
 export function getEffectiveGrowthRates(entry: ExtendedUnitState): Readonly<Record<string, number>> {

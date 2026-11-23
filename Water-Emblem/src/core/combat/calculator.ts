@@ -152,6 +152,9 @@ export function calculateCombatSide(
   opponentHasIoteShield = false
 ): CombatSideForecast {
   if (!weapon) {
+    const as = stats.spd;
+    const unitSupport = allUnits ? calculateSupportBonus(unit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
+    const avoid = as + Math.floor(stats.lck / 2) + terrainRegistry.getAvoidBonus(_terrainId, unit.moveType) + unitSupport.avoid + (skillMods?.avoid ?? 0);
     return {
       unit,
       stats,
@@ -162,8 +165,13 @@ export function calculateCombatSide(
       attackSpeed: stats.spd,
       attackCount: 0,
       canCounter: false,
+      avoid,
     };
   }
+
+  const as = calculateAttackSpeed(stats, weapon);
+  const unitSupport = allUnits ? calculateSupportBonus(unit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
+  const avoid = as + Math.floor(stats.lck / 2) + terrainRegistry.getAvoidBonus(_terrainId, unit.moveType) + unitSupport.avoid + (skillMods?.avoid ?? 0);
 
   const range = getAttackRange(unit, weapon, _terrainId);
   const inRange = distance >= range.min && distance <= range.max;
@@ -175,9 +183,10 @@ export function calculateCombatSide(
       damage: 0,
       hitRate: 0,
       critRate: 0,
-      attackSpeed: calculateAttackSpeed(stats, weapon),
+      attackSpeed: as,
       attackCount: 0,
       canCounter: false,
+      avoid,
     };
   }
 
@@ -191,7 +200,6 @@ export function calculateCombatSide(
     : getWeaponRankBonus(weapon.type, unitRank);
 
   // Tính Support Bonuses
-  const unitSupport = allUnits ? calculateSupportBonus(unit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
   const opponentSupport = allUnits ? calculateSupportBonus(opponentUnit, allUnits) : { hit: 0, avoid: 0, crit: 0, dodge: 0 };
   const classDefinition = getClassDefinition(unit.classId);
 
@@ -242,8 +250,6 @@ export function calculateCombatSide(
     if (adjacentSisters.length >= trioUnitIds.length) critRate = 100;
   }
 
-  const as = calculateAttackSpeed(stats, weapon);
-
   return {
     unit,
     stats,
@@ -254,6 +260,7 @@ export function calculateCombatSide(
     attackSpeed: as,
     attackCount: 1, // Sẽ tính double attack sau khi so sánh AS cả 2 bên
     canCounter: inRange,
+    avoid,
     sureStrikeChance: skillMods?.sureStrikeChance ?? 0,
     paviseChance: skillMods?.paviseChance ?? 0,
   };

@@ -1,4 +1,5 @@
 import type { MoveType, Position } from '../core/grid/types';
+import balanceConfig from '../../data/balance.json' with { type: 'json' };
 
 export interface ActiveMovingUnit {
   readonly unitId: string;
@@ -7,6 +8,11 @@ export interface ActiveMovingUnit {
 
 export interface SoundStepPlayer {
   playMoveStep: (moveType: MoveType) => void;
+}
+
+export interface MovementAnimationCleanup {
+  (): void;
+  cancel: () => void;
 }
 
 /**
@@ -39,10 +45,23 @@ export function isFastAnimation(): boolean {
 /** Animation speed setting (PLAN item 117): normal 65ms/step, fast 25ms, off = instant. */
 export type AnimationSpeed = 'normal' | 'fast' | 'off';
 
-let animationSpeed: AnimationSpeed = 'normal';
+let animationSpeed: AnimationSpeed = (() => {
+  if (typeof window !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('water-emblem-animation-speed');
+      if (saved === 'normal' || saved === 'fast' || saved === 'off') return saved;
+    } catch { /* ignore */ }
+  }
+  return 'normal';
+})();
 
 export function setAnimationSpeed(speed: AnimationSpeed): void {
   animationSpeed = speed;
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem('water-emblem-animation-speed', speed);
+    } catch { /* ignore */ }
+  }
 }
 
 export function getAnimationSpeed(): AnimationSpeed {
@@ -59,20 +78,25 @@ export function runMovementAnimation(
   soundPlayer: SoundStepPlayer,
   onStep: (pos: Position, index: number) => void,
   onComplete: () => void,
-  stepMs = 65,
-): () => void {
+  stepMs?: number,
+): MovementAnimationCleanup {
+  const normalMs = stepMs ?? balanceConfig.durations?.stepNormalMs ?? 65;
+  const fastMs = balanceConfig.durations?.stepFastMs ?? 25;
+
+  const noopCleanup = Object.assign(() => {}, { cancel: () => {} });
+
   if (path.length <= 1) {
     onComplete();
-    return () => {};
+    return noopCleanup;
   }
 
   if (isFastAnimation() || animationSpeed === 'off') {
     const last = path[path.length - 1];
     if (last) onStep(last, path.length - 1);
     onComplete();
-    return () => {};
+    return noopCleanup;
   }
-  const effectiveStepMs = animationSpeed === 'fast' ? 25 : stepMs;
+  const effectiveStepMs = animationSpeed === 'fast' ? fastMs : normalMs;
 
   const p0 = path[0];
   if (p0) onStep(p0, 0);
@@ -94,14 +118,26 @@ export function runMovementAnimation(
     }
   }, effectiveStepMs);
 
-  return () => {
-    if (!finished) {
-      finished = true;
-      clearInterval(timer);
-      const last = path[path.length - 1];
-      if (last) onStep(last, path.length - 1);
-      onComplete();
-    }
-  };
+  const cleanup: MovementAnimationCleanup = Object.assign(
+    () => {
+      if (!finished) {
+        finished = true;
+        clearInterval(timer);
+        const last = path[path.length - 1];
+        if (last) onStep(last, path.length - 1);
+        onComplete();
+      }
+    },
+    {
+      cancel: () => {
+        if (!finished) {
+          finished = true;
+          clearInterval(timer);
+        }
+      },
+    },
+  );
+
+  return cleanup;
 }
 

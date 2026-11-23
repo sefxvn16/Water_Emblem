@@ -390,7 +390,11 @@ export async function loadGameState(slot: SaveSlotId = SAVE_SLOT): Promise<SaveG
     }
     const migrated = migrateSaveGameData(record);
     if (migrated && isRecord(record) && record.version !== SAVE_VERSION) {
-      await database.saves.put({ ...migrated, slot });
+      try {
+        await database.saves.put({ ...migrated, slot });
+      } catch (putError) {
+        console.warn('Failed to update migrated save in database:', putError);
+      }
     }
     return migrated;
   } catch (error) {

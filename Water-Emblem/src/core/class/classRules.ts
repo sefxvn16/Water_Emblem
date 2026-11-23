@@ -3,6 +3,7 @@ import balanceConfig from '../../../data/balance.json' with { type: 'json' };
 import palettesJson from '../../../data/character_palettes.json' with { type: 'json' };
 import type { ItemDefinition } from '../combat/types';
 import type { GridUnit, MoveType } from '../grid/types';
+import { validateClassCatalog } from '../data/validateData';
 import type { ExtendedUnitState } from '../data/chapterData';
 
 export interface ClassDefinition {
@@ -42,7 +43,7 @@ export interface ClassDefinition {
 }
 
 const classById = new Map<string, ClassDefinition>(
-  (classesJson.classes as ClassDefinition[]).map((entry) => [entry.id, entry]),
+  validateClassCatalog(classesJson).map((entry) => [entry.id, entry]),
 );
 
 // PLAN item 134 (R8): a mounted class must declare its dismounted form in

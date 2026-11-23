@@ -12,6 +12,7 @@ import {
   useItem,
   mountOrDismount,
   cancelMove,
+  useStaff,
   type PlayerActionState,
 } from '../../src/core/turn/playerActions';
 import { getAttackRange } from '../../src/core/class/classRules';
@@ -261,5 +262,43 @@ describe('Player Actions Core (PLAN item 55)', () => {
     // Call attack
     attack(state, { attackerId: marth.unit.id, defenderId: pirate.unit.id }, rng);
     expect(JSON.stringify(state)).toBe(snapshotBefore);
+  });
+
+  // 8. useStaff: hồi máu mục tiêu, sự kiện staff_used, người dùng hasActed
+  it('8. useStaff: heals target ally, emits staff_used event, user hasActed is true', () => {
+    const units = structuredClone(chapter01Data.units);
+    const marth = units.find((u) => u.unit.id === 'marth')!;
+    marth.unit.position = { x: 5, y: 5 };
+    marth.stats.hp = 10;
+    marth.stats.maxHp = 20;
+
+    const wrys = {
+      ...structuredClone(marth),
+      unit: {
+        ...structuredClone(marth.unit),
+        id: 'curate_test',
+        name: 'Curate',
+        classId: 'curate',
+        position: { x: 5, y: 6 },
+        weaponRanks: { staff: 'E' as const },
+      },
+      stats: { ...structuredClone(marth.stats), mag: 6 },
+      inventory: [{ itemId: 'heal_staff', uses: 20 }],
+      weapon: undefined,
+    };
+
+    const state = createBaseState([marth, wrys]);
+    const rng = new SeededRNG(42);
+
+    const result = useStaff(state, { userId: wrys.unit.id, targetId: marth.unit.id, staffId: 'heal_staff' }, rng);
+    expect(result).not.toBeNull();
+    if (!result) throw new Error('useStaff returned null');
+
+    const updatedMarth = result.state.units.find((u) => u.unit.id === marth.unit.id)!;
+    const updatedWrys = result.state.units.find((u) => u.unit.id === wrys.unit.id)!;
+
+    expect(updatedMarth.stats.hp).toBeGreaterThan(10);
+    expect(updatedWrys.unit.hasActed).toBe(true);
+    expect(result.events.some((e) => e.type === 'staff_used')).toBe(true);
   });
 });

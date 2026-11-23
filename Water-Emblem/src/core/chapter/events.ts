@@ -8,6 +8,7 @@ import type { MapData, MoveType, Position, UnitFaction } from '../grid/types';
 import { evaluateChapterOutcome } from './types';
 import defaultDialoguesJson from '../../../data/dialogues/default_dialogues.json' with { type: 'json' };
 import itemsJson from '../../../data/items.json' with { type: 'json' };
+import { validateDefaultDialogues, validateItemCatalog } from '../data/validateData';
 
 export type VillageState = 'intact' | 'visited' | 'destroyed';
 export type ChestState = 'opened';
@@ -145,11 +146,11 @@ function dialogueLines(value: unknown): DialogueLine[] | undefined {
 }
 
 /** Default village lines when a chapter defines none (data/dialogues/default_dialogues.json, PLAN item 134). */
-const DEFAULT_VILLAGE_LINES: DialogueLine[] = dialogueLines(defaultDialoguesJson.defaultVillage) ?? [];
+const DEFAULT_VILLAGE_LINES: DialogueLine[] = validateDefaultDialogues(defaultDialoguesJson).defaultVillage;
 
 /** Item roles declared in data/items.json (PLAN item 134): master key, lord's chest key. */
 const itemRoleById = new Map<string, string>(
-  (itemsJson.items as readonly { id: string; itemRole?: string }[])
+  validateItemCatalog(itemsJson)
     .filter((item) => item.itemRole !== undefined)
     .map((item) => [item.id, item.itemRole!] as const),
 );

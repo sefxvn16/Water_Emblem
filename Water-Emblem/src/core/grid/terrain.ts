@@ -3,12 +3,13 @@ import type { MapData } from './types';
 import type { ExtendedUnitState } from '../data/chapterData';
 import { getClassDefinition } from '../class/classRules';
 import terrainData from '../../../data/terrains.json' with { type: 'json' };
+import { validateTerrainData } from '../data/validateData';
 
 export class TerrainRegistry {
   private readonly terrains: Map<string, TerrainDefinition> = new Map();
 
   constructor(customTerrains?: readonly TerrainDefinition[]) {
-    const source = customTerrains ?? (terrainData.terrains as readonly TerrainDefinition[]);
+    const source = customTerrains ?? validateTerrainData(terrainData);
     for (const t of source) {
       this.terrains.set(t.id, t);
     }

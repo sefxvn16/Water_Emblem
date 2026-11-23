@@ -801,20 +801,26 @@ export const WorldMapModal: React.FC<WorldMapModalProps> = ({
             </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {selectedRegion.chapters.map((chId) => {
+                const hasData = Boolean(chapters[chId]);
                 const isSelectedCh = chId === currentChapterId;
                 return (
                   <button
                     key={chId}
-                    onClick={() => onSelectChapter?.(chId)}
+                    disabled={!hasData}
+                    onClick={() => {
+                      if (hasData) onSelectChapter?.(chId);
+                    }}
+                    title={hasData ? undefined : 'Chapter data not yet available'}
                     style={{
                       padding: '7px 14px',
-                      backgroundColor: isSelectedCh ? '#2563eb' : '#1e293b',
-                      border: `1px solid ${isSelectedCh ? '#60a5fa' : '#475569'}`,
+                      backgroundColor: isSelectedCh ? '#2563eb' : hasData ? '#1e293b' : '#0f172a',
+                      border: `1px solid ${isSelectedCh ? '#60a5fa' : hasData ? '#475569' : '#334155'}`,
                       borderRadius: '6px',
-                      color: '#fff',
+                      color: hasData ? '#fff' : '#64748b',
                       fontSize: '12.5px',
                       fontWeight: isSelectedCh ? 'bold' : 'normal',
-                      cursor: onSelectChapter ? 'pointer' : 'default',
+                      cursor: hasData && onSelectChapter ? 'pointer' : 'not-allowed',
+                      opacity: hasData ? 1 : 0.5,
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',

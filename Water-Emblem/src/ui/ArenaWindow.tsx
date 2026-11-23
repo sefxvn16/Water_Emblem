@@ -1,6 +1,10 @@
 import React from 'react';
 import arenaDialogues from '../../data/dialogues/arena.json' with { type: 'json' };
 import type { ExtendedUnitState } from '../core/data/chapterData';
+
+if (!arenaDialogues || typeof arenaDialogues.welcomePrompt !== 'string') {
+  throw new Error('data/dialogues/arena.json failed validation: missing welcomePrompt');
+}
 import { ARENA_TIERS, type ArenaFightOutcome, type ArenaTier } from '../core/combat/arena';
 import { DS_COLORS, primaryButtonStyle, secondaryButtonStyle, sharedPanelStyle } from './designSystem';
 

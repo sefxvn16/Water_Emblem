@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import chapterObjectives from '../../data/chapter_objectives.json' with { type: 'json' };
 import { chapters } from '../core/data/chapterData';
 import { CAMPAIGN_CHAPTER_IDS, CHAPTER_SOURCES } from '../core/data/chapterRegistry';
+import { getAnimationSpeed, setAnimationSpeed, type AnimationSpeed } from '../renderer/movementAnimation';
 import { DS_COLORS, DS_RADII, DS_Z, primaryButtonStyle, secondaryButtonStyle, sectionHeadingStyle, sharedPanelStyle } from './designSystem';
 
 interface BattleSettingsMenuProps {
@@ -67,6 +68,7 @@ const HUD_GAP = 8;
 
 export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => {
   const [open, setOpen] = useState(false);
+  const [animSpeed, setAnimSpeed] = useState<AnimationSpeed>(() => getAnimationSpeed());
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -198,7 +200,11 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
             <h3 style={sectionHeadingStyle}>Chapter</h3>
             <select
               value={props.chapterId}
-              onChange={(e) => props.onChapterChange(e.target.value)}
+              onChange={(e) => {
+                const nextId = e.target.value;
+                if (nextId === props.chapterId) return;
+                props.onChapterChange(nextId);
+              }}
               aria-label="Chapter"
               style={{
                 backgroundColor: DS_COLORS.secondaryBg,
@@ -308,6 +314,33 @@ export const BattleSettingsMenu: React.FC<BattleSettingsMenuProps> = (props) => 
                   On
                 </button>
                 <button onClick={() => props.onAutoEndTurn(false)} style={{ ...viewButtonStyle(!props.autoEndTurn), minHeight: 44, minWidth: 44, padding: '6px 14px' }}>
+                  Off
+                </button>
+              </div>
+            </div>
+            {/* Animation Speed (PLAN item 197) */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minHeight: 44, padding: '0 4px' }}>
+              <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#e2e8f0', flex: 1 }}>⚡ Speed</span>
+              <div style={{ display: 'flex', backgroundColor: DS_COLORS.navyDark, borderRadius: DS_RADII.medium, padding: '2px', border: `1px solid ${DS_COLORS.secondaryBorder}` }} role="group" aria-label="Animation Speed">
+                <button
+                  type="button"
+                  onClick={() => { setAnimationSpeed('normal'); setAnimSpeed('normal'); }}
+                  style={{ ...viewButtonStyle(animSpeed === 'normal'), minHeight: 44, minWidth: 44, padding: '6px 10px' }}
+                >
+                  Normal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAnimationSpeed('fast'); setAnimSpeed('fast'); }}
+                  style={{ ...viewButtonStyle(animSpeed === 'fast'), minHeight: 44, minWidth: 44, padding: '6px 10px' }}
+                >
+                  Fast
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setAnimationSpeed('off'); setAnimSpeed('off'); }}
+                  style={{ ...viewButtonStyle(animSpeed === 'off'), minHeight: 44, minWidth: 44, padding: '6px 10px' }}
+                >
                   Off
                 </button>
               </div>

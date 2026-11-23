@@ -43,18 +43,32 @@ export const CombatForecastWindow: React.FC<CombatForecastWindowProps> = ({
 
   const attDamagePerHit = forecast.attacker.damage;
   const attCount = forecast.attacker.attackCount;
-  const defenderHpAfter = Math.max(0, defender.stats.hp - attDamagePerHit * attCount);
-  const defenderHpLoss = defender.stats.hp - defenderHpAfter;
-
   const defCanCounter = forecast.defender.canCounter;
   const defDamagePerHit = forecast.defender.damage;
   const defCount = forecast.defender.attackCount;
-  const defTotalDamage = defCanCounter && defenderHpAfter > 0 ? defDamagePerHit * defCount : 0;
-  const attackerHpAfter = Math.max(0, attacker.stats.hp - defTotalDamage);
+
+  // FE canon round-by-round HP projection (PLAN item 75 / M1):
+  // Round 1: Attacker strikes.
+  const defenderHpAfterHit1 = attCount > 0 ? Math.max(0, defender.stats.hp - attDamagePerHit) : defender.stats.hp;
+  // Round 2: Defender counters if alive after round 1.
+  const defCanCounterRound2 = defCanCounter && defCount > 0 && defenderHpAfterHit1 > 0;
+  const attackerHpAfterCounter1 = defCanCounterRound2 ? Math.max(0, attacker.stats.hp - defDamagePerHit) : attacker.stats.hp;
+  // Round 3: Double attack if both survive.
+  let defenderHpAfter = defenderHpAfterHit1;
+  let attackerHpAfter = attackerHpAfterCounter1;
+  if (defenderHpAfterHit1 > 0 && attackerHpAfterCounter1 > 0) {
+    if (attCount === 2) {
+      defenderHpAfter = Math.max(0, defenderHpAfterHit1 - attDamagePerHit);
+    } else if (defCanCounter && defCount === 2) {
+      attackerHpAfter = Math.max(0, attackerHpAfterCounter1 - defDamagePerHit);
+    }
+  }
+  const defenderHpLoss = defender.stats.hp - defenderHpAfter;
   const attackerHpLoss = attacker.stats.hp - attackerHpAfter;
 
-  const attAvoid = forecast.attacker.attackSpeed + Math.floor(attacker.stats.lck / 2);
-  const defAvoid = forecast.defender.attackSpeed + Math.floor(defender.stats.lck / 2);
+  // Tactical avoid with terrain and support bonuses from core (PLAN item 75 / M2)
+  const attAvoid = forecast.attacker.avoid ?? (forecast.attacker.attackSpeed + Math.floor(attacker.stats.lck / 2));
+  const defAvoid = forecast.defender.avoid ?? (forecast.defender.attackSpeed + Math.floor(defender.stats.lck / 2));
 
   const attWeaponIcon = attacker.weapon ? getItemIcon(attacker.weapon.id, attacker.weapon.type) : '';
   const defWeaponIcon = defender.weapon ? getItemIcon(defender.weapon.id, defender.weapon.type) : '';

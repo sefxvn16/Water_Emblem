@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import shoppingDialogues from '../../data/dialogues/shopping.json' with { type: 'json' };
 import { getItemIcon } from './itemIcon';
 
+if (!shoppingDialogues || typeof shoppingDialogues.armory?.welcome !== 'string') {
+  throw new Error('data/dialogues/shopping.json failed validation: missing armory welcome');
+}
+
 export interface ShopStockRow {
   itemId: string;
   name: string;

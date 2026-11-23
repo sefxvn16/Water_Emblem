@@ -1,29 +1,18 @@
 import itemsJson from '../../../data/items.json' with { type: 'json' };
 import { calculateCombatForecast, executeCombat, getManhattanDistance } from '../combat/calculator';
-import {
-  resolveCombatConsequences,
-  type CombatResolutionResult,
-  type CombatSoundCue,
-  type LevelUpEvent,
-} from '../combat/combatResolution';
+import { resolveCombatConsequences, type CombatResolutionResult, type CombatSoundCue, type LevelUpEvent } from '../combat/combatResolution';
 import { equipWeapon } from '../combat/equip';
 import type { CombatForecast, CombatResult, ItemDefinition } from '../combat/types';
 import type { SeededRNG } from '../combat/rng';
 import { defaultRNG } from '../combat/rng';
-import {
-  changeMountedState,
-  getAttackRange,
-  isWeaponUsable,
-  promoteWithoutItem,
-  skillIdsOf,
-  useVulnerary,
-} from '../class/classRules';
+import { changeMountedState, getAttackRange, isWeaponUsable, promoteWithoutItem, skillIdsOf, useVulnerary } from '../class/classRules';
 import { getSkillModifiers } from '../combat/skills';
 import { defaultTerrainRegistry, getElevation } from '../grid/terrain';
 import type { MapData, Position } from '../grid/types';
 import type { ExtendedUnitState, ChapterData } from '../data/chapterData';
 import type { DialogueTable, GameEvent, VillageState, ChestState, DoorState } from '../chapter/events';
 import { bossStartEvent } from '../chapter/events';
+import { applyStaffUse } from '../combat/staff';
 
 export interface PlayerActionState {
   readonly units: readonly ExtendedUnitState[];
@@ -336,19 +325,9 @@ export function cancelMove(
       ? { ...u, unit: { ...u.unit, position: { ...input.origin } } }
       : u
   );
-  const events: GameEvent[] = [
-    {
-      type: 'unit_moved',
-      unitId: unit.unit.id,
-      from: previousPos,
-      to: { ...input.origin },
-    },
-  ];
+  const events: GameEvent[] = [{ type: 'unit_moved', unitId: unit.unit.id, from: previousPos, to: { ...input.origin } }];
   return {
-    state: {
-      ...state,
-      units: updatedUnits,
-    },
+    state: { ...state, units: updatedUnits },
     events,
   };
 }
@@ -373,10 +352,38 @@ export function promote(
   const finalUnit = { ...changed, unit: { ...changed.unit, hasActed: true } };
   const updatedUnits = state.units.map((u) => (u.unit.id === unit.unit.id ? finalUnit : u));
   return {
-    state: {
-      ...state,
-      units: updatedUnits,
-    },
+    state: { ...state, units: updatedUnits },
     events: [],
+  };
+}
+
+export interface StaffActionInput {
+  readonly userId: string;
+  readonly targetId: string;
+  readonly staffId: string;
+}
+
+/**
+ * Pure player action: Use Staff (PLAN item 55/57).
+ * Calls applyStaffUse and returns updated state with events and logs.
+ */
+export function useStaff(
+  state: PlayerActionState,
+  input: StaffActionInput,
+  rng: SeededRNG = defaultRNG,
+): PlayerActionResult | null {
+  const itemCatalog =
+    state.itemById ??
+    new Map((state.items ?? (itemsJson.items as ItemDefinition[])).map((i) => [i.id, i]));
+  const result = applyStaffUse(state.units, input.userId, input.targetId, input.staffId, itemCatalog, rng);
+  if (!result) return null;
+  const units = result.units.map((u) => (u.unit.id === input.userId ? { ...u, unit: { ...u.unit, hasActed: true } } : u));
+  const events: GameEvent[] = [
+    { type: 'staff_used', userId: input.userId, targetId: input.targetId, staffId: input.staffId, healAmount: result.healed },
+  ];
+  return {
+    state: { ...state, units },
+    events,
+    logs: result.messages,
   };
 }
