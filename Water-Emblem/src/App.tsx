@@ -12,7 +12,7 @@ import { calculateMovementRange } from './core/grid/pathfinding';
 import { MapData, Position } from './core/grid/types';
 import { TurnManager } from './core/turn/turnManager';
 import { CombatForecast, type ItemDefinition } from './core/combat/types';
-import { calculateCombatForecast, executeCombat, getManhattanDistance } from './core/combat/calculator';
+import { calculateCombatForecast, getManhattanDistance } from './core/combat/calculator';
 import {
   canAttackAtDistance,
   equipWeapon,
@@ -23,12 +23,13 @@ import {
 import { defaultRNG } from './core/combat/rng';
 import { canDanceFor, executeDance } from './core/turn/dance';
 import { runEnemyPhase } from './core/turn/enemyPhase';
+import { attack, cancelMove, mountOrDismount, promote, useItem, wait } from './core/turn/playerActions';
 import { ThreeScene } from './renderer/ThreeScene';
 import { Grid2D, type UnitDisplay } from './renderer/Grid2D';
 import { PhaseBanner } from './ui/PhaseBanner';
 import { isFastAnimation, runMovementAnimation, type ActiveMovingUnit } from './renderer/movementAnimation';
 import { buildBoardView } from './core/grid/boardView';
-import { resolveCombatConsequences, type LevelUpEvent } from './core/combat/combatResolution';
+import { type LevelUpEvent } from './core/combat/combatResolution';
 import { computeDangerZone, computeInspectedEnemyThreatKeys } from './core/simulation/enemyTurnSimulation';
 import {
   bossStartEvent, canOpenChest, canOpenDoor, openChest, openDoor, recruit, seize, visitVillage,
@@ -41,7 +42,7 @@ import { saveGameState, loadGameState, buildNewGameSnapshot, type SaveGameData }
 import { chapters, chapter01Data, ExtendedUnitState } from './core/data/chapterData';
 import { CHAPTER_SOURCES, nextCampaignChapterId } from './core/data/chapterRegistry';
 import worldMapData from '../data/world_map.json' with { type: 'json' };
-import { changeMountedState, getAttackRange, getClassDefinition, promoteWithoutItem, reclassUnit, skillIdsOf, useVulnerary } from './core/class/classRules';
+import { getAttackRange, getClassDefinition, reclassUnit, skillIdsOf } from './core/class/classRules';
 import { soundManager } from './audio/soundManager';
 import { TitleScreen } from './ui/TitleScreen';
 import { BookSelectModal } from './ui/BookSelectModal';
@@ -982,6 +983,16 @@ export const App: React.FC = () => {
     });
   };
 
+  const chapterState = (units: readonly ExtendedUnitState[] = extendedUnits): ChapterState => ({ units, gold, villageStates, chestStates, doorStates });
+  const commitChapterState = (next: ChapterState) => {
+    setExtendedUnits([...next.units]);
+    setGold(next.gold);
+    setVillageStates({ ...next.villageStates });
+    setChestStates({ ...next.chestStates });
+    setDoorStates({ ...next.doorStates });
+    turnManager.replaceUnits(next.units.map(({ unit }) => unit));
+  };
+
   // Xác nhận Tấn công
   const handleConfirmAttack = () => {
     if (!combatForecast || !selectedExtUnit || !selectedTarget) return;
@@ -993,47 +1004,37 @@ export const App: React.FC = () => {
 
     executeWithMove(() => {
       const hpBefore = { attacker: attacker.stats.hp, defender: defender.stats.hp };
-      const result = executeCombat(forecast, defaultRNG);
-      const popup = buildCombatPopup(++popupIdRef.current, attacker, defender, hpBefore, result);
-      setPopupQueue([popup]);
+      const actionResult = attack(
+        { ...chapterState(), mapData, chapter: currentChapter, dialogues: currentDialogues as DialogueTable, itemById: ITEM_BY_ID, items: itemsJson.items as ItemDefinition[] },
+        { attackerId: attacker.unit.id, defenderId: defender.unit.id, forecast },
+        defaultRNG,
+      );
+      if (!actionResult) return;
+
+      if (actionResult.rawCombatResult) {
+        setPopupQueue([buildCombatPopup(++popupIdRef.current, attacker, defender, hpBefore, actionResult.rawCombatResult)]);
+      }
+      actionResult.soundCues?.forEach((cue) => cue.type === 'weapon' ? soundManager.playWeaponHit(cue.weaponType ?? 'sword') : soundManager.playSfx(cue.type));
 
       const logs: string[] = [];
       const startEvent = bossStartEvent(currentDialogues, defender.unit.id, defender.unit.name);
       if (startEvent) logs.push(...eventLogLines([startEvent]));
-      logs.push(`⚔️ ENGAGEMENT: ${attacker.unit.name} vs ${defender.unit.name}`);
+      if (actionResult.logs) logs.push(...actionResult.logs);
 
-      // PLAN item 135: Combat consequences handled by the stateless simulation layer
-      const resolution = resolveCombatConsequences({
-        units: extendedUnits,
-        result,
-        rng: defaultRNG,
-        itemById: ITEM_BY_ID,
-        itemsList: itemsJson.items as ItemDefinition[],
-        chapter: currentChapter,
-        dialogues: currentDialogues as DialogueTable,
-        gold,
-        villageStates,
-      });
-
-      for (const cue of resolution.soundCues) {
-        if (cue.type === 'weapon') soundManager.playWeaponHit(cue.weaponType ?? 'sword');
-        else soundManager.playSfx(cue.type);
+      const defeatEvents = actionResult.events.filter((e) => e.type === 'item_gained' || e.type === 'gold_gained' || e.type === 'unit_recruited' || (e.type === 'dialogue' && e.kind === 'boss_death'));
+      if (defeatEvents.length > 0) {
+        logs.push(...eventLogLines(defeatEvents));
+        queueOverflows(defeatEvents);
       }
+      setGold(actionResult.state.gold ?? gold);
+      if (actionResult.state.villageStates) setVillageStates(actionResult.state.villageStates as Record<string, VillageState>);
 
-      logs.push(...resolution.logs);
-      if (resolution.defeatEvents.length > 0) {
-        logs.push(...eventLogLines(resolution.defeatEvents));
-        queueOverflows(resolution.defeatEvents);
-      }
-      setGold(resolution.gold);
-      setVillageStates(resolution.villageStates);
-
-      const updatedUnits = resolution.units;
+      const updatedUnits = actionResult.state.units;
       setCombatLog((prev) => [...logs, ...prev].slice(0, 20));
       turnManager.replaceUnits(updatedUnits.map((item) => item.unit));
       setExtendedUnits(updatedUnits);
-      if (resolution.levelUps && resolution.levelUps.length > 0) {
-        const playerLevelUp = resolution.levelUps.find((lu) => lu.unit.unit.faction === 'player');
+      if (actionResult.levelUps?.length) {
+        const playerLevelUp = actionResult.levelUps.find((lu) => lu.unit.unit.faction === 'player');
         if (playerLevelUp) setPendingLevelUp(playerLevelUp);
       }
 
@@ -1047,9 +1048,13 @@ export const App: React.FC = () => {
 
   // Xác nhận Chờ
   const handleConfirmWait = () => {
+    if (!selectedExtUnit) return;
     executeWithMove(() => {
+      const res = wait({ units: extendedUnits }, { unitId: selectedExtUnit.unit.id });
+      if (!res) return;
       soundManager.playSfx('accept');
       turnManager.waitSelectedUnit();
+      setExtendedUnits([...res.state.units]);
       setSelectedTarget(null);
       setCombatForecast(null);
       syncState();
@@ -1093,16 +1098,14 @@ export const App: React.FC = () => {
   const handleUseVulnerary = () => {
     if (!selectedExtUnit || !pendingMovePos) return;
     executeWithMove(() => {
-      const item = itemsJson.items.find(({ id }) => id === 'vulnerary') as ItemDefinition | undefined;
-      if (!item) return;
-      const changed = useVulnerary(selectedExtUnit, item);
-      if (!changed) return;
+      const res = useItem({ units: extendedUnits, itemById: ITEM_BY_ID }, { unitId: selectedExtUnit.unit.id, itemId: 'vulnerary' });
+      if (!res) return;
       soundManager.playSfx('heal');
-      const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
-      turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+      turnManager.replaceUnits(res.state.units.map(({ unit }) => unit));
       endUnitTurn();
-      setExtendedUnits(nextUnits);
-      setCombatLog((prev) => [`${changed.unit.name} used ${item.name}: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...prev].slice(0, 20));
+      setExtendedUnits([...res.state.units]);
+      const changed = res.state.units.find((u) => u.unit.id === selectedExtUnit.unit.id);
+      if (changed) setCombatLog((prev) => [`${changed.unit.name} used Vulnerary: HP ${changed.stats.hp}/${changed.stats.maxHp}`, ...prev].slice(0, 20));
       syncState();
     });
   };
@@ -1110,45 +1113,29 @@ export const App: React.FC = () => {
   const handlePromote = (targetClassId: string) => {
     if (!selectedExtUnit || !pendingMovePos) return;
     executeWithMove(() => {
-      const changed = promoteWithoutItem(selectedExtUnit, targetClassId);
-      if (!changed) return;
+      const res = promote({ units: extendedUnits }, { unitId: selectedExtUnit.unit.id, targetClassId });
+      if (!res) return;
       soundManager.playSfx('levelup');
-      const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
-      turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
+      turnManager.replaceUnits(res.state.units.map(({ unit }) => unit));
       endUnitTurn();
-      setExtendedUnits(nextUnits);
-      setCombatLog((prev) => [`${changed.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...prev].slice(0, 20));
+      setExtendedUnits([...res.state.units]);
+      const changed = res.state.units.find((u) => u.unit.id === selectedExtUnit.unit.id);
+      setCombatLog((prev) => [`${changed?.unit.name ?? selectedExtUnit.unit.name} promoted to ${getClassDefinition(targetClassId)?.name ?? targetClassId}`, ...prev].slice(0, 20));
       syncState();
     });
   };
 
   const handleToggleMounted = () => {
     if (!selectedExtUnit || pendingMovePos || selectedExtUnit.unit.hasActed) return;
-    const changed = changeMountedState(selectedExtUnit, Boolean(selectedExtUnit.unit.mountedClassId));
-    if (!changed) return;
+    const res = mountOrDismount({ units: extendedUnits }, { unitId: selectedExtUnit.unit.id });
+    if (!res) return;
     soundManager.playSfx('cursor');
-    const nextUnits = extendedUnits.map((entry) => entry.unit.id === changed.unit.id ? changed : entry);
-    setExtendedUnits(nextUnits);
-    turnManager.replaceUnits(nextUnits.map(({ unit }) => unit));
-    const range = calculateMovementRange(changed.unit, {
-      map: mapData,
-      terrains: defaultTerrainRegistry,
-      units: nextUnits.map(({ unit }) => unit),
-      openedDoors: openedDoorKeys,
-    });
+    setExtendedUnits([...res.state.units]);
+    turnManager.replaceUnits(res.state.units.map(({ unit }) => unit));
+    const changed = res.state.units.find((u) => u.unit.id === selectedExtUnit.unit.id)!;
+    const range = calculateMovementRange(changed.unit, { map: mapData, terrains: defaultTerrainRegistry, units: res.state.units.map(({ unit }) => unit), openedDoors: openedDoorKeys });
     turnManager.selectUnit(changed.unit.id, range);
     syncState();
-  };
-
-  const chapterState = (units: readonly ExtendedUnitState[] = extendedUnits): ChapterState => ({ units, gold, villageStates, chestStates, doorStates });
-
-  const commitChapterState = (next: ChapterState) => {
-    setExtendedUnits([...next.units]);
-    setGold(next.gold);
-    setVillageStates({ ...next.villageStates });
-    setChestStates({ ...next.chestStates });
-    setDoorStates({ ...next.doorStates });
-    turnManager.replaceUnits(next.units.map(({ unit }) => unit));
   };
 
   // PLAN item 86: full-inventory gains wait for a discard choice.
@@ -1714,8 +1701,10 @@ export const App: React.FC = () => {
       const moveType = selectedExtUnit.unit.moveType;
       const backPath = plannedPath && plannedPath.length > 1 ? [...plannedPath].reverse() : null;
       const arriveBack = () => {
+        const res = cancelMove({ units: extendedUnits }, { unitId, origin });
+        const nextUnits = res ? res.state.units : extendedUnits;
         turnManager.moveSelectedUnit(origin);
-        setExtendedUnits([...extendedUnits]);
+        setExtendedUnits([...nextUnits]);
         setActiveMovingUnit(null);
         setMoveCommitted(false);
         setMoveOrigin(null);
@@ -1779,14 +1768,14 @@ export const App: React.FC = () => {
             setActiveMovingUnit({ unitId: enemy.unit.id, pos });
             if (!fastPlayback) scrollToTile(pos);
           }, () => {
-            enemy.unit.position = { ...dest };
+            phaseUnits = phaseUnits.map((u) => u.unit.id === enemy.unit.id ? { ...u, unit: { ...u.unit, position: { ...dest } } } : u);
             setExtendedUnits([...phaseUnits]);
             setActiveMovingUnit(null);
             resolve();
           });
         });
       } else {
-        enemy.unit.position = { ...dest };
+        phaseUnits = phaseUnits.map((u) => u.unit.id === enemy.unit.id ? { ...u, unit: { ...u.unit, position: { ...dest } } } : u);
         setExtendedUnits([...phaseUnits]);
       }
     };
@@ -1823,7 +1812,7 @@ export const App: React.FC = () => {
 
       if (decision.type === 'attack') {
         if (decision.weapon.id !== enemy.weapon?.id) {
-          enemy.weapon = decision.weapon;
+          phaseUnits = phaseUnits.map((u) => u.unit.id === enemy.unit.id ? { ...u, weapon: decision.weapon } : u);
         }
         scrollToTile(enemy.unit.position);
         await animateEnemyMove(enemy, step.movePosition);
@@ -1877,8 +1866,9 @@ export const App: React.FC = () => {
 
       if (step.unitsAfter) {
         phaseUnits = step.unitsAfter.map((u) => ({ ...u, unit: { ...u.unit }, stats: { ...u.stats } }));
+      } else {
+        phaseUnits = phaseUnits.map((u) => u.unit.id === enemy.unit.id ? { ...u, unit: { ...u.unit, hasActed: true } } : u);
       }
-      enemy.unit.hasActed = true;
       setActiveActingEnemyId(null);
       setExtendedUnits([...phaseUnits]);
 

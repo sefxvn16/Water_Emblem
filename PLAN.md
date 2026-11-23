@@ -92,7 +92,7 @@ Mỗi mục trong giai đoạn này giữ nguyên hành vi game: trước và sa
   - Kiểm bởi: subagent
 
 - [ ] 55. Tách hành động người chơi vào core.
-  - Tiêu chí xong: Tấn công, chờ, dùng vật phẩm, thăng cấp, lên/xuống ngựa, hủy di chuyển là hàm core thuần, có unit test; `App.tsx` chỉ gọi hàm và cập nhật state; không còn sửa trực tiếp object state (`unit.position = ...`).
+  - Tiêu chí xong: Tấn công, chờ, dùng vật phẩm, thăng cấp, lên/xuống ngựa, hủy di chuyển là hàm core thuần, có unit test; `App.tsx` chỉ gọi hàm và cập nhật state; không còn sửa trực tiếp object state (`unit.position = ...`). test: Water-Emblem/tests/core/playerActions.test.ts > Player Actions Core (PLAN item 55)
   - Kết quả: CHỜ NGƯỜI DÙNG: Làm sau mục 54.
   - Kiểm bởi: subagent
 

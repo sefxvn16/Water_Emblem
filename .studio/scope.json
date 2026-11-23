@@ -278,6 +278,20 @@
     "Water-Emblem/tests/core/turn.test.ts",
     "Water-Emblem/src/core/turn/statusEffects.ts",
     "Water-Emblem/src/core/turn/enemyPhase.ts",
-    "Water-Emblem/tests/core/enemyPhase.test.ts"
+    "Water-Emblem/tests/core/enemyPhase.test.ts",
+    "Water-Emblem/src/core/turn/playerActions.ts",
+    "Water-Emblem/tests/core/playerActions.test.ts",
+    "Water-Emblem/src/ui/hooks/useChapterState.ts",
+    "Water-Emblem/src/ui/hooks/useTurnFlow.ts",
+    "Water-Emblem/src/ui/hooks/useSelection.ts",
+    "Water-Emblem/src/ui/hooks/useActionTargeting.ts",
+    "Water-Emblem/src/ui/hooks/useGameFeedback.ts",
+    "Water-Emblem/src/ui/hooks/useScreens.ts",
+    "Water-Emblem/src/ui/hooks/useShopArena.ts",
+    "Water-Emblem/src/ui/hooks/*.ts",
+    "Water-Emblem/src/ui/*.tsx",
+    "Water-Emblem/src/renderer/*.tsx",
+    "Water-Emblem/src/core/turn/*.ts",
+    "Water-Emblem/tests/core/*.test.ts"
   ]
 }
